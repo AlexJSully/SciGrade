@@ -1,0 +1,2544 @@
+{
+  "owner_id": "5a4cb9e58f25b9cd6d49e868",
+  "number": 42,
+  "version": "0.1",
+  "date": "2018-01-05:0125",
+  "gene_list": {
+    "HBB": {
+      "base_type": "assignment"
+    },
+    "CCR5": {
+      "base_type": "assignment"
+    },
+    "ANKK1": {
+      "base_type": "assignment"
+    },
+    "APOE": {
+      "base_type": "assignment"
+    },
+    "eBFP": [{
+        "Position": 8,
+        "Strand": -1,
+        "Sequence": "CCCATTGACGTCAATGGGGG",
+        "PAM": "TGG",
+        "Specificity Score": 80.1259154,
+        "Efficiency Score": null
+      },
+      {
+        "Position": 11,
+        "Strand": -1,
+        "Sequence": "ACTCCCATTGACGTCAATGG",
+        "PAM": "GGG",
+        "Specificity Score": 74.3593365,
+        "Efficiency Score": 72.53422895
+      },
+      {
+        "Position": 12,
+        "Strand": -1,
+        "Sequence": "AACTCCCATTGACGTCAATG",
+        "PAM": "GGG",
+        "Specificity Score": 77.5079265,
+        "Efficiency Score": 67.21005479
+      },
+      {
+        "Position": 13,
+        "Strand": -1,
+        "Sequence": "AAACTCCCATTGACGTCAAT",
+        "PAM": "GGG",
+        "Specificity Score": 70.9370542,
+        "Efficiency Score": 29.29462295
+      },
+      {
+        "Position": 14,
+        "Strand": -1,
+        "Sequence": "CAAACTCCCATTGACGTCAA",
+        "PAM": "TGG",
+        "Specificity Score": 73.9720838,
+        "Efficiency Score": 55.45941937
+      },
+      {
+        "Position": 18,
+        "Strand": 1,
+        "Sequence": "TCCACCCCCATTGACGTCAA",
+        "PAM": "TGG",
+        "Specificity Score": 83.8030954,
+        "Efficiency Score": null
+      },
+      {
+        "Position": 19,
+        "Strand": 1,
+        "Sequence": "CCACCCCCATTGACGTCAAT",
+        "PAM": "GGG",
+        "Specificity Score": 89.2397935,
+        "Efficiency Score": null
+      },
+      {
+        "Position": 31,
+        "Strand": 1,
+        "Sequence": "ACGTCAATGGGAGTTTGTTT",
+        "PAM": "TGG",
+        "Specificity Score": 69.4321401,
+        "Efficiency Score": 31.97601136
+      },
+      {
+        "Position": 45,
+        "Strand": -1,
+        "Sequence": "TTGGAAAGTCCCGTTGATTT",
+        "PAM": "TGG",
+        "Specificity Score": 71.5246395,
+        "Efficiency Score": 27.40070964
+      },
+      {
+        "Position": 46,
+        "Strand": 1,
+        "Sequence": "TGTTTTGGCACCAAAATCAA",
+        "PAM": "CGG",
+        "Specificity Score": 52.2570771,
+        "Efficiency Score": 52.22377973
+      },
+      {
+        "Position": 47,
+        "Strand": 1,
+        "Sequence": "GTTTTGGCACCAAAATCAAC",
+        "PAM": "GGG",
+        "Specificity Score": 67.0867946,
+        "Efficiency Score": 49.15656988
+      },
+      {
+        "Position": 64,
+        "Strand": -1,
+        "Sequence": "GCGGAGTTGTTACGACATTT",
+        "PAM": "TGG",
+        "Specificity Score": 93.1971198,
+        "Efficiency Score": 29.51480296
+      },
+      {
+        "Position": 83,
+        "Strand": -1,
+        "Sequence": "GCCCATTTGCGTCAATGGGG",
+        "PAM": "CGG",
+        "Specificity Score": 80.7778921,
+        "Efficiency Score": 58.87300479
+      },
+      {
+        "Position": 86,
+        "Strand": -1,
+        "Sequence": "ACCGCCCATTTGCGTCAATG",
+        "PAM": "GGG",
+        "Specificity Score": 94.3380729,
+        "Efficiency Score": 62.21523663
+      },
+      {
+        "Position": 87,
+        "Strand": -1,
+        "Sequence": "TACCGCCCATTTGCGTCAAT",
+        "PAM": "GGG",
+        "Specificity Score": 97.3370791,
+        "Efficiency Score": 26.44063431
+      },
+      {
+        "Position": 88,
+        "Strand": -1,
+        "Sequence": "CTACCGCCCATTTGCGTCAA",
+        "PAM": "TGG",
+        "Specificity Score": 96.1950538,
+        "Efficiency Score": 43.99032108
+      },
+      {
+        "Position": 92,
+        "Strand": 1,
+        "Sequence": "CTCCGCCCCATTGACGCAAA",
+        "PAM": "TGG",
+        "Specificity Score": 92.015887,
+        "Efficiency Score": 37.90410108
+      },
+      {
+        "Position": 93,
+        "Strand": 1,
+        "Sequence": "TCCGCCCCATTGACGCAAAT",
+        "PAM": "GGG",
+        "Specificity Score": 94.3143776,
+        "Efficiency Score": 35.25975544
+      },
+      {
+        "Position": 96,
+        "Strand": 1,
+        "Sequence": "GCCCCATTGACGCAAATGGG",
+        "PAM": "CGG",
+        "Specificity Score": 88.5651973,
+        "Efficiency Score": 67.63396954
+      },
+      {
+        "Position": 100,
+        "Strand": 1,
+        "Sequence": "CATTGACGCAAATGGGCGGT",
+        "PAM": "AGG",
+        "Specificity Score": 94.8387235,
+        "Efficiency Score": 57.80252117
+      },
+      {
+        "Position": 109,
+        "Strand": 1,
+        "Sequence": "AAATGGGCGGTAGGCGTGTA",
+        "PAM": "CGG",
+        "Specificity Score": 94.0452585,
+        "Efficiency Score": 54.42038634
+      },
+      {
+        "Position": 112,
+        "Strand": 1,
+        "Sequence": "TGGGCGGTAGGCGTGTACGG",
+        "PAM": "TGG",
+        "Specificity Score": 96.0827648,
+        "Efficiency Score": 56.84169965
+      },
+      {
+        "Position": 113,
+        "Strand": 1,
+        "Sequence": "GGGCGGTAGGCGTGTACGGT",
+        "PAM": "GGG",
+        "Specificity Score": 96.0081373,
+        "Efficiency Score": 50.70817744
+      },
+      {
+        "Position": 116,
+        "Strand": 1,
+        "Sequence": "CGGTAGGCGTGTACGGTGGG",
+        "PAM": "AGG",
+        "Specificity Score": 90.2878244,
+        "Efficiency Score": 55.43637818
+      },
+      {
+        "Position": 135,
+        "Strand": 1,
+        "Sequence": "GAGGTCTATATAAGCAGAGC",
+        "PAM": "TGG",
+        "Specificity Score": 68.2221194,
+        "Efficiency Score": 55.95006367
+      },
+      {
+        "Position": 156,
+        "Strand": -1,
+        "Sequence": "GGTAGCGCTAGCGGATCTGA",
+        "PAM": "CGG",
+        "Specificity Score": 95.7728526,
+        "Efficiency Score": 63.45291126
+      },
+      {
+        "Position": 165,
+        "Strand": -1,
+        "Sequence": "GTGGCGACCGGTAGCGCTAG",
+        "PAM": "CGG",
+        "Specificity Score": 97.9400593,
+        "Efficiency Score": 58.28967939
+      },
+      {
+        "Position": 169,
+        "Strand": 1,
+        "Sequence": "GTCAGATCCGCTAGCGCTAC",
+        "PAM": "CGG",
+        "Specificity Score": 96.6093081,
+        "Efficiency Score": 51.28902217
+      },
+      {
+        "Position": 177,
+        "Strand": -1,
+        "Sequence": "TTGCTCACCATGGTGGCGAC",
+        "PAM": "CGG",
+        "Specificity Score": 83.6525521,
+        "Efficiency Score": 51.40491485
+      },
+      {
+        "Position": 181,
+        "Strand": 1,
+        "Sequence": "AGCGCTACCGGTCGCCACCA",
+        "PAM": "TGG",
+        "Specificity Score": 95.4297764,
+        "Efficiency Score": 55.63555123
+      },
+      {
+        "Position": 184,
+        "Strand": -1,
+        "Sequence": "CTCGCCCTTGCTCACCATGG",
+        "PAM": "TGG",
+        "Specificity Score": 60.016291,
+        "Efficiency Score": 60.80475366
+      },
+      {
+        "Position": 187,
+        "Strand": -1,
+        "Sequence": "CTCCTCGCCCTTGCTCACCA",
+        "PAM": "TGG",
+        "Specificity Score": 56.0180307,
+        "Efficiency Score": 57.18461531
+      },
+      {
+        "Position": 190,
+        "Strand": 1,
+        "Sequence": "GGTCGCCACCATGGTGAGCA",
+        "PAM": "AGG",
+        "Specificity Score": 63.39447,
+        "Efficiency Score": 55.75279859
+      },
+      {
+        "Position": 191,
+        "Strand": 1,
+        "Sequence": "GTCGCCACCATGGTGAGCAA",
+        "PAM": "GGG",
+        "Specificity Score": 74.298473,
+        "Efficiency Score": 65.17814233
+      },
+      {
+        "Position": 196,
+        "Strand": 1,
+        "Sequence": "CACCATGGTGAGCAAGGGCG",
+        "PAM": "AGG",
+        "Specificity Score": 69.319403,
+        "Efficiency Score": 49.61006455
+      },
+      {
+        "Position": 209,
+        "Strand": 1,
+        "Sequence": "AAGGGCGAGGAGCTGTTCAC",
+        "PAM": "CGG",
+        "Specificity Score": 71.5995733,
+        "Efficiency Score": 52.99472482
+      },
+      {
+        "Position": 210,
+        "Strand": 1,
+        "Sequence": "AGGGCGAGGAGCTGTTCACC",
+        "PAM": "GGG",
+        "Specificity Score": 66.1721487,
+        "Efficiency Score": 53.27647017
+      },
+      {
+        "Position": 211,
+        "Strand": 1,
+        "Sequence": "GGGCGAGGAGCTGTTCACCG",
+        "PAM": "GGG",
+        "Specificity Score": 77.6109914,
+        "Efficiency Score": 70.44375343
+      },
+      {
+        "Position": 214,
+        "Strand": 1,
+        "Sequence": "CGAGGAGCTGTTCACCGGGG",
+        "PAM": "TGG",
+        "Specificity Score": 77.1097447,
+        "Efficiency Score": 55.12650827
+      },
+      {
+        "Position": 217,
+        "Strand": -1,
+        "Sequence": "GACCAGGATGGGCACCACCC",
+        "PAM": "CGG",
+        "Specificity Score": 60.5666318,
+        "Efficiency Score": 60.74937386
+      },
+      {
+        "Position": 226,
+        "Strand": 1,
+        "Sequence": "CACCGGGGTGGTGCCCATCC",
+        "PAM": "TGG",
+        "Specificity Score": 62.0433396,
+        "Efficiency Score": 40.0661339
+      },
+      {
+        "Position": 228,
+        "Strand": -1,
+        "Sequence": "CCGTCCAGCTCGACCAGGAT",
+        "PAM": "GGG",
+        "Specificity Score": 84.1028978,
+        "Efficiency Score": 48.91340089
+      },
+      {
+        "Position": 229,
+        "Strand": -1,
+        "Sequence": "GCCGTCCAGCTCGACCAGGA",
+        "PAM": "TGG",
+        "Specificity Score": 81.5196282,
+        "Efficiency Score": 52.22850417
+      },
+      {
+        "Position": 233,
+        "Strand": -1,
+        "Sequence": "CGTCGCCGTCCAGCTCGACC",
+        "PAM": "AGG",
+        "Specificity Score": 90.4515181,
+        "Efficiency Score": 55.99646284
+      },
+      {
+        "Position": 235,
+        "Strand": 1,
+        "Sequence": "GGTGCCCATCCTGGTCGAGC",
+        "PAM": "TGG",
+        "Specificity Score": 84.960272,
+        "Efficiency Score": 42.5611331
+      },
+      {
+        "Position": 239,
+        "Strand": 1,
+        "Sequence": "CCCATCCTGGTCGAGCTGGA",
+        "PAM": "CGG",
+        "Specificity Score": 70.7856791,
+        "Efficiency Score": 54.0528881
+      },
+      {
+        "Position": 251,
+        "Strand": 1,
+        "Sequence": "GAGCTGGACGGCGACGTAAA",
+        "PAM": "CGG",
+        "Specificity Score": 96.0223042,
+        "Efficiency Score": 37.5757762
+      },
+      {
+        "Position": 263,
+        "Strand": -1,
+        "Sequence": "CGCCGGACACGCTGAACTTG",
+        "PAM": "TGG",
+        "Specificity Score": 88.0348232,
+        "Efficiency Score": 52.70797011
+      },
+      {
+        "Position": 272,
+        "Strand": 1,
+        "Sequence": "GGCCACAAGTTCAGCGTGTC",
+        "PAM": "CGG",
+        "Specificity Score": 84.4621375,
+        "Efficiency Score": 45.37710711
+      },
+      {
+        "Position": 277,
+        "Strand": 1,
+        "Sequence": "CAAGTTCAGCGTGTCCGGCG",
+        "PAM": "AGG",
+        "Specificity Score": 94.5324138,
+        "Efficiency Score": 55.44804922
+      },
+      {
+        "Position": 278,
+        "Strand": 1,
+        "Sequence": "AAGTTCAGCGTGTCCGGCGA",
+        "PAM": "GGG",
+        "Specificity Score": 93.6028739,
+        "Efficiency Score": 58.33137461
+      },
+      {
+        "Position": 280,
+        "Strand": -1,
+        "Sequence": "GGCATCGCCCTCGCCCTCGC",
+        "PAM": "CGG",
+        "Specificity Score": 70.5148473,
+        "Efficiency Score": 48.15741353
+      },
+      {
+        "Position": 283,
+        "Strand": 1,
+        "Sequence": "CAGCGTGTCCGGCGAGGGCG",
+        "PAM": "AGG",
+        "Specificity Score": 77.4234671,
+        "Efficiency Score": 37.7513049
+      },
+      {
+        "Position": 284,
+        "Strand": 1,
+        "Sequence": "AGCGTGTCCGGCGAGGGCGA",
+        "PAM": "GGG",
+        "Specificity Score": 84.5721888,
+        "Efficiency Score": 50.82781941
+      },
+      {
+        "Position": 299,
+        "Strand": 1,
+        "Sequence": "GGCGAGGGCGATGCCACCTA",
+        "PAM": "CGG",
+        "Specificity Score": 83.8912341,
+        "Efficiency Score": 43.59357609
+      },
+      {
+        "Position": 301,
+        "Strand": -1,
+        "Sequence": "CAGGGTCAGCTTGCCGTAGG",
+        "PAM": "TGG",
+        "Specificity Score": 87.9690803,
+        "Efficiency Score": 56.07864056
+      },
+      {
+        "Position": 304,
+        "Strand": -1,
+        "Sequence": "CTTCAGGGTCAGCTTGCCGT",
+        "PAM": "AGG",
+        "Specificity Score": 43.4066753,
+        "Efficiency Score": 59.19680442
+      },
+      {
+        "Position": 319,
+        "Strand": -1,
+        "Sequence": "GGTGGTGCAGATGAACTTCA",
+        "PAM": "GGG",
+        "Specificity Score": 61.3870457,
+        "Efficiency Score": 64.0149598
+      },
+      {
+        "Position": 320,
+        "Strand": -1,
+        "Sequence": "CGGTGGTGCAGATGAACTTC",
+        "PAM": "AGG",
+        "Specificity Score": 74.2957015,
+        "Efficiency Score": 32.02158061
+      },
+      {
+        "Position": 332,
+        "Strand": 1,
+        "Sequence": "CTGAAGTTCATCTGCACCAC",
+        "PAM": "CGG",
+        "Specificity Score": 67.8319432,
+        "Efficiency Score": 59.66085159
+      },
+      {
+        "Position": 337,
+        "Strand": -1,
+        "Sequence": "GGGCACGGGCAGCTTGCCGG",
+        "PAM": "TGG",
+        "Specificity Score": 73.4624704,
+        "Efficiency Score": 52.22958245
+      },
+      {
+        "Position": 340,
+        "Strand": -1,
+        "Sequence": "CCAGGGCACGGGCAGCTTGC",
+        "PAM": "CGG",
+        "Specificity Score": 54.3082943,
+        "Efficiency Score": 40.80183789
+      },
+      {
+        "Position": 351,
+        "Strand": 1,
+        "Sequence": "CCGGCAAGCTGCCCGTGCCC",
+        "PAM": "TGG",
+        "Specificity Score": 69.4061609,
+        "Efficiency Score": 44.99000428
+      },
+      {
+        "Position": 351,
+        "Strand": -1,
+        "Sequence": "ACGAGGGTGGGCCAGGGCAC",
+        "PAM": "GGG",
+        "Specificity Score": 44.6726196,
+        "Efficiency Score": 40.35256288
+      },
+      {
+        "Position": 352,
+        "Strand": -1,
+        "Sequence": "CACGAGGGTGGGCCAGGGCA",
+        "PAM": "CGG",
+        "Specificity Score": 36.7272819,
+        "Efficiency Score": 42.6923248
+      },
+      {
+        "Position": 357,
+        "Strand": -1,
+        "Sequence": "GTGGTCACGAGGGTGGGCCA",
+        "PAM": "GGG",
+        "Specificity Score": 36.4745923,
+        "Efficiency Score": 57.79290702
+      },
+      {
+        "Position": 358,
+        "Strand": -1,
+        "Sequence": "GGTGGTCACGAGGGTGGGCC",
+        "PAM": "AGG",
+        "Specificity Score": 39.8225837,
+        "Efficiency Score": 24.86051479
+      },
+      {
+        "Position": 363,
+        "Strand": -1,
+        "Sequence": "GTCAGGGTGGTCACGAGGGT",
+        "PAM": "GGG",
+        "Specificity Score": 70.1657189,
+        "Efficiency Score": 51.65780679
+      },
+      {
+        "Position": 364,
+        "Strand": -1,
+        "Sequence": "GGTCAGGGTGGTCACGAGGG",
+        "PAM": "TGG",
+        "Specificity Score": 68.5254903,
+        "Efficiency Score": 37.17128841
+      },
+      {
+        "Position": 367,
+        "Strand": -1,
+        "Sequence": "GTGGGTCAGGGTGGTCACGA",
+        "PAM": "GGG",
+        "Specificity Score": 80.505594,
+        "Efficiency Score": 64.29361163
+      },
+      {
+        "Position": 368,
+        "Strand": -1,
+        "Sequence": "CGTGGGTCAGGGTGGTCACG",
+        "PAM": "AGG",
+        "Specificity Score": 71.5117722,
+        "Efficiency Score": 50.67243042
+      },
+      {
+        "Position": 376,
+        "Strand": -1,
+        "Sequence": "CTGCACGCCGTGGGTCAGGG",
+        "PAM": "TGG",
+        "Specificity Score": 66.0215897,
+        "Efficiency Score": 62.23880314
+      },
+      {
+        "Position": 379,
+        "Strand": -1,
+        "Sequence": "GCACTGCACGCCGTGGGTCA",
+        "PAM": "GGG",
+        "Specificity Score": 80.7390535,
+        "Efficiency Score": 55.17795941
+      },
+      {
+        "Position": 380,
+        "Strand": 1,
+        "Sequence": "CTCGTGACCACCCTGACCCA",
+        "PAM": "CGG",
+        "Specificity Score": 60.6820886,
+        "Efficiency Score": 60.47898358
+      },
+      {
+        "Position": 380,
+        "Strand": -1,
+        "Sequence": "AGCACTGCACGCCGTGGGTC",
+        "PAM": "AGG",
+        "Specificity Score": 86.8650679,
+        "Efficiency Score": 29.48228365
+      },
+      {
+        "Position": 385,
+        "Strand": -1,
+        "Sequence": "GCTGAAGCACTGCACGCCGT",
+        "PAM": "GGG",
+        "Specificity Score": 85.9165864,
+        "Efficiency Score": 64.14112969
+      },
+      {
+        "Position": 386,
+        "Strand": -1,
+        "Sequence": "GGCTGAAGCACTGCACGCCG",
+        "PAM": "TGG",
+        "Specificity Score": 81.2111777,
+        "Efficiency Score": 51.15416448
+      },
+      {
+        "Position": 407,
+        "Strand": -1,
+        "Sequence": "GCTTCATGTGGTCGGGGTAG",
+        "PAM": "CGG",
+        "Specificity Score": 72.5923623,
+        "Efficiency Score": 45.55419999
+      },
+      {
+        "Position": 413,
+        "Strand": -1,
+        "Sequence": "CGTGCTGCTTCATGTGGTCG",
+        "PAM": "GGG",
+        "Specificity Score": 85.5931186,
+        "Efficiency Score": 53.66330363
+      },
+      {
+        "Position": 414,
+        "Strand": -1,
+        "Sequence": "TCGTGCTGCTTCATGTGGTC",
+        "PAM": "GGG",
+        "Specificity Score": 77.0008807,
+        "Efficiency Score": 37.31752074
+      },
+      {
+        "Position": 415,
+        "Strand": -1,
+        "Sequence": "GTCGTGCTGCTTCATGTGGT",
+        "PAM": "CGG",
+        "Specificity Score": 78.6252956,
+        "Efficiency Score": 45.74011847
+      },
+      {
+        "Position": 419,
+        "Strand": -1,
+        "Sequence": "AGAAGTCGTGCTGCTTCATG",
+        "PAM": "TGG",
+        "Specificity Score": 71.7420717,
+        "Efficiency Score": 65.95650243
+      },
+      {
+        "Position": 448,
+        "Strand": -1,
+        "Sequence": "GACGTAGCCTTCGGGCATGG",
+        "PAM": "CGG",
+        "Specificity Score": 86.6510519,
+        "Efficiency Score": 66.42639657
+      },
+      {
+        "Position": 451,
+        "Strand": -1,
+        "Sequence": "CTGGACGTAGCCTTCGGGCA",
+        "PAM": "TGG",
+        "Specificity Score": 86.0730823,
+        "Efficiency Score": 49.57002147
+      },
+      {
+        "Position": 452,
+        "Strand": 1,
+        "Sequence": "TTCAAGTCCGCCATGCCCGA",
+        "PAM": "AGG",
+        "Specificity Score": 93.0370393,
+        "Efficiency Score": 58.325741
+      },
+      {
+        "Position": 456,
+        "Strand": -1,
+        "Sequence": "CGCTCCTGGACGTAGCCTTC",
+        "PAM": "GGG",
+        "Specificity Score": 82.7431105,
+        "Efficiency Score": 34.90327028
+      },
+      {
+        "Position": 457,
+        "Strand": -1,
+        "Sequence": "GCGCTCCTGGACGTAGCCTT",
+        "PAM": "CGG",
+        "Specificity Score": 86.7403068,
+        "Efficiency Score": 39.11712991
+      },
+      {
+        "Position": 463,
+        "Strand": 1,
+        "Sequence": "CATGCCCGAAGGCTACGTCC",
+        "PAM": "AGG",
+        "Specificity Score": 91.947893,
+        "Efficiency Score": 57.63275292
+      },
+      {
+        "Position": 470,
+        "Strand": -1,
+        "Sequence": "TGAAGAAGATGGTGCGCTCC",
+        "PAM": "TGG",
+        "Specificity Score": 76.2194773,
+        "Efficiency Score": 40.47252796
+      },
+      {
+        "Position": 481,
+        "Strand": -1,
+        "Sequence": "GCCGTCGTCCTTGAAGAAGA",
+        "PAM": "TGG",
+        "Specificity Score": 70.119715,
+        "Efficiency Score": 53.94836896
+      },
+      {
+        "Position": 484,
+        "Strand": 1,
+        "Sequence": "GGAGCGCACCATCTTCTTCA",
+        "PAM": "AGG",
+        "Specificity Score": 72.2523526,
+        "Efficiency Score": 47.76083412
+      },
+      {
+        "Position": 491,
+        "Strand": 1,
+        "Sequence": "ACCATCTTCTTCAAGGACGA",
+        "PAM": "CGG",
+        "Specificity Score": 74.0654945,
+        "Efficiency Score": 70.22462718
+      },
+      {
+        "Position": 514,
+        "Strand": 1,
+        "Sequence": "CAACTACAAGACCCGCGCCG",
+        "PAM": "AGG",
+        "Specificity Score": 97.7841392,
+        "Efficiency Score": 69.09842692
+      },
+      {
+        "Position": 514,
+        "Strand": -1,
+        "Sequence": "CTCGAACTTCACCTCGGCGC",
+        "PAM": "GGG",
+        "Specificity Score": 84.215741,
+        "Efficiency Score": 49.6921715
+      },
+      {
+        "Position": 515,
+        "Strand": -1,
+        "Sequence": "CCTCGAACTTCACCTCGGCG",
+        "PAM": "CGG",
+        "Specificity Score": 88.1694653,
+        "Efficiency Score": 60.73229035
+      },
+      {
+        "Position": 520,
+        "Strand": -1,
+        "Sequence": "GTCGCCCTCGAACTTCACCT",
+        "PAM": "CGG",
+        "Specificity Score": 80.5588319,
+        "Efficiency Score": 69.55796
+      },
+      {
+        "Position": 526,
+        "Strand": 1,
+        "Sequence": "CCGCGCCGAGGTGAAGTTCG",
+        "PAM": "AGG",
+        "Specificity Score": 90.9038289,
+        "Efficiency Score": 55.61516338
+      },
+      {
+        "Position": 527,
+        "Strand": 1,
+        "Sequence": "CGCGCCGAGGTGAAGTTCGA",
+        "PAM": "GGG",
+        "Specificity Score": 95.4446258,
+        "Efficiency Score": 61.05098643
+      },
+      {
+        "Position": 538,
+        "Strand": 1,
+        "Sequence": "GAAGTTCGAGGGCGACACCC",
+        "PAM": "TGG",
+        "Specificity Score": 90.3440285,
+        "Efficiency Score": 55.92863978
+      },
+      {
+        "Position": 544,
+        "Strand": -1,
+        "Sequence": "CAGCTCGATGCGGTTCACCA",
+        "PAM": "GGG",
+        "Specificity Score": 86.0947441,
+        "Efficiency Score": 64.16068235
+      },
+      {
+        "Position": 545,
+        "Strand": -1,
+        "Sequence": "TCAGCTCGATGCGGTTCACC",
+        "PAM": "AGG",
+        "Specificity Score": 92.6543709,
+        "Efficiency Score": 42.60506083
+      },
+      {
+        "Position": 554,
+        "Strand": -1,
+        "Sequence": "CGATGCCCTTCAGCTCGATG",
+        "PAM": "CGG",
+        "Specificity Score": 87.5746697,
+        "Efficiency Score": 70.5928721
+      },
+      {
+        "Position": 559,
+        "Strand": 1,
+        "Sequence": "GGTGAACCGCATCGAGCTGA",
+        "PAM": "AGG",
+        "Specificity Score": 91.8672202,
+        "Efficiency Score": 50.54517959
+      },
+      {
+        "Position": 560,
+        "Strand": 1,
+        "Sequence": "GTGAACCGCATCGAGCTGAA",
+        "PAM": "GGG",
+        "Specificity Score": 93.2256802,
+        "Efficiency Score": 64.94561474
+      },
+      {
+        "Position": 574,
+        "Strand": 1,
+        "Sequence": "GCTGAAGGGCATCGACTTCA",
+        "PAM": "AGG",
+        "Specificity Score": 85.5267733,
+        "Efficiency Score": 42.6495489
+      },
+      {
+        "Position": 577,
+        "Strand": 1,
+        "Sequence": "GAAGGGCATCGACTTCAAGG",
+        "PAM": "AGG",
+        "Specificity Score": 73.1037732,
+        "Efficiency Score": 73.88181785
+      },
+      {
+        "Position": 581,
+        "Strand": 1,
+        "Sequence": "GGCATCGACTTCAAGGAGGA",
+        "PAM": "CGG",
+        "Specificity Score": 66.4834867,
+        "Efficiency Score": 65.08609337
+      },
+      {
+        "Position": 592,
+        "Strand": 1,
+        "Sequence": "CAAGGAGGACGGCAACATCC",
+        "PAM": "TGG",
+        "Specificity Score": 74.9866016,
+        "Efficiency Score": 48.3059912
+      },
+      {
+        "Position": 593,
+        "Strand": 1,
+        "Sequence": "AAGGAGGACGGCAACATCCT",
+        "PAM": "GGG",
+        "Specificity Score": 74.2963892,
+        "Efficiency Score": 46.50824677
+      },
+      {
+        "Position": 594,
+        "Strand": 1,
+        "Sequence": "AGGAGGACGGCAACATCCTG",
+        "PAM": "GGG",
+        "Specificity Score": 64.5941766,
+        "Efficiency Score": 60.97073679
+      },
+      {
+        "Position": 599,
+        "Strand": -1,
+        "Sequence": "TGTACTCCAGCTTGTGCCCC",
+        "PAM": "AGG",
+        "Specificity Score": 60.5702072,
+        "Efficiency Score": 48.66001663
+      },
+      {
+        "Position": 604,
+        "Strand": 1,
+        "Sequence": "CAACATCCTGGGGCACAAGC",
+        "PAM": "TGG",
+        "Specificity Score": 62.9394119,
+        "Efficiency Score": 50.13621186
+      },
+      {
+        "Position": 632,
+        "Strand": -1,
+        "Sequence": "CGGCCATGATATAGACGTTG",
+        "PAM": "TGG",
+        "Specificity Score": 94.1888689,
+        "Efficiency Score": 62.58969632
+      },
+      {
+        "Position": 640,
+        "Strand": 1,
+        "Sequence": "CAGCCACAACGTCTATATCA",
+        "PAM": "TGG",
+        "Specificity Score": 78.0755634,
+        "Efficiency Score": 49.3991908
+      },
+      {
+        "Position": 652,
+        "Strand": -1,
+        "Sequence": "GATGCCGTTCTTCTGCTTGT",
+        "PAM": "CGG",
+        "Specificity Score": 50.0999172,
+        "Efficiency Score": 44.37025604
+      },
+      {
+        "Position": 659,
+        "Strand": 1,
+        "Sequence": "ATGGCCGACAAGCAGAAGAA",
+        "PAM": "CGG",
+        "Specificity Score": 59.3353756,
+        "Efficiency Score": 59.08682606
+      },
+      {
+        "Position": 667,
+        "Strand": 1,
+        "Sequence": "CAAGCAGAAGAACGGCATCA",
+        "PAM": "AGG",
+        "Specificity Score": 67.2573196,
+        "Efficiency Score": 63.51942701
+      },
+      {
+        "Position": 692,
+        "Strand": -1,
+        "Sequence": "TGCCGTCCTCGATGTTGTGG",
+        "PAM": "CGG",
+        "Specificity Score": 83.4115584,
+        "Efficiency Score": 62.18945332
+      },
+      {
+        "Position": 695,
+        "Strand": -1,
+        "Sequence": "CGCTGCCGTCCTCGATGTTG",
+        "PAM": "TGG",
+        "Specificity Score": 89.6679212,
+        "Efficiency Score": 54.07607991
+      },
+      {
+        "Position": 697,
+        "Strand": 1,
+        "Sequence": "CAAGATCCGCCACAACATCG",
+        "PAM": "AGG",
+        "Specificity Score": 90.8090066,
+        "Efficiency Score": 72.16675363
+      },
+      {
+        "Position": 701,
+        "Strand": 1,
+        "Sequence": "ATCCGCCACAACATCGAGGA",
+        "PAM": "CGG",
+        "Specificity Score": 89.6993354,
+        "Efficiency Score": 62.42503922
+      },
+      {
+        "Position": 727,
+        "Strand": -1,
+        "Sequence": "GGTGTTCTGCTGGTAGTGGT",
+        "PAM": "CGG",
+        "Specificity Score": 70.449678,
+        "Efficiency Score": 54.28273518
+      },
+      {
+        "Position": 731,
+        "Strand": -1,
+        "Sequence": "TGGGGGTGTTCTGCTGGTAG",
+        "PAM": "TGG",
+        "Specificity Score": 64.5371293,
+        "Efficiency Score": 52.43477632
+      },
+      {
+        "Position": 737,
+        "Strand": -1,
+        "Sequence": "CGCCGATGGGGGTGTTCTGC",
+        "PAM": "TGG",
+        "Specificity Score": 77.7498248,
+        "Efficiency Score": 38.91771275
+      },
+      {
+        "Position": 746,
+        "Strand": 1,
+        "Sequence": "TACCAGCAGAACACCCCCAT",
+        "PAM": "CGG",
+        "Specificity Score": 77.0207811,
+        "Efficiency Score": 61.23649699
+      },
+      {
+        "Position": 748,
+        "Strand": -1,
+        "Sequence": "CACGGGGCCGTCGCCGATGG",
+        "PAM": "GGG",
+        "Specificity Score": 92.1076634,
+        "Efficiency Score": 55.25923405
+      },
+      {
+        "Position": 749,
+        "Strand": -1,
+        "Sequence": "GCACGGGGCCGTCGCCGATG",
+        "PAM": "GGG",
+        "Specificity Score": 93.6027382,
+        "Efficiency Score": 51.6580354
+      },
+      {
+        "Position": 750,
+        "Strand": -1,
+        "Sequence": "AGCACGGGGCCGTCGCCGAT",
+        "PAM": "GGG",
+        "Specificity Score": 93.7436593,
+        "Efficiency Score": 42.03695779
+      },
+      {
+        "Position": 751,
+        "Strand": -1,
+        "Sequence": "CAGCACGGGGCCGTCGCCGA",
+        "PAM": "TGG",
+        "Specificity Score": 89.4963373,
+        "Efficiency Score": 30.98055912
+      },
+      {
+        "Position": 752,
+        "Strand": 1,
+        "Sequence": "CAGAACACCCCCATCGGCGA",
+        "PAM": "CGG",
+        "Specificity Score": 95.5687777,
+        "Efficiency Score": 55.02208904
+      },
+      {
+        "Position": 764,
+        "Strand": -1,
+        "Sequence": "GGTTGTCGGGCAGCAGCACG",
+        "PAM": "GGG",
+        "Specificity Score": 69.9559124,
+        "Efficiency Score": 56.90436016
+      },
+      {
+        "Position": 765,
+        "Strand": -1,
+        "Sequence": "TGGTTGTCGGGCAGCAGCAC",
+        "PAM": "GGG",
+        "Specificity Score": 62.4573318,
+        "Efficiency Score": 37.93437679
+      },
+      {
+        "Position": 766,
+        "Strand": -1,
+        "Sequence": "GTGGTTGTCGGGCAGCAGCA",
+        "PAM": "CGG",
+        "Specificity Score": 34.7036469,
+        "Efficiency Score": 46.28938023
+      },
+      {
+        "Position": 777,
+        "Strand": -1,
+        "Sequence": "GTGCTCAGGTAGTGGTTGTC",
+        "PAM": "GGG",
+        "Specificity Score": 74.181389,
+        "Efficiency Score": 49.84167744
+      },
+      {
+        "Position": 778,
+        "Strand": -1,
+        "Sequence": "GGTGCTCAGGTAGTGGTTGT",
+        "PAM": "CGG",
+        "Specificity Score": 70.2485502,
+        "Efficiency Score": 40.71254343
+      },
+      {
+        "Position": 785,
+        "Strand": -1,
+        "Sequence": "CGGACTGGGTGCTCAGGTAG",
+        "PAM": "TGG",
+        "Specificity Score": 67.9248281,
+        "Efficiency Score": 46.65851061
+      },
+      {
+        "Position": 791,
+        "Strand": -1,
+        "Sequence": "TCAGGGCGGACTGGGTGCTC",
+        "PAM": "AGG",
+        "Specificity Score": 60.7020161,
+        "Efficiency Score": 43.1336924
+      },
+      {
+        "Position": 799,
+        "Strand": -1,
+        "Sequence": "GTCTTTGCTCAGGGCGGACT",
+        "PAM": "GGG",
+        "Specificity Score": 83.8017881,
+        "Efficiency Score": 34.39750876
+      },
+      {
+        "Position": 800,
+        "Strand": -1,
+        "Sequence": "GGTCTTTGCTCAGGGCGGAC",
+        "PAM": "TGG",
+        "Specificity Score": 86.3353211,
+        "Efficiency Score": 24.14740727
+      },
+      {
+        "Position": 805,
+        "Strand": -1,
+        "Sequence": "GTTGGGGTCTTTGCTCAGGG",
+        "PAM": "CGG",
+        "Specificity Score": 52.3341071,
+        "Efficiency Score": 66.03294134
+      },
+      {
+        "Position": 808,
+        "Strand": -1,
+        "Sequence": "CTCGTTGGGGTCTTTGCTCA",
+        "PAM": "GGG",
+        "Specificity Score": 66.7280544,
+        "Efficiency Score": 41.67917732
+      },
+      {
+        "Position": 809,
+        "Strand": -1,
+        "Sequence": "TCTCGTTGGGGTCTTTGCTC",
+        "PAM": "AGG",
+        "Specificity Score": 64.259999,
+        "Efficiency Score": 30.62148179
+      },
+      {
+        "Position": 821,
+        "Strand": -1,
+        "Sequence": "TGTGATCGCGCTTCTCGTTG",
+        "PAM": "GGG",
+        "Specificity Score": 89.4494558,
+        "Efficiency Score": 53.80541029
+      },
+      {
+        "Position": 822,
+        "Strand": -1,
+        "Sequence": "ATGTGATCGCGCTTCTCGTT",
+        "PAM": "GGG",
+        "Specificity Score": 93.2047514,
+        "Efficiency Score": 36.16400913
+      },
+      {
+        "Position": 823,
+        "Strand": -1,
+        "Sequence": "CATGTGATCGCGCTTCTCGT",
+        "PAM": "TGG",
+        "Specificity Score": 98.8806613,
+        "Efficiency Score": 41.34381945
+      },
+      {
+        "Position": 835,
+        "Strand": 1,
+        "Sequence": "CAACGAGAAGCGCGATCACA",
+        "PAM": "TGG",
+        "Specificity Score": 93.4481264,
+        "Efficiency Score": 58.92413573
+      },
+      {
+        "Position": 844,
+        "Strand": 1,
+        "Sequence": "GCGCGATCACATGGTCCTGC",
+        "PAM": "TGG",
+        "Specificity Score": 87.5434687,
+        "Efficiency Score": 45.73175341
+      },
+      {
+        "Position": 848,
+        "Strand": -1,
+        "Sequence": "CGGCGGTCACGAACTCCAGC",
+        "PAM": "AGG",
+        "Specificity Score": 91.0999982,
+        "Efficiency Score": 54.97809503
+      },
+      {
+        "Position": 863,
+        "Strand": 1,
+        "Sequence": "CTGGAGTTCGTGACCGCCGC",
+        "PAM": "CGG",
+        "Specificity Score": 97.4968801,
+        "Efficiency Score": 42.20245023
+      },
+      {
+        "Position": 864,
+        "Strand": 1,
+        "Sequence": "TGGAGTTCGTGACCGCCGCC",
+        "PAM": "GGG",
+        "Specificity Score": 95.5120845,
+        "Efficiency Score": 49.06762049
+      },
+      {
+        "Position": 865,
+        "Strand": -1,
+        "Sequence": "GCCGAGAGTGATCCCGGCGG",
+        "PAM": "CGG",
+        "Specificity Score": 92.5176044,
+        "Efficiency Score": 52.62123294
+      },
+      {
+        "Position": 868,
+        "Strand": -1,
+        "Sequence": "CATGCCGAGAGTGATCCCGG",
+        "PAM": "CGG",
+        "Specificity Score": 89.8608259,
+        "Efficiency Score": 78.63180697
+      },
+      {
+        "Position": 871,
+        "Strand": -1,
+        "Sequence": "GTCCATGCCGAGAGTGATCC",
+        "PAM": "CGG",
+        "Specificity Score": 81.6531726,
+        "Efficiency Score": 42.74089161
+      },
+      {
+        "Position": 875,
+        "Strand": 1,
+        "Sequence": "ACCGCCGCCGGGATCACTCT",
+        "PAM": "CGG",
+        "Specificity Score": 93.5699979,
+        "Efficiency Score": 49.40537111
+      },
+      {
+        "Position": 880,
+        "Strand": 1,
+        "Sequence": "CGCCGGGATCACTCTCGGCA",
+        "PAM": "TGG",
+        "Specificity Score": 86.3452119,
+        "Efficiency Score": 55.46531399
+      },
+      {
+        "Position": 899,
+        "Strand": 1,
+        "Sequence": "ATGGACGAGCTGTACAAGTC",
+        "PAM": "CGG",
+        "Specificity Score": 88.94627,
+        "Efficiency Score": 55.78565008
+      },
+      {
+        "Position": 907,
+        "Strand": -1,
+        "Sequence": "TTGAGCTCGAGATCTGAGTC",
+        "PAM": "CGG",
+        "Specificity Score": 79.0701498,
+        "Efficiency Score": 56.05412418
+      },
+      {
+        "Position": 941,
+        "Strand": 1,
+        "Sequence": "GCTTCGAATTCTGCAGTCGA",
+        "PAM": "CGG",
+        "Specificity Score": 90.0462469,
+        "Efficiency Score": 65.35685491
+      },
+      {
+        "Position": 949,
+        "Strand": 1,
+        "Sequence": "TTCTGCAGTCGACGGTACCG",
+        "PAM": "CGG",
+        "Specificity Score": 97.0446456,
+        "Efficiency Score": 59.43607877
+      },
+      {
+        "Position": 950,
+        "Strand": 1,
+        "Sequence": "TCTGCAGTCGACGGTACCGC",
+        "PAM": "GGG",
+        "Specificity Score": 96.9689305,
+        "Efficiency Score": 57.20802941
+      },
+      {
+        "Position": 955,
+        "Strand": 1,
+        "Sequence": "AGTCGACGGTACCGCGGGCC",
+        "PAM": "CGG",
+        "Specificity Score": 91.7825401,
+        "Efficiency Score": 37.26849839
+      },
+      {
+        "Position": 955,
+        "Strand": -1,
+        "Sequence": "TCCGGTGGATCCCGGGCCCG",
+        "PAM": "CGG",
+        "Specificity Score": 76.558188,
+        "Efficiency Score": 56.9138167
+      },
+      {
+        "Position": 956,
+        "Strand": 1,
+        "Sequence": "GTCGACGGTACCGCGGGCCC",
+        "PAM": "GGG",
+        "Specificity Score": 91.3152431,
+        "Efficiency Score": 47.15465702
+      },
+      {
+        "Position": 962,
+        "Strand": -1,
+        "Sequence": "ATCTAGATCCGGTGGATCCC",
+        "PAM": "GGG",
+        "Specificity Score": 91.6961581,
+        "Efficiency Score": 50.42952909
+      },
+      {
+        "Position": 963,
+        "Strand": -1,
+        "Sequence": "TATCTAGATCCGGTGGATCC",
+        "PAM": "CGG",
+        "Specificity Score": 90.4256736,
+        "Efficiency Score": 44.99106639
+      },
+      {
+        "Position": 965,
+        "Strand": 1,
+        "Sequence": "ACCGCGGGCCCGGGATCCAC",
+        "PAM": "CGG",
+        "Specificity Score": 79.2567458,
+        "Efficiency Score": 48.30300116
+      },
+      {
+        "Position": 970,
+        "Strand": -1,
+        "Sequence": "GATCAGTTATCTAGATCCGG",
+        "PAM": "TGG",
+        "Specificity Score": 95.808965,
+        "Efficiency Score": 63.87126245
+      },
+      {
+        "Position": 973,
+        "Strand": -1,
+        "Sequence": "TATGATCAGTTATCTAGATC",
+        "PAM": "CGG",
+        "Specificity Score": 75.0247329,
+        "Efficiency Score": 51.22898156
+      },
+      {
+        "Position": 1001,
+        "Strand": -1,
+        "Sequence": "AAACCTCTACAAATGTGGTA",
+        "PAM": "TGG",
+        "Specificity Score": 58.9608059,
+        "Efficiency Score": 44.79769591
+      },
+      {
+        "Position": 1006,
+        "Strand": -1,
+        "Sequence": "AAGTAAAACCTCTACAAATG",
+        "PAM": "TGG",
+        "Specificity Score": 43.2780109,
+        "Efficiency Score": 60.02074379
+      },
+      {
+        "Position": 1009,
+        "Strand": 1,
+        "Sequence": "CAGCCATACCACATTTGTAG",
+        "PAM": "AGG",
+        "Specificity Score": 71.6627888,
+        "Efficiency Score": 52.41368298
+      },
+      {
+        "Position": 1040,
+        "Strand": -1,
+        "Sequence": "GGTTCAGGGGGAGGTGTGGG",
+        "PAM": "AGG",
+        "Specificity Score": 34.5858736,
+        "Efficiency Score": 39.25609012
+      },
+      {
+        "Position": 1043,
+        "Strand": -1,
+        "Sequence": "TCAGGTTCAGGGGGAGGTGT",
+        "PAM": "GGG",
+        "Specificity Score": 54.9255332,
+        "Efficiency Score": 45.12106038
+      },
+      {
+        "Position": 1044,
+        "Strand": -1,
+        "Sequence": "TTCAGGTTCAGGGGGAGGTG",
+        "PAM": "TGG",
+        "Specificity Score": 44.4729039,
+        "Efficiency Score": 47.65501286
+      },
+      {
+        "Position": 1049,
+        "Strand": -1,
+        "Sequence": "TATGTTTCAGGTTCAGGGGG",
+        "PAM": "AGG",
+        "Specificity Score": 67.8085459,
+        "Efficiency Score": 42.31160532
+      },
+      {
+        "Position": 1052,
+        "Strand": -1,
+        "Sequence": "TTTTATGTTTCAGGTTCAGG",
+        "PAM": "GGG",
+        "Specificity Score": 60.1664088,
+        "Efficiency Score": 59.40814473
+      },
+      {
+        "Position": 1053,
+        "Strand": -1,
+        "Sequence": "ATTTTATGTTTCAGGTTCAG",
+        "PAM": "GGG",
+        "Specificity Score": 54.738682,
+        "Efficiency Score": 59.41629298
+      },
+      {
+        "Position": 1054,
+        "Strand": -1,
+        "Sequence": "CATTTTATGTTTCAGGTTCA",
+        "PAM": "GGG",
+        "Specificity Score": 55.4557309,
+        "Efficiency Score": 41.62387867
+      },
+      {
+        "Position": 1055,
+        "Strand": -1,
+        "Sequence": "TCATTTTATGTTTCAGGTTC",
+        "PAM": "AGG",
+        "Specificity Score": 45.5131742,
+        "Efficiency Score": 19.66975593
+      },
+      {
+        "Position": 1061,
+        "Strand": -1,
+        "Sequence": "TTGCATTCATTTTATGTTTC",
+        "PAM": "AGG",
+        "Specificity Score": 40.2048502,
+        "Efficiency Score": 10.49311078
+      },
+      {
+        "Position": 1109,
+        "Strand": 1,
+        "Sequence": "TTGTTTATTGCAGCTTATAA",
+        "PAM": "TGG",
+        "Specificity Score": 55.4699599,
+        "Efficiency Score": 26.7474663
+      },
+      {
+        "Position": 1175,
+        "Strand": 1,
+        "Sequence": "TTTTCACTGCATTCTAGTTG",
+        "PAM": "TGG",
+        "Specificity Score": 61.8984183,
+        "Efficiency Score": null
+      },
+      {
+        "Position": 21,
+        "Strand": 1,
+        "Sequence": "ACCCCCATTGACGTCAATGG",
+        "PAM": "GAG",
+        "Specificity Score": 78.1130788,
+        "Efficiency Score": null
+      },
+      {
+        "Position": 60,
+        "Strand": -1,
+        "Sequence": "AGTTGTTACGACATTTTGGA",
+        "PAM": "AAG",
+        "Specificity Score": 64.7339305,
+        "Efficiency Score": 40.72888553
+      },
+      {
+        "Position": 81,
+        "Strand": -1,
+        "Sequence": "CCATTTGCGTCAATGGGGCG",
+        "PAM": "GAG",
+        "Specificity Score": 88.2795806,
+        "Efficiency Score": 66.53773134
+      },
+      {
+        "Position": 99,
+        "Strand": 1,
+        "Sequence": "CCATTGACGCAAATGGGCGG",
+        "PAM": "TAG",
+        "Specificity Score": 92.6164734,
+        "Efficiency Score": 34.53080596
+      },
+      {
+        "Position": 115,
+        "Strand": 1,
+        "Sequence": "GCGGTAGGCGTGTACGGTGG",
+        "PAM": "GAG",
+        "Specificity Score": 94.1961363,
+        "Efficiency Score": 14.25395647
+      },
+      {
+        "Position": 126,
+        "Strand": 1,
+        "Sequence": "GTACGGTGGGAGGTCTATAT",
+        "PAM": "AAG",
+        "Specificity Score": 93.1902407,
+        "Efficiency Score": 31.85814426
+      },
+      {
+        "Position": 129,
+        "Strand": 1,
+        "Sequence": "CGGTGGGAGGTCTATATAAG",
+        "PAM": "CAG",
+        "Specificity Score": 86.3015244,
+        "Efficiency Score": 20.71595113
+      },
+      {
+        "Position": 129,
+        "Strand": -1,
+        "Sequence": "CTAAACCAGCTCTGCTTATA",
+        "PAM": "TAG",
+        "Specificity Score": 71.2362771,
+        "Efficiency Score": 4.522051252
+      },
+      {
+        "Position": 131,
+        "Strand": 1,
+        "Sequence": "GTGGGAGGTCTATATAAGCA",
+        "PAM": "GAG",
+        "Specificity Score": 75.7777244,
+        "Efficiency Score": 77.50506785
+      },
+      {
+        "Position": 140,
+        "Strand": 1,
+        "Sequence": "CTATATAAGCAGAGCTGGTT",
+        "PAM": "TAG",
+        "Specificity Score": 67.0604505,
+        "Efficiency Score": 4.380560279
+      },
+      {
+        "Position": 143,
+        "Strand": -1,
+        "Sequence": "GATCTGACGGTTCACTAAAC",
+        "PAM": "CAG",
+        "Specificity Score": 89.8476944,
+        "Efficiency Score": 23.20537906
+      },
+      {
+        "Position": 151,
+        "Strand": 1,
+        "Sequence": "GAGCTGGTTTAGTGAACCGT",
+        "PAM": "CAG",
+        "Specificity Score": 91.4224779,
+        "Efficiency Score": 19.36487501
+      },
+      {
+        "Position": 160,
+        "Strand": 1,
+        "Sequence": "TAGTGAACCGTCAGATCCGC",
+        "PAM": "TAG",
+        "Specificity Score": 95.6634669,
+        "Efficiency Score": 8.348864134
+      },
+      {
+        "Position": 168,
+        "Strand": -1,
+        "Sequence": "ATGGTGGCGACCGGTAGCGC",
+        "PAM": "TAG",
+        "Specificity Score": 94.3447204,
+        "Efficiency Score": 5.523390409
+      },
+      {
+        "Position": 174,
+        "Strand": -1,
+        "Sequence": "CTCACCATGGTGGCGACCGG",
+        "PAM": "TAG",
+        "Specificity Score": 95.5421443,
+        "Efficiency Score": 14.77318665
+      },
+      {
+        "Position": 185,
+        "Strand": 1,
+        "Sequence": "CTACCGGTCGCCACCATGGT",
+        "PAM": "GAG",
+        "Specificity Score": 87.1166898,
+        "Efficiency Score": 29.52410663
+      },
+      {
+        "Position": 189,
+        "Strand": 1,
+        "Sequence": "CGGTCGCCACCATGGTGAGC",
+        "PAM": "AAG",
+        "Specificity Score": 78.1682404,
+        "Efficiency Score": 0.795114454
+      },
+      {
+        "Position": 195,
+        "Strand": 1,
+        "Sequence": "CCACCATGGTGAGCAAGGGC",
+        "PAM": "GAG",
+        "Specificity Score": 31.2693999,
+        "Efficiency Score": 4.949215939
+      },
+      {
+        "Position": 198,
+        "Strand": 1,
+        "Sequence": "CCATGGTGAGCAAGGGCGAG",
+        "PAM": "GAG",
+        "Specificity Score": 55.6615148,
+        "Efficiency Score": 31.38596408
+      },
+      {
+        "Position": 210,
+        "Strand": -1,
+        "Sequence": "ATGGGCACCACCCCGGTGAA",
+        "PAM": "CAG",
+        "Specificity Score": 85.0581122,
+        "Efficiency Score": 10.41631649
+      },
+      {
+        "Position": 231,
+        "Strand": 1,
+        "Sequence": "GGGTGGTGCCCATCCTGGTC",
+        "PAM": "GAG",
+        "Specificity Score": 64.1516237,
+        "Efficiency Score": 5.575283543
+      },
+      {
+        "Position": 234,
+        "Strand": -1,
+        "Sequence": "ACGTCGCCGTCCAGCTCGAC",
+        "PAM": "CAG",
+        "Specificity Score": 95.1383987,
+        "Efficiency Score": 6.995199838
+      },
+      {
+        "Position": 243,
+        "Strand": -1,
+        "Sequence": "TGGCCGTTTACGTCGCCGTC",
+        "PAM": "CAG",
+        "Specificity Score": 98.1644761,
+        "Efficiency Score": 16.38250913
+      },
+      {
+        "Position": 258,
+        "Strand": 1,
+        "Sequence": "ACGGCGACGTAAACGGCCAC",
+        "PAM": "AAG",
+        "Specificity Score": 98.560091,
+        "Efficiency Score": 8.929160485
+      },
+      {
+        "Position": 263,
+        "Strand": 1,
+        "Sequence": "GACGTAAACGGCCACAAGTT",
+        "PAM": "CAG",
+        "Specificity Score": 94.3347754,
+        "Efficiency Score": 8.929435509
+      },
+      {
+        "Position": 276,
+        "Strand": 1,
+        "Sequence": "ACAAGTTCAGCGTGTCCGGC",
+        "PAM": "GAG",
+        "Specificity Score": 92.4544814,
+        "Efficiency Score": 11.88795197
+      },
+      {
+        "Position": 282,
+        "Strand": 1,
+        "Sequence": "TCAGCGTGTCCGGCGAGGGC",
+        "PAM": "GAG",
+        "Specificity Score": 86.0774464,
+        "Efficiency Score": 6.663026903
+      },
+      {
+        "Position": 303,
+        "Strand": 1,
+        "Sequence": "AGGGCGATGCCACCTACGGC",
+        "PAM": "AAG",
+        "Specificity Score": 94.8600401,
+        "Efficiency Score": 20.08235304
+      },
+      {
+        "Position": 305,
+        "Strand": -1,
+        "Sequence": "ACTTCAGGGTCAGCTTGCCG",
+        "PAM": "TAG",
+        "Specificity Score": 42.8258239,
+        "Efficiency Score": 31.22430638
+      },
+      {
+        "Position": 315,
+        "Strand": 1,
+        "Sequence": "CCTACGGCAAGCTGACCCTG",
+        "PAM": "AAG",
+        "Specificity Score": 39.930955,
+        "Efficiency Score": 30.2094931
+      },
+      {
+        "Position": 315,
+        "Strand": -1,
+        "Sequence": "GTGCAGATGAACTTCAGGGT",
+        "PAM": "CAG",
+        "Specificity Score": 57.2824675,
+        "Efficiency Score": 18.09770349
+      },
+      {
+        "Position": 321,
+        "Strand": -1,
+        "Sequence": "CCGGTGGTGCAGATGAACTT",
+        "PAM": "CAG",
+        "Specificity Score": 74.9156587,
+        "Efficiency Score": 19.32879879
+      },
+      {
+        "Position": 332,
+        "Strand": -1,
+        "Sequence": "CGGGCAGCTTGCCGGTGGTG",
+        "PAM": "CAG",
+        "Specificity Score": 73.29615,
+        "Efficiency Score": 4.883459264
+      },
+      {
+        "Position": 336,
+        "Strand": 1,
+        "Sequence": "AGTTCATCTGCACCACCGGC",
+        "PAM": "AAG",
+        "Specificity Score": 82.411763,
+        "Efficiency Score": 59.2783832
+      },
+      {
+        "Position": 348,
+        "Strand": -1,
+        "Sequence": "AGGGTGGGCCAGGGCACGGG",
+        "PAM": "CAG",
+        "Specificity Score": 42.0583301,
+        "Efficiency Score": 18.33253002
+      },
+      {
+        "Position": 359,
+        "Strand": -1,
+        "Sequence": "GGGTGGTCACGAGGGTGGGC",
+        "PAM": "CAG",
+        "Specificity Score": 34.8023381,
+        "Efficiency Score": 5.251547332
+      },
+      {
+        "Position": 369,
+        "Strand": -1,
+        "Sequence": "CCGTGGGTCAGGGTGGTCAC",
+        "PAM": "GAG",
+        "Specificity Score": 57.598814,
+        "Efficiency Score": 5.981341912
+      },
+      {
+        "Position": 381,
+        "Strand": -1,
+        "Sequence": "AAGCACTGCACGCCGTGGGT",
+        "PAM": "CAG",
+        "Specificity Score": 86.8827607,
+        "Efficiency Score": 9.564086049
+      },
+      {
+        "Position": 387,
+        "Strand": 1,
+        "Sequence": "CCACCCTGACCCACGGCGTG",
+        "PAM": "CAG",
+        "Specificity Score": 86.1596868,
+        "Efficiency Score": 17.5170486
+      },
+      {
+        "Position": 395,
+        "Strand": 1,
+        "Sequence": "ACCCACGGCGTGCAGTGCTT",
+        "PAM": "CAG",
+        "Specificity Score": 53.7543698,
+        "Efficiency Score": 21.49976658
+      },
+      {
+        "Position": 401,
+        "Strand": -1,
+        "Sequence": "TGTGGTCGGGGTAGCGGCTG",
+        "PAM": "AAG",
+        "Specificity Score": 65.2271305,
+        "Efficiency Score": 2.236847705
+      },
+      {
+        "Position": 410,
+        "Strand": -1,
+        "Sequence": "GCTGCTTCATGTGGTCGGGG",
+        "PAM": "TAG",
+        "Specificity Score": 75.2871286,
+        "Efficiency Score": 33.16835139
+      },
+      {
+        "Position": 417,
+        "Strand": 1,
+        "Sequence": "GCCGCTACCCCGACCACATG",
+        "PAM": "AAG",
+        "Specificity Score": 86.4099573,
+        "Efficiency Score": 25.87666189
+      },
+      {
+        "Position": 420,
+        "Strand": 1,
+        "Sequence": "GCTACCCCGACCACATGAAG",
+        "PAM": "CAG",
+        "Specificity Score": 82.9154813,
+        "Efficiency Score": 55.91110495
+      },
+      {
+        "Position": 435,
+        "Strand": 1,
+        "Sequence": "TGAAGCAGCACGACTTCTTC",
+        "PAM": "AAG",
+        "Specificity Score": 72.6764524,
+        "Efficiency Score": 13.79409318
+      },
+      {
+        "Position": 437,
+        "Strand": -1,
+        "Sequence": "CGGGCATGGCGGACTTGAAG",
+        "PAM": "AAG",
+        "Specificity Score": 82.6646616,
+        "Efficiency Score": 4.888693376
+      },
+      {
+        "Position": 440,
+        "Strand": -1,
+        "Sequence": "CTTCGGGCATGGCGGACTTG",
+        "PAM": "AAG",
+        "Specificity Score": 87.644484,
+        "Efficiency Score": 15.41638965
+      },
+      {
+        "Position": 451,
+        "Strand": 1,
+        "Sequence": "CTTCAAGTCCGCCATGCCCG",
+        "PAM": "AAG",
+        "Specificity Score": 85.0402187,
+        "Efficiency Score": 53.04988295
+      },
+      {
+        "Position": 462,
+        "Strand": 1,
+        "Sequence": "CCATGCCCGAAGGCTACGTC",
+        "PAM": "CAG",
+        "Specificity Score": 96.2875082,
+        "Efficiency Score": 15.33844968
+      },
+      {
+        "Position": 464,
+        "Strand": -1,
+        "Sequence": "AGATGGTGCGCTCCTGGACG",
+        "PAM": "TAG",
+        "Specificity Score": 79.016481,
+        "Efficiency Score": 23.04795128
+      },
+      {
+        "Position": 465,
+        "Strand": 1,
+        "Sequence": "TGCCCGAAGGCTACGTCCAG",
+        "PAM": "GAG",
+        "Specificity Score": 89.5683487,
+        "Efficiency Score": 11.15967215
+      },
+      {
+        "Position": 483,
+        "Strand": 1,
+        "Sequence": "AGGAGCGCACCATCTTCTTC",
+        "PAM": "AAG",
+        "Specificity Score": 71.0485736,
+        "Efficiency Score": 4.384844099
+      },
+      {
+        "Position": 485,
+        "Strand": -1,
+        "Sequence": "AGTTGCCGTCGTCCTTGAAG",
+        "PAM": "AAG",
+        "Specificity Score": 79.9850099,
+        "Efficiency Score": 37.96899488
+      },
+      {
+        "Position": 488,
+        "Strand": -1,
+        "Sequence": "TGTAGTTGCCGTCGTCCTTG",
+        "PAM": "AAG",
+        "Specificity Score": 89.0760038,
+        "Efficiency Score": 48.0204203
+      },
+      {
+        "Position": 501,
+        "Strand": 1,
+        "Sequence": "TCAAGGACGACGGCAACTAC",
+        "PAM": "AAG",
+        "Specificity Score": 90.263074,
+        "Efficiency Score": 22.21705922
+      },
+      {
+        "Position": 506,
+        "Strand": -1,
+        "Sequence": "TCACCTCGGCGCGGGTCTTG",
+        "PAM": "TAG",
+        "Specificity Score": 88.4788953,
+        "Efficiency Score": 4.434966892
+      },
+      {
+        "Position": 513,
+        "Strand": 1,
+        "Sequence": "GCAACTACAAGACCCGCGCC",
+        "PAM": "GAG",
+        "Specificity Score": 93.2425062,
+        "Efficiency Score": 28.21539818
+      },
+      {
+        "Position": 519,
+        "Strand": 1,
+        "Sequence": "ACAAGACCCGCGCCGAGGTG",
+        "PAM": "AAG",
+        "Specificity Score": 88.0875059,
+        "Efficiency Score": 17.70025519
+      },
+      {
+        "Position": 525,
+        "Strand": 1,
+        "Sequence": "CCCGCGCCGAGGTGAAGTTC",
+        "PAM": "GAG",
+        "Specificity Score": 78.7010325,
+        "Efficiency Score": 0.851475344
+      },
+      {
+        "Position": 546,
+        "Strand": -1,
+        "Sequence": "TTCAGCTCGATGCGGTTCAC",
+        "PAM": "CAG",
+        "Specificity Score": 95.4631966,
+        "Efficiency Score": 9.268526922
+      },
+      {
+        "Position": 552,
+        "Strand": 1,
+        "Sequence": "ACACCCTGGTGAACCGCATC",
+        "PAM": "GAG",
+        "Specificity Score": 86.4897934,
+        "Efficiency Score": 2.860624195
+      },
+      {
+        "Position": 558,
+        "Strand": 1,
+        "Sequence": "TGGTGAACCGCATCGAGCTG",
+        "PAM": "AAG",
+        "Specificity Score": 91.8522983,
+        "Efficiency Score": 16.6860742
+      },
+      {
+        "Position": 564,
+        "Strand": -1,
+        "Sequence": "TCCTTGAAGTCGATGCCCTT",
+        "PAM": "CAG",
+        "Specificity Score": 82.9274313,
+        "Efficiency Score": 36.76195498
+      },
+      {
+        "Position": 573,
+        "Strand": 1,
+        "Sequence": "AGCTGAAGGGCATCGACTTC",
+        "PAM": "AAG",
+        "Specificity Score": 81.1551511,
+        "Efficiency Score": 0.508038606
+      },
+      {
+        "Position": 576,
+        "Strand": 1,
+        "Sequence": "TGAAGGGCATCGACTTCAAG",
+        "PAM": "GAG",
+        "Specificity Score": 79.3597116,
+        "Efficiency Score": 44.28527119
+      },
+      {
+        "Position": 578,
+        "Strand": -1,
+        "Sequence": "GGATGTTGCCGTCCTCCTTG",
+        "PAM": "AAG",
+        "Specificity Score": 66.5914469,
+        "Efficiency Score": 60.05494456
+      },
+      {
+        "Position": 600,
+        "Strand": 1,
+        "Sequence": "ACGGCAACATCCTGGGGCAC",
+        "PAM": "AAG",
+        "Specificity Score": 62.6283178,
+        "Efficiency Score": 2.901313901
+      },
+      {
+        "Position": 600,
+        "Strand": -1,
+        "Sequence": "TTGTACTCCAGCTTGTGCCC",
+        "PAM": "CAG",
+        "Specificity Score": 69.7102923,
+        "Efficiency Score": 15.89188918
+      },
+      {
+        "Position": 606,
+        "Strand": 1,
+        "Sequence": "ACATCCTGGGGCACAAGCTG",
+        "PAM": "GAG",
+        "Specificity Score": 57.0821398,
+        "Efficiency Score": 15.99272179
+      },
+      {
+        "Position": 612,
+        "Strand": -1,
+        "Sequence": "TGGCTGTTGAAGTTGTACTC",
+        "PAM": "CAG",
+        "Specificity Score": 73.6878947,
+        "Efficiency Score": 30.86455038
+      },
+      {
+        "Position": 620,
+        "Strand": 1,
+        "Sequence": "AAGCTGGAGTACAACTTCAA",
+        "PAM": "CAG",
+        "Specificity Score": 64.4603736,
+        "Efficiency Score": 18.86534057
+      },
+      {
+        "Position": 623,
+        "Strand": -1,
+        "Sequence": "TATAGACGTTGTGGCTGTTG",
+        "PAM": "AAG",
+        "Specificity Score": 76.8855451,
+        "Efficiency Score": 13.68779516
+      },
+      {
+        "Position": 641,
+        "Strand": -1,
+        "Sequence": "TCTGCTTGTCGGCCATGATA",
+        "PAM": "TAG",
+        "Specificity Score": 80.2244659,
+        "Efficiency Score": 26.82649938
+      },
+      {
+        "Position": 648,
+        "Strand": 1,
+        "Sequence": "ACGTCTATATCATGGCCGAC",
+        "PAM": "AAG",
+        "Specificity Score": 94.2606512,
+        "Efficiency Score": 61.69571973
+      },
+      {
+        "Position": 651,
+        "Strand": 1,
+        "Sequence": "TCTATATCATGGCCGACAAG",
+        "PAM": "CAG",
+        "Specificity Score": 89.701678,
+        "Efficiency Score": 78.12413258
+      },
+      {
+        "Position": 654,
+        "Strand": 1,
+        "Sequence": "ATATCATGGCCGACAAGCAG",
+        "PAM": "AAG",
+        "Specificity Score": 81.9966363,
+        "Efficiency Score": 64.92531035
+      },
+      {
+        "Position": 666,
+        "Strand": 1,
+        "Sequence": "ACAAGCAGAAGAACGGCATC",
+        "PAM": "AAG",
+        "Specificity Score": 79.8977555,
+        "Efficiency Score": 8.907524304
+      },
+      {
+        "Position": 678,
+        "Strand": 1,
+        "Sequence": "ACGGCATCAAGGTGAACTTC",
+        "PAM": "AAG",
+        "Specificity Score": 76.9605151,
+        "Efficiency Score": 2.187414975
+      },
+      {
+        "Position": 683,
+        "Strand": -1,
+        "Sequence": "CGATGTTGTGGCGGATCTTG",
+        "PAM": "AAG",
+        "Specificity Score": 85.5617829,
+        "Efficiency Score": 20.25047024
+      },
+      {
+        "Position": 696,
+        "Strand": 1,
+        "Sequence": "TCAAGATCCGCCACAACATC",
+        "PAM": "GAG",
+        "Specificity Score": 82.7888253,
+        "Efficiency Score": 9.387342087
+      },
+      {
+        "Position": 704,
+        "Strand": 1,
+        "Sequence": "CGCCACAACATCGAGGACGG",
+        "PAM": "CAG",
+        "Specificity Score": 96.2641692,
+        "Efficiency Score": 16.82972394
+      },
+      {
+        "Position": 711,
+        "Strand": 1,
+        "Sequence": "ACATCGAGGACGGCAGCGTG",
+        "PAM": "CAG",
+        "Specificity Score": 80.356689,
+        "Efficiency Score": 13.50469584
+      },
+      {
+        "Position": 723,
+        "Strand": -1,
+        "Sequence": "TTCTGCTGGTAGTGGTCGGC",
+        "PAM": "GAG",
+        "Specificity Score": 86.7955557,
+        "Efficiency Score": 1.097849572
+      },
+      {
+        "Position": 729,
+        "Strand": 1,
+        "Sequence": "TGCAGCTCGCCGACCACTAC",
+        "PAM": "CAG",
+        "Specificity Score": 92.5439496,
+        "Efficiency Score": 9.543310839
+      },
+      {
+        "Position": 732,
+        "Strand": 1,
+        "Sequence": "AGCTCGCCGACCACTACCAG",
+        "PAM": "CAG",
+        "Specificity Score": 92.5542682,
+        "Efficiency Score": 37.74285645
+      },
+      {
+        "Position": 734,
+        "Strand": -1,
+        "Sequence": "CGATGGGGGTGTTCTGCTGG",
+        "PAM": "TAG",
+        "Specificity Score": 68.4502822,
+        "Efficiency Score": 3.490664754
+      },
+      {
+        "Position": 771,
+        "Strand": -1,
+        "Sequence": "AGGTAGTGGTTGTCGGGCAG",
+        "PAM": "CAG",
+        "Specificity Score": 75.1160643,
+        "Efficiency Score": 10.23133704
+      },
+      {
+        "Position": 774,
+        "Strand": -1,
+        "Sequence": "CTCAGGTAGTGGTTGTCGGG",
+        "PAM": "CAG",
+        "Specificity Score": 77.1850963,
+        "Efficiency Score": 30.62268387
+      },
+      {
+        "Position": 785,
+        "Strand": 1,
+        "Sequence": "CTGCCCGACAACCACTACCT",
+        "PAM": "GAG",
+        "Specificity Score": 82.095975,
+        "Efficiency Score": 16.34567286
+      },
+      {
+        "Position": 788,
+        "Strand": -1,
+        "Sequence": "GGGCGGACTGGGTGCTCAGG",
+        "PAM": "TAG",
+        "Specificity Score": 47.0340058,
+        "Efficiency Score": 9.387709303
+      },
+      {
+        "Position": 792,
+        "Strand": 1,
+        "Sequence": "ACAACCACTACCTGAGCACC",
+        "PAM": "CAG",
+        "Specificity Score": 58.1675927,
+        "Efficiency Score": 16.62002429
+      },
+      {
+        "Position": 792,
+        "Strand": -1,
+        "Sequence": "CTCAGGGCGGACTGGGTGCT",
+        "PAM": "CAG",
+        "Specificity Score": 55.3320504,
+        "Efficiency Score": 1.061739892
+      },
+      {
+        "Position": 803,
+        "Strand": 1,
+        "Sequence": "CTGAGCACCCAGTCCGCCCT",
+        "PAM": "GAG",
+        "Specificity Score": 77.511693,
+        "Efficiency Score": 4.383873159
+      },
+      {
+        "Position": 808,
+        "Strand": 1,
+        "Sequence": "CACCCAGTCCGCCCTGAGCA",
+        "PAM": "AAG",
+        "Specificity Score": 53.2932503,
+        "Efficiency Score": 5.854365303
+      },
+      {
+        "Position": 810,
+        "Strand": -1,
+        "Sequence": "TTCTCGTTGGGGTCTTTGCT",
+        "PAM": "CAG",
+        "Specificity Score": 72.1766655,
+        "Efficiency Score": 8.81061599
+      },
+      {
+        "Position": 819,
+        "Strand": 1,
+        "Sequence": "CCCTGAGCAAAGACCCCAAC",
+        "PAM": "GAG",
+        "Specificity Score": 71.4419622,
+        "Efficiency Score": 30.56369205
+      },
+      {
+        "Position": 822,
+        "Strand": 1,
+        "Sequence": "TGAGCAAAGACCCCAACGAG",
+        "PAM": "AAG",
+        "Specificity Score": 76.2053099,
+        "Efficiency Score": 57.77531437
+      },
+      {
+        "Position": 846,
+        "Strand": 1,
+        "Sequence": "GCGATCACATGGTCCTGCTG",
+        "PAM": "GAG",
+        "Specificity Score": 65.7201064,
+        "Efficiency Score": 31.32712506
+      },
+      {
+        "Position": 849,
+        "Strand": -1,
+        "Sequence": "GCGGCGGTCACGAACTCCAG",
+        "PAM": "CAG",
+        "Specificity Score": 88.5315305,
+        "Efficiency Score": 45.44283497
+      },
+      {
+        "Position": 852,
+        "Strand": -1,
+        "Sequence": "CCGGCGGCGGTCACGAACTC",
+        "PAM": "CAG",
+        "Specificity Score": 95.4088486,
+        "Efficiency Score": 7.739093298
+      },
+      {
+        "Position": 880,
+        "Strand": -1,
+        "Sequence": "GTACAGCTCGTCCATGCCGA",
+        "PAM": "GAG",
+        "Specificity Score": 87.5604021,
+        "Efficiency Score": 89.78537314
+      },
+      {
+        "Position": 882,
+        "Strand": -1,
+        "Sequence": "TTGTACAGCTCGTCCATGCC",
+        "PAM": "GAG",
+        "Specificity Score": 78.5407554,
+        "Efficiency Score": 7.610398842
+      },
+      {
+        "Position": 885,
+        "Strand": 1,
+        "Sequence": "GGATCACTCTCGGCATGGAC",
+        "PAM": "GAG",
+        "Specificity Score": 85.396947,
+        "Efficiency Score": 39.05508685
+      },
+      {
+        "Position": 894,
+        "Strand": 1,
+        "Sequence": "TCGGCATGGACGAGCTGTAC",
+        "PAM": "AAG",
+        "Specificity Score": 89.4334484,
+        "Efficiency Score": 0.908921833
+      },
+      {
+        "Position": 897,
+        "Strand": -1,
+        "Sequence": "GATCTGAGTCCGGACTTGTA",
+        "PAM": "CAG",
+        "Specificity Score": 89.5681483,
+        "Efficiency Score": 36.5583062
+      },
+      {
+        "Position": 905,
+        "Strand": 1,
+        "Sequence": "GAGCTGTACAAGTCCGGACT",
+        "PAM": "CAG",
+        "Specificity Score": 92.5027497,
+        "Efficiency Score": 4.451609371
+      },
+      {
+        "Position": 912,
+        "Strand": -1,
+        "Sequence": "GAAGCTTGAGCTCGAGATCT",
+        "PAM": "GAG",
+        "Specificity Score": 87.4858441,
+        "Efficiency Score": 1.608117145
+      },
+      {
+        "Position": 913,
+        "Strand": 1,
+        "Sequence": "CAAGTCCGGACTCAGATCTC",
+        "PAM": "GAG",
+        "Specificity Score": 80.2513783,
+        "Efficiency Score": 0.622396569
+      },
+      {
+        "Position": 919,
+        "Strand": 1,
+        "Sequence": "CGGACTCAGATCTCGAGCTC",
+        "PAM": "AAG",
+        "Specificity Score": 84.0579212,
+        "Efficiency Score": 2.518087753
+      },
+      {
+        "Position": 919,
+        "Strand": -1,
+        "Sequence": "AGAATTCGAAGCTTGAGCTC",
+        "PAM": "GAG",
+        "Specificity Score": 76.8505769,
+        "Efficiency Score": 24.22838152
+      },
+      {
+        "Position": 925,
+        "Strand": -1,
+        "Sequence": "GACTGCAGAATTCGAAGCTT",
+        "PAM": "GAG",
+        "Specificity Score": 83.0100444,
+        "Efficiency Score": 6.617817925
+      },
+      {
+        "Position": 931,
+        "Strand": -1,
+        "Sequence": "ACCGTCGACTGCAGAATTCG",
+        "PAM": "AAG",
+        "Specificity Score": 93.1639966,
+        "Efficiency Score": 11.70190267
+      },
+      {
+        "Position": 934,
+        "Strand": 1,
+        "Sequence": "AGCTCAAGCTTCGAATTCTG",
+        "PAM": "CAG",
+        "Specificity Score": 77.5939903,
+        "Efficiency Score": 45.53142185
+      },
+      {
+        "Position": 940,
+        "Strand": -1,
+        "Sequence": "GCCCGCGGTACCGTCGACTG",
+        "PAM": "CAG",
+        "Specificity Score": 96.3185927,
+        "Efficiency Score": 22.27380632
+      },
+      {
+        "Position": 971,
+        "Strand": 1,
+        "Sequence": "GGCCCGGGATCCACCGGATC",
+        "PAM": "TAG",
+        "Specificity Score": 91.341641,
+        "Efficiency Score": 1.023596781
+      },
+      {
+        "Position": 979,
+        "Strand": -1,
+        "Sequence": "GCTGATTATGATCAGTTATC",
+        "PAM": "TAG",
+        "Specificity Score": 70.3886853,
+        "Efficiency Score": 19.9634376
+      },
+      {
+        "Position": 987,
+        "Strand": -1,
+        "Sequence": "GTGGTATGGCTGATTATGAT",
+        "PAM": "CAG",
+        "Specificity Score": 71.0458058,
+        "Efficiency Score": 10.34742292
+      },
+      {
+        "Position": 989,
+        "Strand": 1,
+        "Sequence": "TCTAGATAACTGATCATAAT",
+        "PAM": "CAG",
+        "Specificity Score": 62.6923282,
+        "Efficiency Score": 13.76132525
+      },
+      {
+        "Position": 1006,
+        "Strand": 1,
+        "Sequence": "AATCAGCCATACCACATTTG",
+        "PAM": "TAG",
+        "Specificity Score": 72.8059321,
+        "Efficiency Score": 8.402239694
+      },
+      {
+        "Position": 1008,
+        "Strand": 1,
+        "Sequence": "TCAGCCATACCACATTTGTA",
+        "PAM": "GAG",
+        "Specificity Score": 66.6159926,
+        "Efficiency Score": 46.82859428
+      },
+      {
+        "Position": 1026,
+        "Strand": -1,
+        "Sequence": "TGTGGGAGGTTTTTTAAAGC",
+        "PAM": "AAG",
+        "Specificity Score": 54.8446919,
+        "Efficiency Score": 8.881029062
+      },
+      {
+        "Position": 1030,
+        "Strand": -1,
+        "Sequence": "GAGGTGTGGGAGGTTTTTTA",
+        "PAM": "AAG",
+        "Specificity Score": 60.739409,
+        "Efficiency Score": 2.044762236
+      },
+      {
+        "Position": 1041,
+        "Strand": -1,
+        "Sequence": "AGGTTCAGGGGGAGGTGTGG",
+        "PAM": "GAG",
+        "Specificity Score": 43.9030255,
+        "Efficiency Score": 2.165739551
+      },
+      {
+        "Position": 1050,
+        "Strand": -1,
+        "Sequence": "TTATGTTTCAGGTTCAGGGG",
+        "PAM": "GAG",
+        "Specificity Score": 60.8108524,
+        "Efficiency Score": 67.21832955
+      },
+      {
+        "Position": 1056,
+        "Strand": -1,
+        "Sequence": "TTCATTTTATGTTTCAGGTT",
+        "PAM": "CAG",
+        "Specificity Score": 29.7394387,
+        "Efficiency Score": 2.321889232
+      },
+      {
+        "Position": 1062,
+        "Strand": -1,
+        "Sequence": "ATTGCATTCATTTTATGTTT",
+        "PAM": "CAG",
+        "Specificity Score": 20.5363336,
+        "Efficiency Score": 9.415043703
+      },
+      {
+        "Position": 1097,
+        "Strand": -1,
+        "Sequence": "CATTATAAGCTGCAATAAAC",
+        "PAM": "AAG",
+        "Specificity Score": 60.369586,
+        "Efficiency Score": 13.99286959
+      },
+      {
+        "Position": 1099,
+        "Strand": 1,
+        "Sequence": "TGTTGTTAACTTGTTTATTG",
+        "PAM": "CAG",
+        "Specificity Score": 47.1120783,
+        "Efficiency Score": 9.637979419
+      },
+      {
+        "Position": 1111,
+        "Strand": -1,
+        "Sequence": "TGCTTTATTGTAACCATTAT",
+        "PAM": "AAG",
+        "Specificity Score": 56.9766823,
+        "Efficiency Score": 3.674589346
+      },
+      {
+        "Position": 1120,
+        "Strand": 1,
+        "Sequence": "AGCTTATAATGGTTACAATA",
+        "PAM": "AAG",
+        "Specificity Score": 59.204066,
+        "Efficiency Score": 4.599433732
+      },
+      {
+        "Position": 1126,
+        "Strand": 1,
+        "Sequence": "TAATGGTTACAATAAAGCAA",
+        "PAM": "TAG",
+        "Specificity Score": 44.7480697,
+        "Efficiency Score": 57.31081329
+      },
+      {
+        "Position": 1147,
+        "Strand": 1,
+        "Sequence": "AGCATCACAATTTCACAATA",
+        "PAM": "AAG",
+        "Specificity Score": 52.570961,
+        "Efficiency Score": 3.847960484
+      },
+      {
+        "Position": 1169,
+        "Strand": 1,
+        "Sequence": "GCATTTTTTTCACTGCATTC",
+        "PAM": "TAG",
+        "Specificity Score": 51.4482622,
+        "Efficiency Score": 12.99761549
+      }
+    ],
+    "ACTN3": {
+      "base_type": "practice"
+    }
+  }
+}
