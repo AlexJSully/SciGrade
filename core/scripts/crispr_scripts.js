@@ -58,19 +58,15 @@ function loadJSON_Files() {
   const db = client.service('mongodb', 'mongodb-atlas').db('AlMark');
   // Gene background information
   client.login().then(() =>
-    db.collection('Gene_Information').updateOne({owner_id: client.authedId()}, {$set:{number:42}}, {upsert:true})
-  ).then(()=>
-    db.collection('Gene_Information').find({owner_id: client.authedId()}).limit(100).execute()
+    db.collection('Gene_Information').find({version: "0.3"}).limit(100).execute()
   ).then(docs => {
     gene_backgroundInfo = docs;
   }).catch(err => {
     console.error(err)
   });
   // Benchling gRNA outputs
-  client.login().then(() =>
-    db.collection('Benchling_gRNA_Outputs').updateOne({owner_id: client.authedId()}, {$set:{number:42}}, {upsert:true})
-  ).then(()=>
-    db.collection('Benchling_gRNA_Outputs').find({owner_id: client.authedId()}).limit(100).execute()
+  client.login().then(()=>
+    db.collection('Benchling_gRNA_Outputs').find({version: "0.1"}).limit(100).execute()
   ).then(docs => {
     benchling_grna_ouputs = docs;
   }).catch(err => {
@@ -159,7 +155,7 @@ function loadWork() {
 
     // F1 Primers
     append_str += '<div class="form-group">';
-    append_str += '<label for="f1_input">f1 Primers:</label>';
+    append_str += '<label for="f1_input">F1 Primers:</label>';
     append_str += '<input class="form-control" id="f1_input" placeholder="TAATACGACTCACTATAGCTCGTGACCACCCTGA" required>';
     append_str += '<small id="f1_inputSmall" class="form-text text-muted">This would be your forward primer (F1) for your gRNA</small>';
     append_str += '</div>';
@@ -203,12 +199,30 @@ function isNumberOrDashKey(evt) {
   return true;
 }
 
+/**
+* Global marking variables
+*/
+var MARgRNAseq = false;
+var MARgRNAseq_degree = 0; // 0 wrong, 1 correct, 2 partial of <20bp, 3 technically correct of <30bp
+var MARPAMseq = false;
+var MARCutPos = false;
+var MARstrand = false;
+var MAROnTarget = false;
+var MAROnTarget_degree = 0; // 0 wrong, 1 within range, 2 above 40, 3 only option
+var MAROnTarget_aboveOpt = false;
+var MAROnTarget_above40 = false;
+var MAROnTarget_onlyOption = false;
+var MAROffTarget = false;
+var MARF1primers = false;
+var MARR1primers = false;
+
 var possible_comparable_answers = [];
+var possible_outputs = [];
 var correctNucleotideIncluded = false;
-var correctCutSiteRange = false;
+var true_counts = 0; // This exists for the instance that there is more than one match for inputedSeq
 function checkAnswers() {
   var correctNucleotide = gene_backgroundInfo[0]["gene_list"][current_gene]["Sequence"].charAt(gene_backgroundInfo[0]["gene_list"][current_gene]["Target position"]);
-  var correctNucleotidePosition = gene_backgroundInfo[0]["gene_list"][current_gene]["Target position"];
+  var correctNucleotidePosition = gene_backgroundInfo[0]["gene_list"][current_gene]["Target position"] - 1;
 
   // Check gRNA Sequence:
   var inputedSeq = document.getElementById("sequence_input").value;
@@ -224,38 +238,274 @@ function checkAnswers() {
   var possible_right_answers = [];
   if (possible_comparable_answers.length > 0) {
     for (i = 0; i < possible_comparable_answers.length; i++) {
+      true_counts = 0;
+      // Checking if the gene's target position is within correct nucleotide range
       correctNucleotideIncluded = false;
       if (possible_comparable_answers[i]["Strand"] == 1) {
-        var nucleotideIncludedRange_top = possible_comparable_answers[i]["Position"] + 3;
-        var nucleotideIncludedRange_bot = possible_comparable_answers[i]["Position"] - 17;
+        var nucleotideIncludedRange_top = ((possible_comparable_answers[i]["Position"] - 1) - 1) + 3;
+        var nucleotideIncludedRange_bot = (possible_comparable_answers[i]["Position"] - 1) - 17;
         if (correctNucleotidePosition >= nucleotideIncludedRange_bot && correctNucleotidePosition <= nucleotideIncludedRange_top) {
           correctNucleotideIncluded = true;
         }
       }
       else if (possible_comparable_answers[i]["Strand"] == -1) {
-        var nucleotideIncludedRange_top = possible_comparable_answers[i]["Position"] + 17;
-        var nucleotideIncludedRange_bot = possible_comparable_answers[i]["Position"] - 3;
+        var nucleotideIncludedRange_top = (possible_comparable_answers[i]["Position"] - 1) + 17;
+        var nucleotideIncludedRange_bot = (possible_comparable_answers[i]["Position"] - 1) - 3;
         if (correctNucleotidePosition >= nucleotideIncludedRange_bot && correctNucleotidePosition <= nucleotideIncludedRange_top) {
           correctNucleotideIncluded = true;
         }
       }
       // If in correct nucleotide range, check if nucleotide is included in cut site
-      correctCutSiteRange = false;
       if (correctNucleotideIncluded == true) {
+        // Determine where PAM site would be and if PAM site matches inputted value
+        var pamFirst;
+        var pamSecond;
+        // Sense is 1
         if (possible_comparable_answers[i]["Strand"] == 1) {
-          var cutSiteBot = possible_comparable_answers[i]["Position"] - 17;
-          if (correctNucleotidePosition >= cutSiteBot && correctNucleotidePosition <= possible_comparable_answers[i]["Position"]) {
-            correctCutSiteRange = true;
+          pamFirst = (possible_comparable_answers[i]["Position"] - 1) + 2;
+          pamSecond = (possible_comparable_answers[i]["Position"] - 1) + 4;
+          // If the sequence matches to be true, check other answers:
+          if (document.getElementById("strand_input").value == "Sense (+)") {
+            MARstrand = true;
+            true_counts++;
           }
         }
+        // Antisense is -1
         else if (possible_comparable_answers[i]["Strand"] == -1) {
-          var cutSiteBot = possible_comparable_answers[i]["Position"] + 17;
-          if (correctNucleotidePosition >= cutSiteBot && correctNucleotidePosition <= possible_comparable_answers[i]["Position"]) {
-            correctCutSiteRange = true;
+          pamFirst = (possible_comparable_answers[i]["Position"] - 1) - 2;
+          pamSecond = (possible_comparable_answers[i]["Position"] - 1) - 4;
+          // If the sequence matches to be true, check other answers:
+          if (document.getElementById("strand_input").value == "Antisense (-)") {
+            MARstrand = true;
+            true_counts++;
           }
+        }
+
+        // Determining how right the seqence is
+        if (correctNucleotidePosition >= (pamFirst) && correctNucleotidePosition <= (pamSecond)) { // within PAM site
+          MARgRNAseq = false;
+          MARgRNAseq_degree = 0;
+        }
+        else if (
+          (correctNucleotidePosition >= ((possible_comparable_answers[i]["Position"] - 1) + 1) && correctNucleotidePosition <= ((possible_comparable_answers[i]["Position"] - 1) + 10)) || (correctNucleotidePosition >= ((possible_comparable_answers[i]["Position"] - 1) - 1) && correctNucleotidePosition <= ((possible_comparable_answers[i]["Position"] - 1) - 10))
+        ) {
+          MARgRNAseq = true;
+          MARgRNAseq_degree = 1;
+          true_counts++;
+        }
+        else if (
+          (correctNucleotidePosition >= ((possible_comparable_answers[i]["Position"] - 1)) && correctNucleotidePosition <= ((possible_comparable_answers[i]["Position"] - 1) + 20)) || (correctNucleotidePosition >= ((possible_comparable_answers[i]["Position"] - 1)) && correctNucleotidePosition <= ((possible_comparable_answers[i]["Position"] - 1) - 20))
+        ) {
+          MARgRNAseq = true;
+          MARgRNAseq_degree = 2;
+          true_counts++;
+        }
+        else if (
+          (correctNucleotidePosition >= ((possible_comparable_answers[i]["Position"] - 1)) && correctNucleotidePosition <= ((possible_comparable_answers[i]["Position"] - 1) + 30)) || (correctNucleotidePosition >= ((possible_comparable_answers[i]["Position"] - 1)) && correctNucleotidePosition <= ((possible_comparable_answers[i]["Position"] - 1) - 30))
+        ) {
+          MARgRNAseq = true;
+          MARgRNAseq_degree = 3;
+          true_counts++;
+        }
+
+        // If the sequence if correct, check all other results:
+        if (MARgRNAseq == true) {
+          var temp_answer = possible_comparable_answers[i];
+          // Check if the cut position matches the answer's input
+          if ((temp_answer["Position"] != null || temp_answer["Position"] != undefined) && parseInt(temp_answer["Position"]) == parseInt(document.getElementById("position_input").value)) {
+            MARCutPos = true;
+            true_counts++;
+          }
+          else if (temp_answer["Position"] == null || temp_answer["Position"] == undefined) {
+            alert("Error code cA302-307: retrieving server information on 'Position' answers occured. Please contact admin or TA!");
+            console.log("Error code cA302-307: retrieving server information on 'Position' answers occured. Please contact admin or TA!");
+          }
+
+          // Check if the PAM matches the answer's input
+          if ((temp_answer["PAM"] != null || temp_answer["PAM"] != undefined) && temp_answer["PAM"] == document.getElementById("pam_input").value) {
+            MARPAMseq = true;
+            true_counts++;
+          }
+          else if (temp_answer["PAM"] == null || temp_answer["PAM"] == undefined) {
+            alert("Error code cA311-317: retrieving server information on 'PAM' answers occured. Please contact admin or TA!");
+            console.log("Error code cA311-317: retrieving server information on 'PAM' answers occured. Please contact admin or TA!");
+          }
+
+          // Check if the On-target matches the answer's input
+          if (temp_answer["Efficiency Score"] != null || temp_answer["Efficiency Score"] != undefined) {
+            checkOnTargetRange(i);
+          }
+          else if (temp_answer["Efficiency Score"] == null || temp_answer["Efficiency Score"] == undefined) {
+            alert("Error code cA333-340: retrieving server information on 'Efficiency Score' answers occured. Please contact admin or TA!");
+            console.log("Error code cA333-340: retrieving server information on 'Efficiency Score' answers occured. Please contact admin or TA!");
+          }
+
+          // Check if the Off-target matches the answer's input
+          if (temp_answer["Specificity Score"] != null || temp_answer["Specificity Score"] != undefined) {
+            checkOffTarget(temp_answer["Specificity Score"]);
+          }
+          else if (temp_answer["Specificity Score"] == null || temp_answer["Specificity Score"] == undefined) {
+            alert("Error code cA342-348: retrieving server information on 'Specificity Score' answers occured. Please contact admin or TA!");
+            console.log("Error code cA342-348: retrieving server information on 'Specificity Score' answers occured. Please contact admin or TA!");
+          }
+
+          // Check if the F1 primer matches the answer's input
+          checkF1Primers(document.getElementById("sequence_input").value);
+
+          // Check if the F1 primer matches the answer's input
+          checkR1Primers(document.getElementById("sequence_input").value);
         }
       }
     }
+  }
+  else if (possible_comparable_answers.length == 0) {
+    // Under this circumstance, you are assuming that their information is correct:
+    var originalSeq = gene_backgroundInfo[0]["gene_list"][current_gene]["Sequence"];
+    var reverseSeq = createComplementarySeq(gene_backgroundInfo[0]["gene_list"][current_gene]["Sequence"]);
+    if (originalSeq.indexOf(inputedSeq) != -1 || reverseSeq.indexOf(inputedSeq) != -1) {
+      // TODO: Count this as wrong?
+    }
+  }
+}
+
+/**
+* Checks the on-target score if it is correct based on the target region range
+* @param {int} parseNum - Integer for possible_comparable_answers parse
+* @return {bool} - Returns true if MAROnTarget is correct
+*/
+var ontarget_geneParse = [];
+var ontarget_lastResort = [];
+function checkOnTargetRange(parseNum) {
+  // Create on-target variables
+  var OnTargetValue_down = Math.floor(possible_comparable_answers[parseNum]["Efficiency Score"]);
+  var OnTargetValue_up = Math.ceil(possible_comparable_answers[parseNum]["Efficiency Score"]);
+  var InputOnTargetValue = parseInt(document.getElementById("ontarget_input").value);
+  // See if on-target value matches input value
+  if (correctNucleotideIncluded == true && MARgRNAseq == true) {
+    if (InputOnTargetValue >= OnTargetValue_down && InputOnTargetValue <= OnTargetValue_up) {
+      MAROnTarget = true;
+      true_counts++;
+    }
+  }
+  // Determine how write it is based on its range
+  if (MAROnTarget == true) {
+    // Target region range:
+    document.getElementById("targetregion_input").value.replace(/./g,'')
+    var Range_upper = document.getElementById("targetregion_input").value.split("-")[1];
+    var Range_lower = document.getElementById("targetregion_input").value.split("-")[0];
+    // Check if gRNA sequence is in against listed
+    for (i=0; i<benchling_grna_ouputs[0]["gene_list"][current_gene].length; i++) {
+      if (benchling_grna_ouputs[0]["gene_list"][current_gene][i]["Position"] >= Range_lower && benchling_grna_ouputs[0]["gene_list"][current_gene][i]["Position"] <= Range_upper) {
+        if (benchling_grna_ouputs[0]["gene_list"][current_gene][i]["Efficiency Score"] != null || benchling_grna_ouputs[0]["gene_list"][current_gene][i]["Efficiency Score"] != undefined) {
+          ontarget_geneParse.push(benchling_grna_ouputs[0]["gene_list"][current_gene][i]["Efficiency Score"])
+        };
+      }
+    }
+    // Check for last-resort regions:
+    var rangeStarter_upper = parseInt(document.getElementById("position_input").value.replace(/./g,'')) + 35;
+    var rangeStarter_lower = parseInt(document.getElementById("position_input").value.replace(/./g,'')) - 35;
+    // Check if gRNA sequence is in against listed
+    ontarget_lastResort = [];
+    for (i=0; i<benchling_grna_ouputs[0]["gene_list"][current_gene].length; i++) {
+      if (benchling_grna_ouputs[0]["gene_list"][current_gene][i]["Position"] >= rangeStarter_upper && benchling_grna_ouputs[0]["gene_list"][current_gene][i]["Position"] <= rangeStarter_lower) {
+        if (benchling_grna_ouputs[0]["gene_list"][current_gene][i]["Efficiency Score"] != null || benchling_grna_ouputs[0]["gene_list"][current_gene][i]["Efficiency Score"] != undefined) {
+          ontarget_lastResort.push(benchling_grna_ouputs[0]["gene_list"][current_gene][i]["Efficiency Score"])
+        };
+      }
+    }
+    var last_resort_okay = true;
+    if (Math.max.apply(null, ontarget_geneParse) < 40) {
+      last_resort_okay = false;
+    }
+
+    // Is it within the optimal range?
+    var Max_range = Math.max.apply(null, ontarget_geneParse);
+    var Min_optiomal = Max_range - (Max_range * 0.2);
+    if (InputOnTargetValue >= Min_optiomal) {
+      MAROnTarget_aboveOpt = true;
+      MAROnTarget_above40 = true;
+      MAROnTarget_degree = 1;
+    }
+    else if (InputOnTargetValue >= 40) {
+      MAROnTarget_above40 = true;
+      MAROnTarget_degree = 2
+    }
+    else if (last_resort_okay == false) {
+      MAROnTarget_onlyOption = true;
+      MAROnTarget_degree = 3;
+    }
+  }
+}
+
+/**
+* Checks the off-target score if it is correct
+* @param {int} score - The specificity score from possible_comparable_answers
+* @return {bool} - Returns true if MAROffTarget is correct
+*/
+function checkOffTarget(score) {
+  // Create on-target variables
+  var OffTargetValue_down = Math.floor(score);
+  var OffTargetValue_up = Math.ceil(score);
+  var InputOffTargetValue = parseInt(document.getElementById("offtarget_input").value);
+  // See if on-target value matches input value
+  if (correctNucleotideIncluded == true && MARgRNAseq == true) {
+    if (InputOffTargetValue >= OffTargetValue_down && InputOffTargetValue <= OffTargetValue_up) {
+      MAROffTarget = true;
+      true_counts++;
+    }
+  }
+}
+
+/**
+* Checks if the F1 primer is correct or not
+* @param {String} seq - The gRNA sequence
+* @return {bool} - Returns true if MARF1primers is correct
+*/
+var possible_F1_primers = [];
+function checkF1Primers(seq) {
+  possible_F1_primers = [];
+  var begin_F1 = "TAATACGACTCACTATAG";
+  var count_First = true;
+  if (seq[0] == "G") {count_First = false;}
+  for (i = 16; i <= 20; i++) {
+    possible_F1_primers.push(begin_F1 + seq.slice(0, i));
+  }
+  if (count_First == false) {
+    for (i = 16; i <= 20; i++) {
+      possible_F1_primers.push(begin_F1 + seq.slice(1, i));
+    }
+  }
+  if (possible_F1_primers.includes(document.getElementById("f1_input").value)) {
+    MARF1primers = true;
+  }
+}
+
+/**
+* Checks if the R1 primer is correct or not
+* @param {String} seq - The gRNA sequence
+* @return {bool} - Returns true if MARR1primers is correct
+*/
+var possible_R1_primers = [];
+var complementary_nt_dict = {"A":"T", "T":"A", "C":"G", "G":"C"}
+function checkR1Primers(seq) {
+  possible_R1_primers = [];
+  var begin_R1 = "TTCTAGCTCTAAAAC";
+  var complemetary_seq = "";
+  for (i = 0; i < seq.length; i++) {
+  	complemetary_seq = complementary_nt_dict[seq[i]] + complemetary_seq;
+  }
+  for (i = 19; i <= 20; i++) {
+    possible_R1_primers.push(begin_R1 + complemetary_seq.slice(0, i));
+  }
+  if (possible_R1_primers.includes(document.getElementById("r1_input").value)) {
+    MARR1primers = true;
+  }
+}
+
+function createComplementarySeq(seq) {
+  var comp_seq = "";
+  for (i = 0; i < seq.length; i++) {
+  	comp_seq = complementary_nt_dict[seq[i]] + comp_seq;
   }
 }
 

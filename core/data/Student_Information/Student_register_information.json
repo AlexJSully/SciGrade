@@ -1,0 +1,13 @@
+{
+  "_id": "5a4cb9e5b8b998f6fc895ff3",
+  "owner_id": "5a4cb9e58f25b9cd6d49e868",
+  "number": 42,
+  "version": "0.1",
+  "date": "2018-01-13:1320",
+  "student_list": {
+    "1000439055": {
+      "umail": "alexander.sullivan@maul.utoronto.ca",
+      "name": "Alexander Sullivan"
+    }
+  }
+}
