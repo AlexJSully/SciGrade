@@ -1,0 +1,46 @@
+{
+  "name": "scigrade",
+  "version": "1.0.0",
+  "description": "Modular web-application for instantaneous feedback of answers to teaching lab assignments",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ASully/AlMark.git"
+  },
+  "keywords": [
+    "science",
+    "grading",
+    "crispr",
+    "Pedagogy"
+  ],
+  "author": "Alexander Sullivan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ASully/AlMark/issues"
+  },
+  "homepage": "https://github.com/ASully/AlMark#readme",
+  "dependencies": {
+    "aws-sdk": "^2.195.0",
+    "body-parser": "^1.18.2",
+    "browserify-fs": "^1.0.0",
+    "child_process": "^1.0.2",
+    "express": "^4.16.2",
+    "fs": "0.0.1-security",
+    "http": "0.0.0",
+    "lambda-local": "^1.4.5",
+    "lodash": "^4.17.5",
+    "mongodb-stitch": "^3.0.2",
+    "mongoose": "^5.0.5",
+    "npm-execspawn": "^1.3.0",
+    "uniq": "^1.0.1",
+    "url": "^0.11.0"
+  },
+  "devDependencies": {
+    "browserify": "^16.1.0",
+    "uglify-js": "^3.3.10",
+    "watchify": "^3.10.0"
+  }
+}

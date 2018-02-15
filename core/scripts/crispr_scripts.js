@@ -53,7 +53,7 @@ var benchling_grna_ouputs;
 /**
 * Load JSON files
 */
-function loadJSON_Files() {
+function loadCRISPRJSON_Files() {
   const client = new stitch.StitchClient('almark-wvohf');
   const db = client.service('mongodb', 'mongodb-atlas').db('AlMark');
   // Gene background information
@@ -508,10 +508,3 @@ function createComplementarySeq(seq) {
   	comp_seq = complementary_nt_dict[seq[i]] + comp_seq;
   }
 }
-
-$(document).ready(function() {
-  // On load, make sure gene select is not empty:
-  ModeSelectionAdd(selection_inMode);
-
-  loadJSON_Files();
-})
