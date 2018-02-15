@@ -513,14 +513,14 @@ function createComplementarySeq(seq) {
 
 var all_answers = [];
 var all_marks = [];
-var studentanswers = "student_list." + studentParseNum + ".practiceAllAnswer";
-var studentmarks = "student_list." + studentParseNum + ".practiceAllAnswer";
+var studentanswers = "student_list." + studentParseNum + "."+ selection_inMode + "-" + current_gene + "-Answers";
+var studentmarks = "student_list." + studentParseNum + "."+ selection_inMode + "-" + current_gene + "-Marks";
 function submitAnswers() {
   checkAnswers();
   all_answers.push(document.getElementById("sequence_input").value, document.getElementById("pam_input").value, document.getElementById("position_input").value, document.getElementById("strand_input").value, document.getElementById("ontarget_input").value, document.getElementById("targetregion_input").value, document.getElementById("offtarget_input").value, document.getElementById("f1_input").value, document.getElementById("r1_input").value);
   all_marks.push(MARstrand, MARgRNAseq, MARgRNAseq_degree, MARCutPos, MARPAMseq, MAROnTarget, MAROnTarget_aboveOpt, MAROnTarget_above40, MAROnTarget_degree, MAROffTarget, MARF1primers, MARR1primers);
   client.login().then(() =>
-    db.collection("Student_Information").updateOne({version: "0.3"}, { $set: {studentanswers: all_answers, studentmarks: all_marks}}, function(err, res) {
+    db.collection("Student_Information").updateOne({version: "0.3"}, { $set: {[studentanswers]: all_answers, [studentmarks]: all_marks}}, function(err, res) {
     if (err) throw err;
     console.log("1 document updated");
     db.close();
