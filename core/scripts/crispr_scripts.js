@@ -170,7 +170,6 @@ function loadWork() {
     // Buttons
     append_str += '<button type="button" class="btn btn-success" style="margin:1%;">Save</button>';
     append_str += '<button type="button" class="btn btn-primary" style="margin:1%;">Submit</button>';
-    append_str += '<button class="btn btn-warning" style="margin:1%;" onclick="checkAnswers();">Check (Temp button)</button>';
 
     // End form
     append_str += '</form>';
@@ -521,7 +520,7 @@ function submitAnswers() {
   all_answers.push(document.getElementById("sequence_input").value, document.getElementById("pam_input").value, document.getElementById("position_input").value, document.getElementById("strand_input").value, document.getElementById("ontarget_input").value, document.getElementById("targetregion_input").value, document.getElementById("offtarget_input").value, document.getElementById("f1_input").value, document.getElementById("r1_input").value);
   all_marks.push(MARstrand, MARgRNAseq, MARgRNAseq_degree, MARCutPos, MARPAMseq, MAROnTarget, MAROnTarget_aboveOpt, MAROnTarget_above40, MAROnTarget_degree, MAROffTarget, MARF1primers, MARR1primers);
   client.login().then(() =>
-    db.collection("Student_Information").updateOne({version: "0.3"}, { $set: {studentanswers: all_answers}, {studentmarks: all_marks}}, function(err, res) {
+    db.collection("Student_Information").updateOne({version: "0.3"}, { $set: {studentanswers: all_answers, studentmarks: all_marks}}, function(err, res) {
     if (err) throw err;
     console.log("1 document updated");
     db.close();
