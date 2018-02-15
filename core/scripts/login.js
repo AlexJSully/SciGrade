@@ -160,6 +160,14 @@ function onSignIn(googleUser) {
 }
 
 /**
+* Google signout
+*/
+function signOut() {
+    var auth2 = gapi.auth2.getAuthInstance();
+    auth2.signOut();
+  }
+
+/**
 * Once users have registered OR logged in, the page dynamically generates the CRISPR assignment page
 */
 function redirectCRISPR() {

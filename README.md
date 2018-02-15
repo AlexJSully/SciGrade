@@ -1,2 +1,2 @@
-# AlMark
-AlMark - Teaching Lab Marking Software
+# SciGrade
+SciGrade - Teaching Lab Marking Software

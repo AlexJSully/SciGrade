@@ -168,8 +168,8 @@ function loadWork() {
     append_str += '</div>';
 
     // Buttons
-    append_str += '<button class="btn btn-success" style="margin:1%;">Save</button>';
-    append_str += '<button class="btn btn-primary" style="margin:1%;">Submit</button>';
+    append_str += '<button type="button" class="btn btn-success" style="margin:1%;">Save</button>';
+    append_str += '<button type="button" class="btn btn-primary" style="margin:1%;">Submit</button>';
     append_str += '<button class="btn btn-warning" style="margin:1%;" onclick="checkAnswers();">Check (Temp button)</button>';
 
     // End form
@@ -502,9 +502,28 @@ function checkR1Primers(seq) {
   }
 }
 
+/**
+* Creates a complementary sequence of the nucleotides
+*/
 function createComplementarySeq(seq) {
   var comp_seq = "";
   for (i = 0; i < seq.length; i++) {
   	comp_seq = complementary_nt_dict[seq[i]] + comp_seq;
   }
+}
+
+var all_answers = [];
+var all_marks = [];
+var studentanswers = "student_list." + studentParseNum + ".practiceAllAnswer";
+var studentmarks = "student_list." + studentParseNum + ".practiceAllAnswer";
+function submitAnswers() {
+  checkAnswers();
+  all_answers.push(document.getElementById("sequence_input").value, document.getElementById("pam_input").value, document.getElementById("position_input").value, document.getElementById("strand_input").value, document.getElementById("ontarget_input").value, document.getElementById("targetregion_input").value, document.getElementById("offtarget_input").value, document.getElementById("f1_input").value, document.getElementById("r1_input").value);
+  all_marks.push(MARstrand, MARgRNAseq, MARgRNAseq_degree, MARCutPos, MARPAMseq, MAROnTarget, MAROnTarget_aboveOpt, MAROnTarget_above40, MAROnTarget_degree, MAROffTarget, MARF1primers, MARR1primers);
+  client.login().then(() =>
+    db.collection("Student_Information").updateOne({version: "0.3"}, { $set: {studentanswers: all_answers}, {studentmarks: all_marks}}, function(err, res) {
+    if (err) throw err;
+    console.log("1 document updated");
+    db.close();
+  }));
 }
