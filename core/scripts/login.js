@@ -138,12 +138,12 @@ function verifyStudent(VerifyIDHolder) {
   }
 }
 
-
+var upper;
 /**
 * Retrieves Google user information and stores it
 */
 function sendLogReg() {
-  var upper = "student_list." + studentParseNum + ".gmail";
+  upper = "student_list." + studentParseNum + ".gmail";
   if (checkVerifyStudent == true && checkstudentNum == true && studentNumber != 0 && googleEmail != null) {
     client.login().then(() =>
       db.collection("Student_Information").updateOne({version: "0.3"}, { $set: {upper: googleEmail}}, function(err, res) {
