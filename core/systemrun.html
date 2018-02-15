@@ -15,6 +15,35 @@
     <!-- Google Identity Platform Scripts -->
     <script src="https://apis.google.com/js/platform.js" async defer></script>
     <meta name="google-signin-client_id" content="1034277489697-g473uqcd0oc1c02td9off07b9mbe1353.apps.googleusercontent.com">
+    <script>
+    var googleName;
+    var googleEmail;
+    /**
+    * Retrieves Google user information and stores it
+    */
+    function onSignIn(googleUser) {
+      var profile = googleUser.getBasicProfile();
+      googleName = profile.getName();
+      googleEmail = profile.getEmail(); // This is null if the 'email' scope is not present.
+      if (checkVerifyStudent == true && checkstudentNum == true && studentNumber != 0 && googleEmail != null) {
+        client.login().then(() =>
+          db.collection("Student_Information").updateOne({version: "0.3"}, { $set: {upper: googleEmail}}, function(err, res) {
+          if (err) throw err;
+          console.log("1 document updated");
+          db.close();
+        }));
+        redirectCRISPR();
+      }
+    }
+
+    /**
+    * Google signout
+    */
+    function signOut() {
+        var auth2 = gapi.auth2.getAuthInstance();
+        auth2.signOut();
+      }
+    </script>
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-38961857-6"></script>
     <script>
@@ -85,7 +114,6 @@
                 <form id="registerP3" style="display:none;">
                   <div class="g-signin2" data-onsuccess="onSignIn"></div>
                 </form>
-                <button type="button" onclick="testSend();"> Test </butto>
 
                 <!-- Error with registeration modal -->
                 <button id="errorRegButton" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" hidden>

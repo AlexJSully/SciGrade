@@ -138,16 +138,11 @@ function verifyStudent(VerifyIDHolder) {
   }
 }
 
-var googleName;
-var googleEmail;
 var upper = "student_list." + studentParseNum + ".gmail";
 /**
 * Retrieves Google user information and stores it
 */
-function onSignIn(googleUser) {
-  var profile = googleUser.getBasicProfile();
-  googleName = profile.getName();
-  googleEmail = profile.getEmail(); // This is null if the 'email' scope is not present.
+function sendLogReg() {
   if (checkVerifyStudent == true && checkstudentNum == true && studentNumber != 0 && googleEmail != null) {
     client.login().then(() =>
       db.collection("Student_Information").updateOne({version: "0.3"}, { $set: {upper: googleEmail}}, function(err, res) {
@@ -158,14 +153,6 @@ function onSignIn(googleUser) {
     redirectCRISPR();
   }
 }
-
-/**
-* Google signout
-*/
-function signOut() {
-    var auth2 = gapi.auth2.getAuthInstance();
-    auth2.signOut();
-  }
 
 /**
 * Once users have registered OR logged in, the page dynamically generates the CRISPR assignment page
@@ -213,4 +200,5 @@ function redirectCRISPR() {
 
 $(document).ready(function() {
   loadJSON_Files();
+  signOut();
 })
