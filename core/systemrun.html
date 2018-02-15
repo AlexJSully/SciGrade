@@ -25,15 +25,7 @@
       var profile = googleUser.getBasicProfile();
       googleName = profile.getName();
       googleEmail = profile.getEmail(); // This is null if the 'email' scope is not present.
-      if (checkVerifyStudent == true && checkstudentNum == true && studentNumber != 0 && googleEmail != null) {
-        client.login().then(() =>
-          db.collection("Student_Information").updateOne({version: "0.3"}, { $set: {upper: googleEmail}}, function(err, res) {
-          if (err) throw err;
-          console.log("1 document updated");
-          db.close();
-        }));
-        redirectCRISPR();
-      }
+      sendLogReg();
     }
 
     /**
