@@ -16,6 +16,8 @@
     <script src="https://apis.google.com/js/platform.js" async defer></script>
     <meta name="google-signin-client_id" content="1034277489697-g473uqcd0oc1c02td9off07b9mbe1353.apps.googleusercontent.com">
     <script>
+    var studentParseNum;
+
     var googleName;
     var googleEmail;
     /**
@@ -68,18 +70,16 @@
             <div class="tab-content" id="logTabContent">
               <!-- Login -->
               <div role="tabpanel" class="tab-pane fade" id="login" aria-labelledby="login">
-                <form id="login">
+                <form id="loginForm">
                   <div class="form-group">
-                    <label for="InputStudentNumber">Student number</label>
-                    <input type="number" class="form-control" id="InputStudentNumber" placeholder="1234567890" pattern=".{9,10}">
-                    <small id="studentNumberHelp" class="form-text text-muted">We'll never share your student number with anyone else.</small>
+                    <label for="InputStudentNumberLogin">Student number</label>
+                    <input class="form-control" id="StudentNumberLogin" placeholder="1234567890" maxlength="10">
+                    <small id="studentNumberLoginHelp" class="form-text text-muted">We'll never share your student number with anyone else.</small>
                   </div>
-                  <div class="form-group">
-                    <label for="InputPassword">Password</label>
-                    <input type="password" class="form-control" id="InputPassword" placeholder="Password">
-                    <small id="passwordHelp" class="form-text text-muted">We'll never share your password with anyone else.</small>
-                  </div>
-                  <button type="submit" class="btn btn-primary">Login</button>
+                  <button id="verifyLogin" type="submit" class="btn btn-primary" onclick="loginVerify(document.getElementById('StudentNumberLogin').value)">Verify</button>
+                </form>
+                <form id="loginP2" style="display:none;">
+                  <div class="g-signin2" data-onsuccess="onSignIn"></div>
                 </form>
               </div>
               <!-- Registeration -->

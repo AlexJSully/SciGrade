@@ -446,7 +446,7 @@ function checkOffTarget(score) {
   var OffTargetValue_down = Math.floor(score);
   var OffTargetValue_up = Math.ceil(score);
   var InputOffTargetValue = parseInt(document.getElementById("offtarget_input").value);
-  // See if on-target value matches input value
+  // See if off-target value matches input value
   if (correctNucleotideIncluded == true && MARgRNAseq == true) {
     if (InputOffTargetValue >= OffTargetValue_down && InputOffTargetValue <= OffTargetValue_up) {
       MAROffTarget = true;

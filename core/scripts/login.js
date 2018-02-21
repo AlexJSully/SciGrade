@@ -20,7 +20,6 @@ function loadJSON_Files() {
 
 var checkstudentNum = false;
 var studentNumber = 0;
-var studentParseNum = 999999999;
 var alreadyRegistered = false;
 /**
 * Check to determine if the student is within
@@ -39,6 +38,7 @@ function checkStudentNumber(student_num, student_umail) {
           alreadyRegistered = true;
         }
         if (student_reg_information[0]["student_list"][i]["umail"] == student_umail && alreadyRegistered == false) {
+          alreadyRegistered = false;
           checkstudentNum = true;
           studentNumber = student_num;
           studentParseNum = i;
@@ -64,6 +64,44 @@ function checkStudentNumber(student_num, student_umail) {
 }
 
 /**
+* Check to determine if the student is registered in the system
+* @param {Num} student_num - Student number
+*/
+function loginVerify(student_NumVerify){
+  alreadyRegistered = false;
+  var maxNum = 0;
+  checkstudentNum = false;
+  if (student_reg_information[0]["student_list"] != null && student_reg_information[0]["student_list"].length > 0) {
+    for (i = 0; i < student_reg_information[0]["student_list"].length; i++) {
+      if (student_reg_information[0]["student_list"][i]["student_number"] == student_num) {
+        if (student_reg_information[0]["student_list"][i]["gmail"] != "unregistered") {
+          alreadyRegistered = true;
+          checkstudentNum = true;
+          studentNumber = student_num;
+          studentParseNum = i;
+        }
+        else if (student_reg_information[0]["student_list"][i]["gmail"] == "unregistered") {
+          alreadyRegistered = false;
+        }
+      }
+      else {
+        maxNum += 1;
+      }
+    }
+  }
+  if (alreadyRegistered == true && checkstudentNum == true) {
+    $("#loginForm").empty();
+    document.getElementById("registerP3").style.display = "block";
+  }
+  else if (alreadyRegistered == false) {
+    showRegError(5);
+  }
+  else if (maxNum == student_reg_information[0]["student_list"].length) {
+    showRegError(1);
+  }
+}
+
+/**
 * Which reg error shows
 * @param {Num} whichOne - Number indicator for which error to show
 */
@@ -82,6 +120,10 @@ function showRegError(whichOne) {
   }
   else if (whichOne == 4) { // Verify ID was incorrect
     document.getElementById("errorRegContent").innerHTML = "You are already registered for SciGrade, please navigate to the login tab instead of the register. If an issue arises, please contact our TA, Professor or Admin for further help.";
+    $("#errorRegButton").click();
+  }
+  else if (whichOne == 5) { // Not yet registered for SciGrade
+    document.getElementById("errorRegContent").innerHTML = "It appears that you have not yet registered for SciGrade, please navigate to the register tab and register first. If an issue arises, please contact our TA, Professor or Admin for further help.";
     $("#errorRegButton").click();
   }
 }
