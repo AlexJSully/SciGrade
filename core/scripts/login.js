@@ -37,7 +37,7 @@ function checkStudentNumber(student_num, student_umail) {
         if (student_reg_information[0]["student_list"][i]["gmail"] != "unregistered") {
           alreadyRegistered = true;
         }
-        if (student_reg_information[0]["student_list"][i]["umail"] == student_umail && alreadyRegistered == false) {
+        if (student_reg_information[0]["student_list"][i]["umail"].toLowerCase() == student_umail.toLowerCase() && alreadyRegistered == false) {
           alreadyRegistered = false;
           checkstudentNum = true;
           studentNumber = student_num;
@@ -168,7 +168,7 @@ function verifyStudent(VerifyIDHolder) {
   checkVerifyStudent = false;
   if (student_reg_information[0]["student_list"] != null && Object.keys(student_reg_information[0]["student_list"]).length > 0) {
     if (student_reg_information[0]["student_list"][studentParseNum] != null || student_reg_information[0]["student_list"][studentParseNum] != undefined) {
-      if (student_reg_information[0]["student_list"][studentParseNum]["verifyID"] == VerifyIDHolder) {
+      if (student_reg_information[0]["student_list"][studentParseNum]["verifyID"].toLowerCase() == VerifyIDHolder.toLowerCase()) {
         checkVerifyStudent = true;
       }
     }
@@ -210,6 +210,26 @@ function sendLogReg() {
     }
   }
 }
+
+
+function signOutDisplay() {
+  signOut();
+  $("#mainContainer").empty();
+  var append_str;
+  append_str = "<div class='row'>\n";
+  // Pre-all
+  append_str += '<div class="col-sm-1"></div><div class="col-sm-10"><ul class="nav nav-tabs"  id="logTabs" role="tablist"><li class="nav-item"><a class="nav-link" id="login-tab" data-toggle="tab" href="#login" role="tab" aria-controls="login">Login</a></li><li class="nav-item"><a class="nav-link" id="register-tab" data-toggle="tab" href="#register" role="tab" aria-controls="register">Register</a></li></ul><div class="tab-content" id="logTabContent">\n';
+  // Login
+  append_str += '<!-- Login --><div role="tabpanel" class="tab-pane fade" id="login" aria-labelledby="login"><form id="loginForm"><div class="form-group"><label for="InputStudentNumberLogin">Student number</label><input class="form-control" id="StudentNumberLogin" placeholder="1234567890" maxlength="10"><small id="studentNumberLoginHelp" class="form-text text-muted">We\'ll never share your student number with anyone else.</small></div><button id="verifyLogin" type="button" class="btn btn-primary" onclick="loginVerify(document.getElementById(' + "'StudentNumberLogin'" + ').value)">Verify</button></form><form id="loginP2" style="display:none; margin-top:2%;"><div class="g-signin2" data-onsuccess="onSignIn"></div></form></div>\n';
+  // Registeration
+  append_str += '<!-- Registeration --><div role="tabpanel" class="tab-pane fade" id="register" aria-labelledby="register"><p> Registration is limited to students in the appropriate University of Toronto HMB class. If you are not in the appropriate HMB class, you cannot register for SciGrade. Though once you have registered for SciGrade, you now have a permanent account and can use SciGrade whenever you want. <p><p id="pP1"> First, please verify that you are a student at the University of Toronto:</p><form id="registerP1"><div class="form-group" id="studentID"><label for="StudentNumber">Student number:</label><input class="form-control" id="StudentNumber" placeholder="1234567890" maxlength="10"><small id="studentNumberHelp" class="form-text text-muted">Insert your 9 to 10 digit student number to verify you are a student at the University of Toronto.</small></div><div class="form-group" id="studentumail"><label for="StudentEmail">Student uMail:</label><input type="email" class="form-control" id="StudentEmail" placeholder="first.last@mail.utoronto.ca"><small id="studentEmailHelp" class="form-text text-muted">Insert your student uMail (email) from the University of Toronto.</small></div><button id="firstSubmit" type="button" class="btn btn-primary" onclick="checkStudentNumber(document.getElementById(\'StudentNumber\').value, document.getElementById(\'StudentEmail\').value);">Check</button></form><p id="pP2"></p><form id="registerP2"></form><p id="pP3"></p><form id="registerP3" style="display:none;"><div class="g-signin2" data-onsuccess="onSignIn"></div></form></div>\n';
+  // Close
+  append_str += '</div><div class="col-sm-1"></div>\n'
+  append_str += "</div>\n";
+  $("#mainContainer").append(append_str);
+  document.getElementById("logIO").innerHTML = changeLogin + " Login";
+  document.getElementById("logIO").setAttribute("onclick");
+};
 
 var changeLogin = '<i class="material-icons" style="font-size:inherit;">&#xE7FD;</i>';
 /**
@@ -255,11 +275,11 @@ function redirectCRISPR() {
   ModeSelectionAdd(selection_inMode);
   loadCRISPRJSON_Files();
   document.getElementById("logIO").innerHTML = changeLogin + " Logout";
+  document.getElementById("logIO").setAttribute("onclick", "signOutDisplay();")
   document.getElementById("accountIO").removeAttribute("hidden");
   openAccountManagement();
 }
 
 $(document).ready(function() {
   loadJSON_Files();
-  signOut();
 })
