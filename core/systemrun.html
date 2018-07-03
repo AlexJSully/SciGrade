@@ -165,9 +165,8 @@
           </div>
           <div class="modal-body" id="feedbackBody">
             <p id="errorRegContent">Congratulations! Your answers have been submitted.</p>
-            <br>
             <p id="options_label"> Would you like to see feedback on your answers or start a new assignment? </p>
-            <p> <button type="button" class="btn btn-primary" onclick="showFeedback();">Feedback</button> <button type="button" class="btn btn-primary" onclick="possible_gene = 'eBFP'; select_Gene(); $('#dismissFeedbackModal').click();">Assignment</button> </p>
+            <p> <button type="button" class="btn btn-primary" onclick="showFeedback(); $('#dismissFeedbackModal').click();">Feedback</button> <button type="button" class="btn btn-primary" onclick="possible_gene = 'eBFP'; select_Gene(); $('#dismissFeedbackModal').click();">Assignment</button> </p>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal" id="dismissFeedbackModal">Close</button>

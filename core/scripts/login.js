@@ -256,7 +256,7 @@ function redirectCRISPR() {
   append_str += "<label class='btn btn-primary active' style='padding: .075rem .75rem;'' id='practice' onclick='selection_inMode = this.id; ModeSelectionAdd(this.id)'>\n";
   append_str += "<input type='radio' name='practice_mode' autocomplete='off'  checked> Practice\n";
   append_str += "</label>\n";
-  append_str += "<label class='btn btn-primary' style='padding: .075rem .75rem;' id='assignment' onclick='selection_inMode = this.id; ModeSelectionAdd(this.id)'>\n";
+  append_str += "<label class='btn btn-primary' style='padding: .075rem .75rem;' id='assignment' onclick='selection_inMode = this.id; ModeSelectionAdd(this.id);'>\n";
   append_str += "<input type='radio' name='assignemnt_mode' autocomplete='off'> Assignment\n";
   append_str += "</label>\n";
   append_str += "</div>\n";
@@ -281,11 +281,11 @@ function redirectCRISPR() {
   $("#mainContainer").append(append_str);
   ModeSelectionAdd(selection_inMode);
   loadCRISPRJSON_Files();
+  setTimeout(function(){fillGeneList();}, 700);
   document.getElementById("logIO").innerHTML = changeLogin + " Logout";
   document.getElementById("logIO").setAttribute("onclick", "signOutDisplay();")
   document.getElementById("accountIO").removeAttribute("hidden");
   openAccountManagement();
-  fillGeneList();
 }
 
 $(document).ready(function() {
