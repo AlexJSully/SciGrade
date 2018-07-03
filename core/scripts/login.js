@@ -130,6 +130,10 @@ function showRegError(whichOne) {
     document.getElementById("errorRegContent").innerHTML = "This is not the Google account associated with this student number. If an issue arises, please contact our TA, Professor or Admin for further help.";
     $("#errorRegButton").click();
   }
+  else if (whichOne == 7) { // Restricted access to only TA's and Admins'
+    document.getElementById("errorRegContent").innerHTML = "This feature is restricted to only TA's and admins. You do not have access. Please contact a TA or admin for access.";
+    $("#errorRegButton").click();
+  }
 }
 
 /**
@@ -186,8 +190,8 @@ function verifyStudent(VerifyIDHolder) {
 
 var gupper;
 /**
-* Retrieves Google user information and stores it
-*/
+ * Retrieves Google user information and stores it
+ */
 function sendLogReg() {
   if (alreadyRegistered == false) {
     gupper = "student_list." + studentParseNum + ".gmail";
@@ -212,6 +216,9 @@ function sendLogReg() {
 }
 
 
+/**
+ * Signs the user out and returns screen back to login/register display
+ */
 function signOutDisplay() {
   signOut();
   $("#mainContainer").empty();
@@ -278,6 +285,7 @@ function redirectCRISPR() {
   document.getElementById("logIO").setAttribute("onclick", "signOutDisplay();")
   document.getElementById("accountIO").removeAttribute("hidden");
   openAccountManagement();
+  fillGeneList();
 }
 
 $(document).ready(function() {

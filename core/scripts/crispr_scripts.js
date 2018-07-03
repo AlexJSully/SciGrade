@@ -17,10 +17,14 @@ function ModeSelectionAdd(mode) {
     $("#gene_dropdown_selection").append(append_str);
   }
   else if (mode == "assignment") {
-    append_str = '<option value="HBB" id="HBB" tag="assignment">HBB</option>\n';
-    append_str += '<option value="CCR5" id="CCR5" tag="assignment">CCR5</option>\n';
-    append_str += '<option value="ANKK1" id="ANKK1" tag="assignment">ANKK1</option>\n';
-    append_str += '<option value="APOE" id="APOE" tag="assignment">APOE</option>\n';
+    for (i = 0; i < list_of_assignments.length; i++) {
+      if (i == 0) {
+        append_str = '<option value="' + list_of_assignments[i] + '" id="' + list_of_assignments[i] + '" tag="assignment">' + list_of_assignments[i] + '</option>\n';
+      }
+      else {
+        append_str += '<option value="' + list_of_assignments[i] + '" id="' + list_of_assignments[i] + '" tag="assignment">' + list_of_assignments[i] + '</option>\n';
+      }
+    }
     $("#gene_dropdown_selection").append(append_str);
   }
   removeCompletedAssignments();
@@ -70,9 +74,30 @@ function loadCRISPRJSON_Files() {
   });
 }
 
+var list_of_practice = ["eBFP"];
+var list_of_assignments = ["CCR5"];
+/**
+ * Fill in and create a list of genes based on what is available in on the MongoDB server 
+ */
+function fillGeneList() {
+  list_of_practice = [];
+  list_of_assignments = [];
+  if (gene_backgroundInfo != null || gene_backgroundInfo != "" || gene_backgroundInfo != undefined || Object.keys(gene_backgroundInfo[0]["gene_list"]) != undefined) {
+    var list_of_genes = Object.keys(gene_backgroundInfo[0]["gene_list"]);
+    for (i = 0; i < list_of_genes.length; i++) {
+      if (gene_backgroundInfo[0]["gene_list"][list_of_genes[i]]["base_type"] == "practice") {
+        list_of_practice.push(list_of_genes[i]);
+      }
+      else if (gene_backgroundInfo[0]["gene_list"][list_of_genes[i]]["base_type"] == "assignment") {
+        list_of_assignments.push(list_of_genes[i]);
+      }
+    }
+  }
+}
+
 var loadedMoad = "practice";
 /**
-* Dynamically creates the work page for AlMark
+* Dynamically creates the work page for SciGrade
 */
 function loadWork() {
   if (gene_backgroundInfo != null || gene_backgroundInfo != "" || gene_backgroundInfo != undefined || backgroundInfo[0]["gene_list"][current_gene] != undefined) {
@@ -765,16 +790,24 @@ function openAccountManagement() {
 
   // Assignments
   if (student_reg_information[0]["student_list"][studentParseNum]["assignment-HBB-Marks"] != null) {
-    completed_assignments.push("HBB");
+    if (!completed_assignments.includes("HBB")) {
+      completed_assignments.push("HBB");
+    }    
   }
   if (student_reg_information[0]["student_list"][studentParseNum]["assignment-CCR5-Marks"] != null) {
-    completed_assignments.push("CCR5");
+    if (!completed_assignments.includes("CCR5")) {
+      completed_assignments.push("CCR5");
+    } 
   }
   if (student_reg_information[0]["student_list"][studentParseNum]["assignment-ANKK1-Marks"] != null) {
-    completed_assignments.push("ANKK1");
+    if (!completed_assignments.includes("ANKK1")) {
+      completed_assignments.push("ANKK1");
+    } 
   }
   if (student_reg_information[0]["student_list"][studentParseNum]["assignment-APOE-Marks"] != null) {
-    completed_assignments.push("APOE");
+    if (!completed_assignments.includes("APOE")) {
+      completed_assignments.push("APOE");
+    } 
   }
   if (completed_assignments.length != 0) {
     append_str += "<p>You have completed the following assignments: <p> <ul>";
@@ -791,9 +824,7 @@ function openAccountManagement() {
   if (student_reg_information[0]["student_list"][studentParseNum]["type"] == "admin" || student_reg_information[0]["student_list"][studentParseNum]["type"] == "TA") {
     var encodedURI = encodeURIComponent(JSON.stringify(student_reg_information[0]["student_list"]));
     append_str += "<p> Oh wait! Hello " + student_reg_information[0]["student_list"][studentParseNum]["type"] + "! Would you like to download student marks? </p>";
-    obtainedMarks = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(student_reg_information[0]["student_list"]));
-    append_str += "<a id='hidddenDownloadClick' href='data:text/json;charset=utf-8," + encodedURI + "' download='HMB311_studentMarks_SciGrade.json' hidden> Hidden click </a>"
-    append_str += '<p> <button type="button" class="btn btn-primary" onclick="document.getElementById(\'hidddenDownloadClick\').click();"> Download JSON </button> </p>';
+    append_str += '<p> <button type="button" class="btn btn-primary" onclick="generateHiddenStudentDownload(true);"> Download Marks </button> </p>';
     append_str += "<br>"
   }
 
@@ -845,6 +876,80 @@ function openAccountManagement() {
   }
 
   $("#accountManagementBody").append(append_str);
+}
+
+var downloadIndexTable_start = "\t\t<tr>\n\t\t\t<th>Student Number</th>\n\t\t\t<th>Name</th>";
+var downloadIndexTable_end = "\n\t\t</tr>\n";
+var downloadIndexTable_fill = "";
+
+/**
+ * Generated the base IndexTable for downloading JSON as CSV
+ * @param {*} whichIndexTable The string of which the index table start as, defaults as downloadIndexTable_start
+ * @param {boolean} [SimpleComplex=true] - True (default) is simple, false is complex
+ */
+function generateRestOfIndexTable(whichIndexTable, SimpleComplex = true) {
+  whichIndexTable += downloadIndexTable_start;
+  for (i = 0; i < list_of_assignments.length; i++) {
+    whichIndexTable += "\n\t\t\t<th>" + list_of_assignments[i] + "</th>";
+    if (SimpleComplex == true) {
+      whichIndexTable += "\n\t\t\t<th>Percent</th>";
+      whichIndexTable += "\n\t\t\t<th>Raw</th>";
+    }
+    else if (SimpleComplex == false) {
+      whichIndexTable += "\n\t\t\t<th>Percent</th>";
+      for (i = 0; i < 9; i++) {
+        whichIndexTable += "\n\t\t\t<th>" + (i + 1) +". Input, Value</th>";
+      }      
+    }
+  }  
+  whichIndexTable += downloadIndexTable_end;
+  return whichIndexTable;
+}
+
+/**
+ * Generated a download button from JSON to CSV
+ * @param {boolean} [whichType=true] - True (default) is simple, false is complex
+ */
+function generateHiddenStudentDownload(whichType = true) {
+  // Check if TA/Admin
+  if (student_reg_information[0]["student_list"][studentParseNum]["type"] == "TA" || student_reg_information[0]["student_list"][studentParseNum]["type"] == "admin") {
+    downloadIndexTable_fill = generateRestOfIndexTable(downloadIndexTable_fill, whichType);
+    $("#hiddenDownloadModal_table").empty(); // reset
+    var d = new Date();
+    var downlodaIndexTable_str = "<table id='downloadIndexTable'>\n\t<tbody>\n";
+    downlodaIndexTable_str += "\t\t<caption>studentOutput_downloadby_" + student_reg_information[0]["student_list"][studentParseNum]["type"] + "_" + d.getFullYear() + "-" + d.getMonth() + "_" + d.getDate() + "</caption>\n";
+    downlodaIndexTable_str += downloadIndexTable_fill;
+    // Looping through each row of the table
+    studentRegList = student_reg_information[0]["student_list"];
+    for (i = 0; i < studentRegList.length; i++) {
+      if (studentRegList[i]["type"] == "Student") {
+        downlodaIndexTable_str += "\t\t<tr>\n";
+        downlodaIndexTable_str += "\t\t\t<td>" + studentRegList[i]["student_number"] + "</td>\n";
+        downlodaIndexTable_str += "\t\t\t<td>" + studentRegList[i]["name"] + "</td>\n";
+        if (whichType == true) {
+          for (x = 0; x < list_of_assignments.length; x++) {
+            if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Marks"] != null) {
+              downlodaIndexTable_str += "\t\t\t<td>" + (list_of_assignments[x]).toString() + "</td>\n";
+              downlodaIndexTable_str += "\t\t\t<td>" + (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Marks"][1]).toString() + "</td>\n";
+              downlodaIndexTable_str += "\t\t\t<td>" + (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Marks"][0]).toString() + "</td>\n";
+            }
+            else if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Marks"] == null) {
+              downlodaIndexTable_str += "\t\t\t<td>" + (list_of_assignments[x]).toString() + "</td>\n";
+              downlodaIndexTable_str += "\t\t\t<td> Incompleted </td>\n";
+              downlodaIndexTable_str += "\t\t\t<td> 0.00 </td>\n";
+            }
+          }
+        }
+        downlodaIndexTable_str += "\t\t</tr>\n";
+      }
+    }
+    downlodaIndexTable_str += "\t</tbody>\n</table>"; // Closing
+    document.getElementById("hiddenDownloadModal_table").innerHTML += downlodaIndexTable_str;
+    $("#hiddenDownloadModal_table").tableToCSV();
+  }  
+  else {
+    showRegError(7);
+  }
 }
 
 function addUserToServer(number, name, umail, verify, type) {

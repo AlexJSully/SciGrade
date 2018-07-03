@@ -17,6 +17,8 @@
     <!-- Google Identity Platform Scripts -->
     <script src="https://apis.google.com/js/platform.js" async defer></script>
     <meta name="google-signin-client_id" content="1034277489697-g473uqcd0oc1c02td9off07b9mbe1353.apps.googleusercontent.com">
+    <!-- tabletoCSV tool to create an option to download XML as CSV -->
+    <script src="scripts\tabletoCSV\jquery.tabletoCSV.js"></script>
     <script>
     var studentParseNum;
 
@@ -180,7 +182,7 @@
     </button>
     <!-- Account management Modal -->
     <div class="modal fade" id="accountModal" tabindex="-1" role="dialog" aria-labelledby="accountModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-dialog modal-lg" role="document" style="max-width: 80%;">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="accountModalLabel">Account Management</h5>
@@ -216,6 +218,25 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal" id="dismissAdminSendModal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hidden student download modal -->
+    <div id="hiddenDownloadModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+      <div class="modal-dialog modal-lg" style="width: 940px;">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" style="margin-top: -5px;" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div class="table-responsive json_modal_table" id="hiddenDownloadJSONCSV">
+              <table id="hiddenDownloadModal_table" class="table"></table>
+            </div>
+          </div>
+          <div class="modal-footer modal-footer-colour">
+            <button type="button" class="btn btn-default modal-close" data-dismiss="modal" id="closemodal">Close</button>
           </div>
         </div>
       </div>
