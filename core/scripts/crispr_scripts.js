@@ -1,11 +1,16 @@
+//================================= SciGrade ==================================
+//
+// Purpose: General script for SciGrade
+//
+//=============================================================================
 var selection_inMode = "practice";
 var possible_gene = "eBFP";
 var current_gene = "empty";
 
 /**
-* Adds the genes to the Gene's dropdown menu
-* @param {String} mode - The CRISPR dry lab's mode ("practice" or "assignment")
-*/
+ * Adds the genes to the Gene's dropdown menu
+ * @param {String} mode - The CRISPR dry lab's mode ("practice" or "assignment")
+ */
 function ModeSelectionAdd(mode) {
   $("#gene_dropdown_selection").empty();
   document.getElementById("load_button").disabled;
@@ -31,8 +36,8 @@ function ModeSelectionAdd(mode) {
 }
 
 /**
-* Purpose of this is to assign the current gene and check for errors
-*/
+ * Purpose of this is to assign the current gene and check for errors
+ */
 function select_Gene() {
   if (possible_gene != null || possible_gene != "" || possible_gene != undefined) {
     current_gene = possible_gene;
@@ -51,8 +56,8 @@ function select_Gene() {
 var gene_backgroundInfo;
 var benchling_grna_ouputs;
 /**
-* Load JSON files
-*/
+ * Load JSON files
+ */
 function loadCRISPRJSON_Files() {
   const client = new stitch.StitchClient('almark-wvohf');
   const db = client.service('mongodb', 'mongodb-atlas').db('AlMark');
@@ -97,8 +102,8 @@ function fillGeneList() {
 
 var loadedMoad = "practice";
 /**
-* Dynamically creates the work page for SciGrade
-*/
+ * Dynamically creates the work page for SciGrade
+ */
 function loadWork() {
   if (gene_backgroundInfo != null || gene_backgroundInfo != "" || gene_backgroundInfo != undefined || backgroundInfo[0]["gene_list"][current_gene] != undefined) {
     $("#work").empty();
@@ -210,10 +215,10 @@ function loadWork() {
 }
 
 /**
-* @param {event} evt - Character key press
-* @return {bool} - Returns true if number or dash, false elsewords
-* Determine if a number or dash key is pressed
-*/
+ * @param {event} evt - Character key press
+ * @return {bool} - Returns true if number or dash, false elsewords
+ * Determine if a number or dash key is pressed
+ */
 function isNumberOrDashKey(evt) {
   var charCode = (evt.which) ? evt.which : event.keyCode;
   if (charCode != 46 && charCode != 45 && charCode > 31 && (charCode < 48 || charCode > 57)) {
@@ -222,9 +227,7 @@ function isNumberOrDashKey(evt) {
   return true;
 }
 
-/**
-* Global marking variables
-*/
+//Global marking variables:
 var MARgRNAseq = false;
 var MARgRNAseq_degree = 0; // 0 wrong, 1 correct, 2 partial of <20bp, 3 technically correct of <30bp
 var MARPAMseq = false;
@@ -249,6 +252,9 @@ var correctNucleotideIncluded = false;
 var true_counts = 0; // This exists for the instance that there is more than one match for inputedSeq
 
 var checkAnswers_executed = false;
+/**
+ * Checks the answer in the submission form and determines if they are correct or not
+ */
 function checkAnswers() {
   var correctNucleotide = gene_backgroundInfo[0]["gene_list"][current_gene]["Sequence"].charAt(gene_backgroundInfo[0]["gene_list"][current_gene]["Target position"]);
   var correctNucleotidePosition = gene_backgroundInfo[0]["gene_list"][current_gene]["Target position"] - 1;
@@ -390,13 +396,13 @@ function checkAnswers() {
   checkAnswers_executed = true;
 }
 
-/**
-* Checks the on-target score if it is correct based on the target region range
-* @param {int} parseNum - Integer for possible_comparable_answers parse
-* @return {bool} - Returns true if MAROnTarget is correct
-*/
 var ontarget_geneParse = [];
 var ontarget_lastResort = [];
+/**
+ * Checks the on-target score if it is correct based on the target region range
+ * @param {int} parseNum - Integer for possible_comparable_answers parse
+ * @return {bool} - Returns true if MAROnTarget is correct
+ */
 function checkOnTargetRange(parseNum) {
   // Create on-target variables
   var OnTargetValue_down = Math.floor(possible_comparable_answers[parseNum]["Efficiency Score"]);
@@ -459,15 +465,15 @@ function checkOnTargetRange(parseNum) {
   }
 }
 
-/**
-* Checks the off-target score if it is correct
-* @param {int} score - The specificity score from possible_comparable_answers
-* @return {bool} - Returns true if MAROffTarget is correct
-*/
 var offtarget_List = [];
 var offtarget_dict = {};
 var offtarget_dictParse = [];
 var offtarget_Use = [];
+/**
+ * Checks the off-target score if it is correct
+ * @param {int} score - The specificity score from possible_comparable_answers
+ * @return {bool} - Returns true if MAROffTarget is correct
+ */
 function checkOffTarget(score) {
   // Create off-target variables
   var OffTargetValue_down = Math.floor(score);
@@ -528,12 +534,12 @@ function checkOffTarget(score) {
   }
 }
 
-/**
-* Checks if the F1 primer is correct or not
-* @param {String} seq - The gRNA sequence
-* @return {bool} - Returns true if MARF1primers is correct
-*/
 var possible_F1_primers = [];
+/**
+ * Checks if the F1 primer is correct or not
+ * @param {String} seq - The gRNA sequence
+ * @return {bool} - Returns true if MARF1primers is correct
+ */
 function checkF1Primers(seq) {
   possible_F1_primers = [];
   var begin_F1 = "TAATACGACTCACTATAG";
@@ -552,13 +558,13 @@ function checkF1Primers(seq) {
   }
 }
 
-/**
-* Checks if the R1 primer is correct or not
-* @param {String} seq - The gRNA sequence
-* @return {bool} - Returns true if MARR1primers is correct
-*/
 var possible_R1_primers = [];
-var complementary_nt_dict = {"A":"T", "T":"A", "C":"G", "G":"C"}
+var complementary_nt_dict = {"A":"T", "T":"A", "C":"G", "G":"C"};
+/**
+ * Checks if the R1 primer is correct or not
+ * @param {String} seq - The gRNA sequence
+ * @return {bool} - Returns true if MARR1primers is correct
+ */
 function checkR1Primers(seq) {
   possible_R1_primers = [];
   var begin_R1 = "TTCTAGCTCTAAAAC";
@@ -575,8 +581,8 @@ function checkR1Primers(seq) {
 }
 
 /**
-* Creates a complementary sequence of the nucleotides
-*/
+ * Creates a complementary sequence of the nucleotides
+ */
 function createComplementarySeq(seq) {
   var comp_seq = "";
   for (i = 0; i < seq.length; i++) {
@@ -587,8 +593,8 @@ function createComplementarySeq(seq) {
 var studentMark = 0;
 var studentMarkPercentage = 0;
 /**
-* Based on checkAnswers(), returns a float of a mark
-*/
+ * Based on checkAnswers(), returns a float of a mark
+ */
 function markAnswers() {
   if (checkAnswers_executed == false) {
     checkAnswers();
@@ -641,8 +647,8 @@ function markAnswers() {
 }
 
 /**
-* Show feedback for students
-*/
+ * Show feedback for students
+ */
 function showFeedback() {
   $("#mainContainer").empty();
   var append_str = "<p> You would only receive feedback on your practice attempts and not your final assignment.</p>";
@@ -782,8 +788,8 @@ function showFeedback() {
 
 var completed_assignments = [];
 /**
-* Account management functions. This function depends on login.js, without that, this will not run!
-*/
+ * Account management functions. This function depends on login.js, without that, this will not run!
+ */
 function openAccountManagement() {
   $("#accountManagementBody").empty();
   var append_str = "<p>Hello " + student_reg_information[0]["student_list"][studentParseNum]["name"].split(' ')[0] + "!</p>";
@@ -823,14 +829,13 @@ function openAccountManagement() {
   // Obtain student marks
   if (student_reg_information[0]["student_list"][studentParseNum]["type"] == "admin" || student_reg_information[0]["student_list"][studentParseNum]["type"] == "TA") {
     var encodedURI = encodeURIComponent(JSON.stringify(student_reg_information[0]["student_list"]));
-    append_str += "<p> Oh wait! Hello " + student_reg_information[0]["student_list"][studentParseNum]["type"] + "! Would you like to download student marks? </p>";
+    append_str += "<p> <b> Oh wait! </b> Hello " + student_reg_information[0]["student_list"][studentParseNum]["type"] + "! Would you like to download student marks? </p>";
     append_str += '<p> <button type="button" class="btn btn-primary" onclick="generateHiddenStudentDownload(true);"> Download Marks </button> </p>';
-    append_str += "<br>"
   }
 
   // Admin access to add new users
   if (student_reg_information[0]["student_list"][studentParseNum]["type"] == "admin") {
-    append_str += "<br> <p> <b> ADMIN POWER! </b> <p>";
+    append_str += "<p> <b> ADMIN POWER! </b> <p>";
     append_str += "<p> If you would like to add new users (students, TAs or admins), please fill in the form below: </p>";
     // Form opening
     append_str += "<form>";
@@ -881,7 +886,6 @@ function openAccountManagement() {
 var downloadIndexTable_start = "\t\t<tr>\n\t\t\t<th>Student Number</th>\n\t\t\t<th>Name</th>";
 var downloadIndexTable_end = "\n\t\t</tr>\n";
 var downloadIndexTable_fill = "";
-
 /**
  * Generated the base IndexTable for downloading JSON as CSV
  * @param {*} whichIndexTable The string of which the index table start as, defaults as downloadIndexTable_start
@@ -952,6 +956,14 @@ function generateHiddenStudentDownload(whichType = true) {
   }
 }
 
+/**
+ * Adds the user to the MongoDB server
+ * @param {String} number Student number
+ * @param {String} name Student' name
+ * @param {String} umail Student's email
+ * @param {String} verify Student's verification ID
+ * @param {String} type Is this student, TA or admin?
+ */
 function addUserToServer(number, name, umail, verify, type) {
   var addNum = student_reg_information[0]["student_list"].length;
   var studentNumber = "student_list." + addNum + "." + "student_number";
@@ -974,8 +986,8 @@ function addUserToServer(number, name, umail, verify, type) {
 }
 
 /**
-* Remove completed assignments from the assignment selection option
-*/
+ * Remove completed assignments from the assignment selection option
+ */
 function removeCompletedAssignments() {
   completed_assignments = [];
   if (completed_assignments.length > 0) {
@@ -991,6 +1003,9 @@ var all_marks = [];
 var studentanswers = "student_list." + studentParseNum + "."+ loadedMoad + "-" + current_gene + "-Answers";
 var studentoutputs = "student_list." + studentParseNum + "."+ loadedMoad + "-" + current_gene + "-Outputs";
 var studentmarks = "student_list." + studentParseNum + "."+ loadedMoad + "-" + current_gene + "-Marks";
+/**
+ * Submit and sends the student's answers to the server
+ */
 function submitAnswers() {
   checkAnswers();
   markAnswers();

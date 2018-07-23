@@ -1,12 +1,15 @@
-/**
-* Purpose: Login scripts for SciGrade
-**/
+//================================= SciGrade ==================================
+//
+// Purpose: Login and registeration for SciGrade
+//
+//=============================================================================
+
 var student_reg_information;
 const client = new stitch.StitchClient('almark-wvohf');
 const db = client.service('mongodb', 'mongodb-atlas').db('AlMark');
 /**
-* Load JSON files
-*/
+ * Load JSON files
+ */
 function loadJSON_Files() {
   // Student information
   client.login().then(() =>
@@ -22,11 +25,11 @@ var checkstudentNum = false;
 var studentNumber = 0;
 var alreadyRegistered = false;
 /**
-* Check to determine if the student is within
-* @param {Num} student_num - Student number
-* @param {String} student_umail - Student's email/uMail
-* @return {bool} checkstudentNum - Whether the student is a student in the system or not
-*/
+ * Check to determine if the student is within
+ * @param {Num} student_num - Student number
+ * @param {String} student_umail - Student's email/uMail
+ * @return {bool} checkstudentNum - Whether the student is a student in the system or not
+ */
 function checkStudentNumber(student_num, student_umail) {
   alreadyRegistered = false;
   var maxNum = 0;
@@ -64,9 +67,9 @@ function checkStudentNumber(student_num, student_umail) {
 }
 
 /**
-* Check to determine if the student is registered in the system
-* @param {Num} student_num - Student number
-*/
+ * Check to determine if the student is registered in the system
+ * @param {Num} student_num - Student number
+ */
 function loginVerify(student_NumVerify){
   alreadyRegistered = false;
   var maxNum = 0;
@@ -102,9 +105,9 @@ function loginVerify(student_NumVerify){
 }
 
 /**
-* Which reg error shows
-* @param {Num} whichOne - Number indicator for which error to show
-*/
+ * Which reg error shows
+ * @param {Num} whichOne - Number indicator for which error to show
+ */
 function showRegError(whichOne) {
   if (whichOne == 1) { // Not in our database
     document.getElementById("errorRegContent").innerHTML = "It appears that you are not a student in our database.\n Are you a UofT student? If so, contact our TA, Professor or Admin for further help.";
@@ -137,8 +140,8 @@ function showRegError(whichOne) {
 }
 
 /**
-* Adds the verification student section to the login page
-*/
+ * Adds the verification student section to the login page
+ */
 function addSecondSection() {
   $("#pP1").empty();
   $("#registerP1").empty();
@@ -155,8 +158,8 @@ function addSecondSection() {
 }
 
 /**
-* Adds the verification student section to the login page
-*/
+ * Adds the verification student section to the login page
+ */
 function addThirdSection() {
   $("#pP2").empty();
   $("#registerP2").empty();
@@ -166,8 +169,8 @@ function addThirdSection() {
 
 var checkVerifyStudent = false;
 /**
-* Checks and verifies if the student is in the class or not
-*/
+ * Checks and verifies if the student is in the class or not
+ */
 function verifyStudent(VerifyIDHolder) {
   checkVerifyStudent = false;
   if (student_reg_information[0]["student_list"] != null && Object.keys(student_reg_information[0]["student_list"]).length > 0) {
@@ -240,8 +243,8 @@ function signOutDisplay() {
 
 var changeLogin = '<i class="material-icons" style="font-size:inherit;">&#xE7FD;</i>';
 /**
-* Once users have registered OR logged in, the page dynamically generates the CRISPR assignment page
-*/
+ * Once users have registered OR logged in, the page dynamically generates the CRISPR assignment page
+ */
 function redirectCRISPR() {
   $("#mainContainer").empty();
   var append_str;
