@@ -23,7 +23,9 @@ function loadJSON_Files() {
 
 var checkstudentNum = false;
 var studentNumber = 0;
+var studentUmail;
 var alreadyRegistered = false;
+var classRegister;
 /**
  * Check to determine if the student is within
  * @param {Num} student_num - Student number
@@ -31,27 +33,35 @@ var alreadyRegistered = false;
  * @return {bool} checkstudentNum - Whether the student is a student in the system or not
  */
 function checkStudentNumber(student_num, student_umail) {
-  alreadyRegistered = false;
-  var maxNum = 0;
+  loadJSON_Files();
+  var alreadyRegistered = false;
   checkstudentNum = false;
+  var maxNum = 0;
+  var classList = student_reg_information[0]["class_list"];
+  for (key in classList) {
   if (student_reg_information[0]["student_list"] != null && student_reg_information[0]["student_list"].length > 0) {
     for (i = 0; i < student_reg_information[0]["student_list"].length; i++) {
-      if (student_reg_information[0]["student_list"][i]["student_number"] == student_num) {
-        if (student_reg_information[0]["student_list"][i]["gmail"] != "unregistered") {
+        if (student_reg_information[0]["student_list"][i]["student_number"] == student_num && student_reg_information[0]["student_list"][i]["studentClass"] == key) {
           alreadyRegistered = true;
         }
-        if (student_reg_information[0]["student_list"][i]["umail"].toLowerCase() == student_umail.toLowerCase() && alreadyRegistered == false) {
-          alreadyRegistered = false;
-          checkstudentNum = true;
-          studentNumber = student_num;
-          studentParseNum = i;
-        }
-      }
-      else {
-        maxNum += 1;
       }
     }
   }
+  if (alreadyRegistered == false) {
+    for (key in classList) {    
+      if (classList[key][student_num] == student_umail) {
+          checkstudentNum = true;
+          studentNumber = student_num;
+          studentUmail = student_umail;
+          studentParseNum = i;
+          classRegister = key;
+          break;
+        }
+      else {
+        maxNum++; 
+      }
+    }
+  }  
   if (checkstudentNum == true) {
     addSecondSection();
   }
@@ -137,6 +147,10 @@ function showRegError(whichOne) {
     document.getElementById("errorRegContent").innerHTML = "This feature is restricted to only TA's and admins. You do not have access. Please contact a TA or admin for access.";
     $("#errorRegButton").click();
   }
+  else if (whichOne == 8) { // Unequal amount of student numbers and student emails
+    document.getElementById("errorRegContent").innerHTML = "There is an unequal amount of student numbers and student uMails, please correct this to proceed";
+    $("#errorRegButton").click();
+}
 }
 
 /**
@@ -145,50 +159,8 @@ function showRegError(whichOne) {
 function addSecondSection() {
   $("#pP1").empty();
   $("#registerP1").empty();
-  document.getElementById("pP2").innerHTML = "Second, please verify that you are a student in our HMB311 class:";
-  // Adding the second section here:
-  var append_str;
-  append_str = '<div class="form-group" id="studentVerify">\n';
-  append_str += '<label for="VerifyStudent">Student Verification ID:</label>\n';
-  append_str += '<input class="form-control" id="VerifyStudent" placeholder="wordWord000">\n';
-  append_str += '<small id="studentNumberHelp" class="form-text text-muted">Insert the verification ID given to you by your TA/Professor that is used to verify that you are part of the HMB311 class. Typical format is word then Word then 3 digit number.</small>\n';
-  append_str += '</div>\n';
-  append_str += '<button type="button" id="secondSubmit" class="btn btn-primary" onclick="verifyStudent(document.getElementById(\'VerifyStudent\').value);">Verify</button>\n';
-  $("#registerP2").append(append_str);
-}
-
-/**
- * Adds the verification student section to the login page
- */
-function addThirdSection() {
-  $("#pP2").empty();
-  $("#registerP2").empty();
-  document.getElementById("pP3").innerHTML = "Finnally, you will login through Google to register for SciGrade. This way you will never need to remmeber a username or password. Please click the button below to complete your registration";
+  document.getElementById("pP3").innerHTML = "Next, you will login through Google to register for SciGrade. This way you will never need to remmeber a username or password. Please click the button below to complete your registration";
   document.getElementById("registerP3").style.display = "block";
-}
-
-var checkVerifyStudent = false;
-/**
- * Checks and verifies if the student is in the class or not
- */
-function verifyStudent(VerifyIDHolder) {
-  checkVerifyStudent = false;
-  if (student_reg_information[0]["student_list"] != null && Object.keys(student_reg_information[0]["student_list"]).length > 0) {
-    if (student_reg_information[0]["student_list"][studentParseNum] != null || student_reg_information[0]["student_list"][studentParseNum] != undefined) {
-      if (student_reg_information[0]["student_list"][studentParseNum]["verifyID"].toLowerCase() == VerifyIDHolder.toLowerCase()) {
-        checkVerifyStudent = true;
-      }
-    }
-  }
-  if (checkVerifyStudent == true) {
-    addThirdSection();
-  }
-  else if (checkVerifyStudent == false) {
-    showRegError(3);
-  }
-  else {
-    showRegError(2);
-  }
 }
 
 var gupper;
@@ -197,10 +169,18 @@ var gupper;
  */
 function sendLogReg() {
   if (alreadyRegistered == false) {
-    gupper = "student_list." + studentParseNum + ".gmail";
-    if (checkVerifyStudent == true && checkstudentNum == true && studentNumber != 0 && googleEmail != null) {
+    var gupper = "student_list." + studentParseNum;
+    // Create student name
+    var splitName = studentUmail.split('@')[0].split('.');
+    var name = "";
+    for (var n = 0; n < splitName.length; n++) {
+      var capName = splitName[n].charAt(0).toUpperCase() + splitName[n].substr(1);
+      name += capName + " ";
+    }
+    name = name.trim();
+    if (checkstudentNum == true && studentNumber != 0 && googleEmail != null) {
       client.login().then(() =>
-        db.collection("Student_Information").updateOne({version: "0.3"}, { $set: {[gupper]: googleEmail}}, function(err, res) {
+        db.collection("Student_Information").updateOne({version: "0.3"}, { $set: {[gupper + ".studentClass"]: classRegister, [gupper + ".student_number"]: studentNumber, [gupper + ".name"]: name, [gupper + ".umail"]: studentUmail, [gupper + ".type"]: "Student", [gupper + ".gmail"]: googleEmail}}, function(err, res) {
         if (err) throw err;
         console.log("1 document updated");
         db.close();
@@ -239,6 +219,7 @@ function signOutDisplay() {
   $("#mainContainer").append(append_str);
   document.getElementById("logIO").innerHTML = changeLogin + " Login";
   document.getElementById("logIO").setAttribute("onclick");
+  document.getElementById("accountIO").setAttribute("hidden", true);
 };
 
 var changeLogin = '<i class="material-icons" style="font-size:inherit;">&#xE7FD;</i>';
@@ -282,13 +263,13 @@ function redirectCRISPR() {
   append_str += "<div class='col-sm-1'></div>\n";
   append_str += "</div>\n";
   $("#mainContainer").append(append_str);
-  ModeSelectionAdd(selection_inMode);
+  ModeSelectionAdd(selection_inMode);  
+  loadJSON_Files();
   loadCRISPRJSON_Files();
   setTimeout(function(){fillGeneList();}, 700);
   document.getElementById("logIO").innerHTML = changeLogin + " Logout";
   document.getElementById("logIO").setAttribute("onclick", "signOutDisplay();")
   document.getElementById("accountIO").removeAttribute("hidden");
-  openAccountManagement();
 }
 
 $(document).ready(function() {

@@ -162,19 +162,6 @@ function loadWork() {
     append_str += '<small id="strand_inputSmall" class="form-text text-muted">This would be for which strand your gRNA is on.</small>';
     append_str += '</div>';
 
-    // On-target score
-    append_str += '<div class="form-row">'
-    append_str += '<div class="form-group col-md-8">';
-    append_str += '<label for="ontarget_input">On-target score:</label>';
-    append_str += '<input class="form-control" id="ontarget_input" placeholder="60.5" type="number" step="0.01" required>'
-    append_str += '</div>';
-    append_str += '<div class="form-group col-md-4">';
-    append_str += '<label for="targetregion_input">Target Region Range:</label>';
-    append_str += '<input class="form-control" id="targetregion_input" placeholder="183-976" type="text" onkeypress="return isNumberOrDashKey(event);" required>'
-    append_str += '</div>';
-    append_str += '<small id="ontarget_inputSmall" class="form-text text-muted">The first input box would be your on-target score for your gRNA. The second input box would be the target region range that you used in Benchling to find/search for gRNAs, this is required for evaluating your inputs. NOTE: These input only takes numbers</small><br>';
-    append_str += '</div>';
-
     // Off-target score
     append_str += '<div class="form-group">';
     append_str += '<label for="offtarget_input">Off-target score:</label>';
@@ -233,11 +220,6 @@ var MARgRNAseq_degree = 0; // 0 wrong, 1 correct, 2 partial of <20bp, 3 technica
 var MARPAMseq = false;
 var MARCutPos = false;
 var MARstrand = false;
-var MAROnTarget = false;
-var MAROnTarget_degree = 0; // 0 wrong, 1 within range, 2 above 40, 3 only option
-var MAROnTarget_aboveOpt = false;
-var MAROnTarget_above40 = false;
-var MAROnTarget_onlyOption = false;
 var MAROffTarget = false;
 var MAROffTarget_degree = 0; // 0 wrong, 1 above 75, 2 above 35, 3 only option
 var MAROffTarget_aboveOpt = false;
@@ -366,15 +348,6 @@ function checkAnswers() {
             console.log("Error code cA311-317: retrieving server information on 'PAM' answers occured. Please contact admin or TA!");
           }
 
-          // Check if the On-target matches the answer's input
-          if (temp_answer["Efficiency Score"] != null || temp_answer["Efficiency Score"] != undefined) {
-            checkOnTargetRange(i);
-          }
-          else if (temp_answer["Efficiency Score"] == null || temp_answer["Efficiency Score"] == undefined) {
-            alert("Error code cA333-340: retrieving server information on 'Efficiency Score' answers occured. Please contact admin or TA!");
-            console.log("Error code cA333-340: retrieving server information on 'Efficiency Score' answers occured. Please contact admin or TA!");
-          }
-
           // Check if the Off-target matches the answer's input
           if (temp_answer["Specificity Score"] != null || temp_answer["Specificity Score"] != undefined) {
             checkOffTarget(temp_answer["Specificity Score"]);
@@ -394,75 +367,6 @@ function checkAnswers() {
     }
   }
   checkAnswers_executed = true;
-}
-
-var ontarget_geneParse = [];
-var ontarget_lastResort = [];
-/**
- * Checks the on-target score if it is correct based on the target region range
- * @param {int} parseNum - Integer for possible_comparable_answers parse
- * @return {bool} - Returns true if MAROnTarget is correct
- */
-function checkOnTargetRange(parseNum) {
-  // Create on-target variables
-  var OnTargetValue_down = Math.floor(possible_comparable_answers[parseNum]["Efficiency Score"]);
-  var OnTargetValue_up = Math.ceil(possible_comparable_answers[parseNum]["Efficiency Score"]);
-  var InputOnTargetValue = parseInt(document.getElementById("ontarget_input").value);
-  // See if on-target value matches input value
-  if (correctNucleotideIncluded == true && MARgRNAseq == true) {
-    if (InputOnTargetValue >= OnTargetValue_down && InputOnTargetValue <= OnTargetValue_up) {
-      MAROnTarget = true;
-      true_counts++;
-    }
-  }
-  // Determine how write it is based on its range
-  if (MAROnTarget == true) {
-    // Target region range:
-    document.getElementById("targetregion_input").value.replace(/./g,'');
-    var Range_upper = document.getElementById("targetregion_input").value.split("-")[1];
-    var Range_lower = document.getElementById("targetregion_input").value.split("-")[0];
-    // Check if gRNA sequence is in against listed
-    for (i=0; i<benchling_grna_ouputs[0]["gene_list"][current_gene].length; i++) {
-      if (benchling_grna_ouputs[0]["gene_list"][current_gene][i]["Position"] >= Range_lower && benchling_grna_ouputs[0]["gene_list"][current_gene][i]["Position"] <= Range_upper) {
-        if (benchling_grna_ouputs[0]["gene_list"][current_gene][i]["Efficiency Score"] != null || benchling_grna_ouputs[0]["gene_list"][current_gene][i]["Efficiency Score"] != undefined) {
-          ontarget_geneParse.push(benchling_grna_ouputs[0]["gene_list"][current_gene][i]["Efficiency Score"]);
-        };
-      }
-    }
-    // Check for last-resort regions:
-    var rangeStarter_upper = parseInt(document.getElementById("position_input").value) + 35;
-    var rangeStarter_lower = parseInt(document.getElementById("position_input").value) - 35;
-    // Check if gRNA sequence is in against listed
-    ontarget_lastResort = [];
-    for (i=0; i<benchling_grna_ouputs[0]["gene_list"][current_gene].length; i++) {
-      if (benchling_grna_ouputs[0]["gene_list"][current_gene][i]["Position"] >= rangeStarter_lower && benchling_grna_ouputs[0]["gene_list"][current_gene][i]["Position"] <= rangeStarter_upper) {
-        if (benchling_grna_ouputs[0]["gene_list"][current_gene][i]["Efficiency Score"] != null || benchling_grna_ouputs[0]["gene_list"][current_gene][i]["Efficiency Score"] != undefined) {
-          ontarget_lastResort.push(benchling_grna_ouputs[0]["gene_list"][current_gene][i]["Efficiency Score"]);
-        };
-      }
-    }
-    var last_resort_okay = true;
-    if (Math.max.apply(null, ontarget_geneParse) < 40) {
-      last_resort_okay = false;
-    }
-
-    // Is it within the optimal range?
-    var Max_range = Math.max.apply(null, ontarget_geneParse);
-    var Min_optiomal = Max_range - (Max_range * 0.2);
-    if (InputOnTargetValue >= Min_optiomal) {
-      MAROnTarget_aboveOpt = true;
-      MAROnTarget_above40 = true;
-      MAROnTarget_degree = 1;
-    }
-    else if (InputOnTargetValue >= 40) {
-      MAROnTarget_above40 = true;
-      MAROnTarget_degree = 2
-    }
-    else if (last_resort_okay == false) {
-      MAROnTarget_onlyOption = true;
-      MAROnTarget_degree = 3;
-    }
-  }
 }
 
 var offtarget_List = [];
@@ -614,17 +518,6 @@ function markAnswers() {
     if (MARPAMseq == true) {
       studentMark += 2;
     }
-    if (MAROnTarget == true) {
-      if (MAROnTarget_degree == 1) {
-        studentMark += 2;
-      }
-      else if (MAROnTarget_degree == 2) {
-        studentMark += 1;
-      }
-      else if (MAROnTarget_degree == 3) {
-        studentMark += 0.5;
-      }
-    }
     if (MAROffTarget == true) {
       if (MAROffTarget_degree == 1) {
         studentMark += 2;
@@ -693,28 +586,6 @@ function showFeedback() {
   append_str += "<br>";
 
   append_str += "<br>";
-  append_str += "<p> <b> On-Target Score: </b> </p>";
-  var MAROnTarget_degree_display = 0;
-  var MAROnTarget_degree_explain = "Your on-target score was wrong. Either it was not above/within the optimal range (or above 40) or the last-resort option.";
-  if (MAROnTarget == true) {
-    if (MAROnTarget_degree == 1) {
-      MAROnTarget_degree_display = 2;
-      MAROnTarget_degree_explain = "This means your answer was correct while above/within the optimal range and you recieved full marks.";
-    }
-    else if (MAROnTarget_degree == 2) {
-      MAROnTarget_degree_display = 1;
-      MAROnTarget_degree_explain = "This means your answer was technically correct as its on-target value was above 40.";
-    }
-    else if (MAROnTarget_degree == 3) {
-      MAROnTarget_degree_display = 0.5;
-      MAROnTarget_degree_explain = "This means your answer was partially correct as it was found to be your only option is soley based on on-target scoring based on the target region range you selected.";
-    }
-  }
-  append_str += '<p> For On-Target Score, you put down "' + all_answers[4] + '" which gave you the mark ' + MAROnTarget_degree_display + '.</p>'
-  append_str += MAROnTarget_degree_explain;
-  append_str += "<br>";
-
-  append_str += "<br>";
   append_str += "<p> <b> Off-Target Score: </b> </p>";
   var MAROffTarget_degree_display = 0;
   var MAROffTarget_degree_explain = "Your off-target score was wrong. Either it was not above/within the optimal range (or above 35) or the last-resort option.";
@@ -732,7 +603,7 @@ function showFeedback() {
       MAROffTarget_degree_explain = "This means your answer was partially correct as it was found to be your only option is soley based on on-target scoring based on the target region range you selected.";
     }
   }
-  append_str += '<p> For Off-Target Score, you put down "' + all_answers[6] + '" which gave you the mark ' + MAROffTarget_degree_display + '.</p>'
+  append_str += '<p> For Off-Target Score, you put down "' + all_answers[4] + '" which gave you the mark ' + MAROffTarget_degree_display + '.</p>'
   append_str += MAROffTarget_degree_explain;
   append_str += "<br>";
 
@@ -754,7 +625,7 @@ function showFeedback() {
     MARF1primers_display = 2;
     MARF1primers_explain = "This means your answer was correct and you recieved full marks.";
   }
-  append_str += '<p> For F1 Primer, you put down "' + all_answers[7] + '" which gave you the mark ' + MARF1primers_display + '.</p>'
+  append_str += '<p> For F1 Primer, you put down "' + all_answers[5] + '" which gave you the mark ' + MARF1primers_display + '.</p>'
   append_str += MARF1primers_explain;
   append_str += "<br>";
 
@@ -776,7 +647,7 @@ function showFeedback() {
     MARR1primers_display = 2;
     MARR1primers_explain = "This means your answer was correct and you recieved full marks.";
   }
-  append_str += '<p> For R1 Primer, you put down "' + all_answers[8] + '" which gave you the mark ' + MARR1primers_display + '.</p>'
+  append_str += '<p> For R1 Primer, you put down "' + all_answers[6] + '" which gave you the mark ' + MARR1primers_display + '.</p>'
   append_str += MARR1primers_explain;
   append_str += "<br>";
 
@@ -786,11 +657,27 @@ function showFeedback() {
   $("#mainContainer").append(append_str);
 }
 
+/**
+ * Determine whether an input form will be displayed or not
+ * @param {String} docCheck The DOM being checked against 
+ * @param {String} checkFor The value of the DOM being used to check for
+ * @param {String} docDisplay The DOM what will toggle hidden visibility for
+ */
+function showNewInput(docCheck, checkFor, docDisplay) {
+  if (document.getElementById(String(docCheck)).value == String(checkFor)) {
+    document.getElementById(String(docDisplay)).removeAttribute("hidden");
+  }
+  else {
+    document.getElementById(String(docDisplay)).setAttribute("hidden", true);    
+  }
+}
+
 var completed_assignments = [];
 /**
  * Account management functions. This function depends on login.js, without that, this will not run!
  */
-function openAccountManagement() {
+function openAccountManagement() {  
+  loadJSON_Files();
   $("#accountManagementBody").empty();
   var append_str = "<p>Hello " + student_reg_information[0]["student_list"][studentParseNum]["name"].split(' ')[0] + "!</p>";
 
@@ -825,20 +712,80 @@ function openAccountManagement() {
   else if (completed_assignments.length == 0) {
     append_str += "<p>You have not yet completed any assignments. </p>"
   }
+  $("#accountManagementBody").append(append_str);
 
   // Obtain student marks
   if (student_reg_information[0]["student_list"][studentParseNum]["type"] == "admin" || student_reg_information[0]["student_list"][studentParseNum]["type"] == "TA") {
     var encodedURI = encodeURIComponent(JSON.stringify(student_reg_information[0]["student_list"]));
-    append_str += "<p> <b> Oh wait! </b> Hello " + student_reg_information[0]["student_list"][studentParseNum]["type"] + "! Would you like to download student marks? </p>";
+    append_str = "<p> <b> Oh wait! </b> Hello " + student_reg_information[0]["student_list"][studentParseNum]["type"] + "! Would you like to download student marks? </p>";
     append_str += '<p> <button type="button" class="btn btn-primary" onclick="generateHiddenStudentDownload(true);"> Download Marks </button> </p>';
+    $("#accountManagementBody").append(append_str);
   }
 
   // Admin access to add new users
+  if (student_reg_information[0]["student_list"][studentParseNum]["type"] == "TA" || student_reg_information[0]["student_list"][studentParseNum]["type"] == "admin") {
+    append_str = "<p> <b> ADMIN POWER! </b> <p>";
+    // Append all students at once:
+    append_str += "<p> If you would to add new students to the class, just fill the form below: "
+    // Form opening
+    append_str += "<form>"
+
+    // Class choice:
+    var classList = student_reg_information[0]["class_list"];
+    append_str += '<div class="form-group">';
+    append_str += '<label for="InputClassMultiple">Choose class: </label>';
+    append_str += '<select id="InputClassMultiple" class="form-control" onchange="showNewInput(\'InputClassMultiple\', \'newClass\', \'InputNewClassMultiple\')" style="margin-bottom: 1%">';
+    for (key in classList) {
+      append_str += '<option value="' + key + '" id="' + key + '" tag="assignment">' + key + '</option>\n';
+    }
+    append_str += '<option value="newClass" id="newClassMultiple" tag="assignment" >New Class</option>\n';
+    append_str += '</select>';
+    append_str += '<input class="form-control" id="InputNewClassMultiple" placeholder="HMB396 - Winter (NOTE: Spaces will be deleted once you submit so use capital letters to seperate words)" hidden>';
+    append_str += '<small id="InputClassHelp" class="form-text text-muted">Choose class students will be added to or create a new class. Example of new class: HMB396 - Winter - 2019(NOTE: Spaces will be deleted once you submit so use capital letters to seperate words)</small>'
+    append_str += '</div>';
+
+    // User number
+    append_str += '<div class="form-group">';
+    append_str += '<label for="InputStudentNumber">Input student numbers: </label>';
+    append_str += '<textarea class="form-control" id="StudentNumbers" rows="4" placeholder="1234567890, 1003817535, 1113315545"></textarea>';
+    append_str += '<small id="InputStudentNumberHelp" class="form-text text-muted">Input student numbers, seperated by commas (BEWARE OF TYPOS!)</small>'
+    append_str += '</div>';
+
+    // User uMail
+    append_str += '<div class="form-group">';
+    append_str += '<label for="InputStudentUmail">Input student numbers: </label>';
+    append_str += '<textarea class="form-control" id="StudentUmails" rows="4" placeholder="john.doe@mail.utoronto.ca, sarah.cat@.mail.utoronto.ca, alexander.macadonia@utoronto.ca"></textarea>';
+    append_str += '<small id="InputStudentUmailUmail" class="form-text text-muted">Input student uMails in the same order of the student numbers, seperated by commas (BEWARE OF TYPOS!)</small>'
+    append_str += '</div>';
+
+    // Submit button
+    append_str += '<p> <button type="button" class="btn btn-primary" onclick="changeInputClass(\'InputClassMultiple\', \'newClass\', \'newClassMultiple\', document.getElementById(\'InputNewClassMultiple\').value), addMultipleUsersToServer(document.getElementById(\'InputClassMultiple\').value, document.getElementById(\'StudentNumbers\'), document.getElementById(\'StudentUmails\'));"> Send multiple students to Server </button>';
+    append_str += "<br>";
+
+    // Close form
+    append_str += "</form>";
+    $("#accountManagementBody").append(append_str);
+  }
+
   if (student_reg_information[0]["student_list"][studentParseNum]["type"] == "admin") {
-    append_str += "<p> <b> ADMIN POWER! </b> <p>";
-    append_str += "<p> If you would like to add new users (students, TAs or admins), please fill in the form below: </p>";
+    //Append TAs or Admins:
+    append_str = "<p> If you would like to add new users (students, TAs or admins), please fill in the form below: </p>";
     // Form opening
     append_str += "<form>";
+
+    // Class choice:
+    var classList = student_reg_information[0]["class_list"];
+    append_str += '<div class="form-group">';
+    append_str += '<label for="InputClassSingle">Choose class: </label>';
+    append_str += '<select id="InputClassSingle" class="form-control" onchange="showNewInput(\'InputClassSingle\', \'newClass\', \'InputNewClassSingle\')" style="margin-bottom: 1%">';
+    for (key in classList) {
+      append_str += '<option value="' + key + '" id="' + key + '" tag="assignment">' + key + '</option>\n';
+    }
+    append_str += '<option value="newClass" id="newClassSingle" tag="assignment" >New Class</option>\n';
+    append_str += '</select>';
+    append_str += '<input class="form-control" id="InputNewClassSingle" placeholder="HMB396 - Winter (NOTE: Spaces will be deleted once you submit so use capital letters to seperate words)" hidden>';
+    append_str += '<small id="InputClassHelp" class="form-text text-muted">Choose class students will be added to or create a new class. Example of new class: HMB396 - Winter - 2019(NOTE: Spaces will be deleted once you submit so use capital letters to seperate words)</small>'
+    append_str += '</div>';
 
     // User number
     append_str += '<div class="form-group">';
@@ -858,13 +805,6 @@ function openAccountManagement() {
     append_str += '<input type="email" class="form-control" id="StudentUmail" placeholder="first.last@mail.utoronto.ca">';
     append_str += '</div>';
 
-    // User verification ID
-    append_str += '<div class="form-group">';
-    append_str += '<label for="InputStudentName">User verification ID</label>';
-    append_str += '<input class="form-control" id="StudentVerifyID" placeholder="wordWord####">';
-    append_str += '<small id="studentEmailHelp" class="form-text text-muted">Please use the following format: word, Word, number (3-5 digits)</small>';
-    append_str += '</div>';
-
     // User type
     append_str += '<div class="form-group">';
     append_str += '<label for="InputStudentType">User type:</label>';
@@ -872,15 +812,13 @@ function openAccountManagement() {
     append_str += '</div>';
 
     // Submit button
-    append_str += "<br>";
-    append_str += '<p> <button type="button" class="btn btn-primary" onclick="addUserToServer(document.getElementById(\'StudentNumber\').value, document.getElementById(\'StudentName\').value, document.getElementById(\'StudentUmail\').value, document.getElementById(\'StudentVerifyID\').value, document.getElementById(\'StudentType\').value);"> Send to Server </button>';
+    append_str += '<p> <button type="button" class="btn btn-primary" onclick="changeInputClass(\'InputClassSingle\', \'newClass\', \'newClassSingle\', document.getElementById(\'InputNewClassSingle\').value), addUserToServer(document.getElementById(\'StudentNumber\').value, document.getElementById(\'StudentName\').value, document.getElementById(\'StudentUmail\').value, document.getElementById(\'StudentType\').value);"> Send single user to Server </button>';
     append_str += "<br>";
 
     // Form closing
     append_str += "</form>";
+    $("#accountManagementBody").append(append_str);
   }
-
-  $("#accountManagementBody").append(append_str);
 }
 
 var downloadIndexTable_start = "\t\t<tr>\n\t\t\t<th>Student Number</th>\n\t\t\t<th>Name</th>";
@@ -957,23 +895,40 @@ function generateHiddenStudentDownload(whichType = true) {
 }
 
 /**
- * Adds the user to the MongoDB server
- * @param {String} number Student number
- * @param {String} name Student' name
- * @param {String} umail Student's email
- * @param {String} verify Student's verification ID
- * @param {String} type Is this student, TA or admin?
+ * Changes the input class value to new input
+ * @param {String} docCheck The DOM being checked against 
+ * @param {String} checkFor The value of the DOM being used to check for
+ * @param {String} docChange The DOM what will have its value changed
+ * @param {String} trueChangeValueTo What to change value to
  */
-function addUserToServer(number, name, umail, verify, type) {
+function changeInputClass(docCheck, checkFor, docChange, trueChangeValueTo) {
+  if (trueChangeValueTo == "" || trueChangeValueTo == undefined) {
+    trueChangeValueTo = "undefined Class";
+  }
+  trueChangeValueTo = trueChangeValueTo.replace(/\s/g, '');
+  if (document.getElementById(docCheck).value == checkFor) {
+    document.getElementById(docChange).value = trueChangeValueTo;
+  }
+}
+
+/**
+ * Adds the user to the MongoDB server
+ * @param {String} number User number
+ * @param {String} name User' name
+ * @param {String} umail User's email
+ * @param {String} classInput Class user belongs to
+ * @param {String} type Is this user, TA or admin?
+ */
+function addUserToServer(number, name, umail, classInput, type) {
   var addNum = student_reg_information[0]["student_list"].length;
   var studentNumber = "student_list." + addNum + "." + "student_number";
   var studentName = "student_list." + addNum + "." + "name";
   var studentUmail = "student_list." + addNum + "." + "umail";
-  var studentVerify = "student_list." + addNum + "." + "verifyID";
   var studentType = "student_list." + addNum + "." + "type";
   var studentGmail = "student_list." + addNum + "." + "gmail";
+  var studentClass = "student_list." + addNum + "." + "studentClass";
   client.login().then(() =>
-    db.collection("Student_Information").updateOne({version: "0.3"}, { $set: {[studentNumber]: number, [studentName]: name, [studentUmail]: umail, [studentVerify]: verify, [studentType]: type, [studentGmail]: "unregistered"}}, function(err, res) {
+    db.collection("Student_Information").updateOne({version: "0.3"}, { $set: {[studentClass]: classInput, [studentNumber]: number, [studentName]: name, [studentUmail]: umail, [studentType]: type, [studentGmail]: "unregistered"}}, function(err, res) {
     if (err) throw err;
     console.log("1 document updated");
     db.close();
@@ -983,6 +938,34 @@ function addUserToServer(number, name, umail, verify, type) {
   document.getElementById("StudentName").value = "";
   document.getElementById("StudentUmail").value = "";
   document.getElementById("StudentVerifyID").value = "";
+}
+
+function addMultipleUsersToServer(inputClass, number, umail) {
+  // Student information setup
+  var studentNumberList = number.value.trim().split(/,|\n|\t/);
+  var studentUmailList = umail.value.trim().split(/,|\n|\t/);
+  if (studentNumberList.length == studentUmailList.length) {
+    var setList = {};
+    for (var i = 0; i < studentNumberList.length; i++) {
+      var studentAdd = studentNumberList[i];
+      var studentUmailAdd = studentUmailList[i];
+      setList[studentAdd] = studentUmailAdd;
+    }
+    classList = "class_list." + inputClass;
+    client.login().then(() =>
+      db.collection("Student_Information").updateOne({version: "0.3"}, { $set: {[classList]: setList}}, function(err, res) {
+      if (err) throw err;
+      console.log("1 document updated");
+      db.close();
+      }));
+    $("#adminSendButton").click();
+    $("#adminSendButton").click();
+    document.getElementById("StudentNumbers").value = "";
+    document.getElementById("StudentUmails").value = "";
+  }
+  else {
+    showRegError(8);
+  }
 }
 
 /**
@@ -1012,8 +995,8 @@ function submitAnswers() {
   studentanswers = "student_list." + studentParseNum + "."+ loadedMoad + "-" + current_gene + "-Answers";
   studentoutputs = "student_list." + studentParseNum + "."+ loadedMoad + "-" + current_gene + "-Outputs";
   studentmarks = "student_list." + studentParseNum + "."+ loadedMoad + "-" + current_gene + "-Marks";
-  all_answers.push(document.getElementById("sequence_input").value, document.getElementById("pam_input").value, document.getElementById("position_input").value, document.getElementById("strand_input").value, document.getElementById("ontarget_input").value, document.getElementById("targetregion_input").value, document.getElementById("offtarget_input").value, document.getElementById("f1_input").value, document.getElementById("r1_input").value);
-  all_outputs.push(MARstrand, MARgRNAseq, MARgRNAseq_degree, MARCutPos, MARPAMseq, MAROnTarget, MAROnTarget_aboveOpt, MAROnTarget_above40, MAROnTarget_degree, MAROffTarget, MAROffTarget_degree, MAROffTarget_aboveOpt, MAROffTarget_above35, MAROffTarget_onlyOption, MARF1primers, MARR1primers);
+  all_answers.push(document.getElementById("sequence_input").value, document.getElementById("pam_input").value, document.getElementById("position_input").value, document.getElementById("strand_input").value, document.getElementById("offtarget_input").value, document.getElementById("f1_input").value, document.getElementById("r1_input").value);
+  all_outputs.push(MARstrand, MARgRNAseq, MARgRNAseq_degree, MARCutPos, MARPAMseq, MAROffTarget, MAROffTarget_degree, MAROffTarget_aboveOpt, MAROffTarget_above35, MAROffTarget_onlyOption, MARF1primers, MARR1primers);
   all_marks.push(studentMark, studentMarkPercentage);
   client.login().then(() =>
     db.collection("Student_Information").updateOne({version: "0.3"}, { $set: {[studentanswers]: all_answers, [studentoutputs]: all_outputs, [studentmarks]: all_marks}}, function(err, res) {
@@ -1021,5 +1004,6 @@ function submitAnswers() {
     console.log("1 document updated");
     db.close();
   }));
+  loadJSON_Files();
   $("#feedbackButton").click();
 }
