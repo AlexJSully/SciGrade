@@ -242,7 +242,7 @@ function checkAnswers() {
   var correctNucleotidePosition = gene_backgroundInfo[0]["gene_list"][current_gene]["Target position"] - 1;
 
   // Check gRNA Sequence:
-  var inputedSeq = document.getElementById("sequence_input").value;
+  var inputedSeq = document.getElementById("sequence_input").value.trim();
   // Check if gRNA sequence is in against listed
   possible_comparable_answers = [];
   for (i=0; i<benchling_grna_ouputs[0]["gene_list"][current_gene].length; i++) {
@@ -339,7 +339,7 @@ function checkAnswers() {
           }
 
           // Check if the PAM matches the answer's input
-          if ((temp_answer["PAM"] != null || temp_answer["PAM"] != undefined) && temp_answer["PAM"] == document.getElementById("pam_input").value) {
+          if ((temp_answer["PAM"] != null || temp_answer["PAM"] != undefined) && temp_answer["PAM"] == document.getElementById("pam_input").value.trim()) {
             MARPAMseq = true;
             true_counts++;
           }
@@ -358,10 +358,10 @@ function checkAnswers() {
           }
 
           // Check if the F1 primer matches the answer's input
-          checkF1Primers(document.getElementById("sequence_input").value);
+          checkF1Primers(document.getElementById("sequence_input").value.trim());
 
           // Check if the F1 primer matches the answer's input
-          checkR1Primers(document.getElementById("sequence_input").value);
+          checkR1Primers(document.getElementById("sequence_input").value.trim());
         }
       }
     }
@@ -469,7 +469,7 @@ function checkF1Primers(seq) {
       possible_F1_primers.push(begin_F1 + seq.slice(1, i));
     }
   }
-  if (possible_F1_primers.includes(document.getElementById("f1_input").value)) {
+  if (possible_F1_primers.includes(document.getElementById("f1_input").value.trim())) {
     MARF1primers = true;
   }
 }
@@ -491,7 +491,7 @@ function checkR1Primers(seq) {
   for (i = 19; i <= 20; i++) {
     possible_R1_primers.push(begin_R1 + complemetary_seq.slice(0, i));
   }
-  if (possible_R1_primers.includes(document.getElementById("r1_input").value)) {
+  if (possible_R1_primers.includes(document.getElementById("r1_input").value.trim())) {
     MARR1primers = true;
   }
 }
@@ -604,7 +604,7 @@ function showFeedback() {
   if (MAROffTarget == true) {
     if (MAROffTarget_degree == 1) {
       MAROffTarget_degree_display = 2;
-      MAROffTarget_degree_explain = "This means your answer was correct while above/within the optimal range of 80 and you recieved full marks.";
+      MAROffTarget_degree_explain = "This means your answer was correct while above/within the optimal and you recieved full marks.";
     }
     else if (MAROffTarget_degree == 2) {
       MAROffTarget_degree_display = 1;
@@ -1260,12 +1260,15 @@ var studentmarks = "student_list." + studentParseNum + "."+ loadedMoad + "-" + c
  * Submit and sends the student's answers to the server
  */
 function submitAnswers() {
+  all_answers = [];
+  all_outputs = [];
+  all_marks = [];
   checkAnswers();
   markAnswers();
   studentanswers = "student_list." + studentParseNum + "."+ loadedMoad + "-" + current_gene + "-Answers";
   studentoutputs = "student_list." + studentParseNum + "."+ loadedMoad + "-" + current_gene + "-Outputs";
   studentmarks = "student_list." + studentParseNum + "."+ loadedMoad + "-" + current_gene + "-Marks";
-  all_answers.push(document.getElementById("sequence_input").value, document.getElementById("pam_input").value, document.getElementById("position_input").value, document.getElementById("strand_input").value, document.getElementById("offtarget_input").value, document.getElementById("f1_input").value, document.getElementById("r1_input").value);
+  all_answers.push(document.getElementById("sequence_input").value.trim(), document.getElementById("pam_input").value.trim(), document.getElementById("position_input").value, document.getElementById("strand_input").value, document.getElementById("offtarget_input").value, document.getElementById("f1_input").value.trim(), document.getElementById("r1_input").value.trim());
   all_outputs.push(MARstrand, MARgRNAseq, MARgRNAseq_degree, MARCutPos, MARPAMseq, MAROffTarget, MAROffTarget_degree, MAROffTarget_aboveOpt, MAROffTarget_above35, MAROffTarget_onlyOption, MARF1primers, MARR1primers);
   all_marks.push(studentMark, studentMarkPercentage);
   client.login().then(() =>
@@ -1275,5 +1278,13 @@ function submitAnswers() {
     db.close();
   }));
   loadJSON_Files();
+  if (loadedMoad == "assignment") {
+    document.getElementById("options_label").innerHTML = "Would you like to start a new assignment?";
+    document.getElementById("seeFeedback").setAttribute("hidden", true);
+  }
+  else if (loadedMoad == "practice") {
+    document.getElementById("options_label").innerHTML = "Would you like to see feedback on your answers or start a new assignment?";
+    document.getElementById("seeFeedback").removeAttribute("hidden");
+  }
   $("#feedbackButton").click();
 }

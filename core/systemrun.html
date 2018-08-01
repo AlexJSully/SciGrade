@@ -176,8 +176,8 @@
           <p id="errorRegContent">Congratulations! Your answers have been submitted.</p>
           <p id="options_label"> Would you like to see feedback on your answers or start a new assignment? </p>
           <p>
-            <button type="button" class="btn btn-primary" onclick="showFeedback(); $('#dismissFeedbackModal').click(); loadJSON_Files();">Feedback</button>
-            <button type="button" class="btn btn-primary" onclick="possible_gene = 'eBFP'; select_Gene(); $('#dismissFeedbackModal').click(); loadJSON_Files();">Assignment</button>
+            <button type="button" id="seeFeedback" class="btn btn-primary" onclick="showFeedback(); $('#dismissFeedbackModal').click(); loadJSON_Files();">See Feedback</button>
+            <button type="button" id="backAssignments" class="btn btn-primary" onclick="possible_gene = 'eBFP'; select_Gene(); $('#dismissFeedbackModal').click(); loadJSON_Files();">Back to Assignments</button>
           </p>
         </div>
         <div class="modal-footer">
