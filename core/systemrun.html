@@ -67,7 +67,7 @@
     <a class="active" href="systemrun.html">Run</a>
     <a href="about.html">About</a>
     <a class="logIO" data-toggle="modal" href="#accountModal" id="accountIO" onclick="openAccountManagement();" hidden> Account </a>
-    <a class="logIO" id="logIO" href="#">
+    <a class="logIO" id="logIO" href="systemrun.html">
       <i class="material-icons" style="font-size:inherit;">&#xE7FD;</i> Login</a>
   </div>
   <div class="container focusContainer" role="tabpanel" id="mainContainer">
@@ -176,8 +176,8 @@
           <p id="errorRegContent">Congratulations! Your answers have been submitted.</p>
           <p id="options_label"> Would you like to see feedback on your answers or start a new assignment? </p>
           <p>
-            <button type="button" class="btn btn-primary" onclick="showFeedback(); $('#dismissFeedbackModal').click();">Feedback</button>
-            <button type="button" class="btn btn-primary" onclick="possible_gene = 'eBFP'; select_Gene(); $('#dismissFeedbackModal').click();">Assignment</button>
+            <button type="button" class="btn btn-primary" onclick="showFeedback(); $('#dismissFeedbackModal').click(); loadJSON_Files();">Feedback</button>
+            <button type="button" class="btn btn-primary" onclick="possible_gene = 'eBFP'; select_Gene(); $('#dismissFeedbackModal').click(); loadJSON_Files();">Assignment</button>
           </p>
         </div>
         <div class="modal-footer">

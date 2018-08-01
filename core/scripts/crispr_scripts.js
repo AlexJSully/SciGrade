@@ -22,17 +22,17 @@ function ModeSelectionAdd(mode) {
     $("#gene_dropdown_selection").append(append_str);
   }
   else if (mode == "assignment") {
-    for (i = 0; i < list_of_assignments.length; i++) {
+    useList = removeCompletedAssignments();
+    for (i = 0; i < useList.length; i++) {
       if (i == 0) {
-        append_str = '<option value="' + list_of_assignments[i] + '" id="' + list_of_assignments[i] + '" tag="assignment">' + list_of_assignments[i] + '</option>\n';
+        append_str = '<option value="' + useList[i] + '" id="' + useList[i] + '" tag="assignment">' + useList[i] + '</option>\n';
       }
       else {
-        append_str += '<option value="' + list_of_assignments[i] + '" id="' + list_of_assignments[i] + '" tag="assignment">' + list_of_assignments[i] + '</option>\n';
+        append_str += '<option value="' + useList[i] + '" id="' + useList[i] + '" tag="assignment">' + useList[i] + '</option>\n';
       }
     }
     $("#gene_dropdown_selection").append(append_str);
   }
-  removeCompletedAssignments();
 }
 
 /**
@@ -547,7 +547,7 @@ function markAnswers() {
     if (MARR1primers == true) {
       studentMark += 2;
     }
-    studentMarkPercentage = ((studentMark/12) * 100).toFixed(2)
+    studentMarkPercentage = ((studentMark/10) * 100).toFixed(2)
   }
 }
 
@@ -686,14 +686,11 @@ function showNewInput(docCheck, checkFor, docDisplay) {
 
 var completed_assignments = [];
 /**
- * Account management functions. This function depends on login.js, without that, this will not run!
+ * Generates a list of completed_assignments
  */
-function openAccountManagement() {  
+function generateCompletedAssignmentList() {
+  completed_assignments = []
   loadJSON_Files();
-  $("#accountManagementBody").empty();
-  var append_str = "<div id='accordion'><p>Hello " + student_reg_information[0]["student_list"][studentParseNum]["name"].split(' ')[0] + "!</p>";
-  $("#accountManagementBody").append(append_str);
-
   // Assignments
   if (student_reg_information[0]["student_list"][studentParseNum]["assignment-HBB-Marks"] != null) {
     if (!completed_assignments.includes("HBB")) {
@@ -715,6 +712,16 @@ function openAccountManagement() {
       completed_assignments.push("APOE");
     } 
   }
+}
+
+/**
+ * Account management functions. This function depends on login.js, without that, this will not run!
+ */
+function openAccountManagement() {
+  generateCompletedAssignmentList();
+  $("#accountManagementBody").empty();
+  var append_str = "<div id='accordion'><p>Hello " + student_reg_information[0]["student_list"][studentParseNum]["name"].split(' ')[0] + "!</p>";
+  $("#accountManagementBody").append(append_str);
   
   // Create assignments card
   append_str = "<div class='card about'>";
@@ -746,11 +753,19 @@ function openAccountManagement() {
   append_str += "</div>";
   $("#accountManagementBody").append(append_str);
 
+  var classList = student_reg_information[0]["class_list"];
   // Obtain student marks
   if (student_reg_information[0]["student_list"][studentParseNum]["type"] == "admin" || student_reg_information[0]["student_list"][studentParseNum]["type"] == "TA") {
     var encodedURI = encodeURIComponent(JSON.stringify(student_reg_information[0]["student_list"]));
     append_str = "<br> <p> <b> Oh wait! </b> Hello " + student_reg_information[0]["student_list"][studentParseNum]["type"] + "! Would you like to download student marks? </p>";
-    append_str += '<p> <button type="button" class="btn btn-primary" onclick="generateHiddenStudentDownload(true);"> Download Marks </button> </p>';
+    append_str += '<label for="DownloadClass">Choose class: </label>';
+    append_str += '<select id="DownloadClass" class="form-control" style="margin-bottom: 1%">';
+    for (key in classList) {
+      append_str += '<option value="' + key + '" id="' + key + '" tag="assignment">' + key + '</option>\n';
+    }
+    append_str += '</select>';
+    append_str += '<p style="text-align: center;"> <button type="button" class="btn btn-primary" onclick="generateHiddenStudentDownload(document.getElementById(\'DownloadClass\').value, true);"> Download Marks </button>';
+    append_str += '<button type="button" class="btn btn-primary" onclick="generateHiddenStudentDownload(document.getElementById(\'DownloadClass\').value, false);" style="margin-left: 2%;"> Download Raw Marks </button> </p>';
     $("#accountManagementBody").append(append_str);
   }
 
@@ -776,7 +791,6 @@ function openAccountManagement() {
     append_str += "<form>"
 
     // Class choice:
-    var classList = student_reg_information[0]["class_list"];
     append_str += '<div class="form-group">';
     append_str += '<label for="InputClassMultiple" style="font-weight: bold;">Choose class: </label>';
     append_str += '<select id="InputClassMultiple" class="form-control" onchange="showNewInput(\'InputClassMultiple\', \'newClass\', \'InputNewClassMultiple\')" style="margin-bottom: 1%">';
@@ -836,7 +850,6 @@ function openAccountManagement() {
     append_str += "<form>";
 
     // Class choice:
-    var classList = student_reg_information[0]["class_list"];
     append_str += '<div class="form-group">';
     append_str += '<label for="InputClassSingle" style="font-weight: bold;">Choose class: </label>';
     append_str += '<select id="InputClassSingle" class="form-control" style="margin-bottom: 1%">';
@@ -975,11 +988,11 @@ var downloadIndexTable_end = "\n\t\t</tr>\n";
 var downloadIndexTable_fill = "";
 /**
  * Generated the base IndexTable for downloading JSON as CSV
- * @param {*} whichIndexTable The string of which the index table start as, defaults as downloadIndexTable_start
- * @param {boolean} [SimpleComplex=true] - True (default) is simple, false is complex
+ * @param {String} whichIndexTable The string of which the index table start as, defaults as downloadIndexTable_start
+ * @param {boolean} SimpleComplex True is simple, false is complex
  */
-function generateRestOfIndexTable(whichIndexTable, SimpleComplex = true) {
-  whichIndexTable += downloadIndexTable_start;
+function generateRestOfIndexTable(whichIndexTable, SimpleComplex) {
+  whichIndexTable = downloadIndexTable_start;
   for (i = 0; i < list_of_assignments.length; i++) {
     whichIndexTable += "\n\t\t\t<th>" + list_of_assignments[i] + "</th>";
     if (SimpleComplex == true) {
@@ -988,9 +1001,17 @@ function generateRestOfIndexTable(whichIndexTable, SimpleComplex = true) {
     }
     else if (SimpleComplex == false) {
       whichIndexTable += "\n\t\t\t<th>Percent</th>";
-      for (i = 0; i < 9; i++) {
-        whichIndexTable += "\n\t\t\t<th>" + (i + 1) +". Input, Value</th>";
-      }      
+      whichIndexTable += "\n\t\t\t<th>Raw</th>";
+      whichIndexTable += "\n\t\t\t<th>gRNA</th>";
+      whichIndexTable += "\n\t\t\t<th>Mark</th>";
+      whichIndexTable += "\n\t\t\t<th>PAM</th>";
+      whichIndexTable += "\n\t\t\t<th>Mark</th>";
+      whichIndexTable += "\n\t\t\t<th>Off-target score</th>";
+      whichIndexTable += "\n\t\t\t<th>Mark</th>";
+      whichIndexTable += "\n\t\t\t<th>F1 primers</th>";
+      whichIndexTable += "\n\t\t\t<th>Mark</th>";
+      whichIndexTable += "\n\t\t\t<th>R1 primers</th>";
+      whichIndexTable += "\n\t\t\t<th>Mark</th>";
     }
   }  
   whichIndexTable += downloadIndexTable_end;
@@ -999,21 +1020,26 @@ function generateRestOfIndexTable(whichIndexTable, SimpleComplex = true) {
 
 /**
  * Generated a download button from JSON to CSV
- * @param {boolean} [whichType=true] - True (default) is simple, false is complex
+ * @param {String} whichClass Which class is being downloaded
+ * @param {boolean} whichType True is simple, false is complex
  */
-function generateHiddenStudentDownload(whichType = true) {
+function generateHiddenStudentDownload(whichClass, whichType) {
   // Check if TA/Admin
   if (student_reg_information[0]["student_list"][studentParseNum]["type"] == "TA" || student_reg_information[0]["student_list"][studentParseNum]["type"] == "admin") {
     downloadIndexTable_fill = generateRestOfIndexTable(downloadIndexTable_fill, whichType);
     $("#hiddenDownloadModal_table").empty(); // reset
     var d = new Date();
     var downlodaIndexTable_str = "<table id='downloadIndexTable'>\n\t<tbody>\n";
-    downlodaIndexTable_str += "\t\t<caption>studentOutput_downloadby_" + student_reg_information[0]["student_list"][studentParseNum]["type"] + "_" + d.getFullYear() + "-" + d.getMonth() + "_" + d.getDate() + "</caption>\n";
+    var captionTitleBegin = "SciGrade_studentMark_";
+    if (whichType == false) {
+      captionTitleBegin = "SciGrade_studentMarkRaw_";
+    }
+    downlodaIndexTable_str += "\t\t<caption>" + captionTitleBegin + student_reg_information[0]["student_list"][0]["name"].replace(/\s/g, '') + "_" + d.getFullYear() + "-" + d.getMonth() + "_" + d.getDate() + "</caption>\n";
     downlodaIndexTable_str += downloadIndexTable_fill;
     // Looping through each row of the table
-    studentRegList = student_reg_information[0]["student_list"];
+    var studentRegList = student_reg_information[0]["student_list"];
     for (i = 0; i < studentRegList.length; i++) {
-      if (studentRegList[i]["type"] == "Student") {
+      if (studentRegList[i]["type"] == "Student" && studentRegList[i]["studentClass"] == whichClass) {
         downlodaIndexTable_str += "\t\t<tr>\n";
         downlodaIndexTable_str += "\t\t\t<td>" + studentRegList[i]["student_number"] + "</td>\n";
         downlodaIndexTable_str += "\t\t\t<td>" + studentRegList[i]["name"] + "</td>\n";
@@ -1026,6 +1052,83 @@ function generateHiddenStudentDownload(whichType = true) {
             }
             else if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Marks"] == null) {
               downlodaIndexTable_str += "\t\t\t<td>" + (list_of_assignments[x]).toString() + "</td>\n";
+              downlodaIndexTable_str += "\t\t\t<td> Incompleted </td>\n";
+              downlodaIndexTable_str += "\t\t\t<td> 0.00 </td>\n";
+            }
+          }
+        }
+        if (whichType == false) {
+          for (x = 0; x < list_of_assignments.length; x++) {
+            if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Marks"] != null) {
+              downlodaIndexTable_str += "\t\t\t<td>" + (list_of_assignments[x]).toString() + "</td>\n";
+              var mark = 0;
+              // Raw values
+              downlodaIndexTable_str += "\t\t\t<td>" + (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Marks"][1]).toString() + "</td>\n";
+              downlodaIndexTable_str += "\t\t\t<td>" + (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Marks"][0]).toString() + "</td>\n";
+              // gRNA
+              downlodaIndexTable_str += "\t\t\t<td>" + (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Answers"][0]).toString() + "</td>\n";
+              if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Outputs"][2] == 1) {
+                mark = 2;
+              }
+              else if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Outputs"][2] == 2) {
+                mark = 1;
+              }
+              else if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Outputs"][2] == 3) {
+                mark = 0.5;
+              }
+              downlodaIndexTable_str += "\t\t\t<td>" + (mark).toString() + "</td>\n";
+              // PAM
+              downlodaIndexTable_str += "\t\t\t<td>" + (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Answers"][1]).toString() + "</td>\n";
+              if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Outputs"][4] == true) {
+                mark = 2;
+              } 
+              else {
+                mark = 0;
+              }
+              downlodaIndexTable_str += "\t\t\t<td>" + (mark).toString() + "</td>\n";
+              // Off-target
+              downlodaIndexTable_str += "\t\t\t<td>" + (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Answers"][4]).toString() + "</td>\n";
+              if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Outputs"][6] == 1) {
+                mark = 2;
+              }
+              else if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Outputs"][6] == 2) {
+                mark = 1;
+              }
+              else if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Outputs"][6] == 3) {
+                mark = 0.5;
+              }
+              downlodaIndexTable_str += "\t\t\t<td>" + (mark).toString() + "</td>\n";
+              // F1 Primers
+              downlodaIndexTable_str += "\t\t\t<td>" + (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Answers"][5]).toString() + "</td>\n";
+              if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Outputs"][10] == true) {
+                mark = 2;
+              } 
+              else {
+                mark = 0;
+              }
+              downlodaIndexTable_str += "\t\t\t<td>" + (mark).toString() + "</td>\n";
+              // R1 primers
+              downlodaIndexTable_str += "\t\t\t<td>" + (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Answers"][6]).toString() + "</td>\n";
+              if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Outputs"][11] == true) {
+                mark = 2;
+              } 
+              else {
+                mark = 0;
+              }
+              downlodaIndexTable_str += "\t\t\t<td>" + (mark).toString() + "</td>\n";
+            }
+            else if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Marks"] == null) {
+              downlodaIndexTable_str += "\t\t\t<td>" + (list_of_assignments[x]).toString() + "</td>\n";
+              downlodaIndexTable_str += "\t\t\t<td> Incompleted </td>\n";
+              downlodaIndexTable_str += "\t\t\t<td> 0.00 </td>\n";
+              downlodaIndexTable_str += "\t\t\t<td> Incompleted </td>\n";
+              downlodaIndexTable_str += "\t\t\t<td> 0.00 </td>\n";
+              downlodaIndexTable_str += "\t\t\t<td> Incompleted </td>\n";
+              downlodaIndexTable_str += "\t\t\t<td> 0.00 </td>\n";
+              downlodaIndexTable_str += "\t\t\t<td> Incompleted </td>\n";
+              downlodaIndexTable_str += "\t\t\t<td> 0.00 </td>\n";
+              downlodaIndexTable_str += "\t\t\t<td> Incompleted </td>\n";
+              downlodaIndexTable_str += "\t\t\t<td> 0.00 </td>\n";
               downlodaIndexTable_str += "\t\t\t<td> Incompleted </td>\n";
               downlodaIndexTable_str += "\t\t\t<td> 0.00 </td>\n";
             }
@@ -1132,14 +1235,19 @@ function addMultipleUsersToServer(inputClass, number, umail) {
 
 /**
  * Remove completed assignments from the assignment selection option
+ * @returns returnAssignmentList - The list of non-completed assignments
  */
 function removeCompletedAssignments() {
-  completed_assignments = [];
+  generateCompletedAssignmentList();
+  var returnAssignmentList = [];
   if (completed_assignments.length > 0) {
-    for (i = 0; i < completed_assignments.length; i++) {
-      $("#" + completed_assignments[i]).remove();
+    for (i = 0; i < list_of_assignments.length; i++) {
+      if (completed_assignments.includes(list_of_assignments[i]) == false) {
+        returnAssignmentList.push(list_of_assignments[i]);
+      }
     }
   }
+  return returnAssignmentList;
 }
 
 var all_answers = [];
