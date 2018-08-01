@@ -120,27 +120,27 @@ function loginVerify(student_NumVerify){
  */
 function showRegError(whichOne) {
   if (whichOne == 1) { // Not in our database
-    document.getElementById("errorRegContent").innerHTML = "It appears that you are not a student in our database.\n Are you a UofT student? If so, contact our TA, Professor or Admin for further help.";
+    document.getElementById("errorRegContent").innerHTML = "It appears that you are not a student in our database.\n Are you a UofT student? If so, contact your TA, Professor or Admin for further help.";
     $("#errorRegButton").click();
   }
   else if (whichOne == 2) { // Something went wrong with registeration
-    document.getElementById("errorRegContent").innerHTML = "Something went wrong. Please refresh the page and try again. If this persist, please contact our TA, Professor or Admin with the following error code: lgn83-85";
+    document.getElementById("errorRegContent").innerHTML = "Something went wrong. Please refresh the page and try again. If this persist, please contact your TA, Professor or Admin with the following error code: lgn83-85";
     $("#errorRegButton").click();
   }
   else if (whichOne == 3) { // Verify ID was incorrect
-    document.getElementById("errorRegContent").innerHTML = "It appears that your verification ID is incorrect. Please retype it and try again. If this persist, contact our TA, Professor or Admin for further help. NOTE: Only students of HMB311 can register for SciGrade.";
+    document.getElementById("errorRegContent").innerHTML = "It appears that your verification ID is incorrect. Please retype it and try again. If this persist, contact your TA, Professor or Admin for further help. NOTE: Only students of HMB311 can register for SciGrade.";
     $("#errorRegButton").click();
   }
   else if (whichOne == 4) { // Verify ID was incorrect
-    document.getElementById("errorRegContent").innerHTML = "You are already registered for SciGrade, please navigate to the login tab instead of the register. If an issue arises, please contact our TA, Professor or Admin for further help.";
+    document.getElementById("errorRegContent").innerHTML = "You are already registered for SciGrade, please navigate to the login tab instead of the register. If an issue arises, please contact your TA, Professor or Admin for further help.";
     $("#errorRegButton").click();
   }
   else if (whichOne == 5) { // Not yet registered for SciGrade
-    document.getElementById("errorRegContent").innerHTML = "It appears that you have not yet registered for SciGrade, please navigate to the register tab and register first. If an issue arises, please contact our TA, Professor or Admin for further help.";
+    document.getElementById("errorRegContent").innerHTML = "It appears that you have not yet registered for SciGrade, please navigate to the register tab and register first. If an issue arises, please contact your TA, Professor or Admin for further help.";
     $("#errorRegButton").click();
   }
   else if (whichOne == 6) { // Not yet registered for SciGrade
-    document.getElementById("errorRegContent").innerHTML = "This is not the Google account associated with this student number. If an issue arises, please contact our TA, Professor or Admin for further help.";
+    document.getElementById("errorRegContent").innerHTML = "This is not the Google account associated with this student number. If an issue arises, please contact your TA, Professor or Admin for further help.";
     $("#errorRegButton").click();
   }
   else if (whichOne == 7) { // Restricted access to only TA's and Admins'
@@ -169,23 +169,25 @@ var gupper;
  */
 function sendLogReg() {
   if (alreadyRegistered == false) {
-    var gupper = "student_list." + studentParseNum;
-    // Create student name
-    var splitName = studentUmail.split('@')[0].split('.');
-    var name = "";
-    for (var n = 0; n < splitName.length; n++) {
-      var capName = splitName[n].charAt(0).toUpperCase() + splitName[n].substr(1);
-      name += capName + " ";
-    }
-    name = name.trim();
-    if (checkstudentNum == true && studentNumber != 0 && googleEmail != null) {
-      client.login().then(() =>
-        db.collection("Student_Information").updateOne({version: "0.3"}, { $set: {[gupper + ".studentClass"]: classRegister, [gupper + ".student_number"]: studentNumber, [gupper + ".name"]: name, [gupper + ".umail"]: studentUmail, [gupper + ".type"]: "Student", [gupper + ".gmail"]: googleEmail}}, function(err, res) {
-        if (err) throw err;
-        console.log("1 document updated");
-        db.close();
-      }));
-      redirectCRISPR();
+    if (studentUmail) {
+      var gupper = "student_list." + studentParseNum;
+      // Create student name
+      var splitName = studentUmail.split('@')[0].split('.');
+      var name = "";
+      for (var n = 0; n < splitName.length; n++) {
+        var capName = splitName[n].charAt(0).toUpperCase() + splitName[n].substr(1);
+        name += capName + " ";
+      }
+      name = name.trim();
+      if (checkstudentNum == true && studentNumber != 0 && googleEmail != null) {
+        client.login().then(() =>
+          db.collection("Student_Information").updateOne({version: "0.3"}, { $set: {[gupper + ".studentClass"]: classRegister, [gupper + ".student_number"]: studentNumber, [gupper + ".name"]: name, [gupper + ".umail"]: studentUmail, [gupper + ".type"]: "Student", [gupper + ".gmail"]: googleEmail}}, function(err, res) {
+          if (err) throw err;
+          console.log("1 document updated");
+          db.close();
+        }));
+        redirectCRISPR();
+      }
     }
   }
   if (alreadyRegistered == true) {
