@@ -22,7 +22,7 @@ function ModeSelectionAdd(mode) {
     $("#gene_dropdown_selection").append(append_str);
   }
   else if (mode == "assignment") {
-    useList = removeCompletedAssignments();
+    var useList = removeCompletedAssignments();
     for (i = 0; i < useList.length; i++) {
       if (i == 0) {
         append_str = '<option value="' + useList[i] + '" id="' + useList[i] + '" tag="assignment">' + useList[i] + '</option>\n';
@@ -807,14 +807,14 @@ function openAccountManagement() {
     append_str += '<div class="form-group">';
     append_str += '<label for="InputStudentNumber" style="font-weight: bold;">Input student numbers: </label>';
     append_str += '<textarea class="form-control" id="StudentNumbers" rows="4" placeholder="1234567890, 1003817535, 1113315545"></textarea>';
-    append_str += '<small id="InputStudentNumberHelp" class="form-text text-muted">Input student numbers, seperated by commas (BEWARE OF TYPOS!)</small>'
+    append_str += '<small id="InputStudentNumberHelp" class="form-text text-muted">Input student numbers, seperated by commas, new lines and/or tab indentation (BEWARE OF TYPOS!)</small>'
     append_str += '</div>';
 
     // User uMail
     append_str += '<div class="form-group">';
     append_str += '<label for="InputStudentUmail" style="font-weight: bold;">Input student numbers: </label>';
     append_str += '<textarea class="form-control" id="StudentUmails" rows="4" placeholder="john.doe@mail.utoronto.ca, sarah.cat@.mail.utoronto.ca, alexander.macadonia@utoronto.ca"></textarea>';
-    append_str += '<small id="InputStudentUmailUmail" class="form-text text-muted">Input student uMails in the same order of the student numbers, seperated by commas (BEWARE OF TYPOS!)</small>'
+    append_str += '<small id="InputStudentUmailUmail" class="form-text text-muted">Input student uMails in the same order of the student numbers, seperated by commas, new lines and/or tab indentation (BEWARE OF TYPOS!)</small>'
     append_str += '</div>';
 
     // Submit button
@@ -852,7 +852,7 @@ function openAccountManagement() {
     // Class choice:
     append_str += '<div class="form-group">';
     append_str += '<label for="InputClassSingle" style="font-weight: bold;">Choose class: </label>';
-    append_str += '<select id="InputClassSingle" class="form-control" style="margin-bottom: 1%">';
+    append_str += '<select id="InputClassSingle" class="form-control" style="margin-bottom: 1%;">';
     for (key in classList) {
       append_str += '<option value="' + key + '" id="' + key + '" tag="assignment">' + key + '</option>\n';
     }
@@ -917,7 +917,7 @@ function openAccountManagement() {
     var modList = student_reg_information[0]["classMarkingMod"];
     append_str += '<div class="form-group">';
     append_str += '<label for="ClassModChange" style="font-weight: bold;">Choose class: </label>';
-    append_str += '<select id="ClassModChange" class="form-control" style="margin-bottom: 1%" onchange="ChangeDOMInnerhtml(\'CurrentOffTarget\', \'Current off-target marking is set to: \' + student_reg_information[0][\'classMarkingMod\'][document.getElementById(\'ClassModChange\').value][0])">';
+    append_str += '<select id="ClassModChange" class="form-control" style="margin-bottom: 1%;" onchange="ChangeDOMInnerhtml(\'CurrentOffTarget\', \'Current off-target marking is set to: \' + student_reg_information[0][\'classMarkingMod\'][document.getElementById(\'ClassModChange\').value][0])">';
     for (key in classList) {
       append_str += '<option value="' + key + '" id="' + key + '" tag="assignment">' + key + '</option>\n';
     }
@@ -1201,7 +1201,13 @@ function addUserToServer(number, name, umail, classInput, type) {
 function addMultipleUsersToServer(inputClass, number, umail) {
   // Student information setup
   var studentNumberList = number.value.trim().split(/,|\n|\t/);
+  if (studentNumberList[studentNumberList.length - 1].trim() == "") {
+    studentNumberList.pop()
+  }
   var studentUmailList = umail.value.trim().split(/,|\n|\t/);
+  if (studentUmailList[studentUmailList.length - 1].trim() == "") {
+    studentUmailList.pop()
+  }
   if (studentNumberList.length == studentUmailList.length) {
     var setList = {};
     for (var i = 0; i < studentNumberList.length; i++) {
@@ -1246,6 +1252,9 @@ function removeCompletedAssignments() {
         returnAssignmentList.push(list_of_assignments[i]);
       }
     }
+  }
+  else if (completed_assignments.length == 0) {
+    returnAssignmentList = list_of_assignments;
   }
   return returnAssignmentList;
 }
