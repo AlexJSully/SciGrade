@@ -1034,7 +1034,7 @@ function generateHiddenStudentDownload(whichClass, whichType) {
     if (whichType == false) {
       captionTitleBegin = "SciGrade_studentMarkRaw_";
     }
-    downlodaIndexTable_str += "\t\t<caption>" + captionTitleBegin + student_reg_information[0]["student_list"][0]["name"].replace(/\s/g, '') + "_" + d.getFullYear() + "-" + d.getMonth() + "_" + d.getDate() + "</caption>\n";
+    downlodaIndexTable_str += "\t\t<caption>" + captionTitleBegin + student_reg_information[0]["student_list"][studentParseNum]["name"].replace(/\s/g, '') + "_" + d.getFullYear() + "-" + d.getMonth() + "_" + d.getDate() + "</caption>\n";
     downlodaIndexTable_str += downloadIndexTable_fill;
     // Looping through each row of the table
     var studentRegList = student_reg_information[0]["student_list"];
