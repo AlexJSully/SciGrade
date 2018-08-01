@@ -417,7 +417,19 @@ function checkOffTarget(score) {
     // Is it within the optimal range?
     var Max_range = Math.max.apply(null, offtarget_List);
     var Min_optiomal = Max_range - (Max_range * 0.2);
-    if (InputOffTargetValue >= 80) {
+    var optimalValue = Min_optiomal;
+    var studentClass = student_reg_information[0]["student_list"][studentParseNum]["studentClass"];
+    // Change optimal range based on custom input
+    if (student_reg_information[0]["classMarkingMod"][studentClass][0] == "Optimal") {
+      if (Min_optiomal > 80 || Min_optiomal < 35) {
+        optimalValue = 80;
+      }
+    }
+    else {
+      optimalValue = student_reg_information[0]["classMarkingMod"][studentClass][0];
+    }
+    // Determine if off-target is optimal or not
+    if (InputOffTargetValue >= optimalValue) {
       MAROffTarget_aboveOpt = true;
       MAROffTarget_above35 = true;
       MAROffTarget_degree = 1;
@@ -679,7 +691,8 @@ var completed_assignments = [];
 function openAccountManagement() {  
   loadJSON_Files();
   $("#accountManagementBody").empty();
-  var append_str = "<p>Hello " + student_reg_information[0]["student_list"][studentParseNum]["name"].split(' ')[0] + "!</p>";
+  var append_str = "<div id='accordion'><p>Hello " + student_reg_information[0]["student_list"][studentParseNum]["name"].split(' ')[0] + "!</p>";
+  $("#accountManagementBody").append(append_str);
 
   // Assignments
   if (student_reg_information[0]["student_list"][studentParseNum]["assignment-HBB-Marks"] != null) {
@@ -702,6 +715,20 @@ function openAccountManagement() {
       completed_assignments.push("APOE");
     } 
   }
+  
+  // Create assignments card
+  append_str = "<div class='card about'>";
+  append_str += "<div class='card-header' id='assignmentCard'>";
+  append_str += "<h5 class='mb-0'>";
+  append_str += "<button class='btn btn-link' data-toggle='collapse' data-target='#completedAssignments' aria-expanded='true' aria-controls='completedAssignments'>";
+  append_str += "Completed assignments: ";
+  append_str += "</button>";
+  append_str += "</h5>"
+  append_str += "</div>";
+  append_str += "<div id='completedAssignments' class='collapse show' aria-labelledby='headingOne' data-parent='#accordion'>";
+  append_str += "<div class='card-body'>";
+
+  // Card content
   if (completed_assignments.length != 0) {
     append_str += "<p>You have completed the following assignments: <p> <ul>";
     for (i=0; i < completed_assignments.length; i++) {
@@ -712,12 +739,17 @@ function openAccountManagement() {
   else if (completed_assignments.length == 0) {
     append_str += "<p>You have not yet completed any assignments. </p>"
   }
+
+  // Close card
+  append_str += "</div>";
+  append_str += "</div>";
+  append_str += "</div>";
   $("#accountManagementBody").append(append_str);
 
   // Obtain student marks
   if (student_reg_information[0]["student_list"][studentParseNum]["type"] == "admin" || student_reg_information[0]["student_list"][studentParseNum]["type"] == "TA") {
     var encodedURI = encodeURIComponent(JSON.stringify(student_reg_information[0]["student_list"]));
-    append_str = "<p> <b> Oh wait! </b> Hello " + student_reg_information[0]["student_list"][studentParseNum]["type"] + "! Would you like to download student marks? </p>";
+    append_str = "<br> <p> <b> Oh wait! </b> Hello " + student_reg_information[0]["student_list"][studentParseNum]["type"] + "! Would you like to download student marks? </p>";
     append_str += '<p> <button type="button" class="btn btn-primary" onclick="generateHiddenStudentDownload(true);"> Download Marks </button> </p>';
     $("#accountManagementBody").append(append_str);
   }
@@ -725,15 +757,28 @@ function openAccountManagement() {
   // Admin access to add new users
   if (student_reg_information[0]["student_list"][studentParseNum]["type"] == "TA" || student_reg_information[0]["student_list"][studentParseNum]["type"] == "admin") {
     append_str = "<p> <b> ADMIN POWER! </b> <p>";
+    
+    // Create student card
+    append_str += "<div class='card about'>";
+    append_str += "<div class='card-header' id='studentCard'>";
+    append_str += "<h5 class='mb-0'>";
+    append_str += "<button class='btn btn-link' data-toggle='collapse' data-target='#addStudents' aria-expanded='false' aria-controls='addStudents'>";
+    append_str += "Add students: ";
+    append_str += "</button>";
+    append_str += "</h5>"
+    append_str += "</div>";
+    append_str += "<div id='addStudents' class='collapse' aria-labelledby='headingOne' data-parent='#accordion'>";
+    append_str += "<div class='card-body'>";
+
     // Append all students at once:
-    append_str += "<p> If you would to add new students to the class, just fill the form below: "
+    append_str += "<p style='font-weight: bold;'> If you would to add new students to the class, just fill the form below: "
     // Form opening
     append_str += "<form>"
 
     // Class choice:
     var classList = student_reg_information[0]["class_list"];
     append_str += '<div class="form-group">';
-    append_str += '<label for="InputClassMultiple">Choose class: </label>';
+    append_str += '<label for="InputClassMultiple" style="font-weight: bold;">Choose class: </label>';
     append_str += '<select id="InputClassMultiple" class="form-control" onchange="showNewInput(\'InputClassMultiple\', \'newClass\', \'InputNewClassMultiple\')" style="margin-bottom: 1%">';
     for (key in classList) {
       append_str += '<option value="' + key + '" id="' + key + '" tag="assignment">' + key + '</option>\n';
@@ -741,19 +786,19 @@ function openAccountManagement() {
     append_str += '<option value="newClass" id="newClassMultiple" tag="assignment" >New Class</option>\n';
     append_str += '</select>';
     append_str += '<input class="form-control" id="InputNewClassMultiple" placeholder="HMB396 - Winter (NOTE: Spaces will be deleted once you submit so use capital letters to seperate words)" hidden>';
-    append_str += '<small id="InputClassHelp" class="form-text text-muted">Choose class students will be added to or create a new class. Example of new class: HMB396 - Winter - 2019(NOTE: Spaces will be deleted once you submit so use capital letters to seperate words)</small>'
+    append_str += '<small id="InputClassHelp" class="form-text text-muted">Choose class students will be added to or create a new class. Example of new class: HMB396 - Winter - 2019 (NOTE: Spaces will be deleted once you submit so use capital letters to seperate words)</small>'
     append_str += '</div>';
 
     // User number
     append_str += '<div class="form-group">';
-    append_str += '<label for="InputStudentNumber">Input student numbers: </label>';
+    append_str += '<label for="InputStudentNumber" style="font-weight: bold;">Input student numbers: </label>';
     append_str += '<textarea class="form-control" id="StudentNumbers" rows="4" placeholder="1234567890, 1003817535, 1113315545"></textarea>';
     append_str += '<small id="InputStudentNumberHelp" class="form-text text-muted">Input student numbers, seperated by commas (BEWARE OF TYPOS!)</small>'
     append_str += '</div>';
 
     // User uMail
     append_str += '<div class="form-group">';
-    append_str += '<label for="InputStudentUmail">Input student numbers: </label>';
+    append_str += '<label for="InputStudentUmail" style="font-weight: bold;">Input student numbers: </label>';
     append_str += '<textarea class="form-control" id="StudentUmails" rows="4" placeholder="john.doe@mail.utoronto.ca, sarah.cat@.mail.utoronto.ca, alexander.macadonia@utoronto.ca"></textarea>';
     append_str += '<small id="InputStudentUmailUmail" class="form-text text-muted">Input student uMails in the same order of the student numbers, seperated by commas (BEWARE OF TYPOS!)</small>'
     append_str += '</div>';
@@ -764,51 +809,70 @@ function openAccountManagement() {
 
     // Close form
     append_str += "</form>";
+
+    // Close card
+    append_str += "</div>";
+    append_str += "</div>";
+    append_str += "</div>";
     $("#accountManagementBody").append(append_str);
   }
 
   if (student_reg_information[0]["student_list"][studentParseNum]["type"] == "admin") {
+    // Create single card
+    append_str = "<div class='card about'>";
+    append_str += "<div class='card-header' id='addTACard'>";
+    append_str += "<h5 class='mb-0'>";
+    append_str += "<button class='btn btn-link' data-toggle='collapse' data-target='#addTA' aria-expanded='true' aria-controls='addTA'>";
+    append_str += "Add TA's: ";
+    append_str += "</button>";
+    append_str += "</h5>"
+    append_str += "</div>";
+    append_str += "<div id='addTA' class='collapse' aria-labelledby='headingOne' data-parent='#accordion'>";
+    append_str += "<div class='card-body'>";
+
     //Append TAs or Admins:
-    append_str = "<p> If you would like to add new users (students, TAs or admins), please fill in the form below: </p>";
+    append_str += "<p style='font-weight: bold;'> If you would like to add a single user (students, TAs or admins), please fill in the form below: </p>";
     // Form opening
     append_str += "<form>";
 
     // Class choice:
     var classList = student_reg_information[0]["class_list"];
     append_str += '<div class="form-group">';
-    append_str += '<label for="InputClassSingle">Choose class: </label>';
-    append_str += '<select id="InputClassSingle" class="form-control" onchange="showNewInput(\'InputClassSingle\', \'newClass\', \'InputNewClassSingle\')" style="margin-bottom: 1%">';
+    append_str += '<label for="InputClassSingle" style="font-weight: bold;">Choose class: </label>';
+    append_str += '<select id="InputClassSingle" class="form-control" style="margin-bottom: 1%">';
     for (key in classList) {
       append_str += '<option value="' + key + '" id="' + key + '" tag="assignment">' + key + '</option>\n';
     }
-    append_str += '<option value="newClass" id="newClassSingle" tag="assignment" >New Class</option>\n';
     append_str += '</select>';
-    append_str += '<input class="form-control" id="InputNewClassSingle" placeholder="HMB396 - Winter (NOTE: Spaces will be deleted once you submit so use capital letters to seperate words)" hidden>';
-    append_str += '<small id="InputClassHelp" class="form-text text-muted">Choose class students will be added to or create a new class. Example of new class: HMB396 - Winter - 2019(NOTE: Spaces will be deleted once you submit so use capital letters to seperate words)</small>'
+    append_str += '<small id="InputClassSingleHelp" class="form-text text-muted">Choose class TA will be added.</small>'
     append_str += '</div>';
 
     // User number
     append_str += '<div class="form-group">';
-    append_str += '<label for="InputStudentNumber">User number</label>';
+    append_str += '<label for="InputStudentNumber" style="font-weight: bold;">User number</label>';
     append_str += '<input class="form-control" id="StudentNumber" placeholder="1234567890" maxlength="10">';
+    append_str += '<small id="InputStudentNumberHelp" class="form-text text-muted">The user\'s access number (like a student or employee number)</small>'
     append_str += '</div>';
 
     // User name
     append_str += '<div class="form-group">';
-    append_str += '<label for="InputStudentName">User name</label>';
+    append_str += '<label for="InputStudentName" style="font-weight: bold;">User name</label>';
     append_str += '<input class="form-control" id="StudentName" placeholder="First Last">';
+    append_str += '<small id="InputStudentNumberHelp" class="form-text text-muted">The user\'s full name</small>'
     append_str += '</div>';
 
     // User umail
     append_str += '<div class="form-group">';
-    append_str += '<label for="InputStudentUmail">User umail</label>';
+    append_str += '<label for="InputStudentUmail" style="font-weight: bold;">User umail</label>';
     append_str += '<input type="email" class="form-control" id="StudentUmail" placeholder="first.last@mail.utoronto.ca">';
+    append_str += '<small id="InputStudentNumberHelp" class="form-text text-muted">The user\'s University associated email</small>'
     append_str += '</div>';
 
     // User type
     append_str += '<div class="form-group">';
-    append_str += '<label for="InputStudentType">User type:</label>';
+    append_str += '<label for="InputStudentType" style="font-weight: bold;">User type:</label>';
     append_str += '<select class="form-control" id="StudentType"><option>Student</option><option>TA</option><option>admin</option></select>';
+    append_str += '<small id="InputStudentNumberHelp" class="form-text text-muted">The user\'s account type. Student = access to practice and assignments, TA = same as previous plus download student marks and add new students, admin = same as previous plus adding more TA\'s and changing marking scheme for a class.</small>'
     append_str += '</div>';
 
     // Submit button
@@ -817,8 +881,93 @@ function openAccountManagement() {
 
     // Form closing
     append_str += "</form>";
+
+    // Close card
+    append_str += "</div>";
+    append_str += "</div>";
+    append_str += "</div>";
+    $("#accountManagementBody").append(append_str);
+
+    // Create modifying controls card
+    append_str = "<div class='card about'>";
+    append_str += "<div class='card-header' id='modifyCard'>";
+    append_str += "<h5 class='mb-0'>";
+    append_str += "<button class='btn btn-link' data-toggle='collapse' data-target='#modifyControls' aria-expanded='true' aria-controls='modifyControls'>";
+    append_str += "Modify marking controls: ";
+    append_str += "</button>";
+    append_str += "</h5>"
+    append_str += "</div>";
+    append_str += "<div id='modifyControls' class='collapse' aria-labelledby='headingOne' data-parent='#accordion'>";
+    append_str += "<div class='card-body'>";
+
+    // Choose class:
+    var modList = student_reg_information[0]["classMarkingMod"];
+    append_str += '<div class="form-group">';
+    append_str += '<label for="ClassModChange" style="font-weight: bold;">Choose class: </label>';
+    append_str += '<select id="ClassModChange" class="form-control" style="margin-bottom: 1%" onchange="ChangeDOMInnerhtml(\'CurrentOffTarget\', \'Current off-target marking is set to: \' + student_reg_information[0][\'classMarkingMod\'][document.getElementById(\'ClassModChange\').value][0])">';
+    for (key in classList) {
+      append_str += '<option value="' + key + '" id="' + key + '" tag="assignment">' + key + '</option>\n';
+    }
+    append_str += '</select>';
+    append_str += '<small id="ClassModChangeHelp" class="form-text text-muted">Choose the class for which you are modifying marking scheme for.</small>'
+    append_str += '</div>';
+
+    // Modify controls:
+    append_str += '<div class="form-group">';
+    append_str += '<p style="font-weight: bold;">Modify controls for: </p>';
+    append_str += '<label for="SelectModifyControls">Off-Target Marking: </label>';
+
+    append_str += '<p id="CurrentOffTarget">Current off-target marking is set to: </p>';
+    append_str += '<select id="SelectModifyControls" class="form-control" onchange="showNewInput(\'SelectModifyControls\', \'Custom\', \'InputModifyControls\')" style="margin-bottom: 1%">';
+    append_str += '<option value="Optimal" id="Optimal" tag="assignment">Optimal</option>\n';
+    append_str += '<option value="Custom" id="CustomOffTarget" tag="assignment">Custom</option>\n';
+    append_str += '</select>';
+    append_str += '<input class="form-control" id="InputModifyControls" type="number" step="0.01" min="0.01" max="100" placeholder="Insert number between 0.01 and 100" hidden>';
+    append_str += '<small id="InputModifyControlsHelp" class="form-text text-muted">Choose how you want the off-target score to be marked. Optimal is Min_optiomal = Max_range - (Max_range * 0.2) if below 80 (if below, optimal = 80). Custom value can be any number between 0.01 and 100 which will be the new custom "optiomal" value for your class.</small>'
+    append_str += '</div>';
+
+    // Submit button
+    append_str += '<p> <button type="button" class="btn btn-primary" onclick="changeInputClass(\'SelectModifyControls\', \'Custom\', \'CustomOffTarget\', document.getElementById(\'InputModifyControls\').value), UpdateMarkingControls(document.getElementById(\'ClassModChange\').value, document.getElementById(\'SelectModifyControls\').value)"> Update Marking Scheme </button>';
+    append_str += "<br>";
+
+    // Close card
+    append_str += "</div>";
+    append_str += "</div>";
+    append_str += "</div>";
     $("#accountManagementBody").append(append_str);
   }
+
+  // Close account management
+  append_str = "</div>";
+  $("#accountManagementBody").append(append_str);
+}
+
+/**
+ * Change values in the marking controls
+ * @param {String} classToMod Class being modified
+ * @param {String} offTargetChange The value of the modified control being changed to
+ */
+function UpdateMarkingControls(classToMod, offTargetChange) {
+  var classChange = "classMarkingMod." + classToMod;
+  var markingChangeList = [offTargetChange]
+  client.login().then(() =>
+    db.collection("Student_Information").updateOne({version: "0.3"}, { $set: {[classChange]: markingChangeList}}, function(err, res) {
+    if (err) throw err;
+    console.log("1 document updated");
+    db.close();
+  }));
+  $("#adminSendButton").click();
+  document.getElementById("InputModifyControls").value = "";
+  document.getElementById("CustomOffTarget").value = "Custom";
+}
+
+/**
+ * Change a DOM's innerHTML 
+ * @param {String} domID DOM's ID that is being modified
+ * @param {String} changeTo The content of the innerHTML
+ */
+function ChangeDOMInnerhtml(domID, changeTo) {
+  document.getElementById(domID).innerHTML = changeTo;
 }
 
 var downloadIndexTable_start = "\t\t<tr>\n\t\t\t<th>Student Number</th>\n\t\t\t<th>Name</th>";
@@ -940,6 +1089,12 @@ function addUserToServer(number, name, umail, classInput, type) {
   document.getElementById("StudentVerifyID").value = "";
 }
 
+/**
+ * Adds multiple users to the MongoDB server
+ * @param {String} inputClass The class the users are being added to
+ * @param {String} number The list of student numbers
+ * @param {String} umail The list of student uMails
+ */
 function addMultipleUsersToServer(inputClass, number, umail) {
   // Student information setup
   var studentNumberList = number.value.trim().split(/,|\n|\t/);
@@ -959,7 +1114,14 @@ function addMultipleUsersToServer(inputClass, number, umail) {
       db.close();
       }));
     $("#adminSendButton").click();
-    $("#adminSendButton").click();
+    var classChange = "classMarkingMod." + inputClass;
+    var markingChangeList = ["Optimal"]
+    client.login().then(() =>
+      db.collection("Student_Information").updateOne({version: "0.3"}, { $set: {[classChange]: markingChangeList}}, function(err, res) {
+      if (err) throw err;
+      console.log("1 document updated");
+      db.close();
+    }));
     document.getElementById("StudentNumbers").value = "";
     document.getElementById("StudentUmails").value = "";
   }

@@ -28,8 +28,8 @@ var alreadyRegistered = false;
 var classRegister;
 /**
  * Check to determine if the student is within
- * @param {Num} student_num - Student number
- * @param {String} student_umail - Student's email/uMail
+ * @param {Num} student_num Student number
+ * @param {String} student_umail Student's email/uMail
  * @return {bool} checkstudentNum - Whether the student is a student in the system or not
  */
 function checkStudentNumber(student_num, student_umail) {

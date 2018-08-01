@@ -4,7 +4,7 @@ SciGrade is an online web-tool that allows students (or any user with access) to
 
 ## Getting Started
 
-It is recommended that you use the web-version available at https://bar.utoronto.ca/eFP-Seq_Browser/ but if you want to download and run the eFP-Seq Browser locally, it is possible though it require internet connection to login and access the marking form and student information (exclussive for TA's and admins). 
+It is recommended that you use the web-version available at http://scigrade.com/ but if you want to download and run the SciGrade locally, it is possible though it require internet connection to login and access the marking form and student information (exclussive for TA's and admins). 
 
 ## Browser Compatibilities 
 
@@ -31,4 +31,5 @@ Coming Soon!
 ## Authors
 
 * Alexander Sullivan - [GitHub](https://github.com/ASully), [Twitter](https://twitter.com/alexjsully)
+* Cathy Cao - [Twitter](https://twitter.com/cathycaoo)
 * Alistar Dias - [Website](http://hmb.utoronto.ca/profiles/alistair-dias/)
