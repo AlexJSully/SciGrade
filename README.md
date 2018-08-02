@@ -30,6 +30,6 @@ Coming Soon!
 
 ## Authors
 
-* Alexander Sullivan - [GitHub](https://github.com/ASully), [Twitter](https://twitter.com/alexjsully)
-* Cathy Cao - [Twitter](https://twitter.com/cathycaoo)
-* Alistar Dias - [Website](http://hmb.utoronto.ca/profiles/alistair-dias/)
+* Alexander Sullivan - [GitHub](https://github.com/ASully), [Twitter](https://twitter.com/alexjsully), [LinkedIn](https://www.linkedin.com/in/alexanderjsullivan/)
+* Cathy Cao - [LinkedIn](https://www.linkedin.com/in/cathyquynhcao/)
+* Alistar Dias - [LinkedIn](https://www.linkedin.com/in/alistair-dias-090a8629/), [Website](http://hmb.utoronto.ca/profiles/alistair-dias/)

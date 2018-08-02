@@ -769,7 +769,7 @@ function openAccountManagement() {
     $("#accountManagementBody").append(append_str);
   }
 
-  // TA access to add new students
+  // TA access to add new students:
   if (student_reg_information[0]["student_list"][studentParseNum]["type"] == "TA" || student_reg_information[0]["student_list"][studentParseNum]["type"] == "admin") {
     append_str = "<p> <b> ADMIN POWER! </b> <p>";
     

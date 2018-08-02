@@ -57,7 +57,7 @@ For student's numbers and emails, there must be an equal amount of each while th
 
 ### Adding a TA, admin or single student:
 
-Adding a TA, admin or a single student must be done individually within the "Add TA's:" card which can only be accessed by the admin. To change this from being admin only to allowing TAs, within the ```openAccountManagement()``` in [crispr_script.js](core/scripts/crispr_script.js), change the order of ```append_str``` or find the ```// Admin controls: ``` and combine that with the ```// TA access to add new students```.
+Adding a TA, admin or a single student must be done individually within the "Add TA's:" card which can only be accessed by the admin. To change this from being admin only to allowing TAs, within the ```openAccountManagement()``` in [crispr_script.js](core/scripts/crispr_script.js), change the order of ```append_str``` or find the ```// Admin controls: ``` and combine that with the ```// TA access to add new students:```.
 
 If you are adding a TA or admin, it recommended you add them to the "AdminTA-List" class. They can also be added to a specific class, but new classes cannot be created here. 
 
