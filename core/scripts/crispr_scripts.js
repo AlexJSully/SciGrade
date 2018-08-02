@@ -612,7 +612,7 @@ function showFeedback() {
     }
     else if (MAROffTarget_degree == 3) {
       MAROffTarget_degree_display = 0.5;
-      MAROffTarget_degree_explain = "This means your answer was partially correct as it was found to be your only option is soley based on on-target scoring based on the target region range you selected.";
+      MAROffTarget_degree_explain = "This means your answer was partially correct as it was found to be your only option is soley based on the target region range you selected.";
     }
   }
   append_str += '<p> For Off-Target Score, you put down "' + all_answers[4] + '" which gave you the mark ' + MAROffTarget_degree_display + '.</p>'
@@ -769,7 +769,7 @@ function openAccountManagement() {
     $("#accountManagementBody").append(append_str);
   }
 
-  // Admin access to add new users
+  // TA access to add new students
   if (student_reg_information[0]["student_list"][studentParseNum]["type"] == "TA" || student_reg_information[0]["student_list"][studentParseNum]["type"] == "admin") {
     append_str = "<p> <b> ADMIN POWER! </b> <p>";
     
@@ -812,9 +812,9 @@ function openAccountManagement() {
 
     // User uMail
     append_str += '<div class="form-group">';
-    append_str += '<label for="InputStudentUmail" style="font-weight: bold;">Input student numbers: </label>';
+    append_str += '<label for="InputStudentUmail" style="font-weight: bold;">Input student University email: </label>';
     append_str += '<textarea class="form-control" id="StudentUmails" rows="4" placeholder="john.doe@mail.utoronto.ca, sarah.cat@.mail.utoronto.ca, alexander.macadonia@utoronto.ca"></textarea>';
-    append_str += '<small id="InputStudentUmailUmail" class="form-text text-muted">Input student uMails in the same order of the student numbers, seperated by commas, new lines and/or tab indentation (BEWARE OF TYPOS!)</small>'
+    append_str += '<small id="InputStudentUmailUmail" class="form-text text-muted">Input student University associated email in the same order of the student numbers, seperated by commas, new lines and/or tab indentation (BEWARE OF TYPOS!)</small>'
     append_str += '</div>';
 
     // Submit button
@@ -831,6 +831,7 @@ function openAccountManagement() {
     $("#accountManagementBody").append(append_str);
   }
 
+  // Admin controls:
   if (student_reg_information[0]["student_list"][studentParseNum]["type"] == "admin") {
     // Create single card
     append_str = "<div class='card about'>";
@@ -905,7 +906,7 @@ function openAccountManagement() {
     append_str = "<div class='card about'>";
     append_str += "<div class='card-header' id='modifyCard'>";
     append_str += "<h5 class='mb-0'>";
-    append_str += "<button class='btn btn-link' data-toggle='collapse' data-target='#modifyControls' aria-expanded='true' aria-controls='modifyControls'>";
+    append_str += "<button class='btn btn-link' data-toggle='collapse' data-target='#modifyControls' aria-expanded='true' aria-controls='modifyControls' onclick='ChangeDOMInnerhtml(\"CurrentOffTarget\", \"Current off-target marking is set to: \" + student_reg_information[0][\"classMarkingMod\"][document.getElementById(\"ClassModChange\").value][0])'>";
     append_str += "Modify marking controls: ";
     append_str += "</button>";
     append_str += "</h5>"
@@ -914,7 +915,6 @@ function openAccountManagement() {
     append_str += "<div class='card-body'>";
 
     // Choose class:
-    var modList = student_reg_information[0]["classMarkingMod"];
     append_str += '<div class="form-group">';
     append_str += '<label for="ClassModChange" style="font-weight: bold;">Choose class: </label>';
     append_str += '<select id="ClassModChange" class="form-control" style="margin-bottom: 1%;" onchange="ChangeDOMInnerhtml(\'CurrentOffTarget\', \'Current off-target marking is set to: \' + student_reg_information[0][\'classMarkingMod\'][document.getElementById(\'ClassModChange\').value][0])">';
