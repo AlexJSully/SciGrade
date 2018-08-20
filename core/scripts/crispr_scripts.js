@@ -185,7 +185,7 @@ function loadWork() {
 
     // Buttons
     append_str += '<button type="button" class="btn btn-success" style="margin:1%;" hidden>Save</button>';
-    append_str += '<button type="button" class="btn btn-primary" style="margin:1%;" onclick="submitAnswers();">Submit</button>';
+    append_str += '<button id="assignmentSubmitButton" type="button" class="btn btn-primary" style="margin:1%;" onclick="submitAnswers();">Submit</button>';
 
     // End form
     append_str += '</form>';
@@ -416,12 +416,12 @@ function checkOffTarget(score) {
 
     // Is it within the optimal range?
     var Max_range = Math.max.apply(null, offtarget_List);
-    var Min_optiomal = Max_range - (Max_range * 0.2);
-    var optimalValue = Min_optiomal;
+    var Min_optimal = Max_range - (Max_range * 0.2);
+    var optimalValue = Min_optimal;
     var studentClass = student_reg_information[0]["student_list"][studentParseNum]["studentClass"];
     // Change optimal range based on custom input
     if (student_reg_information[0]["classMarkingMod"][studentClass][0] == "Optimal") {
-      if (Min_optiomal > 80 || Min_optiomal < 35) {
+      if (Min_optimal > 80 || Min_optimal < 35) {
         optimalValue = 80;
       }
     }
@@ -936,7 +936,7 @@ function openAccountManagement() {
     append_str += '<option value="Custom" id="CustomOffTarget" tag="assignment">Custom</option>\n';
     append_str += '</select>';
     append_str += '<input class="form-control" id="InputModifyControls" type="number" step="0.01" min="0.01" max="100" placeholder="Insert number between 0.01 and 100" hidden>';
-    append_str += '<small id="InputModifyControlsHelp" class="form-text text-muted">Choose how you want the off-target score to be marked. Optimal is Min_optiomal = Max_range - (Max_range * 0.2) if below 80 (if below, optimal = 80). Custom value can be any number between 0.01 and 100 which will be the new custom "optiomal" value for your class.</small>'
+    append_str += '<small id="InputModifyControlsHelp" class="form-text text-muted">Choose how you want the off-target score to be marked. Optimal is Min_optimal = Max_range - (Max_range * 0.2) if below 80 (if below, optimal = 80). Custom value can be any number between 0.01 and 100 which will be the new custom "optiomal" value for your class.</small>'
     append_str += '</div>';
 
     // Submit button
@@ -1297,3 +1297,19 @@ function submitAnswers() {
   }
   $("#feedbackButton").click();
 }
+
+/**
+ * Determine if a enter was pressed and if so, click a button
+ * @param {Event} event The key press
+ * @param {String} toClickButton Which button to click
+ */
+function IfPressEnter(event, toClickButton) {
+  if (event.which == 13 || event.keyCode == 13) {
+    $('#' + toClickButton).click();
+  }
+}
+
+// Block submit calls on keypress
+$(function() {
+  $("form").submit(function() { return false; });
+});

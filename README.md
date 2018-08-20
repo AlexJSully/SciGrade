@@ -14,7 +14,7 @@ Chrome | Firefox | IE | Edge | Safari | Opera
 
 ## Installation/Open
 
-There is nothing to install, just download all the files and open "index.html".
+There is nothing to install, just download all the files and open [index.html](index.html).
 
 ## Contributing
 
@@ -26,7 +26,7 @@ Please read [EDIT.md](EDIT.md) if you want to understand how SciGrade works and 
 
 ## License
 
-Coming Soon!
+[GPL-3.0](LICENSE.md)
 
 ## Authors
 

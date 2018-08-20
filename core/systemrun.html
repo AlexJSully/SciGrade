@@ -6,11 +6,11 @@
   <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
   <meta name="author" content="Alexander Sullivan" />
   <!-- jQuery using Google Hosted Library -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="scripts/APIandLibraries/jQuery/jquery.min.js"></script>
   <!-- Bootstrap -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" crossorigin="anonymous">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="scripts/APIandLibraries/Bootstrap/bootstrap.min.css" crossorigin="anonymous">
+  <script src="scripts/APIandLibraries/Bootstrap/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+  <script src="scripts/APIandLibraries/Bootstrap/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
   <!-- Stictch/mongoDB -->
   <script src="https://s3.amazonaws.com/stitch-sdks/js/library/v2/stable/stitch.min.js"></script>
   <!-- Google Material Icons -->
@@ -19,7 +19,7 @@
   <script src="https://apis.google.com/js/platform.js" async defer></script>
   <meta name="google-signin-client_id" content="1034277489697-g473uqcd0oc1c02td9off07b9mbe1353.apps.googleusercontent.com">
   <!-- tabletoCSV tool to create an option to download XML as CSV -->
-  <script src="scripts\tabletoCSV\jquery.tabletoCSV.js"></script>
+  <script src="scripts/APIandLibraries/tabletoCSV/jquery.tabletoCSV.js"></script>
   <script>
     var studentParseNum;
 
@@ -56,9 +56,9 @@
     gtag('config', 'UA-38961857-6');
   </script>
   <!-- Custom scripts -->
-  <script src="scripts\login.js"></script>
-  <script src="scripts\crispr_scripts.js"></script>
-  <link rel="stylesheet" href="styling\style.css" />
+  <script src="scripts/login.js"></script>
+  <script src="scripts/crispr_scripts.js"></script>
+  <link rel="stylesheet" href="styling/style.css" />
 </head>
 
 <body class="focusBody">
@@ -91,7 +91,7 @@
               <form id="loginForm">
                 <div class="form-group">
                   <label for="InputStudentNumberLogin">Student number</label>
-                  <input class="form-control" id="StudentNumberLogin" placeholder="1234567890" maxlength="10">
+                  <input class="form-control" id="StudentNumberLogin" placeholder="1234567890" maxlength="10" onkeypress="IfPressEnter(event, 'verifyLogin')" type="text">
                   <small id="studentNumberLoginHelp" class="form-text text-muted">We'll never share your student number with anyone else.</small>
                 </div>
                 <button id="verifyLogin" type="button" class="btn btn-primary" onclick="loginVerify(document.getElementById('StudentNumberLogin').value)">Verify</button>
@@ -109,12 +109,12 @@
               <form id="registerP1">
                 <div class="form-group" id="studentID">
                   <label for="StudentNumber">Student number:</label>
-                  <input class="form-control" id="StudentNumber" placeholder="1234567890" maxlength="10">
+                  <input class="form-control" id="StudentNumber" placeholder="1234567890" maxlength="10" onkeypress="IfPressEnter(event, 'firstSubmit')" type="text">
                   <small id="studentNumberHelp" class="form-text text-muted">Insert your 9 to 10 digit student number to verify you are a student at the University of Toronto.</small>
                 </div>
                 <div class="form-group" id="studentumail">
                   <label for="StudentEmail">Student uMail:</label>
-                  <input type="email" class="form-control" id="StudentEmail" placeholder="first.last@mail.utoronto.ca">
+                  <input type="email" class="form-control" id="StudentEmail" placeholder="first.last@mail.utoronto.ca" onkeypress="IfPressEnter(event, 'firstSubmit')">
                   <small id="studentEmailHelp" class="form-text text-muted">Insert your student uMail (email) from the University of Toronto.</small>
                 </div>
                 <button id="firstSubmit" type="button" class="btn btn-primary" onclick="checkStudentNumber(document.getElementById('StudentNumber').value, document.getElementById('StudentEmail').value);">Check</button>

@@ -3,13 +3,13 @@
   "owner_id": "5a4cb9e58f25b9cd6d49e868",
   "number": 42,
   "version": "0.3",
-  "date": "2018-01-23:1127",
+  "date": "2018-08-20:1925",
   "gene_list": {
     "HBB": {
       "base_type": "assignment",
       "name": "Sickle cell anemia",
-      "Background": "Sickle cell anemia is caused by a SNP in [human] hemoglobin beta-chain at nucleotide position 20 from A → T causing a Glu7Val change (research does suggest there are more than one possible SNP such as a nucleotide position that 19G→A causing Glu7Lys) which can cause the red blood cells to change into a sickle-like shape.",
-      "Target site": "Nucleotide position 73’s thymine back to an alanine",
+      "Background": "Sickle cell anemia is caused by a SNP in the human hemoglobin beta-chain which results in a GAG codon being replaced with a GTG codon (A → T). In the protein this results in a hydrophilic glutamic acid residue being replaced with a hydrophobic valine residue. This mutation causes red blood cells to adopt a sickle like shape. Find a suitable gRNA to target the SNP described and design accompanying F1 and R1 primers. The target site and sequence information are shown below. Submit your answers through Scigrade.",
+      "Target site": "Nucleotide position 73 - You are trying to change a thymine back to an alanine (WILD-TYPE).",
       "Target position": "73",
       "Sequence": "ACATTTGCTTCTGACACAACTGTGTTCACTAGCAACCTCAAACAGACACCATGGTGCATCTGACTCCTGAGGTGAAGTCTGCCGTTACTGCCCTGTGGGGCAAGGTGAACGTGGATGAAGTTGGTGGTGAGGCCCTGGGCAGGCTGCTGGTGGTCTACCCTTGGACCCAGAGGTTCTTTGAGTCCTTTGGGGATCTGTCCACTCCTGATGCTGTTATGGGCAACCCTAAGGTGAAGGCTCATGGCAAGAAAGTGCTCGGTGCCTTTAGTGATGGCCTGGCTCACCTGGACAACCTCAAGGGCACCTTTGCCACACTGAGTGAGCTGCACTGTGACAAGCTGCACGTGGATCCTGAGAACTTCAGGCTCCTGGGCAACGTGCTGGTCTGTGTGCTGGCCCATCACTTTGGCAAAGAATTCACCCCACCAGTGCAGGCTGCCTATCAGAAAGTGGTGGCTGGTGTGGCTAATGCCCTGGCCCACAAGTATCACTAAGCTCGCTTTCTTGCTGTCCAATTTCTATTAAAGGTTCCTTTGTTCCCTAAGTCCAACTACTAAACTGGGGGATATTATGAAGGGCCTTGAGCATCTGGATTCTGCCTAATAAAAAACATTTATTTTCATTGC",
       "NCBI gene link": "https://www.ncbi.nlm.nih.gov/gene/3043"
@@ -17,8 +17,8 @@
     "CCR5": {
       "base_type": "assignment",
       "name": "C-C motif chemokine receptor 5",
-      "Background": "The CCR gene encodes for the beta-chemokine receptor family which is expressed in T cells and macrophages, playing an important role as a co-receptor for macrophage-tropic viruses (like HIV) to enter the host cells. A defective version (changing position Ser185 into Ile185) of this gene leads to an increase HIV infection resistance.",
-      "Target site": "Nucleotide position 210’s guanine into a thymine",
+      "Background": "The CCR gene encodes for the beta-chemokine receptor family which is expressed in T cells and macrophages, playing an important role as a co-receptor for macrophage-tropic viruses (like HIV) to enter host cells. An SNP in this protein results in a TAC codon being replaced by a TAA or TAG codon (C → A or G). In the protein this results in Tyrosine 184 being replaced by a termination end and subsequently a truncated protein which does not respond well to ligand binding (i.e. HIV infection). Therefore, this SNP is advantageous and results in increased resistance to HIV infection.",
+      "Target site": "Nucleotide position 208 – You are trying to target a cytosine residue in the WILD TYPE sequence and change it to an adenine or guanine residue (resulting in a truncated protein and hence increased HIV resistance).",
       "Target position": "210",
       "Sequence": "GAATCTTCTTCATCATCCTCCTGACAATCGATAGGTACCTGGCTGTCGTCCATGCTGTGTTTGCTTTAAAAGCCAGGACGGTCACCTTTGGGGTGGTGACAAGTGTGATCACTTGGGTGGTGGCTGTGTTTGCGTCTCTCCCAGGAATCATCTTTACCAGATCTCAAAAAGAAGGTCTTCATTACACCTGCAGCTCTCATTTTCCATACAGTCAGTATCAATTCTGGAAGAATTTCCAGACATTAAAGATAGTCATCTTGGGGCTGGTCCTGCCGCTGCTTGTCATGGTCATCTGCTACTCGGGAATCCTAAAAACTCTGCTTCGGTGTCGAAATGAGAAGAAGAGGCACAGGGCTGTGAGGCTTATCTTCACCATCATGATTGTTTATTTTCTCTTCTGGGCTCCCTACAACATTGTCCTTCTCCTGAACACCTTCCAGGAATTCTTTGGCCTGAATAATTGCAGTAGCTCTAACAGGTTGGACCAAGC",
       "NCBI gene link": "https://www.ncbi.nlm.nih.gov/gene/1234"
@@ -26,8 +26,8 @@
     "APOE": {
       "base_type": "assignment",
       "name": "Apolipoprotein E",
-      "Background": "This gene encodes for a major apoprotein of chylomicron and is essential for the normal catabolism of triglyceride-rich lipoprotein constituents. Mutations in this gene generally result in increased plasma cholesterol and triglycerides and one specific SNP, Arg176 to Cys176, has been found be associated with Alzheimer’s disease",
-      "Target site": "Nucleotide position 222’s thymine back to a cystine",
+      "Background": "This gene encodes for a major fat-binding protein of the chylomicron (a lipid carrier in the body). It is essential for the normal catabolism of triglyceride-rich lipoprotein constituents. Mutations in this gene generally result in increased plasma cholesterol and triglycerides and one specific SNP results in a CGC codon being replaced by a TGC codon (C→T). In the protein this results in an Arg176 to Cys176 substitution. It has been found that this mutation is associated with an increased risk of Alzheimer’s disease",
+      "Target site": "Nucleotide position 222 – You are trying to target a thymine residue in the MUTANT sequence and change it to a cytosine (WILD-TYPE).",
       "Target position": "222",
       "Sequence": "CGGTGGCGGAGGAGACGCGGGCACGGCTGTCCAAGGAGCTGCAGGCGGCGCAGGCCCGGCTGGGCGCGGACATGGAGGACGTGTGCGGCCGCCTGGTGCAGTACCGCGGCGAGGTGCAGGCCATGCTCGGCCAGAGCACCGAGGAGCTGCGGGTGCGCCTCGCCTCCCACCTGCGCAAGCTGCGTAAGCGGCTCCTCCGCGATGCCGATGACCTGCAGAAGTGCCTGGCAGTGTACCAGGCCGGGGCCCGCGAGGGCGCCGAGCGCGGCCTCAGCGCCATCCGCGAGCGCCTGGGGCCCCTGGTGGAACAGGGCCGCGTGCGGGCCGCCACTGTGGGCTCCCTGGCCGGCCAGCCGCTACAGGAGCGGGCCCAGGCCTGGGGCGAGCGGCTGCGCGCGCGGATGGAGGAGATGGGCAGCCGGACCCGCGACCGCCTGGACGAGGTGAAGGAGCAGGTGGCGGAGGTGCGCGCCAAGCTGGAGGAGCAGGCCCAGCAGATACGCCTGCAGGCCGAGGCCTTCCAGGCCCGCCTCAAGAGCTGGTTCGAGCCCCTGGTGGAA",
       "NCBI gene link": "https://www.ncbi.nlm.nih.gov/gene/348"

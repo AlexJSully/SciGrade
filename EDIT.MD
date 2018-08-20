@@ -88,7 +88,7 @@ The following image describes where student's marks come from in the marking alg
 
 There are two ways to adjust the marking algorithm
 
-1. Use the "Modify marking controls:" card from the account management modal. Within this modal, you can adjust how the off-target "optimal" value is calculated with two options: "Optimal" and "Custom". Optimal is calculated using the following equation: ```Min_optiomal = Max_range - (Max_range * 0.2)```. While Custom is a custom "optimal" value which can be any number between 0.01 and 100.
+1. Use the "Modify marking controls:" card from the account management modal. Within this modal, you can adjust how the off-target "optimal" value is calculated with two options: "Optimal" and "Custom". Optimal is calculated using the following equation: ```Min_optimal = Max_range - (Max_range * 0.2)``` where ```Max_range``` is the highest value of possible feasible off-target scores. While Custom is a custom "optimal" value which can be any number between 0.01 and 100.
 ![modify marking controls](core/images/EDITmd/008_AdjustMarks.png "Example of the account modal modify marking controls card")
 2. Edit the code within [crispr_script.js](core/scripts/crispr_script.js). The following functions are related to marking: ```checkAnswers()```, ```checkOffTarget(score)```, ```checkF1Primers(seq)``` and ```checkR1Primers(seq)``` to determine if answers are correct or not and then ```markAnswers()``` to assign marks. 
 
