@@ -863,34 +863,34 @@ function openAccountManagement() {
 
     // User number
     append_str += '<div class="form-group">';
-    append_str += '<label for="InputStudentNumber" style="font-weight: bold;">User number</label>';
+    append_str += '<label for="InputStudentNumber" style="font-weight: bold;">User\'s number</label>';
     append_str += '<input class="form-control" id="StudentNumber" placeholder="1234567890" maxlength="10">';
     append_str += '<small id="InputStudentNumberHelp" class="form-text text-muted">The user\'s access number (like a student or employee number)</small>'
     append_str += '</div>';
 
     // User name
     append_str += '<div class="form-group">';
-    append_str += '<label for="InputStudentName" style="font-weight: bold;">User name</label>';
+    append_str += '<label for="InputStudentName" style="font-weight: bold;">User\'s name</label>';
     append_str += '<input class="form-control" id="StudentName" placeholder="First Last">';
     append_str += '<small id="InputStudentNumberHelp" class="form-text text-muted">The user\'s full name</small>'
     append_str += '</div>';
 
     // User umail
     append_str += '<div class="form-group">';
-    append_str += '<label for="InputStudentUmail" style="font-weight: bold;">User umail</label>';
+    append_str += '<label for="InputStudentUmail" style="font-weight: bold;">User\'s umail</label>';
     append_str += '<input type="email" class="form-control" id="StudentUmail" placeholder="first.last@mail.utoronto.ca">';
     append_str += '<small id="InputStudentNumberHelp" class="form-text text-muted">The user\'s University associated email</small>'
     append_str += '</div>';
 
     // User type
     append_str += '<div class="form-group">';
-    append_str += '<label for="InputStudentType" style="font-weight: bold;">User type:</label>';
+    append_str += '<label for="InputStudentType" style="font-weight: bold;">User\'s type:</label>';
     append_str += '<select class="form-control" id="StudentType"><option>Student</option><option>TA</option><option>admin</option></select>';
     append_str += '<small id="InputStudentNumberHelp" class="form-text text-muted">The user\'s account type. Student = access to practice and assignments, TA = same as previous plus download student marks and add new students, admin = same as previous plus adding more TA\'s and changing marking scheme for a class.</small>'
     append_str += '</div>';
 
     // Submit button
-    append_str += '<p> <button type="button" class="btn btn-primary" onclick="changeInputClass(\'InputClassSingle\', \'newClass\', \'newClassSingle\', document.getElementById(\'InputNewClassSingle\').value), addUserToServer(document.getElementById(\'StudentNumber\').value, document.getElementById(\'StudentName\').value, document.getElementById(\'StudentUmail\').value, document.getElementById(\'StudentType\').value);"> Send single user to Server </button>';
+    append_str += '<p> <button type="button" class="btn btn-primary" onclick="addUserToServer(document.getElementById(\'StudentNumber\').value, document.getElementById(\'StudentName\').value, document.getElementById(\'StudentUmail\').value, document.getElementById(\'StudentType\').value);"> Send single user to Server </button>';
     append_str += "<br>";
 
     // Form closing

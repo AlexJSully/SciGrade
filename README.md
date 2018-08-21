@@ -22,7 +22,7 @@ Please read [CONTRIBUTING.md](CONTRIBUTING.md) for more details.
 
 ## Modifying
 
-Please read [EDIT.md](EDIT.md) if you want to understand how SciGrade works and how you can modify it.
+Please read [EDIT.md](EDIT.MD) if you want to understand how SciGrade works and how you can modify it.
 
 ## License
 
