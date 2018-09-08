@@ -1,5 +1,8 @@
 # SciGrade
 
+[![TravisCI - Build Status](https://travis-ci.org/ASully/SciGrade.svg?branch=master)](https://travis-ci.org/ASully/SciGrade)
+[![Maintainability](https://api.codeclimate.com/v1/badges/ed202653a7b430ccdbfb/maintainability)](https://codeclimate.com/github/ASully/SciGrade/maintainability)
+
 SciGrade is an online web-tool that allows students (or any user with access) to mark and assist in gRNA+Primer generation. 
 
 ## Getting Started
@@ -15,6 +18,11 @@ Chrome | Firefox | IE | Edge | Safari | Opera
 ## Installation/Open
 
 There is nothing to install, just download all the files and open [index.html](index.html).
+
+## Known issues
+
+We aim to make the SciGrade as perfect as possible but unfortunately, there may be some unforseen bugs. If you manage to find one that is not here, feel free to create a [bug report](https://github.com/ASully/SciGrade/issues/new?template=bug_report.md) so we can fix it.
+* None at the moment... Help us find some!
 
 ## Contributing
 
