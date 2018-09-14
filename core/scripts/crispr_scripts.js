@@ -1273,29 +1273,31 @@ function submitAnswers() {
   all_outputs = [];
   all_marks = [];
   checkAnswers();
-  markAnswers();
-  studentanswers = "student_list." + studentParseNum + "."+ loadedMoad + "-" + current_gene + "-Answers";
-  studentoutputs = "student_list." + studentParseNum + "."+ loadedMoad + "-" + current_gene + "-Outputs";
-  studentmarks = "student_list." + studentParseNum + "."+ loadedMoad + "-" + current_gene + "-Marks";
-  all_answers.push(document.getElementById("sequence_input").value.trim(), document.getElementById("pam_input").value.trim(), document.getElementById("position_input").value, document.getElementById("strand_input").value, document.getElementById("offtarget_input").value, document.getElementById("f1_input").value.trim(), document.getElementById("r1_input").value.trim());
-  all_outputs.push(MARstrand, MARgRNAseq, MARgRNAseq_degree, MARCutPos, MARPAMseq, MAROffTarget, MAROffTarget_degree, MAROffTarget_aboveOpt, MAROffTarget_above35, MAROffTarget_onlyOption, MARF1primers, MARR1primers);
-  all_marks.push(studentMark, studentMarkPercentage);
-  client.login().then(() =>
-    db.collection("Student_Information").updateOne({version: "0.3"}, { $set: {[studentanswers]: all_answers, [studentoutputs]: all_outputs, [studentmarks]: all_marks}}, function(err, res) {
-    if (err) throw err;
-    console.log("1 document updated");
-    db.close();
-  }));
-  loadJSON_Files();
-  if (loadedMoad == "assignment") {
-    document.getElementById("options_label").innerHTML = "Would you like to start a new assignment?";
-    document.getElementById("seeFeedback").setAttribute("hidden", true);
-  }
-  else if (loadedMoad == "practice") {
-    document.getElementById("options_label").innerHTML = "Would you like to see feedback on your answers or start a new assignment?";
-    document.getElementById("seeFeedback").removeAttribute("hidden");
-  }
-  $("#feedbackButton").click();
+  settime(function() {
+    markAnswers();
+    studentanswers = "student_list." + studentParseNum + "."+ loadedMoad + "-" + current_gene + "-Answers";
+    studentoutputs = "student_list." + studentParseNum + "."+ loadedMoad + "-" + current_gene + "-Outputs";
+    studentmarks = "student_list." + studentParseNum + "."+ loadedMoad + "-" + current_gene + "-Marks";
+    all_answers.push(document.getElementById("sequence_input").value.trim(), document.getElementById("pam_input").value.trim(), document.getElementById("position_input").value, document.getElementById("strand_input").value, document.getElementById("offtarget_input").value, document.getElementById("f1_input").value.trim(), document.getElementById("r1_input").value.trim());
+    all_outputs.push(MARstrand, MARgRNAseq, MARgRNAseq_degree, MARCutPos, MARPAMseq, MAROffTarget, MAROffTarget_degree, MAROffTarget_aboveOpt, MAROffTarget_above35, MAROffTarget_onlyOption, MARF1primers, MARR1primers);
+    all_marks.push(studentMark, studentMarkPercentage);
+    client.login().then(() =>
+      db.collection("Student_Information").updateOne({version: "0.3"}, { $set: {[studentanswers]: all_answers, [studentoutputs]: all_outputs, [studentmarks]: all_marks}}, function(err, res) {
+      if (err) throw err;
+      console.log("1 document updated");
+      db.close();
+    }));
+    loadJSON_Files();
+    if (loadedMoad == "assignment") {
+      document.getElementById("options_label").innerHTML = "Would you like to start a new assignment?";
+      document.getElementById("seeFeedback").setAttribute("hidden", true);
+    }
+    else if (loadedMoad == "practice") {
+      document.getElementById("options_label").innerHTML = "Would you like to see feedback on your answers or start a new assignment?";
+      document.getElementById("seeFeedback").removeAttribute("hidden");
+    }
+    $("#feedbackButton").click();
+  }, 1000); 
 }
 
 /**
