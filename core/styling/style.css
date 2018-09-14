@@ -45,3 +45,59 @@
 .navigationBar a.logIO {
   float: right;
 }
+
+.homeBackground { 
+  /* Browser background */
+  background: url('../images/BackgroundImage/homeBackground.jpg') no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  /* IE */
+  filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/BackgroundImage/homeBackground.jpg', sizingMethod='scale');
+  -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src=../images/BackgroundImage/homeBackground.jpg', sizingMethod='scale')";
+}
+
+.backgroundFrontLayer {
+  /* Browser foreground */
+  background: url('../images/BackgroundImage/grey.jpg') no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  opacity: 0.5;
+  /* IE */
+  filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/BackgroundImage/grey.jpg', sizingMethod='scale');
+  -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src=../images/BackgroundImage/grey.jpg', sizingMethod='scale')";
+}
+
+.fullSizeBody {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  position: fixed;
+  z-index: -1;
+}
+
+.centerBody {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+  margin-top:-10%;
+}
+
+.centerButton {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.frontPageFont {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif, 'Times New Roman'; 
+  color: #353B6E; 
+  text-align: center; 
+  font-size: 2em;
+  text-shadow: 2px 1px 5px rgba(150, 150, 150, 1);
+  font-weight: bold;
+}
