@@ -1273,7 +1273,7 @@ function submitAnswers() {
   all_outputs = [];
   all_marks = [];
   checkAnswers();
-  settime(function() {
+  setTimeout(function() {
     markAnswers();
     studentanswers = "student_list." + studentParseNum + "."+ loadedMoad + "-" + current_gene + "-Answers";
     studentoutputs = "student_list." + studentParseNum + "."+ loadedMoad + "-" + current_gene + "-Outputs";
