@@ -792,14 +792,15 @@ function openAccountManagement() {
 
   // TA access to add new students:
   if (student_reg_information[0]["student_list"][studentParseNum]["type"] == "TA" || student_reg_information[0]["student_list"][studentParseNum]["type"] == "admin") {
+    loadJSON_Files();
     append_str = "<p> <b> ADMIN POWER! </b> <p>";
     
     // Create student card
     append_str += "<div class='card about'>";
     append_str += "<div class='card-header' id='studentCard'>";
     append_str += "<h5 class='mb-0'>";
-    append_str += "<button class='btn btn-link' data-toggle='collapse' data-target='#addStudents' aria-expanded='false' aria-controls='addStudents'>";
-    append_str += "Add students: ";
+    append_str += "<button class='btn btn-link' data-toggle='collapse' data-target='#addStudents' aria-expanded='false' aria-controls='addStudents' onclick='showNewInput(\"InputClassMultiple\", \"newClass\", \"InputNewClassMultiple\")'>";
+    append_str += "Create new class: ";
     append_str += "</button>";
     append_str += "</h5>"
     append_str += "</div>";
@@ -807,17 +808,14 @@ function openAccountManagement() {
     append_str += "<div class='card-body'>";
 
     // Append all students at once:
-    append_str += "<p style='font-weight: bold;'> If you would to add new students to the class, just fill the form below: "
+    append_str += "<p style='font-weight: bold;'> If you would to create a  new class, just fill the form below: "
     // Form opening
     append_str += "<form>"
 
     // Class choice:
     append_str += '<div class="form-group">';
-    append_str += '<label for="InputClassMultiple" style="font-weight: bold;">Choose class: </label>';
-    append_str += '<select id="InputClassMultiple" class="form-control" onchange="showNewInput(\'InputClassMultiple\', \'newClass\', \'InputNewClassMultiple\')" style="margin-bottom: 1%">';
-    for (key in classList) {
-      append_str += '<option value="' + key + '" id="' + key + '" tag="assignment">' + key + '</option>\n';
-    }
+    append_str += '<label for="InputClassMultiple" style="font-weight: bold;">Create class name: </label>';
+    append_str += '<select id="InputClassMultiple" class="form-control" style="margin-bottom: 1%" disabled>';
     append_str += '<option value="newClass" id="newClassMultiple" tag="assignment" >New Class</option>\n';
     append_str += '</select>';
     append_str += '<input class="form-control" id="InputNewClassMultiple" placeholder="HMB396 - Winter (NOTE: Spaces will be deleted once you submit so use capital letters to seperate words)" hidden>';
@@ -850,16 +848,13 @@ function openAccountManagement() {
     append_str += "</div>";
     append_str += "</div>";
     $("#accountManagementBody").append(append_str);
-  }
 
-  // Admin controls:
-  if (student_reg_information[0]["student_list"][studentParseNum]["type"] == "admin") {
     // Create single card
     append_str = "<div class='card about'>";
     append_str += "<div class='card-header' id='addTACard'>";
     append_str += "<h5 class='mb-0'>";
     append_str += "<button class='btn btn-link' data-toggle='collapse' data-target='#addTA' aria-expanded='true' aria-controls='addTA'>";
-    append_str += "Add TA's: ";
+    append_str += "Add single user: ";
     append_str += "</button>";
     append_str += "</h5>"
     append_str += "</div>";
@@ -867,7 +862,7 @@ function openAccountManagement() {
     append_str += "<div class='card-body'>";
 
     //Append TAs or Admins:
-    append_str += "<p style='font-weight: bold;'> If you would like to add a single user (students, TAs or admins), please fill in the form below: </p>";
+    append_str += "<p style='font-weight: bold;'> If you would like to add a single user (students, TAs or admins), please fill in the form below. Please note, this will default the user as a student. Only admins will be able to create new TAs or admins </p>";
     // Form opening
     append_str += "<form>";
 
@@ -908,7 +903,10 @@ function openAccountManagement() {
     append_str += "</div>";
     append_str += "</div>";
     $("#accountManagementBody").append(append_str);
+  }
 
+  // Admin controls:
+  if (student_reg_information[0]["student_list"][studentParseNum]["type"] == "admin") {
     // Create modifying controls card
     append_str = "<div class='card about'>";
     append_str += "<div class='card-header' id='modifyCard'>";
@@ -920,6 +918,9 @@ function openAccountManagement() {
     append_str += "</div>";
     append_str += "<div id='modifyControls' class='collapse' aria-labelledby='headingOne' data-parent='#accordion'>";
     append_str += "<div class='card-body'>";
+
+    //Info:
+    append_str += "<p style='font-weight: bold;'> If you would like to change a class's off-target optimal goal, you can do that here </p>";
 
     // Choose class:
     append_str += '<div class="form-group">';
@@ -955,11 +956,139 @@ function openAccountManagement() {
     append_str += "</div>";
     append_str += "</div>";
     $("#accountManagementBody").append(append_str);
+
+    // Modify user's type card
+    append_str = "<div class='card about'>";
+    append_str += "<div class='card-header' id='typeCard'>";
+    append_str += "<h5 class='mb-0'>";
+    append_str += "<button class='btn btn-link' data-toggle='collapse' data-target='#typeControl' aria-expanded='true' aria-controls='typeControl' onclick=\"UpdateStudentList(document.getElementById(\'ClassChange\').value); UpdateChooseUser(\'ClassUserChange\');\">";
+    append_str += "Change a user's account type: ";
+    append_str += "</button>";
+    append_str += "</h5>"
+    append_str += "</div>";
+    append_str += "<div id='typeControl' class='collapse' aria-labelledby='headingOne' data-parent='#accordion'>";
+    append_str += "<div class='card-body'>";
+
+    //Info:
+    append_str += "<p style='font-weight: bold;'> If you would like to change a user's account type (to TA or admin or back to student), you can do that below </p>";
+
+    // Choose class:
+    append_str += '<div class="form-group">';
+    append_str += '<label for="ClassChange" style="font-weight: bold;">Choose class: </label>';
+    append_str += '<select id="ClassChange" class="form-control" style="margin-bottom: 1%;" onchange="UpdateStudentList(document.getElementById(\'ClassChange\').value); UpdateChooseUser(\'ClassUserChange\');">';
+    for (key in classList) {
+      append_str += '<option value="' + key + '" id="' + key + '" tag="assignment">' + key + '</option>\n';
+    }
+    append_str += '</select>';
+    append_str += '<small id="ClassChangeHelp" class="form-text text-muted">Choose the class for which the user belongs to.</small>'
+    append_str += '</div>';
+
+    // Choose user:
+    append_str += '<div class="form-group">';
+    append_str += '<label for="ClassUserChange" style="font-weight: bold;">Choose user: </label>';
+    append_str += '<select id="ClassUserChange" class="form-control" style="margin-bottom: 1%;" onchange="">';
+    append_str += '</select>';
+    append_str += '<small id="ClassUserChangeHelp" class="form-text text-muted">Choose the user for which you change their account type for.</small>'
+    append_str += '</div>';
+
+    // Choose type:
+    append_str += '<div class="form-group">';
+    append_str += '<label for="ClassTypeChange" style="font-weight: bold;">Choose type: </label>';
+    append_str += '<select id="ClassTypeChange" class="form-control" style="margin-bottom: 1%;" onchange="">';
+    append_str += '<option value="Student" id="Student" tag="userType">Student</option>\n';
+    append_str += '<option value="TA" id="TA" tag="userType">TA</option>\n';
+    append_str += '<option value="admin" id="admin" tag="userType">admin</option>\n';
+    append_str += '</select>';
+    append_str += '<small id="ClassTypeChangeHelp" class="form-text text-muted">Choose the type for which you want to user to become.</small>'
+    append_str += '</div>';
+
+    // Submit button
+    append_str += '<p> <button type="button" class="btn btn-primary" onclick="UpdateUserType(document.getElementById(\'ClassChange\').value, document.getElementById(\'ClassUserChange\').value, document.getElementById(\'ClassTypeChange\').value);"> Update User\'s Type </button>';
+    append_str += "<br>";
+
+    // Close card
+    append_str += "</div>";
+    append_str += "</div>";
+    append_str += "</div>";
+    $("#accountManagementBody").append(append_str);
   }
 
   // Close account management
   append_str = "</div>";
   $("#accountManagementBody").append(append_str);
+}
+
+/**
+ * Update the choose user's options in the account management's change user type
+ * @param {String} domUser 
+ */
+function UpdateChooseUser(domUser) {
+  ClearSelectOptions(domUser);
+  for (key in updatedListOfStudents) {
+    AddToOptions(domUser, key, updatedListOfStudents[key]);
+  }
+}
+
+/**
+ * Add more options to a select
+ * @param {String} domID The DOM ID in the HTML file for the select
+ * @param {String} optionsValue The value and ID for the options being added
+ * @param {String} optionsInner The InnerHTML for the options being added
+ */
+function AddToOptions(domID, optionsValue, optionsInner) {
+  var dom = document.getElementById(domID); 
+  var option = document.createElement('option');
+  option.value = optionsValue; 
+  option.innerHTML = optionsInner; 
+  dom.appendChild(option);
+}
+
+/**
+ * Clear an select's options
+ * @param {String} domID The DOM ID in the HTML for the select
+ */
+function ClearSelectOptions(domID) {
+  var dom = document.getElementById(domID);
+  while (dom.options.length > 0) {
+    dom.options.remove(0)
+  };
+}
+
+var updatedListOfStudents = {};
+/**
+ * Update the list of students available for a class
+ * @param {String} className The class for which the students belong to
+ */
+function UpdateStudentList(className) {
+  updatedListOfStudents = {};
+  var studentList = student_reg_information[0]["student_list"];
+  for (i = 0; i < studentList.length; i++) {
+    if (studentList[i]["studentClass"] == className) {
+      updatedListOfStudents[studentList[i]["name"]] = (studentList[i]["name"] + " - " + studentList[i]["type"]);
+    }
+  };
+}
+
+/**
+ * Change the user's type 
+ * @param {String} classname The class for which the user belongs to 
+ * @param {String} username The user's name that is listed in the database
+ * @param {String} changeTo The type for the user to be changed to 
+ */
+function UpdateUserType(classname, username, changeTo) {
+  var studentList = student_reg_information[0]["student_list"];
+  for (i = 0; i < studentList.length; i++) {
+    if (studentList[i]["studentClass"] == classname && studentList[i]["name"] == username) {      
+      var changeType = "student_list." + i + "."+ "type";
+      client.login().then(() =>
+        db.collection("Student_Information").updateOne({version: "0.3"}, { $set: {[changeType]: changeTo}}, function(err, res) {
+        if (err) throw err;
+        console.log("1 document updated");
+        db.close();
+      }));
+      $("#adminSendButton").click();
+    }
+  };
 }
 
 /**
@@ -1246,20 +1375,8 @@ function addMultipleUsersToServer(inputClass, number, umail) {
         console.log("1 document updated");
         db.close();
       }));
-    }
-    else if (classExists == true) {
-      for (var key in setList) {
-        var newKey = "class_list." + inputClass + "."+ key;
-        client.login().then(() =>
-          db.collection("Student_Information").updateOne({version: "0.3"}, { $set: {[newKey]: setList[key]}}, function(err, res) {
-          if (err) throw err;
-          console.log("1 document updated");
-          db.close();
-        }));
-      };
       $("#adminSendButton").click();
-    }
-    
+    }    
     document.getElementById("StudentNumbers").value = "";
     document.getElementById("StudentUmails").value = "";
   }
