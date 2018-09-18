@@ -229,7 +229,6 @@ var MARF1primers = false;
 var MARR1primers = false;
 
 var possible_comparable_answers = [];
-var possible_outputs = [];
 var correctNucleotideIncluded = false;
 var true_counts = 0; // This exists for the instance that there is more than one match for inputedSeq
 
@@ -238,6 +237,16 @@ var checkAnswers_executed = false;
  * Checks the answer in the submission form and determines if they are correct or not
  */
 function checkAnswers() {
+  // Reset answers:
+  MARgRNAseq = false;
+  MARgRNAseq_degree = 0;
+  MARPAMseq = false;
+  MARCutPos = false;
+  MARstrand = false;
+  correctNucleotideIncluded = false;
+  true_counts = 0;
+
+  // Verify answers
   var correctNucleotide = gene_backgroundInfo[0]["gene_list"][current_gene]["Sequence"].charAt(gene_backgroundInfo[0]["gene_list"][current_gene]["Target position"]);
   var correctNucleotidePosition = gene_backgroundInfo[0]["gene_list"][current_gene]["Target position"] - 1;
 
@@ -379,6 +388,12 @@ var offtarget_Use = [];
  * @return {bool} - Returns true if MAROffTarget is correct
  */
 function checkOffTarget(score) {
+  // Reset variables:
+  MAROffTarget = false;
+  MAROffTarget_degree = 0; // 0 wrong, 1 above 75, 2 above 35, 3 only option
+  MAROffTarget_aboveOpt = false;
+  MAROffTarget_above35 = false;
+  MAROffTarget_onlyOption = false;
   // Create off-target variables
   var OffTargetValue_down = Math.floor(score);
   var OffTargetValue_up = Math.ceil(score);
@@ -457,6 +472,9 @@ var possible_F1_primers = [];
  * @return {bool} - Returns true if MARF1primers is correct
  */
 function checkF1Primers(seq) {
+  // Reset variables:
+  MARF1primers = false;
+  // Verify primers:
   possible_F1_primers = [];
   var begin_F1 = "TAATACGACTCACTATAG";
   var count_First = true;
@@ -482,6 +500,9 @@ var complementary_nt_dict = {"A":"T", "T":"A", "C":"G", "G":"C"};
  * @return {bool} - Returns true if MARR1primers is correct
  */
 function checkR1Primers(seq) {
+  // Reset variables:
+  MARR1primers = false;
+  // Verify primers:
   possible_R1_primers = [];
   var begin_R1 = "TTCTAGCTCTAAAAC";
   var complemetary_seq = "";
@@ -868,13 +889,6 @@ function openAccountManagement() {
     append_str += '<small id="InputStudentNumberHelp" class="form-text text-muted">The user\'s access number (like a student or employee number)</small>'
     append_str += '</div>';
 
-    // User name
-    append_str += '<div class="form-group">';
-    append_str += '<label for="InputStudentName" style="font-weight: bold;">User\'s name</label>';
-    append_str += '<input class="form-control" id="StudentName" placeholder="First Last">';
-    append_str += '<small id="InputStudentNumberHelp" class="form-text text-muted">The user\'s full name</small>'
-    append_str += '</div>';
-
     // User umail
     append_str += '<div class="form-group">';
     append_str += '<label for="InputStudentUmail" style="font-weight: bold;">User\'s umail</label>';
@@ -882,15 +896,8 @@ function openAccountManagement() {
     append_str += '<small id="InputStudentNumberHelp" class="form-text text-muted">The user\'s University associated email</small>'
     append_str += '</div>';
 
-    // User type
-    append_str += '<div class="form-group">';
-    append_str += '<label for="InputStudentType" style="font-weight: bold;">User\'s type:</label>';
-    append_str += '<select class="form-control" id="StudentType"><option>Student</option><option>TA</option><option>admin</option></select>';
-    append_str += '<small id="InputStudentNumberHelp" class="form-text text-muted">The user\'s account type. Student = access to practice and assignments, TA = same as previous plus download student marks and add new students, admin = same as previous plus adding more TA\'s and changing marking scheme for a class.</small>'
-    append_str += '</div>';
-
     // Submit button
-    append_str += '<p> <button type="button" class="btn btn-primary" onclick="addUserToServer(document.getElementById(\'StudentNumber\').value, document.getElementById(\'StudentName\').value, document.getElementById(\'StudentUmail\').value, document.getElementById(\'StudentType\').value);"> Send single user to Server </button>';
+    append_str += '<p> <button type="button" class="btn btn-primary" onclick="addUserToServer(document.getElementById(\'InputClassSingle\').value, document.getElementById(\'StudentNumber\').value.trim(), document.getElementById(\'StudentUmail\').value.trim());"> Send single user to Server </button>';
     append_str += "<br>";
 
     // Form closing
@@ -1165,33 +1172,36 @@ function changeInputClass(docCheck, checkFor, docChange, trueChangeValueTo) {
 
 /**
  * Adds the user to the MongoDB server
+ * @param {String} inputClass Class user belongs to
  * @param {String} number User number
- * @param {String} name User' name
  * @param {String} umail User's email
- * @param {String} classInput Class user belongs to
- * @param {String} type Is this user, TA or admin?
  */
-function addUserToServer(number, name, umail, classInput, type) {
-  var addNum = student_reg_information[0]["student_list"].length;
-  var studentNumber = "student_list." + addNum + "." + "student_number";
-  var studentName = "student_list." + addNum + "." + "name";
-  var studentUmail = "student_list." + addNum + "." + "umail";
-  var studentType = "student_list." + addNum + "." + "type";
-  var studentGmail = "student_list." + addNum + "." + "gmail";
-  var studentClass = "student_list." + addNum + "." + "studentClass";
-  client.login().then(() =>
-    db.collection("Student_Information").updateOne({version: "0.3"}, { $set: {[studentClass]: classInput, [studentNumber]: number, [studentName]: name, [studentUmail]: umail, [studentType]: type, [studentGmail]: "unregistered"}}, function(err, res) {
-    if (err) throw err;
-    console.log("1 document updated");
-    db.close();
-  }));
+function addUserToServer(inputClass, number, umail) {
+  var studentNumber = number;
+  var studentUmail = umail;
+  var setList = {};
+  setList[studentNumber] = studentUmail;
+  classList = "class_list." + inputClass;
+  classExists = false;
+  if (student_reg_information[0]["class_list"][inputClass] != undefined) {
+    classExists = true;
+  }
+  for (var key in setList) {
+    var newKey = "class_list." + inputClass + "."+ key;
+    client.login().then(() =>
+      db.collection("Student_Information").updateOne({version: "0.3"}, { $set: {[newKey]: setList[key]}}, function(err, res) {
+      if (err) throw err;
+      console.log("1 document updated");
+      db.close();
+    }));
+  }
   $("#adminSendButton").click();
+  // Clear inputs    
   document.getElementById("StudentNumber").value = "";
-  document.getElementById("StudentName").value = "";
   document.getElementById("StudentUmail").value = "";
-  document.getElementById("StudentVerifyID").value = "";
 }
 
+var classExists = false;
 /**
  * Adds multiple users to the MongoDB server
  * @param {String} inputClass The class the users are being added to
@@ -1216,21 +1226,40 @@ function addMultipleUsersToServer(inputClass, number, umail) {
       setList[studentAdd] = studentUmailAdd;
     }
     classList = "class_list." + inputClass;
-    client.login().then(() =>
-      db.collection("Student_Information").updateOne({version: "0.3"}, { $set: {[classList]: setList}}, function(err, res) {
-      if (err) throw err;
-      console.log("1 document updated");
-      db.close();
+    classExists = false;
+    if (student_reg_information[0]["class_list"][inputClass] != undefined) {
+      classExists = true;
+    }
+    if (classExists == false) {
+      client.login().then(() =>
+        db.collection("Student_Information").updateOne({version: "0.3"}, { $set: {[classList]: setList}}, function(err, res) {
+        if (err) throw err;
+        console.log("1 document updated");
+        db.close();
       }));
-    $("#adminSendButton").click();
-    var classChange = "classMarkingMod." + inputClass;
-    var markingChangeList = ["Optimal"]
-    client.login().then(() =>
-      db.collection("Student_Information").updateOne({version: "0.3"}, { $set: {[classChange]: markingChangeList}}, function(err, res) {
-      if (err) throw err;
-      console.log("1 document updated");
-      db.close();
-    }));
+      $("#adminSendButton").click();
+      var classChange = "classMarkingMod." + inputClass;
+      var markingChangeList = ["Optimal"]
+      client.login().then(() =>
+        db.collection("Student_Information").updateOne({version: "0.3"}, { $set: {[classChange]: markingChangeList}}, function(err, res) {
+        if (err) throw err;
+        console.log("1 document updated");
+        db.close();
+      }));
+    }
+    else if (classExists == true) {
+      for (var key in setList) {
+        var newKey = "class_list." + inputClass + "."+ key;
+        client.login().then(() =>
+          db.collection("Student_Information").updateOne({version: "0.3"}, { $set: {[newKey]: setList[key]}}, function(err, res) {
+          if (err) throw err;
+          console.log("1 document updated");
+          db.close();
+        }));
+      };
+      $("#adminSendButton").click();
+    }
+    
     document.getElementById("StudentNumbers").value = "";
     document.getElementById("StudentUmails").value = "";
   }

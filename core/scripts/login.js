@@ -179,9 +179,17 @@ function sendLogReg() {
         name += capName + " ";
       }
       name = name.trim();
+      var manuallyAdded = false;
+      var gupperType = "Student"
+      for (i = 0; i < student_reg_information[0]["student_list"].length; i++) {
+        if (student_reg_information[0]["student_list"][i].umail == studentUmail) {
+          manuallyAdded = true;
+          gupperType = student_reg_information[0]["student_list"][i].type;
+        }
+      }
       if (checkstudentNum == true && studentNumber != 0 && googleEmail != null) {
         client.login().then(() =>
-          db.collection("Student_Information").updateOne({version: "0.3"}, { $set: {[gupper + ".studentClass"]: classRegister, [gupper + ".student_number"]: studentNumber, [gupper + ".name"]: name, [gupper + ".umail"]: studentUmail, [gupper + ".type"]: "Student", [gupper + ".gmail"]: googleEmail}}, function(err, res) {
+          db.collection("Student_Information").updateOne({version: "0.3"}, { $set: {[gupper + ".studentClass"]: classRegister, [gupper + ".student_number"]: studentNumber, [gupper + ".name"]: name, [gupper + ".umail"]: studentUmail, [gupper + ".type"]: gupperType, [gupper + ".gmail"]: googleEmail, [manuallyAdded]: "true"}}, function(err, res) {
           if (err) throw err;
           console.log("1 document updated");
           db.close();
@@ -256,7 +264,7 @@ function redirectCRISPR() {
   append_str += "</div>\n";
   append_str += "</div>\n";
   append_str += "<div id='load_button'>\n";
-  append_str += "<button type='button' class='btn btn-success' style='margin-top: 2%;'' onclick='possible_gene=(document.getElementById(\"gene_dropdown_selection\").value); select_Gene();''>Load Gene</button>\n";
+  append_str += "<button type='button' class='btn btn-success' style='margin-top: 2%;'' onclick='checkAnswers_executed=false; possible_gene=(document.getElementById(\"gene_dropdown_selection\").value); select_Gene();''>Load Gene</button>\n";
   append_str += "</div>\n";
   append_str += "</div>\n";
   append_str += "<div id='work'>\n";
