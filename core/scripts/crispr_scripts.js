@@ -115,7 +115,7 @@ function loadWork() {
     append_str = '<div class="work_background" style="margin-top:2%;">'
 
     // CRISPR header information
-    append_str += '<div id="crispr_header">\n<p>Please refer to your dry lab protocol for full instructions on how and what to do. Below is a brief reminder of what you are suppose to do with each gene: \n <b>Your objective is to find these mutations, design a gRNA and its corresponding F1/R1 primers</b></p> \n</div>\n';
+    append_str += '<div id="crispr_header">\n<p>Please refer to your dry lab protocol for full instructions on how and what to do. Below is a brief reminder of what you are supposed to do with each gene: \n <b>Your objective is to find these mutations, design a gRNA and its corresponding F1/R1 primers</b></p> \n</div>\n';
 
     // Gene information
     append_str += '<div id="gene_info"><p>Here is some background information about your gene: ' + gene_backgroundInfo[0]["gene_list"][current_gene]["name"] + " (" + current_gene + ')</p>\n';
@@ -166,7 +166,7 @@ function loadWork() {
     append_str += '<div class="form-group">';
     append_str += '<label for="offtarget_input">Off-target score:</label>';
     append_str += '<input class="form-control" id="offtarget_input" placeholder="60.7" step="0.01" type="number" required>';
-    append_str += '<small id="position_inputSmall" class="form-text text-muted">This would be your of-target score for your gRNA. NOTE: This input only takes numbers</small>';
+    append_str += '<small id="position_inputSmall" class="form-text text-muted">This would be your off-target score for your gRNA. NOTE: This input only takes numbers</small>';
     append_str += '</div>';
 
     // F1 Primers
@@ -196,14 +196,14 @@ function loadWork() {
     $("#work").append(append_str);
   }
   else if (gene_backgroundInfo == null || gene_backgroundInfo == "" || gene_backgroundInfo == undefined || backgroundInfo[0]["gene_list"][current_gene] == undefined) {
-    alert("Error code lFS50-66 occured. Please contact admin or TA!");
-    console.log("Error code lFS50-66 occured. Please contact admin or TA!");
+    alert("Error code lFS50-66 occurred. Please contact admin or TA!");
+    console.log("Error code lFS50-66 occurred. Please contact admin or TA!");
   }
 }
 
 /**
  * @param {event} evt - Character key press
- * @return {bool} - Returns true if number or dash, false elsewords
+ * @return {bool} - Returns true if number or dash, else false
  * Determine if a number or dash key is pressed
  */
 function isNumberOrDashKey(evt) {
@@ -307,7 +307,7 @@ function checkAnswers() {
           }
         }
 
-        // Determining how right the seqence is
+        // Determining how right the sequence is
         if (correctNucleotidePosition >= (pamFirst) && correctNucleotidePosition <= (pamSecond)) { // within PAM site
           MARgRNAseq = false;
           MARgRNAseq_degree = 0;
@@ -343,8 +343,8 @@ function checkAnswers() {
             true_counts++;
           }
           else if (temp_answer["Position"] == null || temp_answer["Position"] == undefined) {
-            alert("Error code cA302-307: retrieving server information on 'Position' answers occured. Please contact admin or TA!");
-            console.log("Error code cA302-307: retrieving server information on 'Position' answers occured. Please contact admin or TA!");
+            alert("Error code cA302-307: retrieving server information on 'Position' answers occurred. Please contact admin or TA!");
+            console.log("Error code cA302-307: retrieving server information on 'Position' answers occurred. Please contact admin or TA!");
           }
 
           // Check if the PAM matches the answer's input
@@ -353,8 +353,8 @@ function checkAnswers() {
             true_counts++;
           }
           else if (temp_answer["PAM"] == null || temp_answer["PAM"] == undefined) {
-            alert("Error code cA311-317: retrieving server information on 'PAM' answers occured. Please contact admin or TA!");
-            console.log("Error code cA311-317: retrieving server information on 'PAM' answers occured. Please contact admin or TA!");
+            alert("Error code cA311-317: retrieving server information on 'PAM' answers occurred. Please contact admin or TA!");
+            console.log("Error code cA311-317: retrieving server information on 'PAM' answers occurred. Please contact admin or TA!");
           }
 
           // Check if the Off-target matches the answer's input
@@ -362,8 +362,8 @@ function checkAnswers() {
             checkOffTarget(temp_answer["Specificity Score"]);
           }
           else if (temp_answer["Specificity Score"] == null || temp_answer["Specificity Score"] == undefined) {
-            alert("Error code cA342-348: retrieving server information on 'Specificity Score' answers occured. Please contact admin or TA!");
-            console.log("Error code cA342-348: retrieving server information on 'Specificity Score' answers occured. Please contact admin or TA!");
+            alert("Error code cA342-348: retrieving server information on 'Specificity Score' answers occurred. Please contact admin or TA!");
+            console.log("Error code cA342-348: retrieving server information on 'Specificity Score' answers occurred. Please contact admin or TA!");
           }
 
           // Check if the F1 primer matches the answer's input
@@ -577,55 +577,43 @@ function markAnswers() {
  */
 function showFeedback() {
   $("#mainContainer").empty();
-  var append_str = "<p> You would only receive feedback on your practice attempts and not your final assignment.</p>";
-  append_str += "<p> The assignment itself is marked out of 12 marks with 2 marks for each input excluding gRNA strand direction, cut position and target region range (these three values are used to calculate if you have the right answer or not which means they are still crucial that they are still correct).</p>";
-  append_str += "<br>";
-  append_str += "<p> If at any point you wish to dispute marks, please contact your TA or professor once you completed your assignment. If you have found a bug in our SciGrade marking system, please contact your professor or our admin </p>";
-  append_str += "<br>";
+  var append_str = "<p style='font-weight:bold;'> You would only receive feedback on your practice attempts and not your final assignments.</p>";
+  append_str += "<p> The assignment itself is marked out of 10 marks with 2 marks for each input excluding gRNA strand direction, cut position and target region range (these three values are used to calculate if you have the right answer or not which means they are still crucial that they are still correct).</p>";
   append_str += "<p> The following is the breakdown of what marks you would have received and why you would have gotten them: </p>";
+  append_str += "<p style='font-weight:bold;'>Mark: " + all_marks[0] + "/10 (" + all_marks[1] + ")</p>";
 
-  append_str += "<br>";
-  append_str += "<p> <b> gRNA Strand Sequence: </b> </p>";
+  // Calculate all conditions:
+  /// gRNA:
   var MARgRNAseq_degree_display = 0;
   var MARgRNAseq_degree_explain = "Your gRNA sequence was wrong and not found in the Benchling gRNA outputs. Either you made a typo or this answer was not correct and did not contain the target cut site within an acceptable range.";
   if (MARgRNAseq == true) {
     if (MARgRNAseq_degree == 1) {
       MARgRNAseq_degree_display = 2;
-      MARgRNAseq_degree_explain = "This means your answer was correct and you recieved full marks.";
+      MARgRNAseq_degree_explain = "This means your answer was correct and you received full marks.";
     }
     else if (MARgRNAseq_degree == 2) {
       MARgRNAseq_degree_display = 1;
-      MARgRNAseq_degree_explain = "This means your sequence was partially correct as it contain the target sequence within a 20bp range but was not optimal. One mark.";
+      MARgRNAseq_degree_explain = "This means your sequence was partially correct as it contains the target sequence within a 20bp range but was not optimal. One mark.";
     }
     else if (MARgRNAseq_degree == 3) {
       MARgRNAseq_degree_display = 0.5;
-      MARgRNAseq_degree_explain = "This means your sequence was not wrong (therefore was still correct) but there was better options out there. I recommend you try this practice assignment again. Still worth some marks though (half a mark).";
+      MARgRNAseq_degree_explain = "This means your sequence was not wrong (therefore was still correct) but there were better options out there. I recommend you try this practice assignment again. Still worth some marks though (half a mark).";
     }
   }
-  append_str += '<p> For gRNA Strand Sequence, you put down "' + all_answers[0] + '" which gave you the mark ' + MARgRNAseq_degree_display + '.</p>'
-  append_str += MARgRNAseq_degree_explain;
-  append_str += "<br>";
-
-  append_str += "<br>";
-  append_str += "<p> <b> gRNA PAM Sequence: </b> </p>";
+  /// PAM:
   var MARPAMseq_display = 0;
-  var MARPAMseq_explain = "Your PAM sequence was wrong and not found relative to your gRNA sequence. Either you made a typo or this answer was not correct. Either it contained the cutsite within the PAM site or it was not a NGG or NAG PAM site (SciGrade only accepts either of those two PAM sites).";
+  var MARPAMseq_explain = "Your PAM sequence was wrong and not found relative to your gRNA sequence. Either you made a typo or this answer was not correct. Either it contained the cut site within the PAM site or it was not an NGG or NAG PAM site (SciGrade only accepts either of those two PAM sites).";
   if (MARPAMseq == true) {
     MARPAMseq_display = 2;
-    MARPAMseq_explain = "This means your answer was correct and you recieved full marks.";
+    MARPAMseq_explain = "This means your answer was correct and you received full marks.";
   }
-  append_str += '<p> For gRNA PAM Sequence, you put down "' + all_answers[1] + '" which gave you the mark ' + MARPAMseq_display + '.</p>'
-  append_str += MARPAMseq_explain;
-  append_str += "<br>";
-
-  append_str += "<br>";
-  append_str += "<p> <b> Off-Target Score: </b> </p>";
+  /// Off-target:
   var MAROffTarget_degree_display = 0;
   var MAROffTarget_degree_explain = "Your off-target score was wrong. Either it was not above/within the optimal range (or above 35) or the last-resort option.";
   if (MAROffTarget == true) {
     if (MAROffTarget_degree == 1) {
       MAROffTarget_degree_display = 2;
-      MAROffTarget_degree_explain = "This means your answer was correct while above/within the optimal and you recieved full marks.";
+      MAROffTarget_degree_explain = "This means your answer was correct while above/within the optimal and you received full marks.";
     }
     else if (MAROffTarget_degree == 2) {
       MAROffTarget_degree_display = 1;
@@ -633,15 +621,10 @@ function showFeedback() {
     }
     else if (MAROffTarget_degree == 3) {
       MAROffTarget_degree_display = 0.5;
-      MAROffTarget_degree_explain = "This means your answer was partially correct as it was found to be your only option is soley based on the target region range you selected.";
+      MAROffTarget_degree_explain = "This means your answer was partially correct as it was found to be your only option is solely based on the target region range you selected.";
     }
   }
-  append_str += '<p> For Off-Target Score, you put down "' + all_answers[4] + '" which gave you the mark ' + MAROffTarget_degree_display + '.</p>'
-  append_str += MAROffTarget_degree_explain;
-  append_str += "<br>";
-
-  append_str += "<br>";
-  append_str += "<p> <b> F1 Primer: </b> </p>";
+  /// F1 Primer:
   var MARF1primers_display = 0;
   var f1Options = "";
   for (i = 0; i < possible_F1_primers.length; i++) {
@@ -653,17 +636,12 @@ function showFeedback() {
       f1Options += ", ";
     }
   };
-  var MARF1primers_explain = "Your F1 primer sequence was incorrectly matched to one of the following sequences generated based on your gRNA seqeuence inputted: " + f1Options;
+  var MARF1primers_explain = "Your F1 primer sequence was incorrectly matched to one of the following sequences generated based on your gRNA sequence inputted: " + f1Options;
   if (MARF1primers == true) {
     MARF1primers_display = 2;
-    MARF1primers_explain = "This means your answer was correct and you recieved full marks.";
+    MARF1primers_explain = "This means your answer was correct and you received  full marks.";
   }
-  append_str += '<p> For F1 Primer, you put down "' + all_answers[5] + '" which gave you the mark ' + MARF1primers_display + '.</p>'
-  append_str += MARF1primers_explain;
-  append_str += "<br>";
-
-  append_str += "<br>";
-  append_str += "<p> <b> R1 Primer: </b> </p>";
+  /// R1 Primer:
   var MARR1primers_display = 0;
   var r1Options = "";
   for (i = 0; i < possible_R1_primers.length; i++) {
@@ -675,16 +653,116 @@ function showFeedback() {
       r1Options += ", ";
     }
   };
-  var MARR1primers_explain = "Your R1 primer sequence was incorrectly matched to one of the following sequences generated based on your gRNA seqeuence inputted: " + r1Options;
+  var MARR1primers_explain = "Your R1 primer sequence was incorrectly matched to one of the following sequences generated based on your gRNA sequence inputted: " + r1Options;
   if (MARR1primers == true) {
     MARR1primers_display = 2;
-    MARR1primers_explain = "This means your answer was correct and you recieved full marks.";
+    MARR1primers_explain = "This means your answer was correct and you received  full marks.";
   }
+
+  // gRNA:
+  append_str += "<div class='card about'>";
+  append_str += "<div class='card-header' id='gRNACard'>";
+  append_str += "<h5 class='mb-0'>";
+  append_str += "<button class='btn btn-link' data-toggle='collapse' data-target='#gRNAOutput' aria-expanded='false' aria-controls='gRNAOutput'>";
+  append_str += "gRNA Strand Sequence: " + MARgRNAseq_degree_display + "/2";
+  append_str += "</button>";
+  append_str += "</h5>"
+  append_str += "</div>";
+  append_str += "<div id='gRNAOutput' class='collapse' aria-labelledby='headingOne' data-parent='#accordion'>";
+  append_str += "<div class='card-body'>";
+  // Content
+  append_str += '<p> For gRNA Strand Sequence, you put down "' + all_answers[0] + '" which gave you the mark ' + MARgRNAseq_degree_display + '.</p>'
+  append_str += MARgRNAseq_degree_explain;
+  // Close gRNA card
+  append_str += "</div>";
+  append_str += "</div>";
+  append_str += "</div>";
+  $("#mainContainer").append(append_str);
+
+  // PAM:
+  append_str = "<div class='card about'>";
+  append_str += "<div class='card-header' id='PAMCard'>";
+  append_str += "<h5 class='mb-0'>";
+  append_str += "<button class='btn btn-link' data-toggle='collapse' data-target='#PAMOutput' aria-expanded='false' aria-controls='PAMOutput'>";
+  append_str += "gRNA PAM Sequence: " + MARPAMseq_display + "/2";
+  append_str += "</button>";
+  append_str += "</h5>"
+  append_str += "</div>";
+  append_str += "<div id='PAMOutput' class='collapse' aria-labelledby='headingOne' data-parent='#accordion'>";
+  append_str += "<div class='card-body'>";
+  // Content
+  append_str += '<p> For gRNA PAM Sequence, you put down "' + all_answers[1] + '" which gave you the mark ' + MARPAMseq_display + '.</p>'
+  append_str += MARPAMseq_explain;
+  // Close PAM card
+  append_str += "</div>";
+  append_str += "</div>";
+  append_str += "</div>";
+  $("#mainContainer").append(append_str);
+
+  // Off-target Score:
+  append_str = "<div class='card about'>";
+  append_str += "<div class='card-header' id='OffTargetCard'>";
+  append_str += "<h5 class='mb-0'>";
+  append_str += "<button class='btn btn-link' data-toggle='collapse' data-target='#OffTargetOutput' aria-expanded='false' aria-controls='OffTargetOutput'>";
+  append_str += "Off-target Score: " + MARPAMseq_display + "/2";
+  append_str += "</button>";
+  append_str += "</h5>"
+  append_str += "</div>";
+  append_str += "<div id='OffTargetOutput' class='collapse' aria-labelledby='headingOne' data-parent='#accordion'>";
+  append_str += "<div class='card-body'>";
+  // Content
+  append_str += '<p> For Off-Target Score, you put down "' + all_answers[4] + '" which gave you the mark ' + MAROffTarget_degree_display + '.</p>'
+  append_str += MAROffTarget_degree_explain;
+  // Close Off-target Score card
+  append_str += "</div>";
+  append_str += "</div>";
+  append_str += "</div>";
+  $("#mainContainer").append(append_str);
+
+  // F1 Primer:
+  append_str = "<div class='card about'>";
+  append_str += "<div class='card-header' id='F1PrimerCard'>";
+  append_str += "<h5 class='mb-0'>";
+  append_str += "<button class='btn btn-link' data-toggle='collapse' data-target='#F1PrimerOutput' aria-expanded='false' aria-controls='F1PrimerOutput'>";
+  append_str += "F1 Primer: " + MARPAMseq_display + "/2";
+  append_str += "</button>";
+  append_str += "</h5>"
+  append_str += "</div>";
+  append_str += "<div id='F1PrimerOutput' class='collapse' aria-labelledby='headingOne' data-parent='#accordion'>";
+  append_str += "<div class='card-body'>";
+  // Content
+  append_str += '<p> For F1 Primer, you put down "' + all_answers[5] + '" which gave you the mark ' + MARF1primers_display + '.</p>'
+  append_str += MARF1primers_explain;
+  // Close F1 Primer card
+  append_str += "</div>";
+  append_str += "</div>";
+  append_str += "</div>";
+  $("#mainContainer").append(append_str);
+
+  // F1 Primer:
+  append_str = "<div class='card about'>";
+  append_str += "<div class='card-header' id='R1PrimerCard'>";
+  append_str += "<h5 class='mb-0'>";
+  append_str += "<button class='btn btn-link' data-toggle='collapse' data-target='#R1PrimerOutput' aria-expanded='false' aria-controls='R1PrimerOutput'>";
+  append_str += "R1 Primer: " + MARPAMseq_display + "/2";
+  append_str += "</button>";
+  append_str += "</h5>"
+  append_str += "</div>";
+  append_str += "<div id='R1PrimerOutput' class='collapse' aria-labelledby='headingOne' data-parent='#accordion'>";
+  append_str += "<div class='card-body'>";
+  // Content
   append_str += '<p> For R1 Primer, you put down "' + all_answers[6] + '" which gave you the mark ' + MARR1primers_display + '.</p>'
   append_str += MARR1primers_explain;
+  // Close F1 Primer card
+  append_str += "</div>";
+  append_str += "</div>";
+  append_str += "</div>";
+  $("#mainContainer").append(append_str);
+
+  append_str = "<br>";
+  append_str += "<p> If at any point you wish to dispute marks, please contact your TA or professor once you completed your assignment. If you have found a bug in our SciGrade marking system, please contact your professor or our admin </p>";
   append_str += "<br>";
 
-  append_str += "<br>";
   append_str += '<p> <button type="button" class="btn btn-primary" onclick="redirectCRISPR(); loadJSON_Files();"> Back to Assignments </button> </p>';
 
   $("#mainContainer").append(append_str);
@@ -808,7 +886,7 @@ function openAccountManagement() {
     append_str += "<div class='card-body'>";
 
     // Append all students at once:
-    append_str += "<p style='font-weight: bold;'> If you would to create a  new class, just fill the form below: "
+    append_str += "<p style='font-weight: bold;'> If you would like to create a  new class, just fill the form below: "
     // Form opening
     append_str += "<form>"
 
@@ -818,22 +896,22 @@ function openAccountManagement() {
     append_str += '<select id="InputClassMultiple" class="form-control" style="margin-bottom: 1%" disabled>';
     append_str += '<option value="newClass" id="newClassMultiple" tag="assignment" >New Class</option>\n';
     append_str += '</select>';
-    append_str += '<input class="form-control" id="InputNewClassMultiple" placeholder="HMB396 - Winter (NOTE: Spaces will be deleted once you submit so use capital letters to seperate words)" hidden>';
-    append_str += '<small id="InputClassHelp" class="form-text text-muted">Choose class students will be added to or create a new class. Example of new class: HMB396 - Winter - 2019 (NOTE: Spaces will be deleted once you submit so use capital letters to seperate words)</small>'
+    append_str += '<input class="form-control" id="InputNewClassMultiple" placeholder="HMB396 - Winter (NOTE: Spaces will be deleted once you submit so use capital letters to separate words)" hidden>';
+    append_str += '<small id="InputClassHelp" class="form-text text-muted">Choose class students will be added to or create a new class. Example of a new class: HMB396 - Winter - 2019 (NOTE: Spaces will be deleted once you submit so use capital letters to separate words)</small>'
     append_str += '</div>';
 
     // User number
     append_str += '<div class="form-group">';
     append_str += '<label for="InputStudentNumber" style="font-weight: bold;">Input student numbers: </label>';
     append_str += '<textarea class="form-control" id="StudentNumbers" rows="4" placeholder="1234567890, 1003817535, 1113315545"></textarea>';
-    append_str += '<small id="InputStudentNumberHelp" class="form-text text-muted">Input student numbers, seperated by commas, new lines and/or tab indentation (BEWARE OF TYPOS!)</small>'
+    append_str += '<small id="InputStudentNumberHelp" class="form-text text-muted">Input student numbers, separated by commas, new lines and/or tab indentation (BEWARE OF TYPOS!)</small>'
     append_str += '</div>';
 
     // User uMail
     append_str += '<div class="form-group">';
     append_str += '<label for="InputStudentUmail" style="font-weight: bold;">Input student University email: </label>';
     append_str += '<textarea class="form-control" id="StudentUmails" rows="4" placeholder="john.doe@mail.utoronto.ca, sarah.cat@.mail.utoronto.ca, alexander.macadonia@utoronto.ca"></textarea>';
-    append_str += '<small id="InputStudentUmailUmail" class="form-text text-muted">Input student University associated email in the same order of the student numbers, seperated by commas, new lines and/or tab indentation (BEWARE OF TYPOS!)</small>'
+    append_str += '<small id="InputStudentUmailUmail" class="form-text text-muted">Input student University associated email in the same order of the student numbers, separated by commas, new lines and/or tab indentation (BEWARE OF TYPOS!)</small>'
     append_str += '</div>';
 
     // Submit button
@@ -862,7 +940,7 @@ function openAccountManagement() {
     append_str += "<div class='card-body'>";
 
     //Append TAs or Admins:
-    append_str += "<p style='font-weight: bold;'> If you would like to add a single user (students, TAs or admins), please fill in the form below. Please note, this will default the user as a student. Only admins will be able to create new TAs or admins </p>";
+    append_str += "<p style='font-weight: bold;'>If you would like to add a single user (students, TAs or admins), please fill in the form below. Please note, this will default the user as a student. Only admins will be able to create new TAs or admins</p>";
     // Form opening
     append_str += "<form>";
 
@@ -920,7 +998,7 @@ function openAccountManagement() {
     append_str += "<div class='card-body'>";
 
     //Info:
-    append_str += "<p style='font-weight: bold;'> If you would like to change a class's off-target optimal goal, you can do that here </p>";
+    append_str += "<p style='font-weight: bold;'>If you would like to change a class's off-target optimal goal, you can do that here</p>";
 
     // Choose class:
     append_str += '<div class="form-group">';
@@ -944,7 +1022,7 @@ function openAccountManagement() {
     append_str += '<option value="Custom" id="CustomOffTarget" tag="assignment">Custom</option>\n';
     append_str += '</select>';
     append_str += '<input class="form-control" id="InputModifyControls" type="number" step="0.01" min="0.01" max="100" placeholder="Insert number between 0.01 and 100" hidden>';
-    append_str += '<small id="InputModifyControlsHelp" class="form-text text-muted">Choose how you want the off-target score to be marked. Optimal is Min_optimal = Max_range - (Max_range * 0.2) if below 80 (if below, optimal = 80). Custom value can be any number between 0.01 and 100 which will be the new custom "optiomal" value for your class.</small>'
+    append_str += '<small id="InputModifyControlsHelp" class="form-text text-muted">Choose how you want the off-target score to be marked. Optimal is Min_optimal = Max_range - (Max_range * 0.2) if below 80 (if below, optimal = 80). Custom value can be any number between 0.01 and 100 which will be the new custom "optimal" value for your class.</small>'
     append_str += '</div>';
 
     // Submit button
@@ -970,7 +1048,7 @@ function openAccountManagement() {
     append_str += "<div class='card-body'>";
 
     //Info:
-    append_str += "<p style='font-weight: bold;'> If you would like to change a user's account type (to TA or admin or back to student), you can do that below </p>";
+    append_str += "<p style='font-weight: bold;'>If you would like to change a user's account type (to TA or admin or back to student), you can do that below</p>";
 
     // Choose class:
     append_str += '<div class="form-group">';
@@ -999,7 +1077,7 @@ function openAccountManagement() {
     append_str += '<option value="TA" id="TA" tag="userType">TA</option>\n';
     append_str += '<option value="admin" id="admin" tag="userType">admin</option>\n';
     append_str += '</select>';
-    append_str += '<small id="ClassTypeChangeHelp" class="form-text text-muted">Choose the type for which you want to user to become.</small>'
+    append_str += '<small id="ClassTypeChangeHelp" class="form-text text-muted">Choose the type for which you want the user to become.</small>'
     append_str += '</div>';
 
     // Submit button
@@ -1443,7 +1521,7 @@ function submitAnswers() {
       document.getElementById("seeFeedback").removeAttribute("hidden");
     }
     $("#feedbackButton").click();
-  }, 1000); 
+  }, 750); 
 }
 
 /**
