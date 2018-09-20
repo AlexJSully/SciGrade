@@ -13,7 +13,7 @@ It is recommended that you use the web-version available at http://scigrade.com/
 
 Chrome | Firefox | IE | Edge | Safari | Opera
 --- | --- | --- | --- | --- | --- |
-✔ |  ✔ | ? |  ✔ | ? |  ? |
+✔ |  ✔ | X |  ✔ | ✔ |  ? |
 
 ## Installation/Open
 

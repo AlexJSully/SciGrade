@@ -43,25 +43,23 @@ Only TAs and admins can add new students and only admins can add other admins or
 
 ### Adding students: 
 
-Multiple students at once can be added through the "Add students:" card. Within this card, there are three input boxes. A "Choose class" option where you can add to an existing class or create a new class. It is important to note that spaces will be deleted when being added to the MongoDB server once you submit so use capital letters to separate words. To change this, just remove 
+Multiple students at once can be added through the "Create new class:" card. Within this card, there are three input boxes. A "Choose class" option where you can add to an existing class or create a new class. It is important to note that spaces will be deleted when being added to the MongoDB server once you submit so use capital letters to separate words. To change this, just remove 
 ```javascript 
 trueChangeValueTo = trueChangeValueTo.replace(/\s/g, ''); 
 ``` 
 from ```changeInputClass(docCheck, checkFor, docChange, trueChangeValueTo)``` within [crispr_script.js](core/scripts/crispr_script.js)
 
-To input multiple students, simply have each student comma, tab or new line separated. The tab and new line separation allow for importing content from Excel/CSV into the input field.
+To input multiple students, simply have each student comma, tab or newline separated. The tab and newline separation allow for importing content from Excel/CSV into the input field.
 
 For student's numbers and emails, there must be an equal amount of each while they also must be in the same corresponding order. They are pushed to the server sequentially so anything out of order, or with a typo, will cause them to be in the wrong order on the server.
 
 ![adding students](core/images/EDITmd/006_AddStudents.png "Adding students to SciGrade servers")
 
-### Adding a TA, admin or single student:
+### Adding a single student:
 
-Adding a TA, admin or a single student must be done individually within the "Add TA's:" card which can only be accessed by the admin. To change this from being admin only to allowing TAs, within the ```openAccountManagement()``` in [crispr_script.js](core/scripts/crispr_script.js), change the order of ```append_str``` or find the ```// Admin controls: ``` and combine that with the ```// TA access to add new students:```.
+Adding a single user must be done individually within the "Add single user:" card which can only be accessed by an admin. To change this from being admin only to allowing TAs, within the ```openAccountManagement()``` in [crispr_script.js](core/scripts/crispr_script.js), change the order of ```append_str``` or find the ```// Admin controls: ``` and combine that with the ```// TA access to add new students:```.
 
-If you are adding a TA or admin, it recommended you add them to the "AdminTA-List" class. They can also be added to a specific class, but new classes cannot be created here. 
-
-Adding students individually can also be done here which is specified by the "User type:" which corresponds to the account type (Student, TA and admin).
+If you are adding a TA or admin, it recommended you add them to the "AdminTA-List" class. From there, they have to register before you can change the user into a TA or admin from the "Change a user's account type:" card. By default, users are added as students
 
 ![adding students](core/images/EDITmd/007_AddTA.png "Adding a TA to SciGrade servers")
 
@@ -89,15 +87,21 @@ The following image describes where student's marks come from in the marking alg
 There are two ways to adjust the marking algorithm
 
 1. Use the "Modify marking controls:" card from the account management modal. Within this modal, you can adjust how the off-target "optimal" value is calculated with two options: "Optimal" and "Custom". Optimal is calculated using the following equation: ```Min_optimal = Max_range - (Max_range * 0.2)``` where ```Max_range``` is the highest value of possible feasible off-target scores. While Custom is a custom "optimal" value which can be any number between 0.01 and 100.
-![modify marking controls](core/images/EDITmd/008_AdjustMarks.png "Example of the account modal modify marking controls card")
+![modify marking controls](core/images/EDITmd/008_AdjustMarks.png "Example of the account modal modify marking control's card")
 2. Edit the code within [crispr_script.js](core/scripts/crispr_script.js). The following functions are related to marking: ```checkAnswers()```, ```checkOffTarget(score)```, ```checkF1Primers(seq)``` and ```checkR1Primers(seq)``` to determine if answers are correct or not and then ```markAnswers()``` to assign marks. 
+
+### Changing a user's type:
+
+If you change the MongoDB database, this will not work unless it is structured exactly like ours.
+
+In the "Change a user's account type:" card within the Account module, you can select a user from a class and change this account type from Student or TA or admin (each with their respective properties)
 
 ## Downloading marks:
 
-SciGrade has a built in option to download marks as a CSV (Excel) file. There are two options:
+SciGrade has a built-in option to download marks as a CSV (Excel) file. There are two options:
 
 1. Marks which includes just the percentage the student received on each assignment and raw mark out of 10
-2. Raw marks which includes the percentage, raw mark out of 10, and all things being marked input and what the student received on each input that contributed to their mark (gRNA sequence, PAM sequence, off-target scoring, F1 primer and R1 primer)
+2. Raw marks which include the percentage, raw mark out of 10, and all things being marked input and what the student received on each input that contributed to their mark (gRNA sequence, PAM sequence, off-target scoring, F1 primer and R1 primer)
 
 If you wish to change what is visible in the exported CSV file, you can modify it through the two following functions within [crispr_script.js](core/scripts/crispr_script.js):
 
@@ -106,7 +110,7 @@ If you wish to change what is visible in the exported CSV file, you can modify i
 
 ## Adding new genes:
 
-Currently there is no interface that allows you to add a new gene from the front-end. Adding a new gene requires access to the MongoDB server and requires the following things:
+Currently, there is no interface that allows you to add a new gene from the front-end. Adding a new gene requires access to the MongoDB server and requires the following things:
 
 * Information about the gene which will be added to [Gene's Background Information](core/data/Background_info/gene_background_info.json) on the MongoDB server which includes the following information:
    * ```base_type```: "practice" or "assignment"
@@ -116,7 +120,7 @@ Currently there is no interface that allows you to add a new gene from the front
    * ```Target position```: The location of what you are targetting
    * ```Sequence```: The sequence of the gene that has the target on it
    * ```NCBI gene link```: A NCBI's Gene link
-* The [gRNA outputs/answers](core/data/Benchling_gRNA_Outputs.json) which is used in the marking algorithm to assign marks which includes the following information for each gene within the collection/JSON object:
+* The [gRNA outputs/answers](core/data/Benchling_gRNA_Outputs.json) which is used in the marking algorithm to assign marks which include the following information for each gene within the collection/JSON object:
    * ```Position```: Position of output
    * ```Strand```: -1 for antisense, 1 for sense
    * ```Sequence```: The gRNA sequence output
@@ -130,7 +134,7 @@ Add those to the MongoDB server and make sure ```loadCRISPRJSON_Files()``` withi
 
 The current version of SciGrade uses MongoDB Atlas as our data hosting service. If you are trying to create your own custom version of SciGrade, I recommend you to create your own MongoDB Atlas cluster ([more information on their website](https://www.mongodb.com/cloud/atlas), including [pricing](https://www.mongodb.com/cloud/atlas/pricing)).
 
-SciGrade uses three collections to separate our information. We have one to hold our student information, one to hold information about the practice and assignment genes and one that consists of [Benchling](https://benchling.com/) [gRNA](https://benchling.com/crispr) outputs which is used to mark student's inputs. An example of what would be found in the gene information collection can be seen in the image below (or in the respective local [JSON file](core/data/Background_info/gene_background_info.json)):
+SciGrade uses three collections to separate our information. We have one to hold our student information, one to hold information about the practice and assignment genes and one that consists of [Benchling](https://benchling.com/) [gRNA](https://benchling.com/crispr) outputs which are used to mark student's inputs. An example of what would be found in the gene information collection can be seen in the image below (or in the respective local [JSON file](core/data/Background_info/gene_background_info.json)):
 
 ![gene information](core/images/EDITmd/001_MongoExample-GeneInformation.png "Example of what would be seen in the Gene Information collection")
 
