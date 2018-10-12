@@ -7,7 +7,7 @@ SciGrade is an online web-tool that allows students (or any user with access) to
 
 ## Getting Started
 
-It is recommended that you use the web-version available at http://scigrade.com/ but if you want to download and run the SciGrade locally, it is possible though it require internet connection to login and access the marking form and student information (exclussive for TA's and admins). 
+It is recommended that you use the web-version available at http://scigrade.com/ but if you want to download and run the SciGrade locally, it is possible though it requires an internet connection to login and accesses the marking form and student information (exclusive for TA's and admins). 
 
 ## Browser Compatibilities 
 
