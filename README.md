@@ -21,7 +21,7 @@ There is nothing to install, just download all the files and open [index.html](i
 
 ## Known issues
 
-We aim to make the SciGrade as perfect as possible but unfortunately, there may be some unforseen bugs. If you manage to find one that is not here, feel free to create a [bug report](https://github.com/ASully/SciGrade/issues/new?template=bug_report.md) so we can fix it.
+We aim to make the SciGrade as perfect as possible but unfortunately, there may be some unforeseen bugs. If you manage to find one that is not here, feel free to create a [bug report](https://github.com/ASully/SciGrade/issues/new?template=bug_report.md) so we can fix it.
 * None at the moment... Help us find some!
 
 ## Contributing

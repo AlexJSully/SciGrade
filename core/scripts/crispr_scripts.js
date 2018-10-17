@@ -48,8 +48,8 @@ function select_Gene() {
     if (current_gene != "empty" || current_gene != "eBFP" || current_gene != "ACTN3" || current_gene != "HBB" || current_gene != "CCR5" || current_gene != "ANKK1" || current_gene != "APOE") {
       current_gene == "empty";
     }
-    alert("Error code sG34-42 occured. Please contact admin or TA!");
-    console.log("Error code sG34-42 occured. Please contact admin or TA!");
+    alert("Error code sG34-42 occurred. Please contact admin or TA!");
+    console.log("Error code sG34-42 occurred. Please contact admin or TA!");
   }
 }
 
@@ -639,7 +639,7 @@ function showFeedback() {
   var MARF1primers_explain = "Your F1 primer sequence was incorrectly matched to one of the following sequences generated based on your gRNA sequence inputted: " + f1Options;
   if (MARF1primers == true) {
     MARF1primers_display = 2;
-    MARF1primers_explain = "This means your answer was correct and you received  full marks.";
+    MARF1primers_explain = "This means your answer was correct and you received full marks.";
   }
   /// R1 Primer:
   var MARR1primers_display = 0;
@@ -656,7 +656,7 @@ function showFeedback() {
   var MARR1primers_explain = "Your R1 primer sequence was incorrectly matched to one of the following sequences generated based on your gRNA sequence inputted: " + r1Options;
   if (MARR1primers == true) {
     MARR1primers_display = 2;
-    MARR1primers_explain = "This means your answer was correct and you received  full marks.";
+    MARR1primers_explain = "This means your answer was correct and you received full marks.";
   }
 
   // gRNA:
@@ -760,7 +760,7 @@ function showFeedback() {
   $("#mainContainer").append(append_str);
 
   append_str = "<br>";
-  append_str += "<p> If at any point you wish to dispute marks, please contact your TA or professor once you completed your assignment. If you have found a bug in our SciGrade marking system, please contact your professor or our admin </p>";
+  append_str += "<p> If at any point you wish to dispute marks, please contact your TA or professor once you completed your assignment. If you have found a bug in our SciGrade marking system, please contact your professor or our admin. </p>";
   append_str += "<br>";
 
   append_str += '<p> <button type="button" class="btn btn-primary" onclick="redirectCRISPR(); loadJSON_Files();"> Back to Assignments </button> </p>';
