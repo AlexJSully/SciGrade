@@ -763,7 +763,7 @@ function showFeedback() {
   append_str += "<p> If at any point you wish to dispute marks, please contact your TA or professor once you completed your assignment. If you have found a bug in our SciGrade marking system, please contact your professor or our admin. </p>";
   append_str += "<br>";
 
-  append_str += '<p> <button type="button" class="btn btn-primary" onclick="redirectCRISPR(); loadJSON_Files();"> Back to Assignments </button> </p>';
+  append_str += '<p> <button type="button" class="btn btn-primary" onclick="backToAssignments();"> Back to Assignments </button> </p>';
 
   $("#mainContainer").append(append_str);
 }
@@ -1533,6 +1533,15 @@ function IfPressEnter(event, toClickButton) {
   if (event.which == 13 || event.keyCode == 13) {
     $('#' + toClickButton).click();
   }
+}
+
+/**
+ * Resets the assignment section page 
+ */
+function backToAssignments() {  
+  redirectCRISPR(); 
+  loadJSON_Files();
+  $("#practice").click();
 }
 
 // Block submit calls on keypress
