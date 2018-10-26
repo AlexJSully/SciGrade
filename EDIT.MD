@@ -128,7 +128,9 @@ Currently, there is no interface that allows you to add a new gene from the fron
    * ```Specificity Score```: Off-target score
    * ```Efficiency Score```: On-target score
 
-Add those to the MongoDB server and make sure ```loadCRISPRJSON_Files()``` within [crispr_scripts.js](core/scripts/crispr_script.js) is accurately calling them and SciGrade will automatically generate the rest of the front-end information (through ```fillGeneList()``` and ```loadWork()```)
+Add those to the MongoDB server and make sure ```loadCRISPRJSON_Files()``` within [crispr_scripts.js](core/scripts/crispr_script.js) is accurately calling them and SciGrade will automatically generate the rest of the front-end information (through ```fillGeneList()``` and ```loadWork()```).
+
+It is important to note that SciGrade's system is meant for human (Homo sapiens) GRCH38 (HG38) gene annotations using the [crispr.mit.edu from Hsu et al., 2013](http://crispr.mit.edu/) algorithm for off-target scoring. 
 
 ## Connection to MongoDB:
 

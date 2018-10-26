@@ -20,14 +20,12 @@ function ModeSelectionAdd(mode) {
     append_str += '<option value="ACTN3" id="ACTN3" tag="practice">ACTN3</option>\n';
     // TODO: Add completed assignment genes into practice mode
     $("#gene_dropdown_selection").append(append_str);
-  }
-  else if (mode == "assignment") {
+  } else if (mode == "assignment") {
     var useList = removeCompletedAssignments();
     for (i = 0; i < useList.length; i++) {
       if (i == 0) {
         append_str = '<option value="' + useList[i] + '" id="' + useList[i] + '" tag="assignment">' + useList[i] + '</option>\n';
-      }
-      else {
+      } else {
         append_str += '<option value="' + useList[i] + '" id="' + useList[i] + '" tag="assignment">' + useList[i] + '</option>\n';
       }
     }
@@ -43,8 +41,7 @@ function select_Gene() {
     current_gene = possible_gene;
     loadWork();
     checkAnswers_executed = false;
-  }
-  else {
+  } else {
     if (current_gene != "empty" || current_gene != "eBFP" || current_gene != "ACTN3" || current_gene != "HBB" || current_gene != "CCR5" || current_gene != "ANKK1" || current_gene != "APOE") {
       current_gene == "empty";
     }
@@ -63,15 +60,19 @@ function loadCRISPRJSON_Files() {
   const db = client.service('mongodb', 'mongodb-atlas').db('AlMark');
   // Gene background information
   client.login().then(() =>
-    db.collection('Gene_Information').find({version: "0.3"}).limit(100).execute()
+    db.collection('Gene_Information').find({
+      version: "0.3"
+    }).limit(100).execute()
   ).then(docs => {
     gene_backgroundInfo = docs;
   }).catch(err => {
     console.error(err)
   });
   // Benchling gRNA outputs
-  client.login().then(()=>
-    db.collection('Benchling_gRNA_Outputs').find({version: "0.2"}).limit(100).execute()
+  client.login().then(() =>
+    db.collection('Benchling_gRNA_Outputs').find({
+      version: "0.2"
+    }).limit(100).execute()
   ).then(docs => {
     benchling_grna_ouputs = docs;
   }).catch(err => {
@@ -92,8 +93,7 @@ function fillGeneList() {
     for (i = 0; i < list_of_genes.length; i++) {
       if (gene_backgroundInfo[0]["gene_list"][list_of_genes[i]]["base_type"] == "practice") {
         list_of_practice.push(list_of_genes[i]);
-      }
-      else if (gene_backgroundInfo[0]["gene_list"][list_of_genes[i]]["base_type"] == "assignment") {
+      } else if (gene_backgroundInfo[0]["gene_list"][list_of_genes[i]]["base_type"] == "assignment") {
         list_of_assignments.push(list_of_genes[i]);
       }
     }
@@ -194,8 +194,7 @@ function loadWork() {
     append_str += '</div>';
 
     $("#work").append(append_str);
-  }
-  else if (gene_backgroundInfo == null || gene_backgroundInfo == "" || gene_backgroundInfo == undefined || backgroundInfo[0]["gene_list"][current_gene] == undefined) {
+  } else if (gene_backgroundInfo == null || gene_backgroundInfo == "" || gene_backgroundInfo == undefined || backgroundInfo[0]["gene_list"][current_gene] == undefined) {
     alert("Error code lFS50-66 occurred. Please contact admin or TA!");
     console.log("Error code lFS50-66 occurred. Please contact admin or TA!");
   }
@@ -254,7 +253,7 @@ function checkAnswers() {
   var inputedSeq = document.getElementById("sequence_input").value.trim();
   // Check if gRNA sequence is in against listed
   possible_comparable_answers = [];
-  for (i=0; i<benchling_grna_ouputs[0]["gene_list"][current_gene].length; i++) {
+  for (i = 0; i < benchling_grna_ouputs[0]["gene_list"][current_gene].length; i++) {
     if (benchling_grna_ouputs[0]["gene_list"][current_gene][i]["Sequence"] == inputedSeq) {
       possible_comparable_answers.push(benchling_grna_ouputs[0]["gene_list"][current_gene][i]);
     }
@@ -273,8 +272,7 @@ function checkAnswers() {
         if (correctNucleotidePosition >= nucleotideIncludedRange_bot && correctNucleotidePosition <= nucleotideIncludedRange_top) {
           correctNucleotideIncluded = true;
         }
-      }
-      else if (possible_comparable_answers[i]["Strand"] == -1) {
+      } else if (possible_comparable_answers[i]["Strand"] == -1) {
         var nucleotideIncludedRange_top = (possible_comparable_answers[i]["Position"] - 1) + 17;
         var nucleotideIncludedRange_bot = (possible_comparable_answers[i]["Position"] - 1) - 3;
         if (correctNucleotidePosition >= nucleotideIncludedRange_bot && correctNucleotidePosition <= nucleotideIncludedRange_top) {
@@ -311,23 +309,20 @@ function checkAnswers() {
         if (correctNucleotidePosition >= (pamFirst) && correctNucleotidePosition <= (pamSecond)) { // within PAM site
           MARgRNAseq = false;
           MARgRNAseq_degree = 0;
-        }
-        else if (
-          (correctNucleotidePosition >= ((possible_comparable_answers[i]["Position"] - 1) + 1) && correctNucleotidePosition <= ((possible_comparable_answers[i]["Position"] - 1) + 10)) || (correctNucleotidePosition >= ((possible_comparable_answers[i]["Position"] - 1) - 1) && correctNucleotidePosition <= ((possible_comparable_answers[i]["Position"] - 1) - 10))
+        } else if (
+          (correctNucleotidePosition >= ((possible_comparable_answers[i]["Position"] - 1) + 1) && correctNucleotidePosition <= ((possible_comparable_answers[i]["Position"] - 1) + 10)) || (correctNucleotidePosition <= ((possible_comparable_answers[i]["Position"] - 1) - 1) && correctNucleotidePosition >= ((possible_comparable_answers[i]["Position"] - 1) - 10))
         ) {
           MARgRNAseq = true;
           MARgRNAseq_degree = 1;
           true_counts++;
-        }
-        else if (
-          (correctNucleotidePosition >= ((possible_comparable_answers[i]["Position"] - 1)) && correctNucleotidePosition <= ((possible_comparable_answers[i]["Position"] - 1) + 20)) || (correctNucleotidePosition >= ((possible_comparable_answers[i]["Position"] - 1)) && correctNucleotidePosition <= ((possible_comparable_answers[i]["Position"] - 1) - 20))
+        } else if (
+          (correctNucleotidePosition >= ((possible_comparable_answers[i]["Position"] - 1)) && correctNucleotidePosition <= ((possible_comparable_answers[i]["Position"] - 1) + 20)) || (correctNucleotidePosition <= ((possible_comparable_answers[i]["Position"] - 1)) && correctNucleotidePosition >= ((possible_comparable_answers[i]["Position"] - 1) - 20))
         ) {
           MARgRNAseq = true;
           MARgRNAseq_degree = 2;
           true_counts++;
-        }
-        else if (
-          (correctNucleotidePosition >= ((possible_comparable_answers[i]["Position"] - 1)) && correctNucleotidePosition <= ((possible_comparable_answers[i]["Position"] - 1) + 30)) || (correctNucleotidePosition >= ((possible_comparable_answers[i]["Position"] - 1)) && correctNucleotidePosition <= ((possible_comparable_answers[i]["Position"] - 1) - 30))
+        } else if (
+          (correctNucleotidePosition >= ((possible_comparable_answers[i]["Position"] - 1)) && correctNucleotidePosition <= ((possible_comparable_answers[i]["Position"] - 1) + 30)) || (correctNucleotidePosition <= ((possible_comparable_answers[i]["Position"] - 1)) && correctNucleotidePosition >= ((possible_comparable_answers[i]["Position"] - 1) - 30))
         ) {
           MARgRNAseq = true;
           MARgRNAseq_degree = 3;
@@ -341,8 +336,7 @@ function checkAnswers() {
           if ((temp_answer["Position"] != null || temp_answer["Position"] != undefined) && parseInt(temp_answer["Position"]) == parseInt(document.getElementById("position_input").value)) {
             MARCutPos = true;
             true_counts++;
-          }
-          else if (temp_answer["Position"] == null || temp_answer["Position"] == undefined) {
+          } else if (temp_answer["Position"] == null || temp_answer["Position"] == undefined) {
             alert("Error code cA302-307: retrieving server information on 'Position' answers occurred. Please contact admin or TA!");
             console.log("Error code cA302-307: retrieving server information on 'Position' answers occurred. Please contact admin or TA!");
           }
@@ -351,8 +345,7 @@ function checkAnswers() {
           if ((temp_answer["PAM"] != null || temp_answer["PAM"] != undefined) && temp_answer["PAM"] == document.getElementById("pam_input").value.trim()) {
             MARPAMseq = true;
             true_counts++;
-          }
-          else if (temp_answer["PAM"] == null || temp_answer["PAM"] == undefined) {
+          } else if (temp_answer["PAM"] == null || temp_answer["PAM"] == undefined) {
             alert("Error code cA311-317: retrieving server information on 'PAM' answers occurred. Please contact admin or TA!");
             console.log("Error code cA311-317: retrieving server information on 'PAM' answers occurred. Please contact admin or TA!");
           }
@@ -360,8 +353,7 @@ function checkAnswers() {
           // Check if the Off-target matches the answer's input
           if (temp_answer["Specificity Score"] != null || temp_answer["Specificity Score"] != undefined) {
             checkOffTarget(temp_answer["Specificity Score"]);
-          }
-          else if (temp_answer["Specificity Score"] == null || temp_answer["Specificity Score"] == undefined) {
+          } else if (temp_answer["Specificity Score"] == null || temp_answer["Specificity Score"] == undefined) {
             alert("Error code cA342-348: retrieving server information on 'Specificity Score' answers occurred. Please contact admin or TA!");
             console.log("Error code cA342-348: retrieving server information on 'Specificity Score' answers occurred. Please contact admin or TA!");
           }
@@ -415,7 +407,7 @@ function checkOffTarget(score) {
     offtarget_dict = {};
     offtarget_dictParse = [];
     offtarget_Use = [];
-    for (i=0; i<benchling_grna_ouputs[0]["gene_list"][current_gene].length; i++) {
+    for (i = 0; i < benchling_grna_ouputs[0]["gene_list"][current_gene].length; i++) {
       if (benchling_grna_ouputs[0]["gene_list"][current_gene][i]["Position"] >= rangeStarter_lower && benchling_grna_ouputs[0]["gene_list"][current_gene][i]["Position"] <= rangeStarter_upper) {
         if (benchling_grna_ouputs[0]["gene_list"][current_gene][i]["Specificity Score"] != null || benchling_grna_ouputs[0]["gene_list"][current_gene][i]["Specificity Score"] != undefined) {
           offtarget_List.push(benchling_grna_ouputs[0]["gene_list"][current_gene][i]["Specificity Score"])
@@ -439,8 +431,7 @@ function checkOffTarget(score) {
       if (Min_optimal > 80 || Min_optimal < 35) {
         optimalValue = 80;
       }
-    }
-    else {
+    } else {
       optimalValue = student_reg_information[0]["classMarkingMod"][studentClass][0];
     }
     // Determine if off-target is optimal or not
@@ -448,17 +439,14 @@ function checkOffTarget(score) {
       MAROffTarget_aboveOpt = true;
       MAROffTarget_above35 = true;
       MAROffTarget_degree = 1;
-    }
-    else if (InputOffTargetValue >= 35) {
+    } else if (InputOffTargetValue >= 35) {
       MAROffTarget_above35 = true;
       if (Math.max.apply(null, offtarget_List) < 80) {
         MAROffTarget_degree = 1;
-      }
-      else {
+      } else {
         MAROffTarget_degree = 2
       }
-    }
-    else if (last_resort_okay == false) {
+    } else if (last_resort_okay == false) {
       MAROffTarget_onlyOption = true;
       MAROffTarget_degree = 3;
     }
@@ -478,7 +466,9 @@ function checkF1Primers(seq) {
   possible_F1_primers = [];
   var begin_F1 = "TAATACGACTCACTATAG";
   var count_First = true;
-  if (seq[0] == "G") {count_First = false;}
+  if (seq[0] == "G") {
+    count_First = false;
+  }
   for (i = 16; i <= 20; i++) {
     possible_F1_primers.push(begin_F1 + seq.slice(0, i));
   }
@@ -493,7 +483,12 @@ function checkF1Primers(seq) {
 }
 
 var possible_R1_primers = [];
-var complementary_nt_dict = {"A":"T", "T":"A", "C":"G", "G":"C"};
+var complementary_nt_dict = {
+  "A": "T",
+  "T": "A",
+  "C": "G",
+  "G": "C"
+};
 /**
  * Checks if the R1 primer is correct or not
  * @param {String} seq - The gRNA sequence
@@ -507,7 +502,7 @@ function checkR1Primers(seq) {
   var begin_R1 = "TTCTAGCTCTAAAAC";
   var complemetary_seq = "";
   for (i = 0; i < seq.length; i++) {
-  	complemetary_seq = complementary_nt_dict[seq[i]] + complemetary_seq;
+    complemetary_seq = complementary_nt_dict[seq[i]] + complemetary_seq;
   }
   for (i = 19; i <= 20; i++) {
     possible_R1_primers.push(begin_R1 + complemetary_seq.slice(0, i));
@@ -523,7 +518,7 @@ function checkR1Primers(seq) {
 function createComplementarySeq(seq) {
   var comp_seq = "";
   for (i = 0; i < seq.length; i++) {
-  	comp_seq = complementary_nt_dict[seq[i]] + comp_seq;
+    comp_seq = complementary_nt_dict[seq[i]] + comp_seq;
   }
 }
 
@@ -533,6 +528,7 @@ var studentMarkPercentage = 0;
  * Based on checkAnswers(), returns a float of a mark
  */
 function markAnswers() {
+  studentMark = 0;
   if (checkAnswers_executed == false) {
     checkAnswers();
   }
@@ -540,11 +536,9 @@ function markAnswers() {
     if (MARgRNAseq == true) {
       if (MARgRNAseq_degree == 1) {
         studentMark += 2;
-      }
-      else if (MARgRNAseq_degree == 2) {
+      } else if (MARgRNAseq_degree == 2) {
         studentMark += 1;
-      }
-      else if (MARgRNAseq_degree == 3) {
+      } else if (MARgRNAseq_degree == 3) {
         studentMark += 0.5;
       }
     }
@@ -554,11 +548,9 @@ function markAnswers() {
     if (MAROffTarget == true) {
       if (MAROffTarget_degree == 1) {
         studentMark += 2;
-      }
-      else if (MAROffTarget_degree == 2) {
+      } else if (MAROffTarget_degree == 2) {
         studentMark += 1;
-      }
-      else if (MAROffTarget_degree == 3) {
+      } else if (MAROffTarget_degree == 3) {
         studentMark += 0.5;
       }
     }
@@ -568,7 +560,7 @@ function markAnswers() {
     if (MARR1primers == true) {
       studentMark += 2;
     }
-    studentMarkPercentage = ((studentMark/10) * 100).toFixed(2)
+    studentMarkPercentage = ((studentMark / 10) * 100).toFixed(2)
   }
 }
 
@@ -590,12 +582,10 @@ function showFeedback() {
     if (MARgRNAseq_degree == 1) {
       MARgRNAseq_degree_display = 2;
       MARgRNAseq_degree_explain = "This means your answer was correct and you received full marks.";
-    }
-    else if (MARgRNAseq_degree == 2) {
+    } else if (MARgRNAseq_degree == 2) {
       MARgRNAseq_degree_display = 1;
       MARgRNAseq_degree_explain = "This means your sequence was partially correct as it contains the target sequence within a 20bp range but was not optimal. One mark.";
-    }
-    else if (MARgRNAseq_degree == 3) {
+    } else if (MARgRNAseq_degree == 3) {
       MARgRNAseq_degree_display = 0.5;
       MARgRNAseq_degree_explain = "This means your sequence was not wrong (therefore was still correct) but there were better options out there. I recommend you try this practice assignment again. Still worth some marks though (half a mark).";
     }
@@ -614,12 +604,10 @@ function showFeedback() {
     if (MAROffTarget_degree == 1) {
       MAROffTarget_degree_display = 2;
       MAROffTarget_degree_explain = "This means your answer was correct while above/within the optimal and you received full marks.";
-    }
-    else if (MAROffTarget_degree == 2) {
+    } else if (MAROffTarget_degree == 2) {
       MAROffTarget_degree_display = 1;
       MAROffTarget_degree_explain = "This means your answer was technically correct as its on-target value was above 35.";
-    }
-    else if (MAROffTarget_degree == 3) {
+    } else if (MAROffTarget_degree == 3) {
       MAROffTarget_degree_display = 0.5;
       MAROffTarget_degree_explain = "This means your answer was partially correct as it was found to be your only option is solely based on the target region range you selected.";
     }
@@ -629,10 +617,9 @@ function showFeedback() {
   var f1Options = "";
   for (i = 0; i < possible_F1_primers.length; i++) {
     f1Options += possible_F1_primers[i];
-    if (i = (possible_F1_primers.length - 1)) {
+    if (i == (possible_F1_primers.length - 1)) {
       f1Options += ".";
-    }
-    else {
+    } else {
       f1Options += ", ";
     }
   };
@@ -646,10 +633,9 @@ function showFeedback() {
   var r1Options = "";
   for (i = 0; i < possible_R1_primers.length; i++) {
     r1Options += possible_F1_primers[i];
-    if (i = (possible_R1_primers.length - 1)) {
+    if (i == (possible_R1_primers.length - 1)) {
       r1Options += ".";
-    }
-    else {
+    } else {
       r1Options += ", ";
     }
   };
@@ -704,7 +690,7 @@ function showFeedback() {
   append_str += "<div class='card-header' id='OffTargetCard'>";
   append_str += "<h5 class='mb-0'>";
   append_str += "<button class='btn btn-link' data-toggle='collapse' data-target='#OffTargetOutput' aria-expanded='false' aria-controls='OffTargetOutput'>";
-  append_str += "Off-target Score: " + MARPAMseq_display + "/2";
+  append_str += "Off-target Score: " + MAROffTarget_degree_display + "/2";
   append_str += "</button>";
   append_str += "</h5>"
   append_str += "</div>";
@@ -724,7 +710,7 @@ function showFeedback() {
   append_str += "<div class='card-header' id='F1PrimerCard'>";
   append_str += "<h5 class='mb-0'>";
   append_str += "<button class='btn btn-link' data-toggle='collapse' data-target='#F1PrimerOutput' aria-expanded='false' aria-controls='F1PrimerOutput'>";
-  append_str += "F1 Primer: " + MARPAMseq_display + "/2";
+  append_str += "F1 Primer: " + MARF1primers_display + "/2";
   append_str += "</button>";
   append_str += "</h5>"
   append_str += "</div>";
@@ -744,7 +730,7 @@ function showFeedback() {
   append_str += "<div class='card-header' id='R1PrimerCard'>";
   append_str += "<h5 class='mb-0'>";
   append_str += "<button class='btn btn-link' data-toggle='collapse' data-target='#R1PrimerOutput' aria-expanded='false' aria-controls='R1PrimerOutput'>";
-  append_str += "R1 Primer: " + MARPAMseq_display + "/2";
+  append_str += "R1 Primer: " + MARR1primers_display + "/2";
   append_str += "</button>";
   append_str += "</h5>"
   append_str += "</div>";
@@ -777,9 +763,8 @@ function showFeedback() {
 function showNewInput(docCheck, checkFor, docDisplay) {
   if (document.getElementById(String(docCheck)).value == String(checkFor)) {
     document.getElementById(String(docDisplay)).removeAttribute("hidden");
-  }
-  else {
-    document.getElementById(String(docDisplay)).setAttribute("hidden", true);    
+  } else {
+    document.getElementById(String(docDisplay)).setAttribute("hidden", true);
   }
 }
 
@@ -794,22 +779,22 @@ function generateCompletedAssignmentList() {
   if (student_reg_information[0]["student_list"][studentParseNum]["assignment-HBB-Marks"] != null) {
     if (!completed_assignments.includes("HBB")) {
       completed_assignments.push("HBB");
-    }    
+    }
   }
   if (student_reg_information[0]["student_list"][studentParseNum]["assignment-CCR5-Marks"] != null) {
     if (!completed_assignments.includes("CCR5")) {
       completed_assignments.push("CCR5");
-    } 
+    }
   }
   if (student_reg_information[0]["student_list"][studentParseNum]["assignment-ANKK1-Marks"] != null) {
     if (!completed_assignments.includes("ANKK1")) {
       completed_assignments.push("ANKK1");
-    } 
+    }
   }
   if (student_reg_information[0]["student_list"][studentParseNum]["assignment-APOE-Marks"] != null) {
     if (!completed_assignments.includes("APOE")) {
       completed_assignments.push("APOE");
-    } 
+    }
   }
 }
 
@@ -821,7 +806,7 @@ function openAccountManagement() {
   $("#accountManagementBody").empty();
   var append_str = "<div id='accordion'><p>Hello " + student_reg_information[0]["student_list"][studentParseNum]["name"].split(' ')[0] + "!</p>";
   $("#accountManagementBody").append(append_str);
-  
+
   // Create assignments card
   append_str = "<div class='card about'>";
   append_str += "<div class='card-header' id='assignmentCard'>";
@@ -837,12 +822,11 @@ function openAccountManagement() {
   // Card content
   if (completed_assignments.length != 0) {
     append_str += "<p>You have completed the following assignments: <p> <ul>";
-    for (i=0; i < completed_assignments.length; i++) {
+    for (i = 0; i < completed_assignments.length; i++) {
       append_str += "<li>" + completed_assignments[i] + "</li>";
     }
     append_str += "</ul>";
-  }
-  else if (completed_assignments.length == 0) {
+  } else if (completed_assignments.length == 0) {
     append_str += "<p>You have not yet completed any assignments. </p>"
   }
 
@@ -872,7 +856,7 @@ function openAccountManagement() {
   if (student_reg_information[0]["student_list"][studentParseNum]["type"] == "TA" || student_reg_information[0]["student_list"][studentParseNum]["type"] == "admin") {
     loadJSON_Files();
     append_str = "<p> <b> ADMIN POWER! </b> <p>";
-    
+
     // Create student card
     append_str += "<div class='card about'>";
     append_str += "<div class='card-header' id='studentCard'>";
@@ -1114,10 +1098,10 @@ function UpdateChooseUser(domUser) {
  * @param {String} optionsInner The InnerHTML for the options being added
  */
 function AddToOptions(domID, optionsValue, optionsInner) {
-  var dom = document.getElementById(domID); 
+  var dom = document.getElementById(domID);
   var option = document.createElement('option');
-  option.value = optionsValue; 
-  option.innerHTML = optionsInner; 
+  option.value = optionsValue;
+  option.innerHTML = optionsInner;
   dom.appendChild(option);
 }
 
@@ -1156,14 +1140,20 @@ function UpdateStudentList(className) {
 function UpdateUserType(classname, username, changeTo) {
   var studentList = student_reg_information[0]["student_list"];
   for (i = 0; i < studentList.length; i++) {
-    if (studentList[i]["studentClass"] == classname && studentList[i]["name"] == username) {      
-      var changeType = "student_list." + i + "."+ "type";
+    if (studentList[i]["studentClass"] == classname && studentList[i]["name"] == username) {
+      var changeType = "student_list." + i + "." + "type";
       client.login().then(() =>
-        db.collection("Student_Information").updateOne({version: "0.3"}, { $set: {[changeType]: changeTo}}, function(err, res) {
-        if (err) throw err;
-        console.log("1 document updated");
-        db.close();
-      }));
+        db.collection("Student_Information").updateOne({
+          version: "0.3"
+        }, {
+          $set: {
+            [changeType]: changeTo
+          }
+        }, function (err, res) {
+          if (err) throw err;
+          console.log("1 document updated");
+          db.close();
+        }));
       $("#adminSendButton").click();
     }
   };
@@ -1178,11 +1168,17 @@ function UpdateMarkingControls(classToMod, offTargetChange) {
   var classChange = "classMarkingMod." + classToMod;
   var markingChangeList = [offTargetChange]
   client.login().then(() =>
-    db.collection("Student_Information").updateOne({version: "0.3"}, { $set: {[classChange]: markingChangeList}}, function(err, res) {
-    if (err) throw err;
-    console.log("1 document updated");
-    db.close();
-  }));
+    db.collection("Student_Information").updateOne({
+      version: "0.3"
+    }, {
+      $set: {
+        [classChange]: markingChangeList
+      }
+    }, function (err, res) {
+      if (err) throw err;
+      console.log("1 document updated");
+      db.close();
+    }));
   $("#adminSendButton").click();
   document.getElementById("InputModifyControls").value = "";
   document.getElementById("CustomOffTarget").value = "Custom";
@@ -1212,8 +1208,7 @@ function generateRestOfIndexTable(whichIndexTable, SimpleComplex) {
     if (SimpleComplex == true) {
       whichIndexTable += "\n\t\t\t<th>Percent</th>";
       whichIndexTable += "\n\t\t\t<th>Raw</th>";
-    }
-    else if (SimpleComplex == false) {
+    } else if (SimpleComplex == false) {
       whichIndexTable += "\n\t\t\t<th>Percent</th>";
       whichIndexTable += "\n\t\t\t<th>Raw</th>";
       whichIndexTable += "\n\t\t\t<th>gRNA</th>";
@@ -1227,7 +1222,7 @@ function generateRestOfIndexTable(whichIndexTable, SimpleComplex) {
       whichIndexTable += "\n\t\t\t<th>R1 primers</th>";
       whichIndexTable += "\n\t\t\t<th>Mark</th>";
     }
-  }  
+  }
   whichIndexTable += downloadIndexTable_end;
   return whichIndexTable;
 }
@@ -1263,8 +1258,7 @@ function generateHiddenStudentDownload(whichClass, whichType) {
               downlodaIndexTable_str += "\t\t\t<td>" + (list_of_assignments[x]).toString() + "</td>\n";
               downlodaIndexTable_str += "\t\t\t<td>" + (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Marks"][1]).toString() + "</td>\n";
               downlodaIndexTable_str += "\t\t\t<td>" + (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Marks"][0]).toString() + "</td>\n";
-            }
-            else if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Marks"] == null) {
+            } else if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Marks"] == null) {
               downlodaIndexTable_str += "\t\t\t<td>" + (list_of_assignments[x]).toString() + "</td>\n";
               downlodaIndexTable_str += "\t\t\t<td> Incompleted </td>\n";
               downlodaIndexTable_str += "\t\t\t<td> 0.00 </td>\n";
@@ -1283,11 +1277,9 @@ function generateHiddenStudentDownload(whichClass, whichType) {
               downlodaIndexTable_str += "\t\t\t<td>" + (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Answers"][0]).toString() + "</td>\n";
               if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Outputs"][2] == 1) {
                 mark = 2;
-              }
-              else if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Outputs"][2] == 2) {
+              } else if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Outputs"][2] == 2) {
                 mark = 1;
-              }
-              else if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Outputs"][2] == 3) {
+              } else if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Outputs"][2] == 3) {
                 mark = 0.5;
               }
               downlodaIndexTable_str += "\t\t\t<td>" + (mark).toString() + "</td>\n";
@@ -1295,8 +1287,7 @@ function generateHiddenStudentDownload(whichClass, whichType) {
               downlodaIndexTable_str += "\t\t\t<td>" + (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Answers"][1]).toString() + "</td>\n";
               if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Outputs"][4] == true) {
                 mark = 2;
-              } 
-              else {
+              } else {
                 mark = 0;
               }
               downlodaIndexTable_str += "\t\t\t<td>" + (mark).toString() + "</td>\n";
@@ -1304,11 +1295,9 @@ function generateHiddenStudentDownload(whichClass, whichType) {
               downlodaIndexTable_str += "\t\t\t<td>" + (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Answers"][4]).toString() + "</td>\n";
               if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Outputs"][6] == 1) {
                 mark = 2;
-              }
-              else if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Outputs"][6] == 2) {
+              } else if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Outputs"][6] == 2) {
                 mark = 1;
-              }
-              else if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Outputs"][6] == 3) {
+              } else if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Outputs"][6] == 3) {
                 mark = 0.5;
               }
               downlodaIndexTable_str += "\t\t\t<td>" + (mark).toString() + "</td>\n";
@@ -1316,8 +1305,7 @@ function generateHiddenStudentDownload(whichClass, whichType) {
               downlodaIndexTable_str += "\t\t\t<td>" + (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Answers"][5]).toString() + "</td>\n";
               if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Outputs"][10] == true) {
                 mark = 2;
-              } 
-              else {
+              } else {
                 mark = 0;
               }
               downlodaIndexTable_str += "\t\t\t<td>" + (mark).toString() + "</td>\n";
@@ -1325,13 +1313,11 @@ function generateHiddenStudentDownload(whichClass, whichType) {
               downlodaIndexTable_str += "\t\t\t<td>" + (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Answers"][6]).toString() + "</td>\n";
               if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Outputs"][11] == true) {
                 mark = 2;
-              } 
-              else {
+              } else {
                 mark = 0;
               }
               downlodaIndexTable_str += "\t\t\t<td>" + (mark).toString() + "</td>\n";
-            }
-            else if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Marks"] == null) {
+            } else if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Marks"] == null) {
               downlodaIndexTable_str += "\t\t\t<td>" + (list_of_assignments[x]).toString() + "</td>\n";
               downlodaIndexTable_str += "\t\t\t<td> Incompleted </td>\n";
               downlodaIndexTable_str += "\t\t\t<td> 0.00 </td>\n";
@@ -1354,8 +1340,7 @@ function generateHiddenStudentDownload(whichClass, whichType) {
     downlodaIndexTable_str += "\t</tbody>\n</table>"; // Closing
     document.getElementById("hiddenDownloadModal_table").innerHTML += downlodaIndexTable_str;
     $("#hiddenDownloadModal_table").tableToCSV();
-  }  
-  else {
+  } else {
     showRegError(7);
   }
 }
@@ -1394,13 +1379,19 @@ function addUserToServer(inputClass, number, umail) {
     classExists = true;
   }
   for (var key in setList) {
-    var newKey = "class_list." + inputClass + "."+ key;
+    var newKey = "class_list." + inputClass + "." + key;
     client.login().then(() =>
-      db.collection("Student_Information").updateOne({version: "0.3"}, { $set: {[newKey]: setList[key]}}, function(err, res) {
-      if (err) throw err;
-      console.log("1 document updated");
-      db.close();
-    }));
+      db.collection("Student_Information").updateOne({
+        version: "0.3"
+      }, {
+        $set: {
+          [newKey]: setList[key]
+        }
+      }, function (err, res) {
+        if (err) throw err;
+        console.log("1 document updated");
+        db.close();
+      }));
   }
   $("#adminSendButton").click();
   // Clear inputs    
@@ -1439,26 +1430,37 @@ function addMultipleUsersToServer(inputClass, number, umail) {
     }
     if (classExists == false) {
       client.login().then(() =>
-        db.collection("Student_Information").updateOne({version: "0.3"}, { $set: {[classList]: setList}}, function(err, res) {
-        if (err) throw err;
-        console.log("1 document updated");
-        db.close();
-      }));
+        db.collection("Student_Information").updateOne({
+          version: "0.3"
+        }, {
+          $set: {
+            [classList]: setList
+          }
+        }, function (err, res) {
+          if (err) throw err;
+          console.log("1 document updated");
+          db.close();
+        }));
       $("#adminSendButton").click();
       var classChange = "classMarkingMod." + inputClass;
       var markingChangeList = ["Optimal"]
       client.login().then(() =>
-        db.collection("Student_Information").updateOne({version: "0.3"}, { $set: {[classChange]: markingChangeList}}, function(err, res) {
-        if (err) throw err;
-        console.log("1 document updated");
-        db.close();
-      }));
+        db.collection("Student_Information").updateOne({
+          version: "0.3"
+        }, {
+          $set: {
+            [classChange]: markingChangeList
+          }
+        }, function (err, res) {
+          if (err) throw err;
+          console.log("1 document updated");
+          db.close();
+        }));
       $("#adminSendButton").click();
-    }    
+    }
     document.getElementById("StudentNumbers").value = "";
     document.getElementById("StudentUmails").value = "";
-  }
-  else {
+  } else {
     showRegError(8);
   }
 }
@@ -1476,8 +1478,7 @@ function removeCompletedAssignments() {
         returnAssignmentList.push(list_of_assignments[i]);
       }
     }
-  }
-  else if (completed_assignments.length == 0) {
+  } else if (completed_assignments.length == 0) {
     returnAssignmentList = list_of_assignments;
   }
   return returnAssignmentList;
@@ -1486,9 +1487,9 @@ function removeCompletedAssignments() {
 var all_answers = [];
 var all_outputs = [];
 var all_marks = [];
-var studentanswers = "student_list." + studentParseNum + "."+ loadedMoad + "-" + current_gene + "-Answers";
-var studentoutputs = "student_list." + studentParseNum + "."+ loadedMoad + "-" + current_gene + "-Outputs";
-var studentmarks = "student_list." + studentParseNum + "."+ loadedMoad + "-" + current_gene + "-Marks";
+var studentanswers = "student_list." + studentParseNum + "." + loadedMoad + "-" + current_gene + "-Answers";
+var studentoutputs = "student_list." + studentParseNum + "." + loadedMoad + "-" + current_gene + "-Outputs";
+var studentmarks = "student_list." + studentParseNum + "." + loadedMoad + "-" + current_gene + "-Marks";
 /**
  * Submit and sends the student's answers to the server
  */
@@ -1497,31 +1498,38 @@ function submitAnswers() {
   all_outputs = [];
   all_marks = [];
   checkAnswers();
-  setTimeout(function() {
+  setTimeout(function () {
     markAnswers();
-    studentanswers = "student_list." + studentParseNum + "."+ loadedMoad + "-" + current_gene + "-Answers";
-    studentoutputs = "student_list." + studentParseNum + "."+ loadedMoad + "-" + current_gene + "-Outputs";
-    studentmarks = "student_list." + studentParseNum + "."+ loadedMoad + "-" + current_gene + "-Marks";
+    studentanswers = "student_list." + studentParseNum + "." + loadedMoad + "-" + current_gene + "-Answers";
+    studentoutputs = "student_list." + studentParseNum + "." + loadedMoad + "-" + current_gene + "-Outputs";
+    studentmarks = "student_list." + studentParseNum + "." + loadedMoad + "-" + current_gene + "-Marks";
     all_answers.push(document.getElementById("sequence_input").value.trim(), document.getElementById("pam_input").value.trim(), document.getElementById("position_input").value, document.getElementById("strand_input").value, document.getElementById("offtarget_input").value, document.getElementById("f1_input").value.trim(), document.getElementById("r1_input").value.trim());
     all_outputs.push(MARstrand, MARgRNAseq, MARgRNAseq_degree, MARCutPos, MARPAMseq, MAROffTarget, MAROffTarget_degree, MAROffTarget_aboveOpt, MAROffTarget_above35, MAROffTarget_onlyOption, MARF1primers, MARR1primers);
     all_marks.push(studentMark, studentMarkPercentage);
     client.login().then(() =>
-      db.collection("Student_Information").updateOne({version: "0.3"}, { $set: {[studentanswers]: all_answers, [studentoutputs]: all_outputs, [studentmarks]: all_marks}}, function(err, res) {
-      if (err) throw err;
-      console.log("1 document updated");
-      db.close();
-    }));
+      db.collection("Student_Information").updateOne({
+        version: "0.3"
+      }, {
+        $set: {
+          [studentanswers]: all_answers,
+          [studentoutputs]: all_outputs,
+          [studentmarks]: all_marks
+        }
+      }, function (err, res) {
+        if (err) throw err;
+        console.log("1 document updated");
+        db.close();
+      }));
     loadJSON_Files();
     if (loadedMoad == "assignment") {
       document.getElementById("options_label").innerHTML = "Would you like to start a new assignment?";
       document.getElementById("seeFeedback").setAttribute("hidden", true);
-    }
-    else if (loadedMoad == "practice") {
+    } else if (loadedMoad == "practice") {
       document.getElementById("options_label").innerHTML = "Would you like to see feedback on your answers or start a new assignment?";
       document.getElementById("seeFeedback").removeAttribute("hidden");
     }
     $("#feedbackButton").click();
-  }, 750); 
+  }, 750);
 }
 
 /**
@@ -1538,13 +1546,15 @@ function IfPressEnter(event, toClickButton) {
 /**
  * Resets the assignment section page 
  */
-function backToAssignments() {  
-  redirectCRISPR(); 
+function backToAssignments() {
+  redirectCRISPR();
   loadJSON_Files();
   $("#practice").click();
 }
 
 // Block submit calls on keypress
-$(function() {
-  $("form").submit(function() { return false; });
+$(function () {
+  $("form").submit(function () {
+    return false;
+  });
 });
