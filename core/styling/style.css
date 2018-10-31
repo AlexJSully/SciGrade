@@ -101,3 +101,20 @@
   text-shadow: 2px 1px 5px rgba(150, 150, 150, 1);
   font-weight: bold;
 }
+
+.modalResponsive {
+  max-width: 80%;
+}
+
+@media screen and (max-width: 576px) {
+  .modalResponsive {
+    max-width: 100%;
+  }
+  
+  .homeBackground {
+    -webkit-background-size: auto;
+    -moz-background-size: auto;
+    -o-background-size: auto;
+    background-size: auto;
+  }
+}
