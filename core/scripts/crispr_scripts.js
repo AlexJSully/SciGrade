@@ -27,11 +27,11 @@ function ModeSelectionAdd(mode) {
         append_str = '<option value="' + useList[i] + '" id="' + useList[i] + '" tag="assignment">' + useList[i] + '</option>\n';
       } else {
         append_str += '<option value="' + useList[i] + '" id="' + useList[i] + '" tag="assignment">' + useList[i] + '</option>\n';
-      }
-    }
+      };
+    };
     $("#gene_dropdown_selection").append(append_str);
-  }
-}
+  };
+};
 
 /**
  * Purpose of this is to assign the current gene and check for errors
@@ -44,11 +44,11 @@ function select_Gene() {
   } else {
     if (current_gene != "empty" || current_gene != "eBFP" || current_gene != "ACTN3" || current_gene != "HBB" || current_gene != "CCR5" || current_gene != "ANKK1" || current_gene != "APOE") {
       current_gene == "empty";
-    }
+    };
     alert("Error code sG34-42 occurred. Please contact admin or TA!");
     console.log("Error code sG34-42 occurred. Please contact admin or TA!");
-  }
-}
+  };
+};
 
 var gene_backgroundInfo;
 var benchling_grna_ouputs;
@@ -78,41 +78,57 @@ function loadCRISPRJSON_Files() {
   }).catch(err => {
     console.error(err)
   });
-}
+};
 
 var list_of_practice = ["eBFP"];
 var list_of_assignments = ["CCR5"];
 /**
  * Fill in and create a list of genes based on what is available in on the MongoDB server 
+ * @param itPos {number} The current iterative step of fillGeneList in the instance that gene_backgroundInfo is empty
  */
-function fillGeneList() {
+function fillGeneList(itPos = 0) {
   list_of_practice = [];
   list_of_assignments = [];
-  if (gene_backgroundInfo != null || gene_backgroundInfo != "" || gene_backgroundInfo != undefined || Object.keys(gene_backgroundInfo[0]["gene_list"]) != undefined) {
-    var list_of_genes = Object.keys(gene_backgroundInfo[0]["gene_list"]);
-    for (i = 0; i < list_of_genes.length; i++) {
-      if (gene_backgroundInfo[0]["gene_list"][list_of_genes[i]]["base_type"] == "practice") {
-        list_of_practice.push(list_of_genes[i]);
-      } else if (gene_backgroundInfo[0]["gene_list"][list_of_genes[i]]["base_type"] == "assignment") {
-        list_of_assignments.push(list_of_genes[i]);
-      }
-    }
-  }
-}
+  if (itPos < 100) {
+    if (gene_backgroundInfo !== null || gene_backgroundInfo !== "" || gene_backgroundInfo !== undefined) {
+      if (gene_backgroundInfo === undefined || gene_backgroundInfo[0] === undefined) {
+        setTimeout(function() {
+          fillGeneList((itPos + 1));
+        }, 500);
+      } else {
+        var list_of_genes = Object.keys(gene_backgroundInfo[0]["gene_list"]);
+        for (i = 0; i < list_of_genes.length; i++) {
+          if (gene_backgroundInfo[0]["gene_list"][list_of_genes[i]]["base_type"] == "practice") {
+            list_of_practice.push(list_of_genes[i]);
+          } else if (gene_backgroundInfo[0]["gene_list"][list_of_genes[i]]["base_type"] == "assignment") {
+            list_of_assignments.push(list_of_genes[i]);
+          };
+        };
+      };
+    } else {
+      setTimeout(function() {
+        fillGeneList((itPos + 1));
+      }, 500);
+    };
+  } else {
+    alert("Error code geneList-113 occurred. Please contact admin or TA!");
+    console.log("Error code geneList-113 occurred. Please contact admin or TA!");
+  };
+};
 
-var loadedMoad = "practice";
+var loadedMode = "practice";
 /**
  * Dynamically creates the work page for SciGrade
  */
 function loadWork() {
   if (gene_backgroundInfo != null || gene_backgroundInfo != "" || gene_backgroundInfo != undefined || backgroundInfo[0]["gene_list"][current_gene] != undefined) {
     $("#work").empty();
-    loadedMoad = selection_inMode;
+    loadedMode = selection_inMode;
     checkAnswers_executed = false;
     var append_str;
 
     // Begin background information
-    append_str = '<div class="work_background" style="margin-top:2%;">'
+    append_str = '<div class="work_background" style="margin-top:2%;">';
 
     // CRISPR header information
     append_str += '<div id="crispr_header">\n<p>Please refer to your dry lab protocol for full instructions on how and what to do. Below is a brief reminder of what you are supposed to do with each gene: \n <b>Your objective is to find these mutations, design a gRNA and its corresponding F1/R1 primers</b></p> \n</div>\n';
@@ -197,8 +213,8 @@ function loadWork() {
   } else if (gene_backgroundInfo == null || gene_backgroundInfo == "" || gene_backgroundInfo == undefined || backgroundInfo[0]["gene_list"][current_gene] == undefined) {
     alert("Error code lFS50-66 occurred. Please contact admin or TA!");
     console.log("Error code lFS50-66 occurred. Please contact admin or TA!");
-  }
-}
+  };
+};
 
 /**
  * @param {event} evt - Character key press
@@ -209,9 +225,9 @@ function isNumberOrDashKey(evt) {
   var charCode = (evt.which) ? evt.which : event.keyCode;
   if (charCode != 46 && charCode != 45 && charCode > 31 && (charCode < 48 || charCode > 57)) {
     return false;
-  }
+  };
   return true;
-}
+};
 
 //Global marking variables:
 var MARgRNAseq = false;
@@ -256,8 +272,8 @@ function checkAnswers() {
   for (i = 0; i < benchling_grna_ouputs[0]["gene_list"][current_gene].length; i++) {
     if (benchling_grna_ouputs[0]["gene_list"][current_gene][i]["Sequence"] == inputedSeq) {
       possible_comparable_answers.push(benchling_grna_ouputs[0]["gene_list"][current_gene][i]);
-    }
-  }
+    };
+  };
 
   // Check against existing:
   var possible_right_answers = [];
@@ -271,14 +287,14 @@ function checkAnswers() {
         var nucleotideIncludedRange_bot = (possible_comparable_answers[i]["Position"] - 1) - 17;
         if (correctNucleotidePosition >= nucleotideIncludedRange_bot && correctNucleotidePosition <= nucleotideIncludedRange_top) {
           correctNucleotideIncluded = true;
-        }
+        };
       } else if (possible_comparable_answers[i]["Strand"] == -1) {
         var nucleotideIncludedRange_top = (possible_comparable_answers[i]["Position"] - 1) + 17;
         var nucleotideIncludedRange_bot = (possible_comparable_answers[i]["Position"] - 1) - 3;
         if (correctNucleotidePosition >= nucleotideIncludedRange_bot && correctNucleotidePosition <= nucleotideIncludedRange_top) {
           correctNucleotideIncluded = true;
-        }
-      }
+        };
+      };
       // If in correct nucleotide range, check if nucleotide is included in cut site
       if (correctNucleotideIncluded == true) {
         // Determine where PAM site would be and if PAM site matches inputted value
@@ -292,7 +308,7 @@ function checkAnswers() {
           if (document.getElementById("strand_input").value == "Sense (+)") {
             MARstrand = true;
             true_counts++;
-          }
+          };
         }
         // Antisense is -1
         else if (possible_comparable_answers[i]["Strand"] == -1) {
@@ -302,8 +318,8 @@ function checkAnswers() {
           if (document.getElementById("strand_input").value == "Antisense (-)") {
             MARstrand = true;
             true_counts++;
-          }
-        }
+          };
+        };
 
         // Determining how right the sequence is
         if (correctNucleotidePosition >= (pamFirst) && correctNucleotidePosition <= (pamSecond)) { // within PAM site
@@ -327,7 +343,7 @@ function checkAnswers() {
           MARgRNAseq = true;
           MARgRNAseq_degree = 3;
           true_counts++;
-        }
+        };
 
         // If the sequence if correct, check all other results:
         if (MARgRNAseq == true) {
@@ -339,7 +355,7 @@ function checkAnswers() {
           } else if (temp_answer["Position"] == null || temp_answer["Position"] == undefined) {
             alert("Error code cA302-307: retrieving server information on 'Position' answers occurred. Please contact admin or TA!");
             console.log("Error code cA302-307: retrieving server information on 'Position' answers occurred. Please contact admin or TA!");
-          }
+          };
 
           // Check if the PAM matches the answer's input
           if ((temp_answer["PAM"] != null || temp_answer["PAM"] != undefined) && temp_answer["PAM"] == document.getElementById("pam_input").value.trim()) {
@@ -348,7 +364,7 @@ function checkAnswers() {
           } else if (temp_answer["PAM"] == null || temp_answer["PAM"] == undefined) {
             alert("Error code cA311-317: retrieving server information on 'PAM' answers occurred. Please contact admin or TA!");
             console.log("Error code cA311-317: retrieving server information on 'PAM' answers occurred. Please contact admin or TA!");
-          }
+          };
 
           // Check if the Off-target matches the answer's input
           if (temp_answer["Specificity Score"] != null || temp_answer["Specificity Score"] != undefined) {
@@ -356,19 +372,19 @@ function checkAnswers() {
           } else if (temp_answer["Specificity Score"] == null || temp_answer["Specificity Score"] == undefined) {
             alert("Error code cA342-348: retrieving server information on 'Specificity Score' answers occurred. Please contact admin or TA!");
             console.log("Error code cA342-348: retrieving server information on 'Specificity Score' answers occurred. Please contact admin or TA!");
-          }
+          };
 
           // Check if the F1 primer matches the answer's input
           checkF1Primers(document.getElementById("sequence_input").value.trim());
 
           // Check if the F1 primer matches the answer's input
           checkR1Primers(document.getElementById("sequence_input").value.trim());
-        }
-      }
-    }
-  }
+        };
+      };
+    };
+  };
   checkAnswers_executed = true;
-}
+};
 
 var offtarget_List = [];
 var offtarget_dict = {};
@@ -395,8 +411,8 @@ function checkOffTarget(score) {
     if (InputOffTargetValue >= OffTargetValue_down && InputOffTargetValue <= OffTargetValue_up) {
       MAROffTarget = true;
       true_counts++;
-    }
-  }
+    };
+  };
   // Determine how write it is based on its range
   if (MAROffTarget == true) {
     // Check for last-resort regions:
@@ -414,12 +430,12 @@ function checkOffTarget(score) {
           offtarget_dict[i] = benchling_grna_ouputs[0]["gene_list"][current_gene][i]["Specificity Score"];
           offtarget_dictParse.push[i];
         };
-      }
-    }
+      };
+    };
     var last_resort_okay = true;
     if (Math.max.apply(null, offtarget_List) < 35) {
       last_resort_okay = false;
-    }
+    };
 
     // Is it within the optimal range?
     var Max_range = Math.max.apply(null, offtarget_List);
@@ -430,10 +446,10 @@ function checkOffTarget(score) {
     if (student_reg_information[0]["classMarkingMod"][studentClass][0] == "Optimal") {
       if (Min_optimal > 80 || Min_optimal < 35) {
         optimalValue = 80;
-      }
+      };
     } else {
       optimalValue = student_reg_information[0]["classMarkingMod"][studentClass][0];
-    }
+    };
     // Determine if off-target is optimal or not
     if (InputOffTargetValue >= optimalValue) {
       MAROffTarget_aboveOpt = true;
@@ -445,13 +461,13 @@ function checkOffTarget(score) {
         MAROffTarget_degree = 1;
       } else {
         MAROffTarget_degree = 2
-      }
+      };
     } else if (last_resort_okay == false) {
       MAROffTarget_onlyOption = true;
       MAROffTarget_degree = 3;
-    }
-  }
-}
+    };
+  };
+};
 
 var possible_F1_primers = [];
 /**
@@ -468,19 +484,19 @@ function checkF1Primers(seq) {
   var count_First = true;
   if (seq[0] == "G") {
     count_First = false;
-  }
+  };
   for (i = 16; i <= 20; i++) {
     possible_F1_primers.push(begin_F1 + seq.slice(0, i));
-  }
+  };
   if (count_First == false) {
     for (i = 16; i <= 20; i++) {
       possible_F1_primers.push(begin_F1 + seq.slice(1, i));
-    }
-  }
+    };
+  };
   if (possible_F1_primers.includes(document.getElementById("f1_input").value.trim())) {
     MARF1primers = true;
-  }
-}
+  };
+};
 
 var possible_R1_primers = [];
 var complementary_nt_dict = {
@@ -503,14 +519,14 @@ function checkR1Primers(seq) {
   var complemetary_seq = "";
   for (i = 0; i < seq.length; i++) {
     complemetary_seq = complementary_nt_dict[seq[i]] + complemetary_seq;
-  }
+  };
   for (i = 19; i <= 20; i++) {
     possible_R1_primers.push(begin_R1 + complemetary_seq.slice(0, i));
-  }
+  };
   if (possible_R1_primers.includes(document.getElementById("r1_input").value.trim())) {
     MARR1primers = true;
-  }
-}
+  };
+};
 
 /**
  * Creates a complementary sequence of the nucleotides
@@ -519,11 +535,12 @@ function createComplementarySeq(seq) {
   var comp_seq = "";
   for (i = 0; i < seq.length; i++) {
     comp_seq = complementary_nt_dict[seq[i]] + comp_seq;
-  }
-}
+  };
+};
 
 var studentMark = 0;
 var studentMarkPercentage = 0;
+var markTotal = 10;
 /**
  * Based on checkAnswers(), returns a float of a mark
  */
@@ -531,7 +548,7 @@ function markAnswers() {
   studentMark = 0;
   if (checkAnswers_executed == false) {
     checkAnswers();
-  }
+  };
   if (checkAnswers_executed == true) {
     if (MARgRNAseq == true) {
       if (MARgRNAseq_degree == 1) {
@@ -540,11 +557,11 @@ function markAnswers() {
         studentMark += 1;
       } else if (MARgRNAseq_degree == 3) {
         studentMark += 0.5;
-      }
-    }
+      };
+    };
     if (MARPAMseq == true) {
       studentMark += 2;
-    }
+    };
     if (MAROffTarget == true) {
       if (MAROffTarget_degree == 1) {
         studentMark += 2;
@@ -552,17 +569,22 @@ function markAnswers() {
         studentMark += 1;
       } else if (MAROffTarget_degree == 3) {
         studentMark += 0.5;
-      }
-    }
+      };
+    };
     if (MARF1primers == true) {
       studentMark += 2;
-    }
+    };
     if (MARR1primers == true) {
       studentMark += 2;
-    }
-    studentMarkPercentage = ((studentMark / 10) * 100).toFixed(2)
-  }
-}
+    };
+    studentMarkPercentage = ((studentMark / markTotal) * 100).toFixed(2);
+    if (studentMarkPercentage > 100) {
+      studentMarkPercentage = 100;
+    } else if (studentMarkPercentage < 0) {
+      studentMarkPercentage = 0;
+    };
+  };
+};
 
 /**
  * Show feedback for students
@@ -588,15 +610,15 @@ function showFeedback() {
     } else if (MARgRNAseq_degree == 3) {
       MARgRNAseq_degree_display = 0.5;
       MARgRNAseq_degree_explain = "This means your sequence was not wrong (therefore was still correct) but there were better options out there. I recommend you try this practice assignment again. Still worth some marks though (half a mark).";
-    }
-  }
+    };
+  };
   /// PAM:
   var MARPAMseq_display = 0;
   var MARPAMseq_explain = "Your PAM sequence was wrong and not found relative to your gRNA sequence. Either you made a typo or this answer was not correct. Either it contained the cut site within the PAM site or it was not an NGG or NAG PAM site (SciGrade only accepts either of those two PAM sites).";
   if (MARPAMseq == true) {
     MARPAMseq_display = 2;
     MARPAMseq_explain = "This means your answer was correct and you received full marks.";
-  }
+  };
   /// Off-target:
   var MAROffTarget_degree_display = 0;
   var MAROffTarget_degree_explain = "Your off-target score was wrong. Either it was not above/within the optimal range (or above 35) or the last-resort option.";
@@ -610,8 +632,8 @@ function showFeedback() {
     } else if (MAROffTarget_degree == 3) {
       MAROffTarget_degree_display = 0.5;
       MAROffTarget_degree_explain = "This means your answer was partially correct as it was found to be your only option is solely based on the target region range you selected.";
-    }
-  }
+    };
+  };
   /// F1 Primer:
   var MARF1primers_display = 0;
   var f1Options = "";
@@ -621,13 +643,13 @@ function showFeedback() {
       f1Options += ".";
     } else {
       f1Options += ", ";
-    }
+    };
   };
   var MARF1primers_explain = "Your F1 primer sequence was incorrectly matched to one of the following sequences generated based on your gRNA sequence inputted: " + f1Options;
   if (MARF1primers == true) {
     MARF1primers_display = 2;
     MARF1primers_explain = "This means your answer was correct and you received full marks.";
-  }
+  };
   /// R1 Primer:
   var MARR1primers_display = 0;
   var r1Options = "";
@@ -637,13 +659,13 @@ function showFeedback() {
       r1Options += ".";
     } else {
       r1Options += ", ";
-    }
+    };
   };
   var MARR1primers_explain = "Your R1 primer sequence was incorrectly matched to one of the following sequences generated based on your gRNA sequence inputted: " + r1Options;
   if (MARR1primers == true) {
     MARR1primers_display = 2;
     MARR1primers_explain = "This means your answer was correct and you received full marks.";
-  }
+  };
 
   // gRNA:
   append_str += "<div class='card about'>";
@@ -1462,8 +1484,8 @@ function addMultipleUsersToServer(inputClass, number, umail) {
     document.getElementById("StudentUmails").value = "";
   } else {
     showRegError(8);
-  }
-}
+  };
+};
 
 /**
  * Remove completed assignments from the assignment selection option
@@ -1476,20 +1498,20 @@ function removeCompletedAssignments() {
     for (i = 0; i < list_of_assignments.length; i++) {
       if (completed_assignments.includes(list_of_assignments[i]) == false) {
         returnAssignmentList.push(list_of_assignments[i]);
-      }
-    }
+      };
+    };
   } else if (completed_assignments.length == 0) {
     returnAssignmentList = list_of_assignments;
-  }
+  };
   return returnAssignmentList;
-}
+};
 
 var all_answers = [];
 var all_outputs = [];
 var all_marks = [];
-var studentanswers = "student_list." + studentParseNum + "." + loadedMoad + "-" + current_gene + "-Answers";
-var studentoutputs = "student_list." + studentParseNum + "." + loadedMoad + "-" + current_gene + "-Outputs";
-var studentmarks = "student_list." + studentParseNum + "." + loadedMoad + "-" + current_gene + "-Marks";
+var studentanswers = "student_list." + studentParseNum + "." + loadedMode + "-" + current_gene + "-Answers";
+var studentoutputs = "student_list." + studentParseNum + "." + loadedMode + "-" + current_gene + "-Outputs";
+var studentmarks = "student_list." + studentParseNum + "." + loadedMode + "-" + current_gene + "-Marks";
 /**
  * Submit and sends the student's answers to the server
  */
@@ -1500,9 +1522,9 @@ function submitAnswers() {
   checkAnswers();
   setTimeout(function () {
     markAnswers();
-    studentanswers = "student_list." + studentParseNum + "." + loadedMoad + "-" + current_gene + "-Answers";
-    studentoutputs = "student_list." + studentParseNum + "." + loadedMoad + "-" + current_gene + "-Outputs";
-    studentmarks = "student_list." + studentParseNum + "." + loadedMoad + "-" + current_gene + "-Marks";
+    studentanswers = "student_list." + studentParseNum + "." + loadedMode + "-" + current_gene + "-Answers";
+    studentoutputs = "student_list." + studentParseNum + "." + loadedMode + "-" + current_gene + "-Outputs";
+    studentmarks = "student_list." + studentParseNum + "." + loadedMode + "-" + current_gene + "-Marks";
     all_answers.push(document.getElementById("sequence_input").value.trim(), document.getElementById("pam_input").value.trim(), document.getElementById("position_input").value, document.getElementById("strand_input").value, document.getElementById("offtarget_input").value, document.getElementById("f1_input").value.trim(), document.getElementById("r1_input").value.trim());
     all_outputs.push(MARstrand, MARgRNAseq, MARgRNAseq_degree, MARCutPos, MARPAMseq, MAROffTarget, MAROffTarget_degree, MAROffTarget_aboveOpt, MAROffTarget_above35, MAROffTarget_onlyOption, MARF1primers, MARR1primers);
     all_marks.push(studentMark, studentMarkPercentage);
@@ -1521,16 +1543,16 @@ function submitAnswers() {
         db.close();
       }));
     loadJSON_Files();
-    if (loadedMoad == "assignment") {
+    if (loadedMode == "assignment") {
       document.getElementById("options_label").innerHTML = "Would you like to start a new assignment?";
       document.getElementById("seeFeedback").setAttribute("hidden", true);
-    } else if (loadedMoad == "practice") {
+    } else if (loadedMode == "practice") {
       document.getElementById("options_label").innerHTML = "Would you like to see feedback on your answers or start a new assignment?";
       document.getElementById("seeFeedback").removeAttribute("hidden");
-    }
+    };
     $("#feedbackButton").click();
   }, 750);
-}
+};
 
 /**
  * Determine if a enter was pressed and if so, click a button
@@ -1540,8 +1562,8 @@ function submitAnswers() {
 function IfPressEnter(event, toClickButton) {
   if (event.which == 13 || event.keyCode == 13) {
     $('#' + toClickButton).click();
-  }
-}
+  };
+};
 
 /**
  * Resets the assignment section page 
@@ -1550,7 +1572,7 @@ function backToAssignments() {
   redirectCRISPR();
   loadJSON_Files();
   $("#practice").click();
-}
+};
 
 // Block submit calls on keypress
 $(function () {
