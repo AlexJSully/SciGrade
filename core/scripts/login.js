@@ -252,7 +252,7 @@ function redirectCRISPR() {
   append_str += "<input type='radio' name='practice_mode' autocomplete='off'  checked> Practice\n";
   append_str += "</label>\n";
   append_str += "<label class='btn btn-primary' style='padding: .075rem .75rem;' id='assignment' onclick='selection_inMode = this.id; ModeSelectionAdd(this.id);'>\n";
-  append_str += "<input type='radio' name='assignemnt_mode' autocomplete='off'> Assignment\n";
+  append_str += "<input type='radio' name='assignment_mode' autocomplete='off'> Assignment\n";
   append_str += "</label>\n";
   append_str += "</div>\n";
   append_str += "</div>\n";
@@ -282,7 +282,7 @@ function redirectCRISPR() {
   document.getElementById("logIO").setAttribute("onclick", "signOutDisplay();")
   document.getElementById("accountIO").removeAttribute("hidden");
   document.getElementById("logIO").removeAttribute("hidden");
-}
+};
 
 $(document).ready(function() {
   loadJSON_Files();
