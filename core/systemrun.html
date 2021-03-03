@@ -81,10 +81,13 @@
   <!-- End Google Tag Manager -->
   <!-- Service worker -->
   <script>
-  if('serviceWorker' in navigator) {
-  navigator.serviceWorker
-           .register('scripts/serviceWorker.js');
-  }
+    // Add service workers
+    if ('serviceWorker' in navigator) {
+      // Use the window load event to keep the page load performant
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./scripts/serviceWorker/sw.js');
+      });
+    };
   </script>
   <!-- Custom scripts -->
   <script src="scripts/login.min.js"></script>
