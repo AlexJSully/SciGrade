@@ -1,0 +1,33 @@
+{
+  "name": "scigrade",
+  "contributors": [
+    {
+      "name": "Alexander Sullivan",
+      "email": "alexander.j.sullivan@hotmail.com",
+      "url": "https://twitter.com/AlexJSully"
+    }
+  ],
+  "version": "1.0.0",
+  "private": true,
+  "description": "SciGrade is an online web-tool that allows students (or any user with access) to mark and assist in gRNA+Primer generation.",
+  "main": "index.html",
+  "bugs": {
+    "url": "https://github.com/ASully/SciGrade/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ASully/SciGrade.git"
+  },
+  "keywords": [
+    "science",
+    "education",
+    "bioinformatics",
+    "uoft",
+    "crispr",
+    "pedagogy",
+    "grna-sequence",
+    "scigrade"
+  ],
+  "license": "GPL-2.0",
+  "homepage": "https://github.com/ASully/SciGrade#readme"
+}
