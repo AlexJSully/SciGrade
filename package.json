@@ -35,6 +35,6 @@
     "grna-sequence",
     "scigrade"
   ],
-  "license": "GPL-2.0",
+  "license": "GPL-3.0",
   "homepage": "https://github.com/ASully/SciGrade#readme"
 }
