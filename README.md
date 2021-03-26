@@ -7,7 +7,7 @@ SciGrade is an online web-tool that allows students (or any user with access) to
 
 ## Getting Started
 
-It is recommended that you use the web-version available at http://scigrade.com/ but if you want to download and run the SciGrade locally, it is possible though it requires an internet connection to login and accesses the marking form and student information (exclusive for TA's and admins). 
+It is recommended that you use the web-version available at https://scigrade.com/ but if you want to download and run the SciGrade locally, it is possible though it requires an internet connection to login and accesses the marking form and student information (exclusive for TA's and admins). 
 
 ## Browser Compatibilities 
 
@@ -39,5 +39,5 @@ Please read [EDIT.md](EDIT.MD) if you want to understand how SciGrade works and 
 ## Authors
 
 * Alexander Sullivan - [GitHub](https://github.com/ASully), [Twitter](https://twitter.com/alexjsully), [LinkedIn](https://www.linkedin.com/in/alexanderjsullivan/)
-* Cathy Cao - [LinkedIn](https://www.linkedin.com/in/cathyquynhcao/)
-* Alistair Dias - [LinkedIn](https://www.linkedin.com/in/alistair-dias-090a8629/), [Website](http://hmb.utoronto.ca/profiles/alistair-dias/)
+* Cathy Cao - [Twitter](https://twitter.com/cathyqcao), [LinkedIn](https://www.linkedin.com/in/cathyquynhcao/)
+* Alistair Dias - [LinkedIn](https://www.linkedin.com/in/alistair-dias-090a8629/), [Website](https://hmb.utoronto.ca/profiles/alistair-dias/)
