@@ -4,7 +4,7 @@
     {
       "name": "Alexander Sullivan",
       "email": "alexander.j.sullivan@hotmail.com",
-      "url": "https://twitter.com/AlexJSully"
+      "url": "https://alexjsully.me/"
     },
     {
       "name": "Quynh (Cathy) Cao"
@@ -14,7 +14,7 @@
       "url": "https://hmb.utoronto.ca/profiles/alistair-dias/"
     }
   ],
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "description": "SciGrade is an online web-tool that allows students (or any user with access) to mark and assist in gRNA+Primer generation.",
   "main": "index.html",

@@ -38,6 +38,6 @@ Please read [EDIT.md](EDIT.MD) if you want to understand how SciGrade works and 
 
 ## Authors
 
-* Alexander Sullivan - [GitHub](https://github.com/ASully), [Twitter](https://twitter.com/alexjsully), [LinkedIn](https://www.linkedin.com/in/alexanderjsullivan/)
+* Alexander Sullivan - [GitHub](https://github.com/ASully), [Twitter](https://twitter.com/alexjsully), [LinkedIn](https://www.linkedin.com/in/alexanderjsullivan/), [Website](https://alexjsully.me/)
 * Quynh (Cathy) Cao - [Twitter](https://twitter.com/cathyqcao), [LinkedIn](https://www.linkedin.com/in/cathyquynhcao/)
 * Alistair Dias - [LinkedIn](https://www.linkedin.com/in/alistair-dias-090a8629/), [Website](https://hmb.utoronto.ca/profiles/alistair-dias/)
