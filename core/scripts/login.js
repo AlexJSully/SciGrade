@@ -214,10 +214,16 @@ function sendLogReg() {
  */
 function signOutDisplay() {
   signOut();
-  document.getElementById("logIO").setAttribute("hidden", true);
-  document.getElementById("accountIO").setAttribute("hidden", true);
-  document.getElementById("logIO").innerHTML = changeLogin + " Login";
-  document.getElementById("logIO").setAttribute("onclick");  
+
+  if (document.getElementById('accountIO')) {
+    document.getElementById("accountIO").setAttribute("hidden", true);
+  };
+  if (document.getElementById('logIO')) {
+    document.getElementById("logIO").setAttribute("hidden", true);
+    document.getElementById("logIO").innerHTML = changeLogin + " Login";
+    document.getElementById("logIO").setAttribute("onclick"); 
+  };
+
   $("#mainContainer").empty();  
   var append_str;
   append_str = "<div class='row'>\n";
@@ -278,10 +284,15 @@ function redirectCRISPR() {
   loadJSON_Files();
   loadCRISPRJSON_Files();
   setTimeout(function(){fillGeneList();}, 700);
-  document.getElementById("logIO").innerHTML = changeLogin + " Logout";
-  document.getElementById("logIO").setAttribute("onclick", "signOutDisplay();")
-  document.getElementById("accountIO").removeAttribute("hidden");
-  document.getElementById("logIO").removeAttribute("hidden");
+  
+  if (document.getElementById('accountIO')) {
+    document.getElementById("accountIO").removeAttribute("hidden");
+  };
+  if (document.getElementById('logIO')) {
+    document.getElementById("logIO").innerHTML = changeLogin + " Logout";
+    document.getElementById("logIO").setAttribute("onclick", "signOutDisplay();");
+    document.getElementById("logIO").removeAttribute("hidden");
+  };
 };
 
 $(document).ready(function() {

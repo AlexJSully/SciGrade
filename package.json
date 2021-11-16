@@ -14,7 +14,7 @@
       "url": "https://hmb.utoronto.ca/profiles/alistair-dias/"
     }
   ],
-  "version": "1.0.2",
+  "version": "1.0.3",
   "private": true,
   "description": "SciGrade is an online web-tool that allows students (or any user with access) to mark and assist in gRNA+Primer generation.",
   "main": "index.html",
