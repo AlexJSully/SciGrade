@@ -12,43 +12,51 @@ var current_gene = "empty";
  * @param {String} mode - The CRISPR dry lab's mode ("practice" or "assignment")
  */
 function ModeSelectionAdd(mode) {
-  $("#gene_dropdown_selection").empty();
-  document.getElementById("load_button").disabled;
-  var append_str;
-  if (mode == "practice") {
-    append_str = '<option value="eBFP" id="eBFP" tag="practice">eBFP</option>\n';
-    append_str += '<option value="ACTN3" id="ACTN3" tag="practice">ACTN3</option>\n';
-    // TODO: Add completed assignment genes into practice mode
-    $("#gene_dropdown_selection").append(append_str);
-  } else if (mode == "assignment") {
-    var useList = removeCompletedAssignments();
-    for (i = 0; i < useList.length; i++) {
-      if (i == 0) {
-        append_str = '<option value="' + useList[i] + '" id="' + useList[i] + '" tag="assignment">' + useList[i] + '</option>\n';
-      } else {
-        append_str += '<option value="' + useList[i] + '" id="' + useList[i] + '" tag="assignment">' + useList[i] + '</option>\n';
-      };
-    };
-    $("#gene_dropdown_selection").append(append_str);
-  };
-};
+	$("#gene_dropdown_selection").empty();
+	document.getElementById("load_button").disabled;
+	var append_str;
+	if (mode == "practice") {
+		append_str = '<option value="eBFP" id="eBFP" tag="practice">eBFP</option>\n';
+		append_str += '<option value="ACTN3" id="ACTN3" tag="practice">ACTN3</option>\n';
+		// TODO: Add completed assignment genes into practice mode
+		$("#gene_dropdown_selection").append(append_str);
+	} else if (mode == "assignment") {
+		var useList = removeCompletedAssignments();
+		for (i = 0; i < useList.length; i++) {
+			if (i == 0) {
+				append_str = `<option value="${useList[i]}" id="${useList[i]}" tag="assignment">${useList[i]}</option>\n`;
+			} else {
+				append_str += `<option value="${useList[i]}" id="${useList[i]}" tag="assignment">${useList[i]}</option>\n`;
+			}
+		}
+		$("#gene_dropdown_selection").append(append_str);
+	}
+}
 
 /**
  * Purpose of this is to assign the current gene and check for errors
  */
 function select_Gene() {
-  if (possible_gene != null || possible_gene != "" || possible_gene != undefined) {
-    current_gene = possible_gene;
-    loadWork();
-    checkAnswers_executed = false;
-  } else {
-    if (current_gene != "empty" || current_gene != "eBFP" || current_gene != "ACTN3" || current_gene != "HBB" || current_gene != "CCR5" || current_gene != "ANKK1" || current_gene != "APOE") {
-      current_gene == "empty";
-    };
-    alert("Error code sG34-42 occurred. Please contact admin or TA!");
-    console.log("Error code sG34-42 occurred. Please contact admin or TA!");
-  };
-};
+	if (possible_gene != null || possible_gene != "" || possible_gene != undefined) {
+		current_gene = possible_gene;
+		loadWork();
+		checkAnswers_executed = false;
+	} else {
+		if (
+			current_gene != "empty" ||
+			current_gene != "eBFP" ||
+			current_gene != "ACTN3" ||
+			current_gene != "HBB" ||
+			current_gene != "CCR5" ||
+			current_gene != "ANKK1" ||
+			current_gene != "APOE"
+		) {
+			current_gene == "empty";
+		}
+		alert("Error code sG34-42 occurred. Please contact admin or TA!");
+		console.log("Error code sG34-42 occurred. Please contact admin or TA!");
+	}
+}
 
 var gene_backgroundInfo;
 var benchling_grna_ouputs;
@@ -56,165 +64,206 @@ var benchling_grna_ouputs;
  * Load JSON files
  */
 function loadCRISPRJSON_Files() {
-  const client = new stitch.StitchClient('almark-wvohf');
-  const db = client.service('mongodb', 'mongodb-atlas').db('AlMark');
-  // Gene background information
-  client.login().then(() =>
-    db.collection('Gene_Information').find({
-      version: "0.3"
-    }).limit(100).execute()
-  ).then(docs => {
-    gene_backgroundInfo = docs;
-  }).catch(err => {
-    console.error(err)
-  });
-  // Benchling gRNA outputs
-  client.login().then(() =>
-    db.collection('Benchling_gRNA_Outputs').find({
-      version: "0.2"
-    }).limit(100).execute()
-  ).then(docs => {
-    benchling_grna_ouputs = docs;
-  }).catch(err => {
-    console.error(err)
-  });
-};
+	const client = new stitch.StitchClient("almark-wvohf");
+	const db = client.service("mongodb", "mongodb-atlas").db("AlMark");
+	// Gene background information
+	client
+		.login()
+		.then(() =>
+			db
+				.collection("Gene_Information")
+				.find({
+					version: "0.3",
+				})
+				.limit(100)
+				.execute(),
+		)
+		.then((docs) => {
+			gene_backgroundInfo = docs;
+		})
+		.catch((err) => {
+			console.error(err);
+		});
+	// Benchling gRNA outputs
+	client
+		.login()
+		.then(() =>
+			db
+				.collection("Benchling_gRNA_Outputs")
+				.find({
+					version: "0.2",
+				})
+				.limit(100)
+				.execute(),
+		)
+		.then((docs) => {
+			benchling_grna_ouputs = docs;
+		})
+		.catch((err) => {
+			console.error(err);
+		});
+}
 
 var list_of_practice = ["eBFP"];
 var list_of_assignments = ["CCR5"];
 /**
- * Fill in and create a list of genes based on what is available in on the MongoDB server 
+ * Fill in and create a list of genes based on what is available in on the MongoDB server
  * @param itPos {number} The current iterative step of fillGeneList in the instance that gene_backgroundInfo is empty
  */
 function fillGeneList(itPos = 0) {
-  list_of_practice = [];
-  list_of_assignments = [];
-  if (itPos < 100) {
-    if (gene_backgroundInfo !== null || gene_backgroundInfo !== "" || gene_backgroundInfo !== undefined) {
-      if (gene_backgroundInfo === undefined || gene_backgroundInfo[0] === undefined) {
-        setTimeout(function() {
-          fillGeneList((itPos + 1));
-        }, 500);
-      } else {
-        var list_of_genes = Object.keys(gene_backgroundInfo[0]["gene_list"]);
-        for (i = 0; i < list_of_genes.length; i++) {
-          if (gene_backgroundInfo[0]["gene_list"][list_of_genes[i]]["base_type"] == "practice") {
-            list_of_practice.push(list_of_genes[i]);
-          } else if (gene_backgroundInfo[0]["gene_list"][list_of_genes[i]]["base_type"] == "assignment") {
-            list_of_assignments.push(list_of_genes[i]);
-          };
-        };
-      };
-    } else {
-      setTimeout(function() {
-        fillGeneList((itPos + 1));
-      }, 500);
-    };
-  } else {
-    alert("Error code geneList-113 occurred. Please contact admin or TA!");
-    console.log("Error code geneList-113 occurred. Please contact admin or TA!");
-  };
-};
+	list_of_practice = [];
+	list_of_assignments = [];
+	if (itPos < 100) {
+		if (gene_backgroundInfo !== null || gene_backgroundInfo !== "" || gene_backgroundInfo !== undefined) {
+			if (gene_backgroundInfo === undefined || gene_backgroundInfo[0] === undefined) {
+				setTimeout(function () {
+					fillGeneList(itPos + 1);
+				}, 500);
+			} else {
+				var list_of_genes = Object.keys(gene_backgroundInfo[0]["gene_list"]);
+				for (i = 0; i < list_of_genes.length; i++) {
+					if (gene_backgroundInfo[0]["gene_list"][list_of_genes[i]]["base_type"] == "practice") {
+						list_of_practice.push(list_of_genes[i]);
+					} else if (gene_backgroundInfo[0]["gene_list"][list_of_genes[i]]["base_type"] == "assignment") {
+						list_of_assignments.push(list_of_genes[i]);
+					}
+				}
+			}
+		} else {
+			setTimeout(function () {
+				fillGeneList(itPos + 1);
+			}, 500);
+		}
+	} else {
+		alert("Error code geneList-113 occurred. Please contact admin or TA!");
+		console.log("Error code geneList-113 occurred. Please contact admin or TA!");
+	}
+}
 
 var loadedMode = "practice";
 /**
  * Dynamically creates the work page for SciGrade
  */
 function loadWork() {
-  if (gene_backgroundInfo != null || gene_backgroundInfo != "" || gene_backgroundInfo != undefined || backgroundInfo[0]["gene_list"][current_gene] != undefined) {
-    $("#work").empty();
-    loadedMode = selection_inMode;
-    checkAnswers_executed = false;
-    var append_str;
+	if (
+		gene_backgroundInfo != null ||
+		gene_backgroundInfo != "" ||
+		gene_backgroundInfo != undefined ||
+		backgroundInfo[0]["gene_list"][current_gene] != undefined
+	) {
+		$("#work").empty();
+		loadedMode = selection_inMode;
+		checkAnswers_executed = false;
+		var append_str;
 
-    // Begin background information
-    append_str = '<div class="work_background" style="margin-top:2%;">';
+		// Begin background information
+		append_str = '<div class="work_background" style="margin-top:2%;">';
 
-    // CRISPR header information
-    append_str += '<div id="crispr_header">\n<p>Please refer to your dry lab protocol for full instructions on how and what to do. Below is a brief reminder of what you are supposed to do with each gene: \n <b>Your objective is to find these mutations, design a gRNA and its corresponding F1/R1 primers</b></p> \n</div>\n';
+		// CRISPR header information
+		append_str +=
+			'<div id="crispr_header">\n<p>Please refer to your dry lab protocol for full instructions on how and what to do. Below is a brief reminder of what you are supposed to do with each gene: \n <b>Your objective is to find these mutations, design a gRNA and its corresponding F1/R1 primers</b></p> \n</div>\n';
 
-    // Gene information
-    append_str += '<div id="gene_info"><p>Here is some background information about your gene: ' + gene_backgroundInfo[0]["gene_list"][current_gene]["name"] + " (" + current_gene + ')</p>\n';
-    append_str += '<p> Background information: ' + gene_backgroundInfo[0]["gene_list"][current_gene]["Background"] + '</p>\n';
-    append_str += '<p> Target site: ' + gene_backgroundInfo[0]["gene_list"][current_gene]["Target site"] + '</p>\n';
-    append_str += '<p style="word-wrap:break-word;"> Modified genetic sequence: ' + gene_backgroundInfo[0]["gene_list"][current_gene]["Sequence"] + '</p>\n';
-    append_str += '</div>';
+		// Gene information
+		append_str += `<div id="gene_info"><p>Here is some background information about your gene: ${gene_backgroundInfo[0]["gene_list"][current_gene]["name"]} (${current_gene})</p>\n`;
+		append_str +=
+			"<p> Background information: " + gene_backgroundInfo[0]["gene_list"][current_gene]["Background"] + "</p>\n";
+		append_str += "<p> Target site: " + gene_backgroundInfo[0]["gene_list"][current_gene]["Target site"] + "</p>\n";
+		append_str += `<p style="word-wrap:break-word;"> Modified genetic sequence: ${gene_backgroundInfo[0]["gene_list"][current_gene]["Sequence"]}</p>\n`;
+		append_str += "</div>";
 
-    // End background information
-    append_str += '</div>';
+		// End background information
+		append_str += "</div>";
 
-    // Begin gene assignment work
-    append_str += '<div id="work_section">';
+		// Begin gene assignment work
+		append_str += '<div id="work_section">';
 
-    // Gene assignment form inputs
-    append_str += '<p> Please input the following information for your gRNA for your selected gene.</p>\n';
-    append_str += '<form>';
+		// Gene assignment form inputs
+		append_str += "<p> Please input the following information for your gRNA for your selected gene.</p>\n";
+		append_str += "<form>";
 
-    // gRNA sequence
-    append_str += '<div class="form-group">';
-    append_str += '<label for="sequence_input">gRNA Sequence:</label>';
-    append_str += '<input class="form-control" id="sequence_input" placeholder="CTCGTGACCACCCTGACCCA" maxlength="20" required>';
-    append_str += '<small id="sequence_inputSmall" class="form-text text-muted">This would be your gRNA sequence 5\' to 3\'. NOTE: This is maxed out at 20 characters long</small>';
-    append_str += '</div>';
+		// gRNA sequence
+		append_str += '<div class="form-group">';
+		append_str += '<label for="sequence_input">gRNA Sequence:</label>';
+		append_str +=
+			'<input class="form-control" id="sequence_input" placeholder="CTCGTGACCACCCTGACCCA" maxlength="20" required>';
+		append_str +=
+			'<small id="sequence_inputSmall" class="form-text text-muted">This would be your gRNA sequence 5\' to 3\'. NOTE: This is maxed out at 20 characters long</small>';
+		append_str += "</div>";
 
-    // PAM sequence
-    append_str += '<div class="form-group">';
-    append_str += '<label for="pam_input">PAM Sequence:</label>';
-    append_str += '<input class="form-control" id="pam_input" placeholder="CGG" maxlength="3" required>';
-    append_str += '<small id="pam_inputSmall" class="form-text text-muted">This would be your PAM sequence 5\' to 3\'. NOTE: This is maxed out at 3 characters long</small>';
-    append_str += '</div>';
+		// PAM sequence
+		append_str += '<div class="form-group">';
+		append_str += '<label for="pam_input">PAM Sequence:</label>';
+		append_str += '<input class="form-control" id="pam_input" placeholder="CGG" maxlength="3" required>';
+		append_str +=
+			'<small id="pam_inputSmall" class="form-text text-muted">This would be your PAM sequence 5\' to 3\'. NOTE: This is maxed out at 3 characters long</small>';
+		append_str += "</div>";
 
-    // Position
-    append_str += '<div class="form-group">';
-    append_str += '<label for="position_input">Cut position:</label>';
-    append_str += '<input class="form-control" id="position_input" placeholder="380" type="number" required>';
-    append_str += '<small id="position_inputSmall" class="form-text text-muted">This would be your cut position for your gRNA. NOTE: This input only takes numbers</small>';
-    append_str += '</div>';
+		// Position
+		append_str += '<div class="form-group">';
+		append_str += '<label for="position_input">Cut position:</label>';
+		append_str += '<input class="form-control" id="position_input" placeholder="380" type="number" required>';
+		append_str +=
+			'<small id="position_inputSmall" class="form-text text-muted">This would be your cut position for your gRNA. NOTE: This input only takes numbers</small>';
+		append_str += "</div>";
 
-    // Strand
-    append_str += '<div class="form-group">';
-    append_str += '<label for="strand_input">gRNA Strand:</label>';
-    append_str += '<select class="form-control" id="strand_input"><option>Antisense (-)</option><option>Sense (+)</option></select>';
-    append_str += '<small id="strand_inputSmall" class="form-text text-muted">This would be for which strand your gRNA is on.</small>';
-    append_str += '</div>';
+		// Strand
+		append_str += '<div class="form-group">';
+		append_str += '<label for="strand_input">gRNA Strand:</label>';
+		append_str +=
+			'<select class="form-control" id="strand_input"><option>Antisense (-)</option><option>Sense (+)</option></select>';
+		append_str +=
+			'<small id="strand_inputSmall" class="form-text text-muted">This would be for which strand your gRNA is on.</small>';
+		append_str += "</div>";
 
-    // Off-target score
-    append_str += '<div class="form-group">';
-    append_str += '<label for="offtarget_input">Off-target score:</label>';
-    append_str += '<input class="form-control" id="offtarget_input" placeholder="60.7" step="0.01" type="number" required>';
-    append_str += '<small id="position_inputSmall" class="form-text text-muted">This would be your off-target score for your gRNA. NOTE: This input only takes numbers</small>';
-    append_str += '</div>';
+		// Off-target score
+		append_str += '<div class="form-group">';
+		append_str += '<label for="offtarget_input">Off-target score:</label>';
+		append_str +=
+			'<input class="form-control" id="offtarget_input" placeholder="60.7" step="0.01" type="number" required>';
+		append_str +=
+			'<small id="position_inputSmall" class="form-text text-muted">This would be your off-target score for your gRNA. NOTE: This input only takes numbers</small>';
+		append_str += "</div>";
 
-    // F1 Primers
-    append_str += '<div class="form-group">';
-    append_str += '<label for="f1_input">F1 Primers:</label>';
-    append_str += '<input class="form-control" id="f1_input" placeholder="TAATACGACTCACTATAGCTCGTGACCACCCTGA" required>';
-    append_str += '<small id="f1_inputSmall" class="form-text text-muted">This would be your forward primer (F1) for your gRNA</small>';
-    append_str += '</div>';
+		// F1 Primers
+		append_str += '<div class="form-group">';
+		append_str += '<label for="f1_input">F1 Primers:</label>';
+		append_str +=
+			'<input class="form-control" id="f1_input" placeholder="TAATACGACTCACTATAGCTCGTGACCACCCTGA" required>';
+		append_str +=
+			'<small id="f1_inputSmall" class="form-text text-muted">This would be your forward primer (F1) for your gRNA</small>';
+		append_str += "</div>";
 
-    // R1 Primers
-    append_str += '<div class="form-group">';
-    append_str += '<label for="r1_input">R1 Primers:</label>';
-    append_str += '<input class="form-control" id="r1_input" placeholder="TTCTAGCTCTAAAACTGGGTCAGGGTGGTCACGAG" required>';
-    append_str += '<small id="r1_inputSmall" class="form-text text-muted">This would be your reverse primer (R1) for your gRNA</small>';
-    append_str += '</div>';
+		// R1 Primers
+		append_str += '<div class="form-group">';
+		append_str += '<label for="r1_input">R1 Primers:</label>';
+		append_str +=
+			'<input class="form-control" id="r1_input" placeholder="TTCTAGCTCTAAAACTGGGTCAGGGTGGTCACGAG" required>';
+		append_str +=
+			'<small id="r1_inputSmall" class="form-text text-muted">This would be your reverse primer (R1) for your gRNA</small>';
+		append_str += "</div>";
 
-    // Buttons
-    append_str += '<button type="button" class="btn btn-success" style="margin:1%;" hidden>Save</button>';
-    append_str += '<button id="assignmentSubmitButton" type="button" class="btn btn-primary" style="margin:1%;" onclick="submitAnswers();">Submit</button>';
+		// Buttons
+		append_str += '<button type="button" class="btn btn-success" style="margin:1%;" hidden>Save</button>';
+		append_str +=
+			'<button id="assignmentSubmitButton" type="button" class="btn btn-primary" style="margin:1%;" onclick="submitAnswers();">Submit</button>';
 
-    // End form
-    append_str += '</form>';
+		// End form
+		append_str += "</form>";
 
-    // End gene assignment work
-    append_str += '</div>';
+		// End gene assignment work
+		append_str += "</div>";
 
-    $("#work").append(append_str);
-  } else if (gene_backgroundInfo == null || gene_backgroundInfo == "" || gene_backgroundInfo == undefined || backgroundInfo[0]["gene_list"][current_gene] == undefined) {
-    alert("Error code lFS50-66 occurred. Please contact admin or TA!");
-    console.log("Error code lFS50-66 occurred. Please contact admin or TA!");
-  };
-};
+		$("#work").append(append_str);
+	} else if (
+		gene_backgroundInfo == null ||
+		gene_backgroundInfo == "" ||
+		gene_backgroundInfo == undefined ||
+		backgroundInfo[0]["gene_list"][current_gene] == undefined
+	) {
+		alert("Error code lFS50-66 occurred. Please contact admin or TA!");
+		console.log("Error code lFS50-66 occurred. Please contact admin or TA!");
+	}
+}
 
 /**
  * @param {event} evt - Character key press
@@ -222,12 +271,12 @@ function loadWork() {
  * Determine if a number or dash key is pressed
  */
 function isNumberOrDashKey(evt) {
-  var charCode = (evt.which) ? evt.which : event.keyCode;
-  if (charCode != 46 && charCode != 45 && charCode > 31 && (charCode < 48 || charCode > 57)) {
-    return false;
-  };
-  return true;
-};
+	var charCode = evt.which ? evt.which : event.keyCode;
+	if (charCode != 46 && charCode != 45 && charCode > 31 && (charCode < 48 || charCode > 57)) {
+		return false;
+	}
+	return true;
+}
 
 //Global marking variables:
 var MARgRNAseq = false;
@@ -252,139 +301,178 @@ var checkAnswers_executed = false;
  * Checks the answer in the submission form and determines if they are correct or not
  */
 function checkAnswers() {
-  // Reset answers:
-  MARgRNAseq = false;
-  MARgRNAseq_degree = 0;
-  MARPAMseq = false;
-  MARCutPos = false;
-  MARstrand = false;
-  correctNucleotideIncluded = false;
-  true_counts = 0;
+	// Reset answers:
+	MARgRNAseq = false;
+	MARgRNAseq_degree = 0;
+	MARPAMseq = false;
+	MARCutPos = false;
+	MARstrand = false;
+	correctNucleotideIncluded = false;
+	true_counts = 0;
 
-  // Verify answers
-  var correctNucleotide = gene_backgroundInfo[0]["gene_list"][current_gene]["Sequence"].charAt(gene_backgroundInfo[0]["gene_list"][current_gene]["Target position"]);
-  var correctNucleotidePosition = gene_backgroundInfo[0]["gene_list"][current_gene]["Target position"] - 1;
+	// Verify answers
+	var correctNucleotide = gene_backgroundInfo[0]["gene_list"][current_gene]["Sequence"].charAt(
+		gene_backgroundInfo[0]["gene_list"][current_gene]["Target position"],
+	);
+	var correctNucleotidePosition = gene_backgroundInfo[0]["gene_list"][current_gene]["Target position"] - 1;
 
-  // Check gRNA Sequence:
-  var inputedSeq = document.getElementById("sequence_input").value.trim();
-  // Check if gRNA sequence is in against listed
-  possible_comparable_answers = [];
-  for (i = 0; i < benchling_grna_ouputs[0]["gene_list"][current_gene].length; i++) {
-    if (benchling_grna_ouputs[0]["gene_list"][current_gene][i]["Sequence"] == inputedSeq) {
-      possible_comparable_answers.push(benchling_grna_ouputs[0]["gene_list"][current_gene][i]);
-    };
-  };
+	// Check gRNA Sequence:
+	var inputedSeq = document.getElementById("sequence_input").value.trim();
+	// Check if gRNA sequence is in against listed
+	possible_comparable_answers = [];
+	for (i = 0; i < benchling_grna_ouputs[0]["gene_list"][current_gene].length; i++) {
+		if (benchling_grna_ouputs[0]["gene_list"][current_gene][i]["Sequence"] == inputedSeq) {
+			possible_comparable_answers.push(benchling_grna_ouputs[0]["gene_list"][current_gene][i]);
+		}
+	}
 
-  // Check against existing:
-  var possible_right_answers = [];
-  if (possible_comparable_answers.length > 0) {
-    for (i = 0; i < possible_comparable_answers.length; i++) {
-      true_counts = 0;
-      // Checking if the gene's target position is within correct nucleotide range
-      correctNucleotideIncluded = false;
-      if (possible_comparable_answers[i]["Strand"] == 1) {
-        var nucleotideIncludedRange_top = ((possible_comparable_answers[i]["Position"] - 1) - 1) + 3;
-        var nucleotideIncludedRange_bot = (possible_comparable_answers[i]["Position"] - 1) - 17;
-        if (correctNucleotidePosition >= nucleotideIncludedRange_bot && correctNucleotidePosition <= nucleotideIncludedRange_top) {
-          correctNucleotideIncluded = true;
-        };
-      } else if (possible_comparable_answers[i]["Strand"] == -1) {
-        var nucleotideIncludedRange_top = (possible_comparable_answers[i]["Position"] - 1) + 17;
-        var nucleotideIncludedRange_bot = (possible_comparable_answers[i]["Position"] - 1) - 3;
-        if (correctNucleotidePosition >= nucleotideIncludedRange_bot && correctNucleotidePosition <= nucleotideIncludedRange_top) {
-          correctNucleotideIncluded = true;
-        };
-      };
-      // If in correct nucleotide range, check if nucleotide is included in cut site
-      if (correctNucleotideIncluded == true) {
-        // Determine where PAM site would be and if PAM site matches inputted value
-        var pamFirst;
-        var pamSecond;
-        // Sense is 1
-        if (possible_comparable_answers[i]["Strand"] == 1) {
-          pamFirst = (possible_comparable_answers[i]["Position"] - 1) + 2;
-          pamSecond = (possible_comparable_answers[i]["Position"] - 1) + 4;
-          // If the sequence matches to be true, check other answers:
-          if (document.getElementById("strand_input").value == "Sense (+)") {
-            MARstrand = true;
-            true_counts++;
-          };
-        }
-        // Antisense is -1
-        else if (possible_comparable_answers[i]["Strand"] == -1) {
-          pamFirst = (possible_comparable_answers[i]["Position"] - 1) - 2;
-          pamSecond = (possible_comparable_answers[i]["Position"] - 1) - 4;
-          // If the sequence matches to be true, check other answers:
-          if (document.getElementById("strand_input").value == "Antisense (-)") {
-            MARstrand = true;
-            true_counts++;
-          };
-        };
+	// Check against existing:
+	var possible_right_answers = [];
+	if (possible_comparable_answers.length > 0) {
+		for (i = 0; i < possible_comparable_answers.length; i++) {
+			true_counts = 0;
+			// Checking if the gene's target position is within correct nucleotide range
+			correctNucleotideIncluded = false;
+			if (possible_comparable_answers[i]["Strand"] == 1) {
+				var nucleotideIncludedRange_top = possible_comparable_answers[i]["Position"] - 1 - 1 + 3;
+				var nucleotideIncludedRange_bot = possible_comparable_answers[i]["Position"] - 1 - 17;
+				if (
+					correctNucleotidePosition >= nucleotideIncludedRange_bot &&
+					correctNucleotidePosition <= nucleotideIncludedRange_top
+				) {
+					correctNucleotideIncluded = true;
+				}
+			} else if (possible_comparable_answers[i]["Strand"] == -1) {
+				var nucleotideIncludedRange_top = possible_comparable_answers[i]["Position"] - 1 + 17;
+				var nucleotideIncludedRange_bot = possible_comparable_answers[i]["Position"] - 1 - 3;
+				if (
+					correctNucleotidePosition >= nucleotideIncludedRange_bot &&
+					correctNucleotidePosition <= nucleotideIncludedRange_top
+				) {
+					correctNucleotideIncluded = true;
+				}
+			}
+			// If in correct nucleotide range, check if nucleotide is included in cut site
+			if (correctNucleotideIncluded == true) {
+				// Determine where PAM site would be and if PAM site matches inputted value
+				var pamFirst;
+				var pamSecond;
+				// Sense is 1
+				if (possible_comparable_answers[i]["Strand"] == 1) {
+					pamFirst = possible_comparable_answers[i]["Position"] - 1 + 2;
+					pamSecond = possible_comparable_answers[i]["Position"] - 1 + 4;
+					// If the sequence matches to be true, check other answers:
+					if (document.getElementById("strand_input").value == "Sense (+)") {
+						MARstrand = true;
+						true_counts++;
+					}
+				}
+				// Antisense is -1
+				else if (possible_comparable_answers[i]["Strand"] == -1) {
+					pamFirst = possible_comparable_answers[i]["Position"] - 1 - 2;
+					pamSecond = possible_comparable_answers[i]["Position"] - 1 - 4;
+					// If the sequence matches to be true, check other answers:
+					if (document.getElementById("strand_input").value == "Antisense (-)") {
+						MARstrand = true;
+						true_counts++;
+					}
+				}
 
-        // Determining how right the sequence is
-        if (correctNucleotidePosition >= (pamFirst) && correctNucleotidePosition <= (pamSecond)) { // within PAM site
-          MARgRNAseq = false;
-          MARgRNAseq_degree = 0;
-        } else if (
-          (correctNucleotidePosition >= ((possible_comparable_answers[i]["Position"] - 1) + 1) && correctNucleotidePosition <= ((possible_comparable_answers[i]["Position"] - 1) + 10)) || (correctNucleotidePosition <= ((possible_comparable_answers[i]["Position"] - 1) - 1) && correctNucleotidePosition >= ((possible_comparable_answers[i]["Position"] - 1) - 10))
-        ) {
-          MARgRNAseq = true;
-          MARgRNAseq_degree = 1;
-          true_counts++;
-        } else if (
-          (correctNucleotidePosition >= ((possible_comparable_answers[i]["Position"] - 1)) && correctNucleotidePosition <= ((possible_comparable_answers[i]["Position"] - 1) + 20)) || (correctNucleotidePosition <= ((possible_comparable_answers[i]["Position"] - 1)) && correctNucleotidePosition >= ((possible_comparable_answers[i]["Position"] - 1) - 20))
-        ) {
-          MARgRNAseq = true;
-          MARgRNAseq_degree = 2;
-          true_counts++;
-        } else if (
-          (correctNucleotidePosition >= ((possible_comparable_answers[i]["Position"] - 1)) && correctNucleotidePosition <= ((possible_comparable_answers[i]["Position"] - 1) + 30)) || (correctNucleotidePosition <= ((possible_comparable_answers[i]["Position"] - 1)) && correctNucleotidePosition >= ((possible_comparable_answers[i]["Position"] - 1) - 30))
-        ) {
-          MARgRNAseq = true;
-          MARgRNAseq_degree = 3;
-          true_counts++;
-        };
+				// Determining how right the sequence is
+				if (correctNucleotidePosition >= pamFirst && correctNucleotidePosition <= pamSecond) {
+					// within PAM site
+					MARgRNAseq = false;
+					MARgRNAseq_degree = 0;
+				} else if (
+					(correctNucleotidePosition >= possible_comparable_answers[i]["Position"] - 1 + 1 &&
+						correctNucleotidePosition <= possible_comparable_answers[i]["Position"] - 1 + 10) ||
+					(correctNucleotidePosition <= possible_comparable_answers[i]["Position"] - 1 - 1 &&
+						correctNucleotidePosition >= possible_comparable_answers[i]["Position"] - 1 - 10)
+				) {
+					MARgRNAseq = true;
+					MARgRNAseq_degree = 1;
+					true_counts++;
+				} else if (
+					(correctNucleotidePosition >= possible_comparable_answers[i]["Position"] - 1 &&
+						correctNucleotidePosition <= possible_comparable_answers[i]["Position"] - 1 + 20) ||
+					(correctNucleotidePosition <= possible_comparable_answers[i]["Position"] - 1 &&
+						correctNucleotidePosition >= possible_comparable_answers[i]["Position"] - 1 - 20)
+				) {
+					MARgRNAseq = true;
+					MARgRNAseq_degree = 2;
+					true_counts++;
+				} else if (
+					(correctNucleotidePosition >= possible_comparable_answers[i]["Position"] - 1 &&
+						correctNucleotidePosition <= possible_comparable_answers[i]["Position"] - 1 + 30) ||
+					(correctNucleotidePosition <= possible_comparable_answers[i]["Position"] - 1 &&
+						correctNucleotidePosition >= possible_comparable_answers[i]["Position"] - 1 - 30)
+				) {
+					MARgRNAseq = true;
+					MARgRNAseq_degree = 3;
+					true_counts++;
+				}
 
-        // If the sequence if correct, check all other results:
-        if (MARgRNAseq == true) {
-          var temp_answer = possible_comparable_answers[i];
-          // Check if the cut position matches the answer's input
-          if ((temp_answer["Position"] != null || temp_answer["Position"] != undefined) && parseInt(temp_answer["Position"]) == parseInt(document.getElementById("position_input").value)) {
-            MARCutPos = true;
-            true_counts++;
-          } else if (temp_answer["Position"] == null || temp_answer["Position"] == undefined) {
-            alert("Error code cA302-307: retrieving server information on 'Position' answers occurred. Please contact admin or TA!");
-            console.log("Error code cA302-307: retrieving server information on 'Position' answers occurred. Please contact admin or TA!");
-          };
+				// If the sequence if correct, check all other results:
+				if (MARgRNAseq == true) {
+					var temp_answer = possible_comparable_answers[i];
+					// Check if the cut position matches the answer's input
+					if (
+						(temp_answer["Position"] != null || temp_answer["Position"] != undefined) &&
+						parseInt(temp_answer["Position"]) == parseInt(document.getElementById("position_input").value)
+					) {
+						MARCutPos = true;
+						true_counts++;
+					} else if (temp_answer["Position"] == null || temp_answer["Position"] == undefined) {
+						alert(
+							"Error code cA302-307: retrieving server information on 'Position' answers occurred. Please contact admin or TA!",
+						);
+						console.log(
+							"Error code cA302-307: retrieving server information on 'Position' answers occurred. Please contact admin or TA!",
+						);
+					}
 
-          // Check if the PAM matches the answer's input
-          if ((temp_answer["PAM"] != null || temp_answer["PAM"] != undefined) && temp_answer["PAM"] == document.getElementById("pam_input").value.trim()) {
-            MARPAMseq = true;
-            true_counts++;
-          } else if (temp_answer["PAM"] == null || temp_answer["PAM"] == undefined) {
-            alert("Error code cA311-317: retrieving server information on 'PAM' answers occurred. Please contact admin or TA!");
-            console.log("Error code cA311-317: retrieving server information on 'PAM' answers occurred. Please contact admin or TA!");
-          };
+					// Check if the PAM matches the answer's input
+					if (
+						(temp_answer["PAM"] != null || temp_answer["PAM"] != undefined) &&
+						temp_answer["PAM"] == document.getElementById("pam_input").value.trim()
+					) {
+						MARPAMseq = true;
+						true_counts++;
+					} else if (temp_answer["PAM"] == null || temp_answer["PAM"] == undefined) {
+						alert(
+							"Error code cA311-317: retrieving server information on 'PAM' answers occurred. Please contact admin or TA!",
+						);
+						console.log(
+							"Error code cA311-317: retrieving server information on 'PAM' answers occurred. Please contact admin or TA!",
+						);
+					}
 
-          // Check if the Off-target matches the answer's input
-          if (temp_answer["Specificity Score"] != null || temp_answer["Specificity Score"] != undefined) {
-            checkOffTarget(temp_answer["Specificity Score"]);
-          } else if (temp_answer["Specificity Score"] == null || temp_answer["Specificity Score"] == undefined) {
-            alert("Error code cA342-348: retrieving server information on 'Specificity Score' answers occurred. Please contact admin or TA!");
-            console.log("Error code cA342-348: retrieving server information on 'Specificity Score' answers occurred. Please contact admin or TA!");
-          };
+					// Check if the Off-target matches the answer's input
+					if (temp_answer["Specificity Score"] != null || temp_answer["Specificity Score"] != undefined) {
+						checkOffTarget(temp_answer["Specificity Score"]);
+					} else if (
+						temp_answer["Specificity Score"] == null ||
+						temp_answer["Specificity Score"] == undefined
+					) {
+						alert(
+							"Error code cA342-348: retrieving server information on 'Specificity Score' answers occurred. Please contact admin or TA!",
+						);
+						console.log(
+							"Error code cA342-348: retrieving server information on 'Specificity Score' answers occurred. Please contact admin or TA!",
+						);
+					}
 
-          // Check if the F1 primer matches the answer's input
-          checkF1Primers(document.getElementById("sequence_input").value.trim());
+					// Check if the F1 primer matches the answer's input
+					checkF1Primers(document.getElementById("sequence_input").value.trim());
 
-          // Check if the F1 primer matches the answer's input
-          checkR1Primers(document.getElementById("sequence_input").value.trim());
-        };
-      };
-    };
-  };
-  checkAnswers_executed = true;
-};
+					// Check if the F1 primer matches the answer's input
+					checkR1Primers(document.getElementById("sequence_input").value.trim());
+				}
+			}
+		}
+	}
+	checkAnswers_executed = true;
+}
 
 var offtarget_List = [];
 var offtarget_dict = {};
@@ -396,78 +484,84 @@ var offtarget_Use = [];
  * @return {bool} - Returns true if MAROffTarget is correct
  */
 function checkOffTarget(score) {
-  // Reset variables:
-  MAROffTarget = false;
-  MAROffTarget_degree = 0; // 0 wrong, 1 above 75, 2 above 35, 3 only option
-  MAROffTarget_aboveOpt = false;
-  MAROffTarget_above35 = false;
-  MAROffTarget_onlyOption = false;
-  // Create off-target variables
-  var OffTargetValue_down = Math.floor(score);
-  var OffTargetValue_up = Math.ceil(score);
-  var InputOffTargetValue = parseInt(document.getElementById("offtarget_input").value);
-  // See if off-target value matches input value
-  if (correctNucleotideIncluded == true && MARgRNAseq == true) {
-    if (InputOffTargetValue >= OffTargetValue_down && InputOffTargetValue <= OffTargetValue_up) {
-      MAROffTarget = true;
-      true_counts++;
-    };
-  };
-  // Determine how write it is based on its range
-  if (MAROffTarget == true) {
-    // Check for last-resort regions:
-    var rangeStarter_upper = parseInt(document.getElementById("position_input").value) + 35;
-    var rangeStarter_lower = parseInt(document.getElementById("position_input").value) - 35;
-    // Check if gRNA sequence is in against listed
-    offtarget_List = [];
-    offtarget_dict = {};
-    offtarget_dictParse = [];
-    offtarget_Use = [];
-    for (i = 0; i < benchling_grna_ouputs[0]["gene_list"][current_gene].length; i++) {
-      if (benchling_grna_ouputs[0]["gene_list"][current_gene][i]["Position"] >= rangeStarter_lower && benchling_grna_ouputs[0]["gene_list"][current_gene][i]["Position"] <= rangeStarter_upper) {
-        if (benchling_grna_ouputs[0]["gene_list"][current_gene][i]["Specificity Score"] != null || benchling_grna_ouputs[0]["gene_list"][current_gene][i]["Specificity Score"] != undefined) {
-          offtarget_List.push(benchling_grna_ouputs[0]["gene_list"][current_gene][i]["Specificity Score"])
-          offtarget_dict[i] = benchling_grna_ouputs[0]["gene_list"][current_gene][i]["Specificity Score"];
-          offtarget_dictParse.push[i];
-        };
-      };
-    };
-    var last_resort_okay = true;
-    if (Math.max.apply(null, offtarget_List) < 35) {
-      last_resort_okay = false;
-    };
+	// Reset variables:
+	MAROffTarget = false;
+	MAROffTarget_degree = 0; // 0 wrong, 1 above 75, 2 above 35, 3 only option
+	MAROffTarget_aboveOpt = false;
+	MAROffTarget_above35 = false;
+	MAROffTarget_onlyOption = false;
+	// Create off-target variables
+	var OffTargetValue_down = Math.floor(score);
+	var OffTargetValue_up = Math.ceil(score);
+	var InputOffTargetValue = parseInt(document.getElementById("offtarget_input").value);
+	// See if off-target value matches input value
+	if (correctNucleotideIncluded == true && MARgRNAseq == true) {
+		if (InputOffTargetValue >= OffTargetValue_down && InputOffTargetValue <= OffTargetValue_up) {
+			MAROffTarget = true;
+			true_counts++;
+		}
+	}
+	// Determine how write it is based on its range
+	if (MAROffTarget == true) {
+		// Check for last-resort regions:
+		var rangeStarter_upper = parseInt(document.getElementById("position_input").value) + 35;
+		var rangeStarter_lower = parseInt(document.getElementById("position_input").value) - 35;
+		// Check if gRNA sequence is in against listed
+		offtarget_List = [];
+		offtarget_dict = {};
+		offtarget_dictParse = [];
+		offtarget_Use = [];
+		for (i = 0; i < benchling_grna_ouputs[0]["gene_list"][current_gene].length; i++) {
+			if (
+				benchling_grna_ouputs[0]["gene_list"][current_gene][i]["Position"] >= rangeStarter_lower &&
+				benchling_grna_ouputs[0]["gene_list"][current_gene][i]["Position"] <= rangeStarter_upper
+			) {
+				if (
+					benchling_grna_ouputs[0]["gene_list"][current_gene][i]["Specificity Score"] != null ||
+					benchling_grna_ouputs[0]["gene_list"][current_gene][i]["Specificity Score"] != undefined
+				) {
+					offtarget_List.push(benchling_grna_ouputs[0]["gene_list"][current_gene][i]["Specificity Score"]);
+					offtarget_dict[i] = benchling_grna_ouputs[0]["gene_list"][current_gene][i]["Specificity Score"];
+					offtarget_dictParse.push[i];
+				}
+			}
+		}
+		var last_resort_okay = true;
+		if (Math.max.apply(null, offtarget_List) < 35) {
+			last_resort_okay = false;
+		}
 
-    // Is it within the optimal range?
-    var Max_range = Math.max.apply(null, offtarget_List);
-    var Min_optimal = Max_range - (Max_range * 0.2);
-    var optimalValue = Min_optimal;
-    var studentClass = student_reg_information[0]["student_list"][studentParseNum]["studentClass"];
-    // Change optimal range based on custom input
-    if (student_reg_information[0]["classMarkingMod"][studentClass][0] == "Optimal") {
-      if (Min_optimal > 80 || Min_optimal < 35) {
-        optimalValue = 80;
-      };
-    } else {
-      optimalValue = student_reg_information[0]["classMarkingMod"][studentClass][0];
-    };
-    // Determine if off-target is optimal or not
-    if (InputOffTargetValue >= optimalValue) {
-      MAROffTarget_aboveOpt = true;
-      MAROffTarget_above35 = true;
-      MAROffTarget_degree = 1;
-    } else if (InputOffTargetValue >= 35) {
-      MAROffTarget_above35 = true;
-      if (Math.max.apply(null, offtarget_List) < 80) {
-        MAROffTarget_degree = 1;
-      } else {
-        MAROffTarget_degree = 2
-      };
-    } else if (last_resort_okay == false) {
-      MAROffTarget_onlyOption = true;
-      MAROffTarget_degree = 3;
-    };
-  };
-};
+		// Is it within the optimal range?
+		var Max_range = Math.max.apply(null, offtarget_List);
+		var Min_optimal = Max_range - Max_range * 0.2;
+		var optimalValue = Min_optimal;
+		var studentClass = student_reg_information[0]["student_list"][studentParseNum]["studentClass"];
+		// Change optimal range based on custom input
+		if (student_reg_information[0]["classMarkingMod"][studentClass][0] == "Optimal") {
+			if (Min_optimal > 80 || Min_optimal < 35) {
+				optimalValue = 80;
+			}
+		} else {
+			optimalValue = student_reg_information[0]["classMarkingMod"][studentClass][0];
+		}
+		// Determine if off-target is optimal or not
+		if (InputOffTargetValue >= optimalValue) {
+			MAROffTarget_aboveOpt = true;
+			MAROffTarget_above35 = true;
+			MAROffTarget_degree = 1;
+		} else if (InputOffTargetValue >= 35) {
+			MAROffTarget_above35 = true;
+			if (Math.max.apply(null, offtarget_List) < 80) {
+				MAROffTarget_degree = 1;
+			} else {
+				MAROffTarget_degree = 2;
+			}
+		} else if (last_resort_okay == false) {
+			MAROffTarget_onlyOption = true;
+			MAROffTarget_degree = 3;
+		}
+	}
+}
 
 var possible_F1_primers = [];
 /**
@@ -476,34 +570,34 @@ var possible_F1_primers = [];
  * @return {bool} - Returns true if MARF1primers is correct
  */
 function checkF1Primers(seq) {
-  // Reset variables:
-  MARF1primers = false;
-  // Verify primers:
-  possible_F1_primers = [];
-  var begin_F1 = "TAATACGACTCACTATAG";
-  var count_First = true;
-  if (seq[0] == "G") {
-    count_First = false;
-  };
-  for (i = 16; i <= 20; i++) {
-    possible_F1_primers.push(begin_F1 + seq.slice(0, i));
-  };
-  if (count_First == false) {
-    for (i = 16; i <= 20; i++) {
-      possible_F1_primers.push(begin_F1 + seq.slice(1, i));
-    };
-  };
-  if (possible_F1_primers.includes(document.getElementById("f1_input").value.trim())) {
-    MARF1primers = true;
-  };
-};
+	// Reset variables:
+	MARF1primers = false;
+	// Verify primers:
+	possible_F1_primers = [];
+	var begin_F1 = "TAATACGACTCACTATAG";
+	var count_First = true;
+	if (seq[0] == "G") {
+		count_First = false;
+	}
+	for (i = 16; i <= 20; i++) {
+		possible_F1_primers.push(begin_F1 + seq.slice(0, i));
+	}
+	if (count_First == false) {
+		for (i = 16; i <= 20; i++) {
+			possible_F1_primers.push(begin_F1 + seq.slice(1, i));
+		}
+	}
+	if (possible_F1_primers.includes(document.getElementById("f1_input").value.trim())) {
+		MARF1primers = true;
+	}
+}
 
 var possible_R1_primers = [];
 var complementary_nt_dict = {
-  "A": "T",
-  "T": "A",
-  "C": "G",
-  "G": "C"
+	A: "T",
+	T: "A",
+	C: "G",
+	G: "C",
 };
 /**
  * Checks if the R1 primer is correct or not
@@ -511,32 +605,32 @@ var complementary_nt_dict = {
  * @return {bool} - Returns true if MARR1primers is correct
  */
 function checkR1Primers(seq) {
-  // Reset variables:
-  MARR1primers = false;
-  // Verify primers:
-  possible_R1_primers = [];
-  var begin_R1 = "TTCTAGCTCTAAAAC";
-  var complemetary_seq = "";
-  for (i = 0; i < seq.length; i++) {
-    complemetary_seq = complementary_nt_dict[seq[i]] + complemetary_seq;
-  };
-  for (i = 19; i <= 20; i++) {
-    possible_R1_primers.push(begin_R1 + complemetary_seq.slice(0, i));
-  };
-  if (possible_R1_primers.includes(document.getElementById("r1_input").value.trim())) {
-    MARR1primers = true;
-  };
-};
+	// Reset variables:
+	MARR1primers = false;
+	// Verify primers:
+	possible_R1_primers = [];
+	var begin_R1 = "TTCTAGCTCTAAAAC";
+	var complemetary_seq = "";
+	for (i = 0; i < seq.length; i++) {
+		complemetary_seq = complementary_nt_dict[seq[i]] + complemetary_seq;
+	}
+	for (i = 19; i <= 20; i++) {
+		possible_R1_primers.push(begin_R1 + complemetary_seq.slice(0, i));
+	}
+	if (possible_R1_primers.includes(document.getElementById("r1_input").value.trim())) {
+		MARR1primers = true;
+	}
+}
 
 /**
  * Creates a complementary sequence of the nucleotides
  */
 function createComplementarySeq(seq) {
-  var comp_seq = "";
-  for (i = 0; i < seq.length; i++) {
-    comp_seq = complementary_nt_dict[seq[i]] + comp_seq;
-  };
-};
+	var comp_seq = "";
+	for (i = 0; i < seq.length; i++) {
+		comp_seq = complementary_nt_dict[seq[i]] + comp_seq;
+	}
+}
 
 var studentMark = 0;
 var studentMarkPercentage = 0;
@@ -545,249 +639,296 @@ var markTotal = 10;
  * Based on checkAnswers(), returns a float of a mark
  */
 function markAnswers() {
-  studentMark = 0;
-  if (checkAnswers_executed == false) {
-    checkAnswers();
-  };
-  if (checkAnswers_executed == true) {
-    if (MARgRNAseq == true) {
-      if (MARgRNAseq_degree == 1) {
-        studentMark += 2;
-      } else if (MARgRNAseq_degree == 2) {
-        studentMark += 1;
-      } else if (MARgRNAseq_degree == 3) {
-        studentMark += 0.5;
-      };
-    };
-    if (MARPAMseq == true) {
-      studentMark += 2;
-    };
-    if (MAROffTarget == true) {
-      if (MAROffTarget_degree == 1) {
-        studentMark += 2;
-      } else if (MAROffTarget_degree == 2) {
-        studentMark += 1;
-      } else if (MAROffTarget_degree == 3) {
-        studentMark += 0.5;
-      };
-    };
-    if (MARF1primers == true) {
-      studentMark += 2;
-    };
-    if (MARR1primers == true) {
-      studentMark += 2;
-    };
-    studentMarkPercentage = ((studentMark / markTotal) * 100).toFixed(2);
-    if (studentMarkPercentage > 100) {
-      studentMarkPercentage = 100;
-    } else if (studentMarkPercentage < 0) {
-      studentMarkPercentage = 0;
-    };
-  };
-};
+	studentMark = 0;
+	if (checkAnswers_executed == false) {
+		checkAnswers();
+	}
+	if (checkAnswers_executed == true) {
+		if (MARgRNAseq == true) {
+			if (MARgRNAseq_degree == 1) {
+				studentMark += 2;
+			} else if (MARgRNAseq_degree == 2) {
+				studentMark += 1;
+			} else if (MARgRNAseq_degree == 3) {
+				studentMark += 0.5;
+			}
+		}
+		if (MARPAMseq == true) {
+			studentMark += 2;
+		}
+		if (MAROffTarget == true) {
+			if (MAROffTarget_degree == 1) {
+				studentMark += 2;
+			} else if (MAROffTarget_degree == 2) {
+				studentMark += 1;
+			} else if (MAROffTarget_degree == 3) {
+				studentMark += 0.5;
+			}
+		}
+		if (MARF1primers == true) {
+			studentMark += 2;
+		}
+		if (MARR1primers == true) {
+			studentMark += 2;
+		}
+		studentMarkPercentage = ((studentMark / markTotal) * 100).toFixed(2);
+		if (studentMarkPercentage > 100) {
+			studentMarkPercentage = 100;
+		} else if (studentMarkPercentage < 0) {
+			studentMarkPercentage = 0;
+		}
+	}
+}
 
 /**
  * Show feedback for students
  */
 function showFeedback() {
-  $("#mainContainer").empty();
-  var append_str = "<p style='font-weight:bold;'> You would only receive feedback on your practice attempts and not your final assignments.</p>";
-  append_str += "<p> The assignment itself is marked out of 10 marks with 2 marks for each input excluding gRNA strand direction, cut position and target region range (these three values are used to calculate if you have the right answer or not which means they are still crucial that they are still correct).</p>";
-  append_str += "<p> The following is the breakdown of what marks you would have received and why you would have gotten them: </p>";
-  append_str += "<p style='font-weight:bold;'>Mark: " + all_marks[0] + "/10 (" + all_marks[1] + ")</p>";
+	$("#mainContainer").empty();
+	var append_str =
+		"<p style='font-weight:bold;'> You would only receive feedback on your practice attempts and not your final assignments.</p>";
+	append_str +=
+		"<p> The assignment itself is marked out of 10 marks with 2 marks for each input excluding gRNA strand direction, cut position and target region range (these three values are used to calculate if you have the right answer or not which means they are still crucial that they are still correct).</p>";
+	append_str +=
+		"<p> The following is the breakdown of what marks you would have received and why you would have gotten them: </p>";
+	append_str += "<p style='font-weight:bold;'>Mark: " + all_marks[0] + "/10 (" + all_marks[1] + ")</p>";
 
-  // Calculate all conditions:
-  /// gRNA:
-  var MARgRNAseq_degree_display = 0;
-  var MARgRNAseq_degree_explain = "Your gRNA sequence was wrong and not found in the Benchling gRNA outputs. Either you made a typo or this answer was not correct and did not contain the target cut site within an acceptable range.";
-  if (MARgRNAseq == true) {
-    if (MARgRNAseq_degree == 1) {
-      MARgRNAseq_degree_display = 2;
-      MARgRNAseq_degree_explain = "This means your answer was correct and you received full marks.";
-    } else if (MARgRNAseq_degree == 2) {
-      MARgRNAseq_degree_display = 1;
-      MARgRNAseq_degree_explain = "This means your sequence was partially correct as it contains the target sequence within a 20bp range but was not optimal. One mark.";
-    } else if (MARgRNAseq_degree == 3) {
-      MARgRNAseq_degree_display = 0.5;
-      MARgRNAseq_degree_explain = "This means your sequence was not wrong (therefore was still correct) but there were better options out there. I recommend you try this practice assignment again. Still worth some marks though (half a mark).";
-    };
-  };
-  /// PAM:
-  var MARPAMseq_display = 0;
-  var MARPAMseq_explain = "Your PAM sequence was wrong and not found relative to your gRNA sequence. Either you made a typo or this answer was not correct. Either it contained the cut site within the PAM site or it was not an NGG or NAG PAM site (SciGrade only accepts either of those two PAM sites).";
-  if (MARPAMseq == true) {
-    MARPAMseq_display = 2;
-    MARPAMseq_explain = "This means your answer was correct and you received full marks.";
-  };
-  /// Off-target:
-  var MAROffTarget_degree_display = 0;
-  var MAROffTarget_degree_explain = "Your off-target score was wrong. Either it was not above/within the optimal range (or above 35) or the last-resort option.";
-  if (MAROffTarget == true) {
-    if (MAROffTarget_degree == 1) {
-      MAROffTarget_degree_display = 2;
-      MAROffTarget_degree_explain = "This means your answer was correct while above/within the optimal and you received full marks.";
-    } else if (MAROffTarget_degree == 2) {
-      MAROffTarget_degree_display = 1;
-      MAROffTarget_degree_explain = "This means your answer was technically correct as its on-target value was above 35.";
-    } else if (MAROffTarget_degree == 3) {
-      MAROffTarget_degree_display = 0.5;
-      MAROffTarget_degree_explain = "This means your answer was partially correct as it was found to be your only option is solely based on the target region range you selected.";
-    };
-  };
-  /// F1 Primer:
-  var MARF1primers_display = 0;
-  var f1Options = "";
-  for (i = 0; i < possible_F1_primers.length; i++) {
-    f1Options += possible_F1_primers[i];
-    if (i == (possible_F1_primers.length - 1)) {
-      f1Options += ".";
-    } else {
-      f1Options += ", ";
-    };
-  };
-  var MARF1primers_explain = "Your F1 primer sequence was incorrectly matched to one of the following sequences generated based on your gRNA sequence inputted: " + f1Options;
-  if (MARF1primers == true) {
-    MARF1primers_display = 2;
-    MARF1primers_explain = "This means your answer was correct and you received full marks.";
-  };
-  /// R1 Primer:
-  var MARR1primers_display = 0;
-  var r1Options = "";
-  for (i = 0; i < possible_R1_primers.length; i++) {
-    r1Options += possible_F1_primers[i];
-    if (i == (possible_R1_primers.length - 1)) {
-      r1Options += ".";
-    } else {
-      r1Options += ", ";
-    };
-  };
-  var MARR1primers_explain = "Your R1 primer sequence was incorrectly matched to one of the following sequences generated based on your gRNA sequence inputted: " + r1Options;
-  if (MARR1primers == true) {
-    MARR1primers_display = 2;
-    MARR1primers_explain = "This means your answer was correct and you received full marks.";
-  };
+	// Calculate all conditions:
+	/// gRNA:
+	var MARgRNAseq_degree_display = 0;
+	var MARgRNAseq_degree_explain =
+		"Your gRNA sequence was wrong and not found in the Benchling gRNA outputs. Either you made a typo or this answer was not correct and did not contain the target cut site within an acceptable range.";
+	if (MARgRNAseq == true) {
+		if (MARgRNAseq_degree == 1) {
+			MARgRNAseq_degree_display = 2;
+			MARgRNAseq_degree_explain = "This means your answer was correct and you received full marks.";
+		} else if (MARgRNAseq_degree == 2) {
+			MARgRNAseq_degree_display = 1;
+			MARgRNAseq_degree_explain =
+				"This means your sequence was partially correct as it contains the target sequence within a 20bp range but was not optimal. One mark.";
+		} else if (MARgRNAseq_degree == 3) {
+			MARgRNAseq_degree_display = 0.5;
+			MARgRNAseq_degree_explain =
+				"This means your sequence was not wrong (therefore was still correct) but there were better options out there. I recommend you try this practice assignment again. Still worth some marks though (half a mark).";
+		}
+	}
+	/// PAM:
+	var MARPAMseq_display = 0;
+	var MARPAMseq_explain =
+		"Your PAM sequence was wrong and not found relative to your gRNA sequence. Either you made a typo or this answer was not correct. Either it contained the cut site within the PAM site or it was not an NGG or NAG PAM site (SciGrade only accepts either of those two PAM sites).";
+	if (MARPAMseq == true) {
+		MARPAMseq_display = 2;
+		MARPAMseq_explain = "This means your answer was correct and you received full marks.";
+	}
+	/// Off-target:
+	var MAROffTarget_degree_display = 0;
+	var MAROffTarget_degree_explain =
+		"Your off-target score was wrong. Either it was not above/within the optimal range (or above 35) or the last-resort option.";
+	if (MAROffTarget == true) {
+		if (MAROffTarget_degree == 1) {
+			MAROffTarget_degree_display = 2;
+			MAROffTarget_degree_explain =
+				"This means your answer was correct while above/within the optimal and you received full marks.";
+		} else if (MAROffTarget_degree == 2) {
+			MAROffTarget_degree_display = 1;
+			MAROffTarget_degree_explain =
+				"This means your answer was technically correct as its on-target value was above 35.";
+		} else if (MAROffTarget_degree == 3) {
+			MAROffTarget_degree_display = 0.5;
+			MAROffTarget_degree_explain =
+				"This means your answer was partially correct as it was found to be your only option is solely based on the target region range you selected.";
+		}
+	}
+	/// F1 Primer:
+	var MARF1primers_display = 0;
+	var f1Options = "";
+	for (i = 0; i < possible_F1_primers.length; i++) {
+		f1Options += possible_F1_primers[i];
+		if (i == possible_F1_primers.length - 1) {
+			f1Options += ".";
+		} else {
+			f1Options += ", ";
+		}
+	}
+	var MARF1primers_explain =
+		"Your F1 primer sequence was incorrectly matched to one of the following sequences generated based on your gRNA sequence inputted: " +
+		f1Options;
+	if (MARF1primers == true) {
+		MARF1primers_display = 2;
+		MARF1primers_explain = "This means your answer was correct and you received full marks.";
+	}
+	/// R1 Primer:
+	var MARR1primers_display = 0;
+	var r1Options = "";
+	for (i = 0; i < possible_R1_primers.length; i++) {
+		r1Options += possible_F1_primers[i];
+		if (i == possible_R1_primers.length - 1) {
+			r1Options += ".";
+		} else {
+			r1Options += ", ";
+		}
+	}
+	var MARR1primers_explain =
+		"Your R1 primer sequence was incorrectly matched to one of the following sequences generated based on your gRNA sequence inputted: " +
+		r1Options;
+	if (MARR1primers == true) {
+		MARR1primers_display = 2;
+		MARR1primers_explain = "This means your answer was correct and you received full marks.";
+	}
 
-  // gRNA:
-  append_str += "<div class='card about'>";
-  append_str += "<div class='card-header' id='gRNACard'>";
-  append_str += "<h5 class='mb-0'>";
-  append_str += "<button class='btn btn-link' data-toggle='collapse' data-target='#gRNAOutput' aria-expanded='false' aria-controls='gRNAOutput'>";
-  append_str += "gRNA Strand Sequence: " + MARgRNAseq_degree_display + "/2";
-  append_str += "</button>";
-  append_str += "</h5>"
-  append_str += "</div>";
-  append_str += "<div id='gRNAOutput' class='collapse' aria-labelledby='headingOne' data-parent='#accordion'>";
-  append_str += "<div class='card-body'>";
-  // Content
-  append_str += '<p> For gRNA Strand Sequence, you put down "' + all_answers[0] + '" which gave you the mark ' + MARgRNAseq_degree_display + '.</p>'
-  append_str += MARgRNAseq_degree_explain;
-  // Close gRNA card
-  append_str += "</div>";
-  append_str += "</div>";
-  append_str += "</div>";
-  $("#mainContainer").append(append_str);
+	// gRNA:
+	append_str += "<div class='card about'>";
+	append_str += "<div class='card-header' id='gRNACard'>";
+	append_str += "<h5 class='mb-0'>";
+	append_str +=
+		"<button class='btn btn-link' data-toggle='collapse' data-target='#gRNAOutput' aria-expanded='false' aria-controls='gRNAOutput'>";
+	append_str += "gRNA Strand Sequence: " + MARgRNAseq_degree_display + "/2";
+	append_str += "</button>";
+	append_str += "</h5>";
+	append_str += "</div>";
+	append_str += "<div id='gRNAOutput' class='collapse' aria-labelledby='headingOne' data-parent='#accordion'>";
+	append_str += "<div class='card-body'>";
+	// Content
+	append_str +=
+		'<p> For gRNA Strand Sequence, you put down "' +
+		all_answers[0] +
+		'" which gave you the mark ' +
+		MARgRNAseq_degree_display +
+		".</p>";
+	append_str += MARgRNAseq_degree_explain;
+	// Close gRNA card
+	append_str += "</div>";
+	append_str += "</div>";
+	append_str += "</div>";
+	$("#mainContainer").append(append_str);
 
-  // PAM:
-  append_str = "<div class='card about'>";
-  append_str += "<div class='card-header' id='PAMCard'>";
-  append_str += "<h5 class='mb-0'>";
-  append_str += "<button class='btn btn-link' data-toggle='collapse' data-target='#PAMOutput' aria-expanded='false' aria-controls='PAMOutput'>";
-  append_str += "gRNA PAM Sequence: " + MARPAMseq_display + "/2";
-  append_str += "</button>";
-  append_str += "</h5>"
-  append_str += "</div>";
-  append_str += "<div id='PAMOutput' class='collapse' aria-labelledby='headingOne' data-parent='#accordion'>";
-  append_str += "<div class='card-body'>";
-  // Content
-  append_str += '<p> For gRNA PAM Sequence, you put down "' + all_answers[1] + '" which gave you the mark ' + MARPAMseq_display + '.</p>'
-  append_str += MARPAMseq_explain;
-  // Close PAM card
-  append_str += "</div>";
-  append_str += "</div>";
-  append_str += "</div>";
-  $("#mainContainer").append(append_str);
+	// PAM:
+	append_str = "<div class='card about'>";
+	append_str += "<div class='card-header' id='PAMCard'>";
+	append_str += "<h5 class='mb-0'>";
+	append_str +=
+		"<button class='btn btn-link' data-toggle='collapse' data-target='#PAMOutput' aria-expanded='false' aria-controls='PAMOutput'>";
+	append_str += "gRNA PAM Sequence: " + MARPAMseq_display + "/2";
+	append_str += "</button>";
+	append_str += "</h5>";
+	append_str += "</div>";
+	append_str += "<div id='PAMOutput' class='collapse' aria-labelledby='headingOne' data-parent='#accordion'>";
+	append_str += "<div class='card-body'>";
+	// Content
+	append_str +=
+		'<p> For gRNA PAM Sequence, you put down "' +
+		all_answers[1] +
+		'" which gave you the mark ' +
+		MARPAMseq_display +
+		".</p>";
+	append_str += MARPAMseq_explain;
+	// Close PAM card
+	append_str += "</div>";
+	append_str += "</div>";
+	append_str += "</div>";
+	$("#mainContainer").append(append_str);
 
-  // Off-target Score:
-  append_str = "<div class='card about'>";
-  append_str += "<div class='card-header' id='OffTargetCard'>";
-  append_str += "<h5 class='mb-0'>";
-  append_str += "<button class='btn btn-link' data-toggle='collapse' data-target='#OffTargetOutput' aria-expanded='false' aria-controls='OffTargetOutput'>";
-  append_str += "Off-target Score: " + MAROffTarget_degree_display + "/2";
-  append_str += "</button>";
-  append_str += "</h5>"
-  append_str += "</div>";
-  append_str += "<div id='OffTargetOutput' class='collapse' aria-labelledby='headingOne' data-parent='#accordion'>";
-  append_str += "<div class='card-body'>";
-  // Content
-  append_str += '<p> For Off-Target Score, you put down "' + all_answers[4] + '" which gave you the mark ' + MAROffTarget_degree_display + '.</p>'
-  append_str += MAROffTarget_degree_explain;
-  // Close Off-target Score card
-  append_str += "</div>";
-  append_str += "</div>";
-  append_str += "</div>";
-  $("#mainContainer").append(append_str);
+	// Off-target Score:
+	append_str = "<div class='card about'>";
+	append_str += "<div class='card-header' id='OffTargetCard'>";
+	append_str += "<h5 class='mb-0'>";
+	append_str +=
+		"<button class='btn btn-link' data-toggle='collapse' data-target='#OffTargetOutput' aria-expanded='false' aria-controls='OffTargetOutput'>";
+	append_str += "Off-target Score: " + MAROffTarget_degree_display + "/2";
+	append_str += "</button>";
+	append_str += "</h5>";
+	append_str += "</div>";
+	append_str += "<div id='OffTargetOutput' class='collapse' aria-labelledby='headingOne' data-parent='#accordion'>";
+	append_str += "<div class='card-body'>";
+	// Content
+	append_str +=
+		'<p> For Off-Target Score, you put down "' +
+		all_answers[4] +
+		'" which gave you the mark ' +
+		MAROffTarget_degree_display +
+		".</p>";
+	append_str += MAROffTarget_degree_explain;
+	// Close Off-target Score card
+	append_str += "</div>";
+	append_str += "</div>";
+	append_str += "</div>";
+	$("#mainContainer").append(append_str);
 
-  // F1 Primer:
-  append_str = "<div class='card about'>";
-  append_str += "<div class='card-header' id='F1PrimerCard'>";
-  append_str += "<h5 class='mb-0'>";
-  append_str += "<button class='btn btn-link' data-toggle='collapse' data-target='#F1PrimerOutput' aria-expanded='false' aria-controls='F1PrimerOutput'>";
-  append_str += "F1 Primer: " + MARF1primers_display + "/2";
-  append_str += "</button>";
-  append_str += "</h5>"
-  append_str += "</div>";
-  append_str += "<div id='F1PrimerOutput' class='collapse' aria-labelledby='headingOne' data-parent='#accordion'>";
-  append_str += "<div class='card-body'>";
-  // Content
-  append_str += '<p> For F1 Primer, you put down "' + all_answers[5] + '" which gave you the mark ' + MARF1primers_display + '.</p>'
-  append_str += MARF1primers_explain;
-  // Close F1 Primer card
-  append_str += "</div>";
-  append_str += "</div>";
-  append_str += "</div>";
-  $("#mainContainer").append(append_str);
+	// F1 Primer:
+	append_str = "<div class='card about'>";
+	append_str += "<div class='card-header' id='F1PrimerCard'>";
+	append_str += "<h5 class='mb-0'>";
+	append_str +=
+		"<button class='btn btn-link' data-toggle='collapse' data-target='#F1PrimerOutput' aria-expanded='false' aria-controls='F1PrimerOutput'>";
+	append_str += "F1 Primer: " + MARF1primers_display + "/2";
+	append_str += "</button>";
+	append_str += "</h5>";
+	append_str += "</div>";
+	append_str += "<div id='F1PrimerOutput' class='collapse' aria-labelledby='headingOne' data-parent='#accordion'>";
+	append_str += "<div class='card-body'>";
+	// Content
+	append_str +=
+		'<p> For F1 Primer, you put down "' +
+		all_answers[5] +
+		'" which gave you the mark ' +
+		MARF1primers_display +
+		".</p>";
+	append_str += MARF1primers_explain;
+	// Close F1 Primer card
+	append_str += "</div>";
+	append_str += "</div>";
+	append_str += "</div>";
+	$("#mainContainer").append(append_str);
 
-  // F1 Primer:
-  append_str = "<div class='card about'>";
-  append_str += "<div class='card-header' id='R1PrimerCard'>";
-  append_str += "<h5 class='mb-0'>";
-  append_str += "<button class='btn btn-link' data-toggle='collapse' data-target='#R1PrimerOutput' aria-expanded='false' aria-controls='R1PrimerOutput'>";
-  append_str += "R1 Primer: " + MARR1primers_display + "/2";
-  append_str += "</button>";
-  append_str += "</h5>"
-  append_str += "</div>";
-  append_str += "<div id='R1PrimerOutput' class='collapse' aria-labelledby='headingOne' data-parent='#accordion'>";
-  append_str += "<div class='card-body'>";
-  // Content
-  append_str += '<p> For R1 Primer, you put down "' + all_answers[6] + '" which gave you the mark ' + MARR1primers_display + '.</p>'
-  append_str += MARR1primers_explain;
-  // Close F1 Primer card
-  append_str += "</div>";
-  append_str += "</div>";
-  append_str += "</div>";
-  $("#mainContainer").append(append_str);
+	// F1 Primer:
+	append_str = "<div class='card about'>";
+	append_str += "<div class='card-header' id='R1PrimerCard'>";
+	append_str += "<h5 class='mb-0'>";
+	append_str +=
+		"<button class='btn btn-link' data-toggle='collapse' data-target='#R1PrimerOutput' aria-expanded='false' aria-controls='R1PrimerOutput'>";
+	append_str += "R1 Primer: " + MARR1primers_display + "/2";
+	append_str += "</button>";
+	append_str += "</h5>";
+	append_str += "</div>";
+	append_str += "<div id='R1PrimerOutput' class='collapse' aria-labelledby='headingOne' data-parent='#accordion'>";
+	append_str += "<div class='card-body'>";
+	// Content
+	append_str +=
+		'<p> For R1 Primer, you put down "' +
+		all_answers[6] +
+		'" which gave you the mark ' +
+		MARR1primers_display +
+		".</p>";
+	append_str += MARR1primers_explain;
+	// Close F1 Primer card
+	append_str += "</div>";
+	append_str += "</div>";
+	append_str += "</div>";
+	$("#mainContainer").append(append_str);
 
-  append_str = "<br>";
-  append_str += "<p> If at any point you wish to dispute marks, please contact your TA or professor once you completed your assignment. If you have found a bug in our SciGrade marking system, please contact your professor or our admin. </p>";
-  append_str += "<br>";
+	append_str = "<br>";
+	append_str +=
+		"<p> If at any point you wish to dispute marks, please contact your TA or professor once you completed your assignment. If you have found a bug in our SciGrade marking system, please contact your professor or our admin. </p>";
+	append_str += "<br>";
 
-  append_str += '<p> <button type="button" class="btn btn-primary" onclick="backToAssignments();"> Back to Assignments </button> </p>';
+	append_str +=
+		'<p> <button type="button" class="btn btn-primary" onclick="backToAssignments();"> Back to Assignments </button> </p>';
 
-  $("#mainContainer").append(append_str);
+	$("#mainContainer").append(append_str);
 }
 
 /**
  * Determine whether an input form will be displayed or not
- * @param {String} docCheck The DOM being checked against 
+ * @param {String} docCheck The DOM being checked against
  * @param {String} checkFor The value of the DOM being used to check for
  * @param {String} docDisplay The DOM what will toggle hidden visibility for
  */
 function showNewInput(docCheck, checkFor, docDisplay) {
-  if (document.getElementById(String(docCheck)).value == String(checkFor)) {
-    document.getElementById(String(docDisplay)).removeAttribute("hidden");
-  } else {
-    document.getElementById(String(docDisplay)).setAttribute("hidden", true);
-  }
+	if (document.getElementById(String(docCheck)).value == String(checkFor)) {
+		document.getElementById(String(docDisplay)).removeAttribute("hidden");
+	} else {
+		document.getElementById(String(docDisplay)).setAttribute("hidden", true);
+	}
 }
 
 var completed_assignments = [];
@@ -795,322 +936,371 @@ var completed_assignments = [];
  * Generates a list of completed_assignments
  */
 function generateCompletedAssignmentList() {
-  completed_assignments = []
-  loadJSON_Files();
-  // Assignments
-  if (student_reg_information[0]["student_list"][studentParseNum]["assignment-HBB-Marks"] != null) {
-    if (!completed_assignments.includes("HBB")) {
-      completed_assignments.push("HBB");
-    }
-  }
-  if (student_reg_information[0]["student_list"][studentParseNum]["assignment-CCR5-Marks"] != null) {
-    if (!completed_assignments.includes("CCR5")) {
-      completed_assignments.push("CCR5");
-    }
-  }
-  if (student_reg_information[0]["student_list"][studentParseNum]["assignment-ANKK1-Marks"] != null) {
-    if (!completed_assignments.includes("ANKK1")) {
-      completed_assignments.push("ANKK1");
-    }
-  }
-  if (student_reg_information[0]["student_list"][studentParseNum]["assignment-APOE-Marks"] != null) {
-    if (!completed_assignments.includes("APOE")) {
-      completed_assignments.push("APOE");
-    }
-  }
+	completed_assignments = [];
+	loadJSON_Files();
+	// Assignments
+	if (student_reg_information[0]["student_list"][studentParseNum]["assignment-HBB-Marks"] != null) {
+		if (!completed_assignments.includes("HBB")) {
+			completed_assignments.push("HBB");
+		}
+	}
+	if (student_reg_information[0]["student_list"][studentParseNum]["assignment-CCR5-Marks"] != null) {
+		if (!completed_assignments.includes("CCR5")) {
+			completed_assignments.push("CCR5");
+		}
+	}
+	if (student_reg_information[0]["student_list"][studentParseNum]["assignment-ANKK1-Marks"] != null) {
+		if (!completed_assignments.includes("ANKK1")) {
+			completed_assignments.push("ANKK1");
+		}
+	}
+	if (student_reg_information[0]["student_list"][studentParseNum]["assignment-APOE-Marks"] != null) {
+		if (!completed_assignments.includes("APOE")) {
+			completed_assignments.push("APOE");
+		}
+	}
 }
 
 /**
  * Account management functions. This function depends on login.js, without that, this will not run!
  */
 function openAccountManagement() {
-  generateCompletedAssignmentList();
-  $("#accountManagementBody").empty();
-  var append_str = "<div id='accordion'><p>Hello " + student_reg_information[0]["student_list"][studentParseNum]["name"].split(' ')[0] + "!</p>";
-  $("#accountManagementBody").append(append_str);
+	generateCompletedAssignmentList();
+	$("#accountManagementBody").empty();
+	var append_str =
+		"<div id='accordion'><p>Hello " +
+		student_reg_information[0]["student_list"][studentParseNum]["name"].split(" ")[0] +
+		"!</p>";
+	$("#accountManagementBody").append(append_str);
 
-  // Create assignments card
-  append_str = "<div class='card about'>";
-  append_str += "<div class='card-header' id='assignmentCard'>";
-  append_str += "<h5 class='mb-0'>";
-  append_str += "<button class='btn btn-link' data-toggle='collapse' data-target='#completedAssignments' aria-expanded='true' aria-controls='completedAssignments'>";
-  append_str += "Completed assignments: ";
-  append_str += "</button>";
-  append_str += "</h5>"
-  append_str += "</div>";
-  append_str += "<div id='completedAssignments' class='collapse show' aria-labelledby='headingOne' data-parent='#accordion'>";
-  append_str += "<div class='card-body'>";
+	// Create assignments card
+	append_str = "<div class='card about'>";
+	append_str += "<div class='card-header' id='assignmentCard'>";
+	append_str += "<h5 class='mb-0'>";
+	append_str +=
+		"<button class='btn btn-link' data-toggle='collapse' data-target='#completedAssignments' aria-expanded='true' aria-controls='completedAssignments'>";
+	append_str += "Completed assignments: ";
+	append_str += "</button>";
+	append_str += "</h5>";
+	append_str += "</div>";
+	append_str +=
+		"<div id='completedAssignments' class='collapse show' aria-labelledby='headingOne' data-parent='#accordion'>";
+	append_str += "<div class='card-body'>";
 
-  // Card content
-  if (completed_assignments.length != 0) {
-    append_str += "<p>You have completed the following assignments: <p> <ul>";
-    for (i = 0; i < completed_assignments.length; i++) {
-      append_str += "<li>" + completed_assignments[i] + "</li>";
-    }
-    append_str += "</ul>";
-  } else if (completed_assignments.length == 0) {
-    append_str += "<p>You have not yet completed any assignments. </p>"
-  }
+	// Card content
+	if (completed_assignments.length != 0) {
+		append_str += "<p>You have completed the following assignments: <p> <ul>";
+		for (i = 0; i < completed_assignments.length; i++) {
+			append_str += "<li>" + completed_assignments[i] + "</li>";
+		}
+		append_str += "</ul>";
+	} else if (completed_assignments.length == 0) {
+		append_str += "<p>You have not yet completed any assignments. </p>";
+	}
 
-  // Close card
-  append_str += "</div>";
-  append_str += "</div>";
-  append_str += "</div>";
-  $("#accountManagementBody").append(append_str);
+	// Close card
+	append_str += "</div>";
+	append_str += "</div>";
+	append_str += "</div>";
+	$("#accountManagementBody").append(append_str);
 
-  var classList = student_reg_information[0]["class_list"];
-  // Obtain student marks
-  if (student_reg_information[0]["student_list"][studentParseNum]["type"] == "admin" || student_reg_information[0]["student_list"][studentParseNum]["type"] == "TA") {
-    var encodedURI = encodeURIComponent(JSON.stringify(student_reg_information[0]["student_list"]));
-    append_str = "<br> <p> <b> Oh wait! </b> Hello " + student_reg_information[0]["student_list"][studentParseNum]["type"] + "! Would you like to download student marks? </p>";
-    append_str += '<label for="DownloadClass">Choose class: </label>';
-    append_str += '<select id="DownloadClass" class="form-control" style="margin-bottom: 1%">';
-    for (key in classList) {
-      append_str += '<option value="' + key + '" id="' + key + '" tag="assignment">' + key + '</option>\n';
-    }
-    append_str += '</select>';
-    append_str += '<p style="text-align: center;"> <button type="button" class="btn btn-primary" onclick="generateHiddenStudentDownload(document.getElementById(\'DownloadClass\').value, true);"> Download Marks </button>';
-    append_str += '<button type="button" class="btn btn-primary" onclick="generateHiddenStudentDownload(document.getElementById(\'DownloadClass\').value, false);" style="margin-left: 2%;"> Download Raw Marks </button> </p>';
-    $("#accountManagementBody").append(append_str);
-  }
+	var classList = student_reg_information[0]["class_list"];
+	// Obtain student marks
+	if (
+		student_reg_information[0]["student_list"][studentParseNum]["type"] == "admin" ||
+		student_reg_information[0]["student_list"][studentParseNum]["type"] == "TA"
+	) {
+		var encodedURI = encodeURIComponent(JSON.stringify(student_reg_information[0]["student_list"]));
+		append_str =
+			"<br> <p> <b> Oh wait! </b> Hello " +
+			student_reg_information[0]["student_list"][studentParseNum]["type"] +
+			"! Would you like to download student marks? </p>";
+		append_str += '<label for="DownloadClass">Choose class: </label>';
+		append_str += '<select id="DownloadClass" class="form-control" style="margin-bottom: 1%">';
+		for (key in classList) {
+			append_str += '<option value="' + key + '" id="' + key + '" tag="assignment">' + key + "</option>\n";
+		}
+		append_str += "</select>";
+		append_str +=
+			'<p style="text-align: center;"> <button type="button" class="btn btn-primary" onclick="generateHiddenStudentDownload(document.getElementById(\'DownloadClass\').value, true);"> Download Marks </button>';
+		append_str +=
+			'<button type="button" class="btn btn-primary" onclick="generateHiddenStudentDownload(document.getElementById(\'DownloadClass\').value, false);" style="margin-left: 2%;"> Download Raw Marks </button> </p>';
+		$("#accountManagementBody").append(append_str);
+	}
 
-  // TA access to add new students:
-  if (student_reg_information[0]["student_list"][studentParseNum]["type"] == "TA" || student_reg_information[0]["student_list"][studentParseNum]["type"] == "admin") {
-    loadJSON_Files();
-    append_str = "<p> <b> ADMIN POWER! </b> <p>";
+	// TA access to add new students:
+	if (
+		student_reg_information[0]["student_list"][studentParseNum]["type"] == "TA" ||
+		student_reg_information[0]["student_list"][studentParseNum]["type"] == "admin"
+	) {
+		loadJSON_Files();
+		append_str = "<p> <b> ADMIN POWER! </b> <p>";
 
-    // Create student card
-    append_str += "<div class='card about'>";
-    append_str += "<div class='card-header' id='studentCard'>";
-    append_str += "<h5 class='mb-0'>";
-    append_str += "<button class='btn btn-link' data-toggle='collapse' data-target='#addStudents' aria-expanded='false' aria-controls='addStudents' onclick='showNewInput(\"InputClassMultiple\", \"newClass\", \"InputNewClassMultiple\")'>";
-    append_str += "Create new class: ";
-    append_str += "</button>";
-    append_str += "</h5>"
-    append_str += "</div>";
-    append_str += "<div id='addStudents' class='collapse' aria-labelledby='headingOne' data-parent='#accordion'>";
-    append_str += "<div class='card-body'>";
+		// Create student card
+		append_str += "<div class='card about'>";
+		append_str += "<div class='card-header' id='studentCard'>";
+		append_str += "<h5 class='mb-0'>";
+		append_str +=
+			"<button class='btn btn-link' data-toggle='collapse' data-target='#addStudents' aria-expanded='false' aria-controls='addStudents' onclick='showNewInput(\"InputClassMultiple\", \"newClass\", \"InputNewClassMultiple\")'>";
+		append_str += "Create new class: ";
+		append_str += "</button>";
+		append_str += "</h5>";
+		append_str += "</div>";
+		append_str += "<div id='addStudents' class='collapse' aria-labelledby='headingOne' data-parent='#accordion'>";
+		append_str += "<div class='card-body'>";
 
-    // Append all students at once:
-    append_str += "<p style='font-weight: bold;'> If you would like to create a  new class, just fill the form below: "
-    // Form opening
-    append_str += "<form>"
+		// Append all students at once:
+		append_str +=
+			"<p style='font-weight: bold;'> If you would like to create a  new class, just fill the form below: ";
+		// Form opening
+		append_str += "<form>";
 
-    // Class choice:
-    append_str += '<div class="form-group">';
-    append_str += '<label for="InputClassMultiple" style="font-weight: bold;">Create class name: </label>';
-    append_str += '<select id="InputClassMultiple" class="form-control" style="margin-bottom: 1%" disabled>';
-    append_str += '<option value="newClass" id="newClassMultiple" tag="assignment" >New Class</option>\n';
-    append_str += '</select>';
-    append_str += '<input class="form-control" id="InputNewClassMultiple" placeholder="HMB396 - Winter (NOTE: Spaces will be deleted once you submit so use capital letters to separate words)" hidden>';
-    append_str += '<small id="InputClassHelp" class="form-text text-muted">Choose class students will be added to or create a new class. Example of a new class: HMB396 - Winter - 2019 (NOTE: Spaces will be deleted once you submit so use capital letters to separate words)</small>'
-    append_str += '</div>';
+		// Class choice:
+		append_str += '<div class="form-group">';
+		append_str += '<label for="InputClassMultiple" style="font-weight: bold;">Create class name: </label>';
+		append_str += '<select id="InputClassMultiple" class="form-control" style="margin-bottom: 1%" disabled>';
+		append_str += '<option value="newClass" id="newClassMultiple" tag="assignment" >New Class</option>\n';
+		append_str += "</select>";
+		append_str +=
+			'<input class="form-control" id="InputNewClassMultiple" placeholder="HMB396 - Winter (NOTE: Spaces will be deleted once you submit so use capital letters to separate words)" hidden>';
+		append_str +=
+			'<small id="InputClassHelp" class="form-text text-muted">Choose class students will be added to or create a new class. Example of a new class: HMB396 - Winter - 2019 (NOTE: Spaces will be deleted once you submit so use capital letters to separate words)</small>';
+		append_str += "</div>";
 
-    // User number
-    append_str += '<div class="form-group">';
-    append_str += '<label for="InputStudentNumber" style="font-weight: bold;">Input student numbers: </label>';
-    append_str += '<textarea class="form-control" id="StudentNumbers" rows="4" placeholder="1234567890, 1003817535, 1113315545"></textarea>';
-    append_str += '<small id="InputStudentNumberHelp" class="form-text text-muted">Input student numbers, separated by commas, new lines and/or tab indentation (BEWARE OF TYPOS!)</small>'
-    append_str += '</div>';
+		// User number
+		append_str += '<div class="form-group">';
+		append_str += '<label for="InputStudentNumber" style="font-weight: bold;">Input student numbers: </label>';
+		append_str +=
+			'<textarea class="form-control" id="StudentNumbers" rows="4" placeholder="1234567890, 1003817535, 1113315545"></textarea>';
+		append_str +=
+			'<small id="InputStudentNumberHelp" class="form-text text-muted">Input student numbers, separated by commas, new lines and/or tab indentation (BEWARE OF TYPOS!)</small>';
+		append_str += "</div>";
 
-    // User uMail
-    append_str += '<div class="form-group">';
-    append_str += '<label for="InputStudentUmail" style="font-weight: bold;">Input student University email: </label>';
-    append_str += '<textarea class="form-control" id="StudentUmails" rows="4" placeholder="john.doe@mail.utoronto.ca, sarah.cat@.mail.utoronto.ca, alexander.macadonia@utoronto.ca"></textarea>';
-    append_str += '<small id="InputStudentUmailUmail" class="form-text text-muted">Input student University associated email in the same order of the student numbers, separated by commas, new lines and/or tab indentation (BEWARE OF TYPOS!)</small>'
-    append_str += '</div>';
+		// User uMail
+		append_str += '<div class="form-group">';
+		append_str +=
+			'<label for="InputStudentUmail" style="font-weight: bold;">Input student University email: </label>';
+		append_str +=
+			'<textarea class="form-control" id="StudentUmails" rows="4" placeholder="john.doe@mail.utoronto.ca, sarah.cat@.mail.utoronto.ca, alexander.macadonia@utoronto.ca"></textarea>';
+		append_str +=
+			'<small id="InputStudentUmailUmail" class="form-text text-muted">Input student University associated email in the same order of the student numbers, separated by commas, new lines and/or tab indentation (BEWARE OF TYPOS!)</small>';
+		append_str += "</div>";
 
-    // Submit button
-    append_str += '<p> <button type="button" class="btn btn-primary" onclick="changeInputClass(\'InputClassMultiple\', \'newClass\', \'newClassMultiple\', document.getElementById(\'InputNewClassMultiple\').value), addMultipleUsersToServer(document.getElementById(\'InputClassMultiple\').value, document.getElementById(\'StudentNumbers\'), document.getElementById(\'StudentUmails\'));"> Send multiple students to Server </button>';
-    append_str += "<br>";
+		// Submit button
+		append_str +=
+			"<p> <button type=\"button\" class=\"btn btn-primary\" onclick=\"changeInputClass('InputClassMultiple', 'newClass', 'newClassMultiple', document.getElementById('InputNewClassMultiple').value), addMultipleUsersToServer(document.getElementById('InputClassMultiple').value, document.getElementById('StudentNumbers'), document.getElementById('StudentUmails'));\"> Send multiple students to Server </button>";
+		append_str += "<br>";
 
-    // Close form
-    append_str += "</form>";
+		// Close form
+		append_str += "</form>";
 
-    // Close card
-    append_str += "</div>";
-    append_str += "</div>";
-    append_str += "</div>";
-    $("#accountManagementBody").append(append_str);
+		// Close card
+		append_str += "</div>";
+		append_str += "</div>";
+		append_str += "</div>";
+		$("#accountManagementBody").append(append_str);
 
-    // Create single card
-    append_str = "<div class='card about'>";
-    append_str += "<div class='card-header' id='addTACard'>";
-    append_str += "<h5 class='mb-0'>";
-    append_str += "<button class='btn btn-link' data-toggle='collapse' data-target='#addTA' aria-expanded='true' aria-controls='addTA'>";
-    append_str += "Add single user: ";
-    append_str += "</button>";
-    append_str += "</h5>"
-    append_str += "</div>";
-    append_str += "<div id='addTA' class='collapse' aria-labelledby='headingOne' data-parent='#accordion'>";
-    append_str += "<div class='card-body'>";
+		// Create single card
+		append_str = "<div class='card about'>";
+		append_str += "<div class='card-header' id='addTACard'>";
+		append_str += "<h5 class='mb-0'>";
+		append_str +=
+			"<button class='btn btn-link' data-toggle='collapse' data-target='#addTA' aria-expanded='true' aria-controls='addTA'>";
+		append_str += "Add single user: ";
+		append_str += "</button>";
+		append_str += "</h5>";
+		append_str += "</div>";
+		append_str += "<div id='addTA' class='collapse' aria-labelledby='headingOne' data-parent='#accordion'>";
+		append_str += "<div class='card-body'>";
 
-    //Append TAs or Admins:
-    append_str += "<p style='font-weight: bold;'>If you would like to add a single user (students, TAs or admins), please fill in the form below. Please note, this will default the user as a student. Only admins will be able to create new TAs or admins</p>";
-    // Form opening
-    append_str += "<form>";
+		//Append TAs or Admins:
+		append_str +=
+			"<p style='font-weight: bold;'>If you would like to add a single user (students, TAs or admins), please fill in the form below. Please note, this will default the user as a student. Only admins will be able to create new TAs or admins</p>";
+		// Form opening
+		append_str += "<form>";
 
-    // Class choice:
-    append_str += '<div class="form-group">';
-    append_str += '<label for="InputClassSingle" style="font-weight: bold;">Choose class: </label>';
-    append_str += '<select id="InputClassSingle" class="form-control" style="margin-bottom: 1%;">';
-    for (key in classList) {
-      append_str += '<option value="' + key + '" id="' + key + '" tag="assignment">' + key + '</option>\n';
-    }
-    append_str += '</select>';
-    append_str += '<small id="InputClassSingleHelp" class="form-text text-muted">Choose class TA will be added.</small>'
-    append_str += '</div>';
+		// Class choice:
+		append_str += '<div class="form-group">';
+		append_str += '<label for="InputClassSingle" style="font-weight: bold;">Choose class: </label>';
+		append_str += '<select id="InputClassSingle" class="form-control" style="margin-bottom: 1%;">';
+		for (key in classList) {
+			append_str += '<option value="' + key + '" id="' + key + '" tag="assignment">' + key + "</option>\n";
+		}
+		append_str += "</select>";
+		append_str +=
+			'<small id="InputClassSingleHelp" class="form-text text-muted">Choose class TA will be added.</small>';
+		append_str += "</div>";
 
-    // User number
-    append_str += '<div class="form-group">';
-    append_str += '<label for="InputStudentNumber" style="font-weight: bold;">User\'s number</label>';
-    append_str += '<input class="form-control" id="StudentNumber" placeholder="1234567890" maxlength="10">';
-    append_str += '<small id="InputStudentNumberHelp" class="form-text text-muted">The user\'s access number (like a student or employee number)</small>'
-    append_str += '</div>';
+		// User number
+		append_str += '<div class="form-group">';
+		append_str += '<label for="InputStudentNumber" style="font-weight: bold;">User\'s number</label>';
+		append_str += '<input class="form-control" id="StudentNumber" placeholder="1234567890" maxlength="10">';
+		append_str +=
+			'<small id="InputStudentNumberHelp" class="form-text text-muted">The user\'s access number (like a student or employee number)</small>';
+		append_str += "</div>";
 
-    // User umail
-    append_str += '<div class="form-group">';
-    append_str += '<label for="InputStudentUmail" style="font-weight: bold;">User\'s umail</label>';
-    append_str += '<input type="email" class="form-control" id="StudentUmail" placeholder="first.last@mail.utoronto.ca">';
-    append_str += '<small id="InputStudentNumberHelp" class="form-text text-muted">The user\'s University associated email</small>'
-    append_str += '</div>';
+		// User umail
+		append_str += '<div class="form-group">';
+		append_str += '<label for="InputStudentUmail" style="font-weight: bold;">User\'s umail</label>';
+		append_str +=
+			'<input type="email" class="form-control" id="StudentUmail" placeholder="first.last@mail.utoronto.ca">';
+		append_str +=
+			'<small id="InputStudentNumberHelp" class="form-text text-muted">The user\'s University associated email</small>';
+		append_str += "</div>";
 
-    // Submit button
-    append_str += '<p> <button type="button" class="btn btn-primary" onclick="addUserToServer(document.getElementById(\'InputClassSingle\').value, document.getElementById(\'StudentNumber\').value.trim(), document.getElementById(\'StudentUmail\').value.trim());"> Send single user to Server </button>';
-    append_str += "<br>";
+		// Submit button
+		append_str +=
+			"<p> <button type=\"button\" class=\"btn btn-primary\" onclick=\"addUserToServer(document.getElementById('InputClassSingle').value, document.getElementById('StudentNumber').value.trim(), document.getElementById('StudentUmail').value.trim());\"> Send single user to Server </button>";
+		append_str += "<br>";
 
-    // Form closing
-    append_str += "</form>";
+		// Form closing
+		append_str += "</form>";
 
-    // Close card
-    append_str += "</div>";
-    append_str += "</div>";
-    append_str += "</div>";
-    $("#accountManagementBody").append(append_str);
-  }
+		// Close card
+		append_str += "</div>";
+		append_str += "</div>";
+		append_str += "</div>";
+		$("#accountManagementBody").append(append_str);
+	}
 
-  // Admin controls:
-  if (student_reg_information[0]["student_list"][studentParseNum]["type"] == "admin") {
-    // Create modifying controls card
-    append_str = "<div class='card about'>";
-    append_str += "<div class='card-header' id='modifyCard'>";
-    append_str += "<h5 class='mb-0'>";
-    append_str += "<button class='btn btn-link' data-toggle='collapse' data-target='#modifyControls' aria-expanded='true' aria-controls='modifyControls' onclick='ChangeDOMInnerhtml(\"CurrentOffTarget\", \"Current off-target marking is set to: \" + student_reg_information[0][\"classMarkingMod\"][document.getElementById(\"ClassModChange\").value][0])'>";
-    append_str += "Modify marking controls: ";
-    append_str += "</button>";
-    append_str += "</h5>"
-    append_str += "</div>";
-    append_str += "<div id='modifyControls' class='collapse' aria-labelledby='headingOne' data-parent='#accordion'>";
-    append_str += "<div class='card-body'>";
+	// Admin controls:
+	if (student_reg_information[0]["student_list"][studentParseNum]["type"] == "admin") {
+		// Create modifying controls card
+		append_str = "<div class='card about'>";
+		append_str += "<div class='card-header' id='modifyCard'>";
+		append_str += "<h5 class='mb-0'>";
+		append_str +=
+			"<button class='btn btn-link' data-toggle='collapse' data-target='#modifyControls' aria-expanded='true' aria-controls='modifyControls' onclick='ChangeDOMInnerhtml(\"CurrentOffTarget\", \"Current off-target marking is set to: \" + student_reg_information[0][\"classMarkingMod\"][document.getElementById(\"ClassModChange\").value][0])'>";
+		append_str += "Modify marking controls: ";
+		append_str += "</button>";
+		append_str += "</h5>";
+		append_str += "</div>";
+		append_str +=
+			"<div id='modifyControls' class='collapse' aria-labelledby='headingOne' data-parent='#accordion'>";
+		append_str += "<div class='card-body'>";
 
-    //Info:
-    append_str += "<p style='font-weight: bold;'>If you would like to change a class's off-target optimal goal, you can do that here</p>";
+		//Info:
+		append_str +=
+			"<p style='font-weight: bold;'>If you would like to change a class's off-target optimal goal, you can do that here</p>";
 
-    // Choose class:
-    append_str += '<div class="form-group">';
-    append_str += '<label for="ClassModChange" style="font-weight: bold;">Choose class: </label>';
-    append_str += '<select id="ClassModChange" class="form-control" style="margin-bottom: 1%;" onchange="ChangeDOMInnerhtml(\'CurrentOffTarget\', \'Current off-target marking is set to: \' + student_reg_information[0][\'classMarkingMod\'][document.getElementById(\'ClassModChange\').value][0])">';
-    for (key in classList) {
-      append_str += '<option value="' + key + '" id="' + key + '" tag="assignment">' + key + '</option>\n';
-    }
-    append_str += '</select>';
-    append_str += '<small id="ClassModChangeHelp" class="form-text text-muted">Choose the class for which you are modifying marking scheme for.</small>'
-    append_str += '</div>';
+		// Choose class:
+		append_str += '<div class="form-group">';
+		append_str += '<label for="ClassModChange" style="font-weight: bold;">Choose class: </label>';
+		append_str +=
+			"<select id=\"ClassModChange\" class=\"form-control\" style=\"margin-bottom: 1%;\" onchange=\"ChangeDOMInnerhtml('CurrentOffTarget', 'Current off-target marking is set to: ' + student_reg_information[0]['classMarkingMod'][document.getElementById('ClassModChange').value][0])\">";
+		for (key in classList) {
+			append_str += '<option value="' + key + '" id="' + key + '" tag="assignment">' + key + "</option>\n";
+		}
+		append_str += "</select>";
+		append_str +=
+			'<small id="ClassModChangeHelp" class="form-text text-muted">Choose the class for which you are modifying marking scheme for.</small>';
+		append_str += "</div>";
 
-    // Modify controls:
-    append_str += '<div class="form-group">';
-    append_str += '<p style="font-weight: bold;">Modify controls for: </p>';
-    append_str += '<label for="SelectModifyControls">Off-Target Marking: </label>';
+		// Modify controls:
+		append_str += '<div class="form-group">';
+		append_str += '<p style="font-weight: bold;">Modify controls for: </p>';
+		append_str += '<label for="SelectModifyControls">Off-Target Marking: </label>';
 
-    append_str += '<p id="CurrentOffTarget">Current off-target marking is set to: </p>';
-    append_str += '<select id="SelectModifyControls" class="form-control" onchange="showNewInput(\'SelectModifyControls\', \'Custom\', \'InputModifyControls\')" style="margin-bottom: 1%">';
-    append_str += '<option value="Optimal" id="Optimal" tag="assignment">Optimal</option>\n';
-    append_str += '<option value="Custom" id="CustomOffTarget" tag="assignment">Custom</option>\n';
-    append_str += '</select>';
-    append_str += '<input class="form-control" id="InputModifyControls" type="number" step="0.01" min="0.01" max="100" placeholder="Insert number between 0.01 and 100" hidden>';
-    append_str += '<small id="InputModifyControlsHelp" class="form-text text-muted">Choose how you want the off-target score to be marked. Optimal is Min_optimal = Max_range - (Max_range * 0.2) if below 80 (if below, optimal = 80). Custom value can be any number between 0.01 and 100 which will be the new custom "optimal" value for your class.</small>'
-    append_str += '</div>';
+		append_str += '<p id="CurrentOffTarget">Current off-target marking is set to: </p>';
+		append_str +=
+			'<select id="SelectModifyControls" class="form-control" onchange="showNewInput(\'SelectModifyControls\', \'Custom\', \'InputModifyControls\')" style="margin-bottom: 1%">';
+		append_str += '<option value="Optimal" id="Optimal" tag="assignment">Optimal</option>\n';
+		append_str += '<option value="Custom" id="CustomOffTarget" tag="assignment">Custom</option>\n';
+		append_str += "</select>";
+		append_str +=
+			'<input class="form-control" id="InputModifyControls" type="number" step="0.01" min="0.01" max="100" placeholder="Insert number between 0.01 and 100" hidden>';
+		append_str +=
+			'<small id="InputModifyControlsHelp" class="form-text text-muted">Choose how you want the off-target score to be marked. Optimal is Min_optimal = Max_range - (Max_range * 0.2) if below 80 (if below, optimal = 80). Custom value can be any number between 0.01 and 100 which will be the new custom "optimal" value for your class.</small>';
+		append_str += "</div>";
 
-    // Submit button
-    append_str += '<p> <button type="button" class="btn btn-primary" onclick="changeInputClass(\'SelectModifyControls\', \'Custom\', \'CustomOffTarget\', document.getElementById(\'InputModifyControls\').value), UpdateMarkingControls(document.getElementById(\'ClassModChange\').value, document.getElementById(\'SelectModifyControls\').value)"> Update Marking Scheme </button>';
-    append_str += "<br>";
+		// Submit button
+		append_str +=
+			"<p> <button type=\"button\" class=\"btn btn-primary\" onclick=\"changeInputClass('SelectModifyControls', 'Custom', 'CustomOffTarget', document.getElementById('InputModifyControls').value), UpdateMarkingControls(document.getElementById('ClassModChange').value, document.getElementById('SelectModifyControls').value)\"> Update Marking Scheme </button>";
+		append_str += "<br>";
 
-    // Close card
-    append_str += "</div>";
-    append_str += "</div>";
-    append_str += "</div>";
-    $("#accountManagementBody").append(append_str);
+		// Close card
+		append_str += "</div>";
+		append_str += "</div>";
+		append_str += "</div>";
+		$("#accountManagementBody").append(append_str);
 
-    // Modify user's type card
-    append_str = "<div class='card about'>";
-    append_str += "<div class='card-header' id='typeCard'>";
-    append_str += "<h5 class='mb-0'>";
-    append_str += "<button class='btn btn-link' data-toggle='collapse' data-target='#typeControl' aria-expanded='true' aria-controls='typeControl' onclick=\"UpdateStudentList(document.getElementById(\'ClassChange\').value); UpdateChooseUser(\'ClassUserChange\');\">";
-    append_str += "Change a user's account type: ";
-    append_str += "</button>";
-    append_str += "</h5>"
-    append_str += "</div>";
-    append_str += "<div id='typeControl' class='collapse' aria-labelledby='headingOne' data-parent='#accordion'>";
-    append_str += "<div class='card-body'>";
+		// Modify user's type card
+		append_str = "<div class='card about'>";
+		append_str += "<div class='card-header' id='typeCard'>";
+		append_str += "<h5 class='mb-0'>";
+		append_str +=
+			"<button class='btn btn-link' data-toggle='collapse' data-target='#typeControl' aria-expanded='true' aria-controls='typeControl' onclick=\"UpdateStudentList(document.getElementById('ClassChange').value); UpdateChooseUser('ClassUserChange');\">";
+		append_str += "Change a user's account type: ";
+		append_str += "</button>";
+		append_str += "</h5>";
+		append_str += "</div>";
+		append_str += "<div id='typeControl' class='collapse' aria-labelledby='headingOne' data-parent='#accordion'>";
+		append_str += "<div class='card-body'>";
 
-    //Info:
-    append_str += "<p style='font-weight: bold;'>If you would like to change a user's account type (to TA or admin or back to student), you can do that below</p>";
+		//Info:
+		append_str +=
+			"<p style='font-weight: bold;'>If you would like to change a user's account type (to TA or admin or back to student), you can do that below</p>";
 
-    // Choose class:
-    append_str += '<div class="form-group">';
-    append_str += '<label for="ClassChange" style="font-weight: bold;">Choose class: </label>';
-    append_str += '<select id="ClassChange" class="form-control" style="margin-bottom: 1%;" onchange="UpdateStudentList(document.getElementById(\'ClassChange\').value); UpdateChooseUser(\'ClassUserChange\');">';
-    for (key in classList) {
-      append_str += '<option value="' + key + '" id="' + key + '" tag="assignment">' + key + '</option>\n';
-    }
-    append_str += '</select>';
-    append_str += '<small id="ClassChangeHelp" class="form-text text-muted">Choose the class for which the user belongs to.</small>'
-    append_str += '</div>';
+		// Choose class:
+		append_str += '<div class="form-group">';
+		append_str += '<label for="ClassChange" style="font-weight: bold;">Choose class: </label>';
+		append_str +=
+			'<select id="ClassChange" class="form-control" style="margin-bottom: 1%;" onchange="UpdateStudentList(document.getElementById(\'ClassChange\').value); UpdateChooseUser(\'ClassUserChange\');">';
+		for (key in classList) {
+			append_str += '<option value="' + key + '" id="' + key + '" tag="assignment">' + key + "</option>\n";
+		}
+		append_str += "</select>";
+		append_str +=
+			'<small id="ClassChangeHelp" class="form-text text-muted">Choose the class for which the user belongs to.</small>';
+		append_str += "</div>";
 
-    // Choose user:
-    append_str += '<div class="form-group">';
-    append_str += '<label for="ClassUserChange" style="font-weight: bold;">Choose user: </label>';
-    append_str += '<select id="ClassUserChange" class="form-control" style="margin-bottom: 1%;" onchange="">';
-    append_str += '</select>';
-    append_str += '<small id="ClassUserChangeHelp" class="form-text text-muted">Choose the user for which you change their account type for.</small>'
-    append_str += '</div>';
+		// Choose user:
+		append_str += '<div class="form-group">';
+		append_str += '<label for="ClassUserChange" style="font-weight: bold;">Choose user: </label>';
+		append_str += '<select id="ClassUserChange" class="form-control" style="margin-bottom: 1%;" onchange="">';
+		append_str += "</select>";
+		append_str +=
+			'<small id="ClassUserChangeHelp" class="form-text text-muted">Choose the user for which you change their account type for.</small>';
+		append_str += "</div>";
 
-    // Choose type:
-    append_str += '<div class="form-group">';
-    append_str += '<label for="ClassTypeChange" style="font-weight: bold;">Choose type: </label>';
-    append_str += '<select id="ClassTypeChange" class="form-control" style="margin-bottom: 1%;" onchange="">';
-    append_str += '<option value="Student" id="Student" tag="userType">Student</option>\n';
-    append_str += '<option value="TA" id="TA" tag="userType">TA</option>\n';
-    append_str += '<option value="admin" id="admin" tag="userType">admin</option>\n';
-    append_str += '</select>';
-    append_str += '<small id="ClassTypeChangeHelp" class="form-text text-muted">Choose the type for which you want the user to become.</small>'
-    append_str += '</div>';
+		// Choose type:
+		append_str += '<div class="form-group">';
+		append_str += '<label for="ClassTypeChange" style="font-weight: bold;">Choose type: </label>';
+		append_str += '<select id="ClassTypeChange" class="form-control" style="margin-bottom: 1%;" onchange="">';
+		append_str += '<option value="Student" id="Student" tag="userType">Student</option>\n';
+		append_str += '<option value="TA" id="TA" tag="userType">TA</option>\n';
+		append_str += '<option value="admin" id="admin" tag="userType">admin</option>\n';
+		append_str += "</select>";
+		append_str +=
+			'<small id="ClassTypeChangeHelp" class="form-text text-muted">Choose the type for which you want the user to become.</small>';
+		append_str += "</div>";
 
-    // Submit button
-    append_str += '<p> <button type="button" class="btn btn-primary" onclick="UpdateUserType(document.getElementById(\'ClassChange\').value, document.getElementById(\'ClassUserChange\').value, document.getElementById(\'ClassTypeChange\').value);"> Update User\'s Type </button>';
-    append_str += "<br>";
+		// Submit button
+		append_str +=
+			"<p> <button type=\"button\" class=\"btn btn-primary\" onclick=\"UpdateUserType(document.getElementById('ClassChange').value, document.getElementById('ClassUserChange').value, document.getElementById('ClassTypeChange').value);\"> Update User's Type </button>";
+		append_str += "<br>";
 
-    // Close card
-    append_str += "</div>";
-    append_str += "</div>";
-    append_str += "</div>";
-    $("#accountManagementBody").append(append_str);
-  }
+		// Close card
+		append_str += "</div>";
+		append_str += "</div>";
+		append_str += "</div>";
+		$("#accountManagementBody").append(append_str);
+	}
 
-  // Close account management
-  append_str = "</div>";
-  $("#accountManagementBody").append(append_str);
+	// Close account management
+	append_str = "</div>";
+	$("#accountManagementBody").append(append_str);
 }
 
 /**
  * Update the choose user's options in the account management's change user type
- * @param {String} domUser 
+ * @param {String} domUser
  */
 function UpdateChooseUser(domUser) {
-  ClearSelectOptions(domUser);
-  for (key in updatedListOfStudents) {
-    AddToOptions(domUser, key, updatedListOfStudents[key]);
-  }
+	ClearSelectOptions(domUser);
+	for (key in updatedListOfStudents) {
+		AddToOptions(domUser, key, updatedListOfStudents[key]);
+	}
 }
 
 /**
@@ -1120,11 +1310,11 @@ function UpdateChooseUser(domUser) {
  * @param {String} optionsInner The InnerHTML for the options being added
  */
 function AddToOptions(domID, optionsValue, optionsInner) {
-  var dom = document.getElementById(domID);
-  var option = document.createElement('option');
-  option.value = optionsValue;
-  option.innerHTML = optionsInner;
-  dom.appendChild(option);
+	var dom = document.getElementById(domID);
+	var option = document.createElement("option");
+	option.value = optionsValue;
+	option.innerHTML = optionsInner;
+	dom.appendChild(option);
 }
 
 /**
@@ -1132,10 +1322,10 @@ function AddToOptions(domID, optionsValue, optionsInner) {
  * @param {String} domID The DOM ID in the HTML for the select
  */
 function ClearSelectOptions(domID) {
-  var dom = document.getElementById(domID);
-  while (dom.options.length > 0) {
-    dom.options.remove(0)
-  };
+	var dom = document.getElementById(domID);
+	while (dom.options.length > 0) {
+		dom.options.remove(0);
+	}
 }
 
 var updatedListOfStudents = {};
@@ -1144,41 +1334,46 @@ var updatedListOfStudents = {};
  * @param {String} className The class for which the students belong to
  */
 function UpdateStudentList(className) {
-  updatedListOfStudents = {};
-  var studentList = student_reg_information[0]["student_list"];
-  for (i = 0; i < studentList.length; i++) {
-    if (studentList[i]["studentClass"] == className) {
-      updatedListOfStudents[studentList[i]["name"]] = (studentList[i]["name"] + " - " + studentList[i]["type"]);
-    }
-  };
+	updatedListOfStudents = {};
+	var studentList = student_reg_information[0]["student_list"];
+	for (i = 0; i < studentList.length; i++) {
+		if (studentList[i]["studentClass"] == className) {
+			updatedListOfStudents[studentList[i]["name"]] = studentList[i]["name"] + " - " + studentList[i]["type"];
+		}
+	}
 }
 
 /**
- * Change the user's type 
- * @param {String} classname The class for which the user belongs to 
+ * Change the user's type
+ * @param {String} classname The class for which the user belongs to
  * @param {String} username The user's name that is listed in the database
- * @param {String} changeTo The type for the user to be changed to 
+ * @param {String} changeTo The type for the user to be changed to
  */
 function UpdateUserType(classname, username, changeTo) {
-  var studentList = student_reg_information[0]["student_list"];
-  for (i = 0; i < studentList.length; i++) {
-    if (studentList[i]["studentClass"] == classname && studentList[i]["name"] == username) {
-      var changeType = "student_list." + i + "." + "type";
-      client.login().then(() =>
-        db.collection("Student_Information").updateOne({
-          version: "0.3"
-        }, {
-          $set: {
-            [changeType]: changeTo
-          }
-        }, function (err, res) {
-          if (err) throw err;
-          console.log("1 document updated");
-          db.close();
-        }));
-      $("#adminSendButton").click();
-    }
-  };
+	var studentList = student_reg_information[0]["student_list"];
+	for (i = 0; i < studentList.length; i++) {
+		if (studentList[i]["studentClass"] == classname && studentList[i]["name"] == username) {
+			var changeType = "student_list." + i + "." + "type";
+			client.login().then(() =>
+				db.collection("Student_Information").updateOne(
+					{
+						version: "0.3",
+					},
+					{
+						$set: {
+							[changeType]: changeTo,
+						},
+					},
+					function (err, res) {
+						if (err) throw err;
+						console.log("1 document updated");
+						db.close();
+					},
+				),
+			);
+			$("#adminSendButton").click();
+		}
+	}
 }
 
 /**
@@ -1187,32 +1382,37 @@ function UpdateUserType(classname, username, changeTo) {
  * @param {String} offTargetChange The value of the modified control being changed to
  */
 function UpdateMarkingControls(classToMod, offTargetChange) {
-  var classChange = "classMarkingMod." + classToMod;
-  var markingChangeList = [offTargetChange]
-  client.login().then(() =>
-    db.collection("Student_Information").updateOne({
-      version: "0.3"
-    }, {
-      $set: {
-        [classChange]: markingChangeList
-      }
-    }, function (err, res) {
-      if (err) throw err;
-      console.log("1 document updated");
-      db.close();
-    }));
-  $("#adminSendButton").click();
-  document.getElementById("InputModifyControls").value = "";
-  document.getElementById("CustomOffTarget").value = "Custom";
+	var classChange = "classMarkingMod." + classToMod;
+	var markingChangeList = [offTargetChange];
+	client.login().then(() =>
+		db.collection("Student_Information").updateOne(
+			{
+				version: "0.3",
+			},
+			{
+				$set: {
+					[classChange]: markingChangeList,
+				},
+			},
+			function (err, res) {
+				if (err) throw err;
+				console.log("1 document updated");
+				db.close();
+			},
+		),
+	);
+	$("#adminSendButton").click();
+	document.getElementById("InputModifyControls").value = "";
+	document.getElementById("CustomOffTarget").value = "Custom";
 }
 
 /**
- * Change a DOM's innerHTML 
+ * Change a DOM's innerHTML
  * @param {String} domID DOM's ID that is being modified
  * @param {String} changeTo The content of the innerHTML
  */
 function ChangeDOMInnerhtml(domID, changeTo) {
-  document.getElementById(domID).innerHTML = changeTo;
+	document.getElementById(domID).innerHTML = changeTo;
 }
 
 var downloadIndexTable_start = "\t\t<tr>\n\t\t\t<th>Student Number</th>\n\t\t\t<th>Name</th>";
@@ -1224,29 +1424,29 @@ var downloadIndexTable_fill = "";
  * @param {boolean} SimpleComplex True is simple, false is complex
  */
 function generateRestOfIndexTable(whichIndexTable, SimpleComplex) {
-  whichIndexTable = downloadIndexTable_start;
-  for (i = 0; i < list_of_assignments.length; i++) {
-    whichIndexTable += "\n\t\t\t<th>" + list_of_assignments[i] + "</th>";
-    if (SimpleComplex == true) {
-      whichIndexTable += "\n\t\t\t<th>Percent</th>";
-      whichIndexTable += "\n\t\t\t<th>Raw</th>";
-    } else if (SimpleComplex == false) {
-      whichIndexTable += "\n\t\t\t<th>Percent</th>";
-      whichIndexTable += "\n\t\t\t<th>Raw</th>";
-      whichIndexTable += "\n\t\t\t<th>gRNA</th>";
-      whichIndexTable += "\n\t\t\t<th>Mark</th>";
-      whichIndexTable += "\n\t\t\t<th>PAM</th>";
-      whichIndexTable += "\n\t\t\t<th>Mark</th>";
-      whichIndexTable += "\n\t\t\t<th>Off-target score</th>";
-      whichIndexTable += "\n\t\t\t<th>Mark</th>";
-      whichIndexTable += "\n\t\t\t<th>F1 primers</th>";
-      whichIndexTable += "\n\t\t\t<th>Mark</th>";
-      whichIndexTable += "\n\t\t\t<th>R1 primers</th>";
-      whichIndexTable += "\n\t\t\t<th>Mark</th>";
-    }
-  }
-  whichIndexTable += downloadIndexTable_end;
-  return whichIndexTable;
+	whichIndexTable = downloadIndexTable_start;
+	for (i = 0; i < list_of_assignments.length; i++) {
+		whichIndexTable += "\n\t\t\t<th>" + list_of_assignments[i] + "</th>";
+		if (SimpleComplex == true) {
+			whichIndexTable += "\n\t\t\t<th>Percent</th>";
+			whichIndexTable += "\n\t\t\t<th>Raw</th>";
+		} else if (SimpleComplex == false) {
+			whichIndexTable += "\n\t\t\t<th>Percent</th>";
+			whichIndexTable += "\n\t\t\t<th>Raw</th>";
+			whichIndexTable += "\n\t\t\t<th>gRNA</th>";
+			whichIndexTable += "\n\t\t\t<th>Mark</th>";
+			whichIndexTable += "\n\t\t\t<th>PAM</th>";
+			whichIndexTable += "\n\t\t\t<th>Mark</th>";
+			whichIndexTable += "\n\t\t\t<th>Off-target score</th>";
+			whichIndexTable += "\n\t\t\t<th>Mark</th>";
+			whichIndexTable += "\n\t\t\t<th>F1 primers</th>";
+			whichIndexTable += "\n\t\t\t<th>Mark</th>";
+			whichIndexTable += "\n\t\t\t<th>R1 primers</th>";
+			whichIndexTable += "\n\t\t\t<th>Mark</th>";
+		}
+	}
+	whichIndexTable += downloadIndexTable_end;
+	return whichIndexTable;
 }
 
 /**
@@ -1255,133 +1455,173 @@ function generateRestOfIndexTable(whichIndexTable, SimpleComplex) {
  * @param {boolean} whichType True is simple, false is complex
  */
 function generateHiddenStudentDownload(whichClass, whichType) {
-  // Check if TA/Admin
-  if (student_reg_information[0]["student_list"][studentParseNum]["type"] == "TA" || student_reg_information[0]["student_list"][studentParseNum]["type"] == "admin") {
-    downloadIndexTable_fill = generateRestOfIndexTable(downloadIndexTable_fill, whichType);
-    $("#hiddenDownloadModal_table").empty(); // reset
-    var d = new Date();
-    var downlodaIndexTable_str = "<table id='downloadIndexTable'>\n\t<tbody>\n";
-    var captionTitleBegin = "SciGrade_studentMark_";
-    if (whichType == false) {
-      captionTitleBegin = "SciGrade_studentMarkRaw_";
-    }
-    downlodaIndexTable_str += "\t\t<caption>" + captionTitleBegin + student_reg_information[0]["student_list"][studentParseNum]["name"].replace(/\s/g, '') + "_" + d.getFullYear() + "-" + d.getMonth() + "_" + d.getDate() + "</caption>\n";
-    downlodaIndexTable_str += downloadIndexTable_fill;
-    // Looping through each row of the table
-    var studentRegList = student_reg_information[0]["student_list"];
-    for (i = 0; i < studentRegList.length; i++) {
-      if (studentRegList[i]["type"] == "Student" && studentRegList[i]["studentClass"] == whichClass) {
-        downlodaIndexTable_str += "\t\t<tr>\n";
-        downlodaIndexTable_str += "\t\t\t<td>" + studentRegList[i]["student_number"] + "</td>\n";
-        downlodaIndexTable_str += "\t\t\t<td>" + studentRegList[i]["name"] + "</td>\n";
-        if (whichType == true) {
-          for (x = 0; x < list_of_assignments.length; x++) {
-            if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Marks"] != null) {
-              downlodaIndexTable_str += "\t\t\t<td>" + (list_of_assignments[x]).toString() + "</td>\n";
-              downlodaIndexTable_str += "\t\t\t<td>" + (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Marks"][1]).toString() + "</td>\n";
-              downlodaIndexTable_str += "\t\t\t<td>" + (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Marks"][0]).toString() + "</td>\n";
-            } else if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Marks"] == null) {
-              downlodaIndexTable_str += "\t\t\t<td>" + (list_of_assignments[x]).toString() + "</td>\n";
-              downlodaIndexTable_str += "\t\t\t<td> Incompleted </td>\n";
-              downlodaIndexTable_str += "\t\t\t<td> 0.00 </td>\n";
-            }
-          }
-        }
-        if (whichType == false) {
-          for (x = 0; x < list_of_assignments.length; x++) {
-            if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Marks"] != null) {
-              downlodaIndexTable_str += "\t\t\t<td>" + (list_of_assignments[x]).toString() + "</td>\n";
-              var mark = 0;
-              // Raw values
-              downlodaIndexTable_str += "\t\t\t<td>" + (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Marks"][1]).toString() + "</td>\n";
-              downlodaIndexTable_str += "\t\t\t<td>" + (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Marks"][0]).toString() + "</td>\n";
-              // gRNA
-              downlodaIndexTable_str += "\t\t\t<td>" + (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Answers"][0]).toString() + "</td>\n";
-              if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Outputs"][2] == 1) {
-                mark = 2;
-              } else if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Outputs"][2] == 2) {
-                mark = 1;
-              } else if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Outputs"][2] == 3) {
-                mark = 0.5;
-              }
-              downlodaIndexTable_str += "\t\t\t<td>" + (mark).toString() + "</td>\n";
-              // PAM
-              downlodaIndexTable_str += "\t\t\t<td>" + (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Answers"][1]).toString() + "</td>\n";
-              if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Outputs"][4] == true) {
-                mark = 2;
-              } else {
-                mark = 0;
-              }
-              downlodaIndexTable_str += "\t\t\t<td>" + (mark).toString() + "</td>\n";
-              // Off-target
-              downlodaIndexTable_str += "\t\t\t<td>" + (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Answers"][4]).toString() + "</td>\n";
-              if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Outputs"][6] == 1) {
-                mark = 2;
-              } else if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Outputs"][6] == 2) {
-                mark = 1;
-              } else if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Outputs"][6] == 3) {
-                mark = 0.5;
-              }
-              downlodaIndexTable_str += "\t\t\t<td>" + (mark).toString() + "</td>\n";
-              // F1 Primers
-              downlodaIndexTable_str += "\t\t\t<td>" + (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Answers"][5]).toString() + "</td>\n";
-              if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Outputs"][10] == true) {
-                mark = 2;
-              } else {
-                mark = 0;
-              }
-              downlodaIndexTable_str += "\t\t\t<td>" + (mark).toString() + "</td>\n";
-              // R1 primers
-              downlodaIndexTable_str += "\t\t\t<td>" + (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Answers"][6]).toString() + "</td>\n";
-              if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Outputs"][11] == true) {
-                mark = 2;
-              } else {
-                mark = 0;
-              }
-              downlodaIndexTable_str += "\t\t\t<td>" + (mark).toString() + "</td>\n";
-            } else if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Marks"] == null) {
-              downlodaIndexTable_str += "\t\t\t<td>" + (list_of_assignments[x]).toString() + "</td>\n";
-              downlodaIndexTable_str += "\t\t\t<td> Incompleted </td>\n";
-              downlodaIndexTable_str += "\t\t\t<td> 0.00 </td>\n";
-              downlodaIndexTable_str += "\t\t\t<td> Incompleted </td>\n";
-              downlodaIndexTable_str += "\t\t\t<td> 0.00 </td>\n";
-              downlodaIndexTable_str += "\t\t\t<td> Incompleted </td>\n";
-              downlodaIndexTable_str += "\t\t\t<td> 0.00 </td>\n";
-              downlodaIndexTable_str += "\t\t\t<td> Incompleted </td>\n";
-              downlodaIndexTable_str += "\t\t\t<td> 0.00 </td>\n";
-              downlodaIndexTable_str += "\t\t\t<td> Incompleted </td>\n";
-              downlodaIndexTable_str += "\t\t\t<td> 0.00 </td>\n";
-              downlodaIndexTable_str += "\t\t\t<td> Incompleted </td>\n";
-              downlodaIndexTable_str += "\t\t\t<td> 0.00 </td>\n";
-            }
-          }
-        }
-        downlodaIndexTable_str += "\t\t</tr>\n";
-      }
-    }
-    downlodaIndexTable_str += "\t</tbody>\n</table>"; // Closing
-    document.getElementById("hiddenDownloadModal_table").innerHTML += downlodaIndexTable_str;
-    $("#hiddenDownloadModal_table").tableToCSV();
-  } else {
-    showRegError(7);
-  }
+	// Check if TA/Admin
+	if (
+		student_reg_information[0]["student_list"][studentParseNum]["type"] == "TA" ||
+		student_reg_information[0]["student_list"][studentParseNum]["type"] == "admin"
+	) {
+		downloadIndexTable_fill = generateRestOfIndexTable(downloadIndexTable_fill, whichType);
+		$("#hiddenDownloadModal_table").empty(); // reset
+		var d = new Date();
+		var downlodaIndexTable_str = "<table id='downloadIndexTable'>\n\t<tbody>\n";
+		var captionTitleBegin = "SciGrade_studentMark_";
+		if (whichType == false) {
+			captionTitleBegin = "SciGrade_studentMarkRaw_";
+		}
+		downlodaIndexTable_str +=
+			"\t\t<caption>" +
+			captionTitleBegin +
+			student_reg_information[0]["student_list"][studentParseNum]["name"].replace(/\s/g, "") +
+			"_" +
+			d.getFullYear() +
+			"-" +
+			d.getMonth() +
+			"_" +
+			d.getDate() +
+			"</caption>\n";
+		downlodaIndexTable_str += downloadIndexTable_fill;
+		// Looping through each row of the table
+		var studentRegList = student_reg_information[0]["student_list"];
+		for (i = 0; i < studentRegList.length; i++) {
+			if (studentRegList[i]["type"] == "Student" && studentRegList[i]["studentClass"] == whichClass) {
+				downlodaIndexTable_str += "\t\t<tr>\n";
+				downlodaIndexTable_str += "\t\t\t<td>" + studentRegList[i]["student_number"] + "</td>\n";
+				downlodaIndexTable_str += "\t\t\t<td>" + studentRegList[i]["name"] + "</td>\n";
+				if (whichType == true) {
+					for (x = 0; x < list_of_assignments.length; x++) {
+						if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Marks"] != null) {
+							downlodaIndexTable_str += "\t\t\t<td>" + list_of_assignments[x].toString() + "</td>\n";
+							downlodaIndexTable_str +=
+								"\t\t\t<td>" +
+								studentRegList[i]["assignment-" + list_of_assignments[x] + "-Marks"][1].toString() +
+								"</td>\n";
+							downlodaIndexTable_str +=
+								"\t\t\t<td>" +
+								studentRegList[i]["assignment-" + list_of_assignments[x] + "-Marks"][0].toString() +
+								"</td>\n";
+						} else if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Marks"] == null) {
+							downlodaIndexTable_str += "\t\t\t<td>" + list_of_assignments[x].toString() + "</td>\n";
+							downlodaIndexTable_str += "\t\t\t<td> Incompleted </td>\n";
+							downlodaIndexTable_str += "\t\t\t<td> 0.00 </td>\n";
+						}
+					}
+				}
+				if (whichType == false) {
+					for (x = 0; x < list_of_assignments.length; x++) {
+						if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Marks"] != null) {
+							downlodaIndexTable_str += "\t\t\t<td>" + list_of_assignments[x].toString() + "</td>\n";
+							var mark = 0;
+							// Raw values
+							downlodaIndexTable_str +=
+								"\t\t\t<td>" +
+								studentRegList[i]["assignment-" + list_of_assignments[x] + "-Marks"][1].toString() +
+								"</td>\n";
+							downlodaIndexTable_str +=
+								"\t\t\t<td>" +
+								studentRegList[i]["assignment-" + list_of_assignments[x] + "-Marks"][0].toString() +
+								"</td>\n";
+							// gRNA
+							downlodaIndexTable_str +=
+								"\t\t\t<td>" +
+								studentRegList[i]["assignment-" + list_of_assignments[x] + "-Answers"][0].toString() +
+								"</td>\n";
+							if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Outputs"][2] == 1) {
+								mark = 2;
+							} else if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Outputs"][2] == 2) {
+								mark = 1;
+							} else if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Outputs"][2] == 3) {
+								mark = 0.5;
+							}
+							downlodaIndexTable_str += "\t\t\t<td>" + mark.toString() + "</td>\n";
+							// PAM
+							downlodaIndexTable_str +=
+								"\t\t\t<td>" +
+								studentRegList[i]["assignment-" + list_of_assignments[x] + "-Answers"][1].toString() +
+								"</td>\n";
+							if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Outputs"][4] == true) {
+								mark = 2;
+							} else {
+								mark = 0;
+							}
+							downlodaIndexTable_str += "\t\t\t<td>" + mark.toString() + "</td>\n";
+							// Off-target
+							downlodaIndexTable_str +=
+								"\t\t\t<td>" +
+								studentRegList[i]["assignment-" + list_of_assignments[x] + "-Answers"][4].toString() +
+								"</td>\n";
+							if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Outputs"][6] == 1) {
+								mark = 2;
+							} else if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Outputs"][6] == 2) {
+								mark = 1;
+							} else if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Outputs"][6] == 3) {
+								mark = 0.5;
+							}
+							downlodaIndexTable_str += "\t\t\t<td>" + mark.toString() + "</td>\n";
+							// F1 Primers
+							downlodaIndexTable_str +=
+								"\t\t\t<td>" +
+								studentRegList[i]["assignment-" + list_of_assignments[x] + "-Answers"][5].toString() +
+								"</td>\n";
+							if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Outputs"][10] == true) {
+								mark = 2;
+							} else {
+								mark = 0;
+							}
+							downlodaIndexTable_str += "\t\t\t<td>" + mark.toString() + "</td>\n";
+							// R1 primers
+							downlodaIndexTable_str +=
+								"\t\t\t<td>" +
+								studentRegList[i]["assignment-" + list_of_assignments[x] + "-Answers"][6].toString() +
+								"</td>\n";
+							if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Outputs"][11] == true) {
+								mark = 2;
+							} else {
+								mark = 0;
+							}
+							downlodaIndexTable_str += "\t\t\t<td>" + mark.toString() + "</td>\n";
+						} else if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Marks"] == null) {
+							downlodaIndexTable_str += "\t\t\t<td>" + list_of_assignments[x].toString() + "</td>\n";
+							downlodaIndexTable_str += "\t\t\t<td> Incompleted </td>\n";
+							downlodaIndexTable_str += "\t\t\t<td> 0.00 </td>\n";
+							downlodaIndexTable_str += "\t\t\t<td> Incompleted </td>\n";
+							downlodaIndexTable_str += "\t\t\t<td> 0.00 </td>\n";
+							downlodaIndexTable_str += "\t\t\t<td> Incompleted </td>\n";
+							downlodaIndexTable_str += "\t\t\t<td> 0.00 </td>\n";
+							downlodaIndexTable_str += "\t\t\t<td> Incompleted </td>\n";
+							downlodaIndexTable_str += "\t\t\t<td> 0.00 </td>\n";
+							downlodaIndexTable_str += "\t\t\t<td> Incompleted </td>\n";
+							downlodaIndexTable_str += "\t\t\t<td> 0.00 </td>\n";
+							downlodaIndexTable_str += "\t\t\t<td> Incompleted </td>\n";
+							downlodaIndexTable_str += "\t\t\t<td> 0.00 </td>\n";
+						}
+					}
+				}
+				downlodaIndexTable_str += "\t\t</tr>\n";
+			}
+		}
+		downlodaIndexTable_str += "\t</tbody>\n</table>"; // Closing
+		document.getElementById("hiddenDownloadModal_table").innerHTML += downlodaIndexTable_str;
+		$("#hiddenDownloadModal_table").tableToCSV();
+	} else {
+		showRegError(7);
+	}
 }
 
 /**
  * Changes the input class value to new input
- * @param {String} docCheck The DOM being checked against 
+ * @param {String} docCheck The DOM being checked against
  * @param {String} checkFor The value of the DOM being used to check for
  * @param {String} docChange The DOM what will have its value changed
  * @param {String} trueChangeValueTo What to change value to
  */
 function changeInputClass(docCheck, checkFor, docChange, trueChangeValueTo) {
-  if (trueChangeValueTo == "" || trueChangeValueTo == undefined) {
-    trueChangeValueTo = "undefined Class";
-  }
-  trueChangeValueTo = trueChangeValueTo.replace(/\s/g, '');
-  if (document.getElementById(docCheck).value == checkFor) {
-    document.getElementById(docChange).value = trueChangeValueTo;
-  }
+	if (trueChangeValueTo == "" || trueChangeValueTo == undefined) {
+		trueChangeValueTo = "undefined Class";
+	}
+	trueChangeValueTo = trueChangeValueTo.replace(/\s/g, "");
+	if (document.getElementById(docCheck).value == checkFor) {
+		document.getElementById(docChange).value = trueChangeValueTo;
+	}
 }
 
 /**
@@ -1391,34 +1631,39 @@ function changeInputClass(docCheck, checkFor, docChange, trueChangeValueTo) {
  * @param {String} umail User's email
  */
 function addUserToServer(inputClass, number, umail) {
-  var studentNumber = number;
-  var studentUmail = umail;
-  var setList = {};
-  setList[studentNumber] = studentUmail;
-  classList = "class_list." + inputClass;
-  classExists = false;
-  if (student_reg_information[0]["class_list"][inputClass] != undefined) {
-    classExists = true;
-  }
-  for (var key in setList) {
-    var newKey = "class_list." + inputClass + "." + key;
-    client.login().then(() =>
-      db.collection("Student_Information").updateOne({
-        version: "0.3"
-      }, {
-        $set: {
-          [newKey]: setList[key]
-        }
-      }, function (err, res) {
-        if (err) throw err;
-        console.log("1 document updated");
-        db.close();
-      }));
-  }
-  $("#adminSendButton").click();
-  // Clear inputs    
-  document.getElementById("StudentNumber").value = "";
-  document.getElementById("StudentUmail").value = "";
+	var studentNumber = number;
+	var studentUmail = umail;
+	var setList = {};
+	setList[studentNumber] = studentUmail;
+	classList = "class_list." + inputClass;
+	classExists = false;
+	if (student_reg_information[0]["class_list"][inputClass] != undefined) {
+		classExists = true;
+	}
+	for (var key in setList) {
+		var newKey = "class_list." + inputClass + "." + key;
+		client.login().then(() =>
+			db.collection("Student_Information").updateOne(
+				{
+					version: "0.3",
+				},
+				{
+					$set: {
+						[newKey]: setList[key],
+					},
+				},
+				function (err, res) {
+					if (err) throw err;
+					console.log("1 document updated");
+					db.close();
+				},
+			),
+		);
+	}
+	$("#adminSendButton").click();
+	// Clear inputs
+	document.getElementById("StudentNumber").value = "";
+	document.getElementById("StudentUmail").value = "";
 }
 
 var classExists = false;
@@ -1429,82 +1674,92 @@ var classExists = false;
  * @param {String} umail The list of student uMails
  */
 function addMultipleUsersToServer(inputClass, number, umail) {
-  // Student information setup
-  var studentNumberList = number.value.trim().split(/,|\n|\t/);
-  if (studentNumberList[studentNumberList.length - 1].trim() == "") {
-    studentNumberList.pop()
-  }
-  var studentUmailList = umail.value.trim().split(/,|\n|\t/);
-  if (studentUmailList[studentUmailList.length - 1].trim() == "") {
-    studentUmailList.pop()
-  }
-  if (studentNumberList.length == studentUmailList.length) {
-    var setList = {};
-    for (var i = 0; i < studentNumberList.length; i++) {
-      var studentAdd = studentNumberList[i];
-      var studentUmailAdd = studentUmailList[i];
-      setList[studentAdd] = studentUmailAdd;
-    }
-    classList = "class_list." + inputClass;
-    classExists = false;
-    if (student_reg_information[0]["class_list"][inputClass] != undefined) {
-      classExists = true;
-    }
-    if (classExists == false) {
-      client.login().then(() =>
-        db.collection("Student_Information").updateOne({
-          version: "0.3"
-        }, {
-          $set: {
-            [classList]: setList
-          }
-        }, function (err, res) {
-          if (err) throw err;
-          console.log("1 document updated");
-          db.close();
-        }));
-      $("#adminSendButton").click();
-      var classChange = "classMarkingMod." + inputClass;
-      var markingChangeList = ["Optimal"]
-      client.login().then(() =>
-        db.collection("Student_Information").updateOne({
-          version: "0.3"
-        }, {
-          $set: {
-            [classChange]: markingChangeList
-          }
-        }, function (err, res) {
-          if (err) throw err;
-          console.log("1 document updated");
-          db.close();
-        }));
-      $("#adminSendButton").click();
-    }
-    document.getElementById("StudentNumbers").value = "";
-    document.getElementById("StudentUmails").value = "";
-  } else {
-    showRegError(8);
-  };
-};
+	// Student information setup
+	var studentNumberList = number.value.trim().split(/,|\n|\t/);
+	if (studentNumberList[studentNumberList.length - 1].trim() == "") {
+		studentNumberList.pop();
+	}
+	var studentUmailList = umail.value.trim().split(/,|\n|\t/);
+	if (studentUmailList[studentUmailList.length - 1].trim() == "") {
+		studentUmailList.pop();
+	}
+	if (studentNumberList.length == studentUmailList.length) {
+		var setList = {};
+		for (var i = 0; i < studentNumberList.length; i++) {
+			var studentAdd = studentNumberList[i];
+			var studentUmailAdd = studentUmailList[i];
+			setList[studentAdd] = studentUmailAdd;
+		}
+		classList = "class_list." + inputClass;
+		classExists = false;
+		if (student_reg_information[0]["class_list"][inputClass] != undefined) {
+			classExists = true;
+		}
+		if (classExists == false) {
+			client.login().then(() =>
+				db.collection("Student_Information").updateOne(
+					{
+						version: "0.3",
+					},
+					{
+						$set: {
+							[classList]: setList,
+						},
+					},
+					function (err, res) {
+						if (err) throw err;
+						console.log("1 document updated");
+						db.close();
+					},
+				),
+			);
+			$("#adminSendButton").click();
+			var classChange = "classMarkingMod." + inputClass;
+			var markingChangeList = ["Optimal"];
+			client.login().then(() =>
+				db.collection("Student_Information").updateOne(
+					{
+						version: "0.3",
+					},
+					{
+						$set: {
+							[classChange]: markingChangeList,
+						},
+					},
+					function (err, res) {
+						if (err) throw err;
+						console.log("1 document updated");
+						db.close();
+					},
+				),
+			);
+			$("#adminSendButton").click();
+		}
+		document.getElementById("StudentNumbers").value = "";
+		document.getElementById("StudentUmails").value = "";
+	} else {
+		showRegError(8);
+	}
+}
 
 /**
  * Remove completed assignments from the assignment selection option
  * @returns returnAssignmentList - The list of non-completed assignments
  */
 function removeCompletedAssignments() {
-  generateCompletedAssignmentList();
-  var returnAssignmentList = [];
-  if (completed_assignments.length > 0) {
-    for (i = 0; i < list_of_assignments.length; i++) {
-      if (completed_assignments.includes(list_of_assignments[i]) == false) {
-        returnAssignmentList.push(list_of_assignments[i]);
-      };
-    };
-  } else if (completed_assignments.length == 0) {
-    returnAssignmentList = list_of_assignments;
-  };
-  return returnAssignmentList;
-};
+	generateCompletedAssignmentList();
+	var returnAssignmentList = [];
+	if (completed_assignments.length > 0) {
+		for (i = 0; i < list_of_assignments.length; i++) {
+			if (completed_assignments.includes(list_of_assignments[i]) == false) {
+				returnAssignmentList.push(list_of_assignments[i]);
+			}
+		}
+	} else if (completed_assignments.length == 0) {
+		returnAssignmentList = list_of_assignments;
+	}
+	return returnAssignmentList;
+}
 
 var all_answers = [];
 var all_outputs = [];
@@ -1516,43 +1771,70 @@ var studentmarks = "student_list." + studentParseNum + "." + loadedMode + "-" + 
  * Submit and sends the student's answers to the server
  */
 function submitAnswers() {
-  all_answers = [];
-  all_outputs = [];
-  all_marks = [];
-  checkAnswers();
-  setTimeout(function () {
-    markAnswers();
-    studentanswers = "student_list." + studentParseNum + "." + loadedMode + "-" + current_gene + "-Answers";
-    studentoutputs = "student_list." + studentParseNum + "." + loadedMode + "-" + current_gene + "-Outputs";
-    studentmarks = "student_list." + studentParseNum + "." + loadedMode + "-" + current_gene + "-Marks";
-    all_answers.push(document.getElementById("sequence_input").value.trim(), document.getElementById("pam_input").value.trim(), document.getElementById("position_input").value, document.getElementById("strand_input").value, document.getElementById("offtarget_input").value, document.getElementById("f1_input").value.trim(), document.getElementById("r1_input").value.trim());
-    all_outputs.push(MARstrand, MARgRNAseq, MARgRNAseq_degree, MARCutPos, MARPAMseq, MAROffTarget, MAROffTarget_degree, MAROffTarget_aboveOpt, MAROffTarget_above35, MAROffTarget_onlyOption, MARF1primers, MARR1primers);
-    all_marks.push(studentMark, studentMarkPercentage);
-    client.login().then(() =>
-      db.collection("Student_Information").updateOne({
-        version: "0.3"
-      }, {
-        $set: {
-          [studentanswers]: all_answers,
-          [studentoutputs]: all_outputs,
-          [studentmarks]: all_marks
-        }
-      }, function (err, res) {
-        if (err) throw err;
-        console.log("1 document updated");
-        db.close();
-      }));
-    loadJSON_Files();
-    if (loadedMode == "assignment") {
-      document.getElementById("options_label").innerHTML = "Would you like to start a new assignment?";
-      document.getElementById("seeFeedback").setAttribute("hidden", true);
-    } else if (loadedMode == "practice") {
-      document.getElementById("options_label").innerHTML = "Would you like to see feedback on your answers or start a new assignment?";
-      document.getElementById("seeFeedback").removeAttribute("hidden");
-    };
-    $("#feedbackButton").click();
-  }, 750);
-};
+	all_answers = [];
+	all_outputs = [];
+	all_marks = [];
+	checkAnswers();
+	setTimeout(function () {
+		markAnswers();
+		studentanswers = "student_list." + studentParseNum + "." + loadedMode + "-" + current_gene + "-Answers";
+		studentoutputs = "student_list." + studentParseNum + "." + loadedMode + "-" + current_gene + "-Outputs";
+		studentmarks = "student_list." + studentParseNum + "." + loadedMode + "-" + current_gene + "-Marks";
+		all_answers.push(
+			document.getElementById("sequence_input").value.trim(),
+			document.getElementById("pam_input").value.trim(),
+			document.getElementById("position_input").value,
+			document.getElementById("strand_input").value,
+			document.getElementById("offtarget_input").value,
+			document.getElementById("f1_input").value.trim(),
+			document.getElementById("r1_input").value.trim(),
+		);
+		all_outputs.push(
+			MARstrand,
+			MARgRNAseq,
+			MARgRNAseq_degree,
+			MARCutPos,
+			MARPAMseq,
+			MAROffTarget,
+			MAROffTarget_degree,
+			MAROffTarget_aboveOpt,
+			MAROffTarget_above35,
+			MAROffTarget_onlyOption,
+			MARF1primers,
+			MARR1primers,
+		);
+		all_marks.push(studentMark, studentMarkPercentage);
+		client.login().then(() =>
+			db.collection("Student_Information").updateOne(
+				{
+					version: "0.3",
+				},
+				{
+					$set: {
+						[studentanswers]: all_answers,
+						[studentoutputs]: all_outputs,
+						[studentmarks]: all_marks,
+					},
+				},
+				function (err, res) {
+					if (err) throw err;
+					console.log("1 document updated");
+					db.close();
+				},
+			),
+		);
+		loadJSON_Files();
+		if (loadedMode == "assignment") {
+			document.getElementById("options_label").innerHTML = "Would you like to start a new assignment?";
+			document.getElementById("seeFeedback").setAttribute("hidden", true);
+		} else if (loadedMode == "practice") {
+			document.getElementById("options_label").innerHTML =
+				"Would you like to see feedback on your answers or start a new assignment?";
+			document.getElementById("seeFeedback").removeAttribute("hidden");
+		}
+		$("#feedbackButton").click();
+	}, 750);
+}
 
 /**
  * Determine if a enter was pressed and if so, click a button
@@ -1560,23 +1842,23 @@ function submitAnswers() {
  * @param {String} toClickButton Which button to click
  */
 function IfPressEnter(event, toClickButton) {
-  if (event.which == 13 || event.keyCode == 13) {
-    $('#' + toClickButton).click();
-  };
-};
+	if (event.which == 13 || event.keyCode == 13) {
+		$("#" + toClickButton).click();
+	}
+}
 
 /**
- * Resets the assignment section page 
+ * Resets the assignment section page
  */
 function backToAssignments() {
-  redirectCRISPR();
-  loadJSON_Files();
-  $("#practice").click();
-};
+	redirectCRISPR();
+	loadJSON_Files();
+	$("#practice").click();
+}
 
 // Block submit calls on keypress
 $(function () {
-  $("form").submit(function () {
-    return false;
-  });
+	$("form").submit(function () {
+		return false;
+	});
 });

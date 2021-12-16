@@ -1,40 +1,40 @@
 {
-  "name": "scigrade",
-  "contributors": [
-    {
-      "name": "Alexander Sullivan",
-      "email": "alexander.j.sullivan@hotmail.com",
-      "url": "https://alexjsully.me/"
-    },
-    {
-      "name": "Quynh (Cathy) Cao"
-    },
-    {
-      "name": "Alistair Dias",
-      "url": "https://hmb.utoronto.ca/profiles/alistair-dias/"
-    }
-  ],
-  "version": "1.0.7",
-  "private": true,
-  "description": "SciGrade is an online web-tool that allows students (or any user with access) to mark and assist in gRNA+Primer generation.",
-  "main": "index.html",
-  "bugs": {
-    "url": "https://github.com/ASully/SciGrade/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ASully/SciGrade.git"
-  },
-  "keywords": [
-    "science",
-    "education",
-    "bioinformatics",
-    "uoft",
-    "crispr",
-    "pedagogy",
-    "grna-sequence",
-    "scigrade"
-  ],
-  "license": "GPL-3.0",
-  "homepage": "https://github.com/ASully/SciGrade#readme"
+	"name": "scigrade",
+	"contributors": [
+		{
+			"name": "Alexander Sullivan",
+			"email": "alexander.j.sullivan@hotmail.com",
+			"url": "https://alexjsully.me/"
+		},
+		{
+			"name": "Quynh (Cathy) Cao"
+		},
+		{
+			"name": "Alistair Dias",
+			"url": "https://hmb.utoronto.ca/profiles/alistair-dias/"
+		}
+	],
+	"version": "1.0.8",
+	"private": true,
+	"description": "SciGrade is an online web-tool that allows students (or any user with access) to mark and assist in gRNA+Primer generation.",
+	"main": "index.html",
+	"bugs": {
+		"url": "https://github.com/ASully/SciGrade/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/ASully/SciGrade.git"
+	},
+	"keywords": [
+		"science",
+		"education",
+		"bioinformatics",
+		"uoft",
+		"crispr",
+		"pedagogy",
+		"grna-sequence",
+		"scigrade"
+	],
+	"license": "GPL-3.0",
+	"homepage": "https://github.com/ASully/SciGrade#readme"
 }

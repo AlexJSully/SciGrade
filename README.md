@@ -3,17 +3,17 @@
 [![TravisCI - Build Status](https://travis-ci.org/ASully/SciGrade.svg?branch=master)](https://travis-ci.org/ASully/SciGrade)
 [![Maintainability](https://api.codeclimate.com/v1/badges/ed202653a7b430ccdbfb/maintainability)](https://codeclimate.com/github/ASully/SciGrade/maintainability)
 
-SciGrade is an online web-tool that allows students (or any user with access) to mark and assist in gRNA+Primer generation. 
+SciGrade is an online web-tool that allows students (or any user with access) to mark and assist in gRNA+Primer generation.
 
 ## Getting Started
 
-It is recommended that you use the web-version available at https://scigrade.com/ but if you want to download and run the SciGrade locally, it is possible though it requires an internet connection to login and accesses the marking form and student information (exclusive for TA's and admins). 
+It is recommended that you use the web-version available at https://scigrade.com/ but if you want to download and run the SciGrade locally, it is possible though it requires an internet connection to login and accesses the marking form and student information (exclusive for TA's and admins).
 
-## Browser Compatibilities 
+## Browser Compatibilities
 
-Chrome | Firefox | IE | Edge | Safari | Opera | Mobile |
---- | --- | --- | --- | --- | --- | --- |
-✔ |  ✔ | X |  ✔ | ✔ |  ? | ✔ |
+| Chrome | Firefox | IE  | Edge | Safari | Opera | Mobile |
+| ------ | ------- | --- | ---- | ------ | ----- | ------ |
+| ✔      | ✔       | X   | ✔    | ✔      | ?     | ✔      |
 
 ## Installation/Open
 
@@ -22,7 +22,8 @@ There is nothing to install, just download all the files and open [index.html](i
 ## Known issues
 
 We aim to make the SciGrade as perfect as possible but unfortunately, there may be some unforeseen bugs. If you manage to find one that is not here, feel free to create a [bug report](https://github.com/ASully/SciGrade/issues/new?template=bug_report.md) so we can fix it.
-* None at the moment... Help us find some!
+
+-   None at the moment... Help us find some!
 
 ## Contributing
 
@@ -38,6 +39,6 @@ Please read [EDIT.md](EDIT.MD) if you want to understand how SciGrade works and 
 
 ## Authors
 
-* Alexander Sullivan - [GitHub](https://github.com/ASully), [Twitter](https://twitter.com/alexjsully), [LinkedIn](https://www.linkedin.com/in/alexanderjsullivan/), [Website](https://alexjsully.me/)
-* Quynh (Cathy) Cao - [Twitter](https://twitter.com/cathyqcao), [LinkedIn](https://www.linkedin.com/in/cathyquynhcao/)
-* Alistair Dias - [LinkedIn](https://www.linkedin.com/in/alistair-dias-090a8629/), [Website](https://hmb.utoronto.ca/profiles/alistair-dias/)
+-   Alexander Sullivan - [GitHub](https://github.com/ASully), [Twitter](https://twitter.com/alexjsully), [LinkedIn](https://www.linkedin.com/in/alexanderjsullivan/), [Website](https://alexjsully.me/)
+-   Quynh (Cathy) Cao - [Twitter](https://twitter.com/cathyqcao), [LinkedIn](https://www.linkedin.com/in/cathyquynhcao/)
+-   Alistair Dias - [LinkedIn](https://www.linkedin.com/in/alistair-dias-090a8629/), [Website](https://hmb.utoronto.ca/profiles/alistair-dias/)

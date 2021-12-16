@@ -1,119 +1,119 @@
 .work_background {
-  background-color: #eaeaea;
+	background-color: #eaeaea;
 }
 
 .focusContainer {
-  border-radius: 12px 12px 12px 12px;
-  -moz-border-radius: 12px 12px 12px 12px;
-  -webkit-border-radius: 12px 12px 12px 12px;
-  border: 1px solid #000000;
-  background-color: white;
-  padding-bottom: 5%;
-  padding-top: 2%;
-  margin-top: 4%;
-  margin-bottom: 1%;
+	border-radius: 12px 12px 12px 12px;
+	-moz-border-radius: 12px 12px 12px 12px;
+	-webkit-border-radius: 12px 12px 12px 12px;
+	border: 1px solid #000000;
+	background-color: white;
+	padding-bottom: 5%;
+	padding-top: 2%;
+	margin-top: 4%;
+	margin-bottom: 1%;
 }
 
 .focusBody {
-  background-color: #FAFAFA;
+	background-color: #fafafa;
 }
 
 .navigationBar {
-  overflow: hidden;
-  background-color: #30338D;
+	overflow: hidden;
+	background-color: #30338d;
 }
 
 .navigationBar a {
-  float: left;
-  color: #f2f2f2;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-  font-size: 17px;
+	float: left;
+	color: #f2f2f2;
+	text-align: center;
+	padding: 14px 16px;
+	text-decoration: none;
+	font-size: 17px;
 }
 
 .navigationBar a:hover {
-  background-color: #ddd;
-  color: black;
+	background-color: #ddd;
+	color: black;
 }
 
 .navigationBar a.active {
-  background-color: #4CAF50;
-  color: white;
+	background-color: #4caf50;
+	color: white;
 }
 
 .navigationBar a.logIO {
-  float: right;
+	float: right;
 }
 
-.homeBackground { 
-  /* Browser background */
-  background: url('../images/BackgroundImage/homeBackground.webp') no-repeat center center fixed; 
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
-  /* IE */
-  filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/BackgroundImage/homeBackground.webp', sizingMethod='scale');
-  -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src=../images/BackgroundImage/homeBackground.webp', sizingMethod='scale')";
+.homeBackground {
+	/* Browser background */
+	background: url("../images/BackgroundImage/homeBackground.webp") no-repeat center center fixed;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+	/* IE */
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/BackgroundImage/homeBackground.webp', sizingMethod='scale');
+	-ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src=../images/BackgroundImage/homeBackground.webp', sizingMethod='scale')";
 }
 
 .backgroundFrontLayer {
-  /* Browser foreground */
-  background: url('../images/BackgroundImage/grey.webp') no-repeat center center fixed; 
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
-  opacity: 0.5;
-  /* IE */
-  filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/BackgroundImage/grey.webp', sizingMethod='scale');
-  -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src=../images/BackgroundImage/grey.webp', sizingMethod='scale')";
+	/* Browser foreground */
+	background: url("../images/BackgroundImage/grey.webp") no-repeat center center fixed;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+	opacity: 0.5;
+	/* IE */
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/BackgroundImage/grey.webp', sizingMethod='scale');
+	-ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src=../images/BackgroundImage/grey.webp', sizingMethod='scale')";
 }
 
 .fullSizeBody {
-  height: 100%;
-  width: 100%;
-  overflow: hidden;
-  position: fixed;
-  z-index: -1;
+	height: 100%;
+	width: 100%;
+	overflow: hidden;
+	position: fixed;
+	z-index: -1;
 }
 
 .centerBody {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 45%;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	width: 45%;
 }
 
 .centerButton {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 .frontPageFont {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif, 'Times New Roman'; 
-  color: #353B6E; 
-  text-align: center; 
-  font-size: 2em;
-  text-shadow: 2px 1px 5px rgba(150, 150, 150, 1);
-  font-weight: bold;
+	font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif, "Times New Roman";
+	color: #353b6e;
+	text-align: center;
+	font-size: 2em;
+	text-shadow: 2px 1px 5px rgba(150, 150, 150, 1);
+	font-weight: bold;
 }
 
 .modalResponsive {
-  max-width: 80%;
+	max-width: 80%;
 }
 
 @media screen and (max-width: 576px) {
-  .modalResponsive {
-    max-width: 100%;
-  }
-  
-  .homeBackground {
-    -webkit-background-size: auto;
-    -moz-background-size: auto;
-    -o-background-size: auto;
-    background-size: auto;
-  }
+	.modalResponsive {
+		max-width: 100%;
+	}
+
+	.homeBackground {
+		-webkit-background-size: auto;
+		-moz-background-size: auto;
+		-o-background-size: auto;
+		background-size: auto;
+	}
 }

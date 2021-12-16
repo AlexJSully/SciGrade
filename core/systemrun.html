@@ -1,303 +1,495 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html lang="en">
+	<head>
+		<title>SciGrade</title>
 
-<head>
-  <title>SciGrade</title>
-  
-  <!-- META DATA -->
-  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
-  <meta name="title" content="SciGrade">
-  <meta name="description" content="SciGrade - An online way to practice gRNA and primer design.">
-  <meta name="keywords" content="science, education, bioinformatics, uoft, crispr, pedagogy, grna-sequence, scigrade">
-  <meta name="language" content="English">
-  <meta name="author" content="Alexander Sullivan, Quynh (Cathy) Cao, Alistair Dias">
-  <meta property="og:title" content="SciGrade" />
-  <meta property="og:image" content="icon/og-image.jpg">
-  <meta property="og:image:width" content="279">
-  <meta property="og:image:height" content="279">
-  <meta property="og:description" content="Practice gRNA+Primer design online with SciGrade!">
-  <meta property="og:title" content="SciGrade">
-  <meta property="og:url" content="https://scigrade.com/">
-  <link rel="shortcut icon" href="images/dna.png" type="image/x-icon" />
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="apple-mobile-web-app-title" content="SciGrade">
-  <link rel="apple-touch-icon" sizes="180x180" href="icon/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="icon/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="icon/favicon-16x16.png">
-  <link rel="manifest" href="icon/site.webmanifest">
-  <link rel="mask-icon" href="icon/safari-pinned-tab.svg" color="#ffffff">
-  <meta name="application-name" content="SciGrade">
-  <meta name="msapplication-config" content="icon/browserconfig.xml">
-  <meta name="msapplication-TileColor" content="#ffffff">
-  <meta name="msapplication-TileImage" content="icon/mstile-150x150.png">
-  <meta name="theme-color" content="#ffffff">
-  <meta name="twitter:site" content="@AlexJSully">
-  <!-- END META DATA -->
+		<!-- META DATA -->
+		<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+		<meta name="title" content="SciGrade" />
+		<meta name="description" content="SciGrade - An online way to practice gRNA and primer design." />
+		<meta
+			name="keywords"
+			content="science, education, bioinformatics, uoft, crispr, pedagogy, grna-sequence, scigrade"
+		/>
+		<meta name="language" content="English" />
+		<meta name="author" content="Alexander Sullivan, Quynh (Cathy) Cao, Alistair Dias" />
+		<meta property="og:title" content="SciGrade" />
+		<meta property="og:image" content="icon/og-image.jpg" />
+		<meta property="og:image:width" content="279" />
+		<meta property="og:image:height" content="279" />
+		<meta property="og:description" content="Practice gRNA+Primer design online with SciGrade!" />
+		<meta property="og:title" content="SciGrade" />
+		<meta property="og:url" content="https://scigrade.com/" />
+		<link rel="shortcut icon" href="images/dna.png" type="image/x-icon" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="apple-mobile-web-app-title" content="SciGrade" />
+		<link rel="apple-touch-icon" sizes="180x180" href="icon/apple-touch-icon.png" />
+		<link rel="icon" type="image/png" sizes="32x32" href="icon/favicon-32x32.png" />
+		<link rel="icon" type="image/png" sizes="16x16" href="icon/favicon-16x16.png" />
+		<link rel="manifest" href="icon/site.webmanifest" />
+		<link rel="mask-icon" href="icon/safari-pinned-tab.svg" color="#ffffff" />
+		<meta name="application-name" content="SciGrade" />
+		<meta name="msapplication-config" content="icon/browserconfig.xml" />
+		<meta name="msapplication-TileColor" content="#ffffff" />
+		<meta name="msapplication-TileImage" content="icon/mstile-150x150.png" />
+		<meta name="theme-color" content="#ffffff" />
+		<meta name="twitter:site" content="@AlexJSully" />
+		<!-- END META DATA -->
 
-  <!-- jQuery using Google Hosted Library -->
-  <script rel="preload" as="script" src="scripts/APIandLibraries/jQuery/jquery.min.js"></script>
-  <!-- Bootstrap -->
-  <link rel="stylesheet" href="scripts/APIandLibraries/Bootstrap/bootstrap.min.css">
-  <script src="scripts/APIandLibraries/Bootstrap/popper.min.js" rel="preload" as="script"></script>
-  <script src="scripts/APIandLibraries/Bootstrap/bootstrap.min.js" rel="preload" as="script"></script>
-  <!-- Stictch/mongoDB -->
-  <script rel="preload" as="script" src="https://s3.amazonaws.com/stitch-sdks/js/library/v2/stable/stitch.min.js"></script>
-  <!-- Google Material Icons -->
-  <link defer href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <!-- Google Identity Platform Scripts -->
-  <script src="https://apis.google.com/js/platform.js" async defer></script>
-  <meta name="google-signin-client_id" content="1034277489697-g473uqcd0oc1c02td9off07b9mbe1353.apps.googleusercontent.com">
-  <!-- tabletoCSV tool to create an option to download XML as CSV -->
-  <script rel="preload" as="script" src="scripts/APIandLibraries/tabletoCSV/jquery.tabletoCSV.js"></script>  
+		<!-- jQuery using Google Hosted Library -->
+		<script rel="preload" as="script" src="scripts/APIandLibraries/jQuery/jquery.min.js"></script>
+		<!-- Bootstrap -->
+		<link rel="stylesheet" href="scripts/APIandLibraries/Bootstrap/bootstrap.min.css" />
+		<script src="scripts/APIandLibraries/Bootstrap/popper.min.js" rel="preload" as="script"></script>
+		<script src="scripts/APIandLibraries/Bootstrap/bootstrap.min.js" rel="preload" as="script"></script>
+		<!-- Stictch/mongoDB -->
+		<script
+			rel="preload"
+			as="script"
+			src="https://s3.amazonaws.com/stitch-sdks/js/library/v2/stable/stitch.min.js"
+		></script>
+		<!-- Google Material Icons -->
+		<link defer href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+		<!-- Google Identity Platform Scripts -->
+		<script src="https://apis.google.com/js/platform.js" async defer></script>
+		<meta
+			name="google-signin-client_id"
+			content="1034277489697-g473uqcd0oc1c02td9off07b9mbe1353.apps.googleusercontent.com"
+		/>
+		<!-- tabletoCSV tool to create an option to download XML as CSV -->
+		<script rel="preload" as="script" src="scripts/APIandLibraries/tabletoCSV/jquery.tabletoCSV.js"></script>
 
-  <script>
-    var studentParseNum;
+		<script>
+			var studentParseNum;
 
-    var googleName;
-    var googleEmail;
-    /**
-     * Retrieves Google user information and stores it
-     */
-    function onSignIn(googleUser) {
-      var profile = googleUser.getBasicProfile();
-      googleName = profile.getName();
-      googleEmail = profile.getEmail(); // This is null if the 'email' scope is not present.
-      sendLogReg();
-    }
+			var googleName;
+			var googleEmail;
+			/**
+			 * Retrieves Google user information and stores it
+			 */
+			function onSignIn(googleUser) {
+				var profile = googleUser.getBasicProfile();
+				googleName = profile.getName();
+				googleEmail = profile.getEmail(); // This is null if the 'email' scope is not present.
+				sendLogReg();
+			}
 
-    /**
-     * Google signout
-     */
-    function signOut() {
-      var auth2 = gapi.auth2.getAuthInstance();
-      auth2.signOut();
-    }
-  </script>
-  <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-38961857-6"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
+			/**
+			 * Google signout
+			 */
+			function signOut() {
+				var auth2 = gapi.auth2.getAuthInstance();
+				auth2.signOut();
+			}
+		</script>
+		<!-- Global site tag (gtag.js) - Google Analytics -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=UA-38961857-6"></script>
+		<script>
+			window.dataLayer = window.dataLayer || [];
+			function gtag() {
+				dataLayer.push(arguments);
+			}
+			gtag("js", new Date());
 
-    gtag('config', 'UA-38961857-6');
-  </script>
-  <!-- Google Tag Manager -->
-  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-K9PRB9W');</script>
-  <!-- End Google Tag Manager -->
-  <!-- Service worker -->
-  <script>
-    // Add service workers
-    if ('serviceWorker' in navigator) {
-      // Use the window load event to keep the page load performant
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./scripts/serviceWorker/sw.js');
-      });
-    };
-  </script>
-  <!-- Custom scripts -->
-  <script rel="preload" as="script" src="scripts/login.min.js"></script>
-  <script rel="preload" as="script" src="scripts/crispr_scripts.min.js"></script>
-  <link rel="stylesheet" href="styling/style.min.css" />
-</head>
+			gtag("config", "UA-38961857-6");
+		</script>
+		<!-- Google Tag Manager -->
+		<script>
+			(function (w, d, s, l, i) {
+				w[l] = w[l] || [];
+				w[l].push({"gtm.start": new Date().getTime(), event: "gtm.js"});
+				var f = d.getElementsByTagName(s)[0],
+					j = d.createElement(s),
+					dl = l != "dataLayer" ? "&l=" + l : "";
+				j.async = true;
+				j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+				f.parentNode.insertBefore(j, f);
+			})(window, document, "script", "dataLayer", "GTM-K9PRB9W");
+		</script>
+		<!-- End Google Tag Manager -->
+		<!-- Service worker -->
+		<script>
+			// Add service workers
+			if ("serviceWorker" in navigator) {
+				// Use the window load event to keep the page load performant
+				window.addEventListener("load", () => {
+					navigator.serviceWorker.register("./scripts/serviceWorker/sw.js");
+				});
+			}
+		</script>
+		<!-- Custom scripts -->
+		<script rel="preload" as="script" src="scripts/login.min.js"></script>
+		<script rel="preload" as="script" src="scripts/crispr_scripts.min.js"></script>
+		<link rel="stylesheet" href="styling/style.min.css" />
+	</head>
 
-<body class="focusBody">
-  <!-- Google Tag Manager (noscript) -->
-  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-K9PRB9W"
-    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-  <!-- End Google Tag Manager (noscript) -->
-  <div class="navigationBar">
-    <a href="../"><img src="images/logo_transparent.svg" alt="logo" style="width:5em;margin: -50%;margin-bottom:-40%;margin-right:-40%;"></a>
-    <a class="active" href="systemrun.html">Application</a>
-    <a href="about.html" aria-hidden="true" hidden>About</a>
-    <a class="logIO" data-toggle="modal" href="#accountModal" id="accountIO" onclick="openAccountManagement();" hidden> Account </a>
-    <a class="logIO" id="logIO" href="systemrun.html" hidden>
-      <i class="material-icons" style="font-size:inherit;">&#xE7FD;</i> Login</a>
-  </div>
-  <div class="container focusContainer" role="tabpanel" id="mainContainer">
-    <!-- Login and Registration -->
-    <div>
-      <div class="row">
-        <div class="col-sm-1"></div>
-        <div class="col-sm-10">
-          <ul class="nav nav-tabs" id="logTabs" role="tablist">
-            <li class="nav-item">
-              <a class="nav-link" id="loginTab" data-toggle="tab" href="#login" role="tab" aria-controls="login">Login</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" id="registerTab" data-toggle="tab" href="#register" role="tab" aria-controls="register">Register</a>
-            </li>
-          </ul>
-          <div class="tab-content" id="logTabContent">
-            <!-- Login -->
-            <div role="tabpanel" class="tab-pane fade" id="login" aria-labelledby="login">
-              <!-- First form the user sees for login which includes student number input -->
-              <form id="loginForm">
-                <div class="form-group">
-                  <label for="InputStudentNumberLogin">Student number</label>
-                  <input class="form-control" id="StudentNumberLogin" placeholder="1234567890" maxlength="10" onkeypress="IfPressEnter(event, 'verifyLogin')" type="text">
-                  <small id="studentNumberLoginHelp" class="form-text text-muted">We'll never share your student number with anyone else.</small>
-                </div>
-                <button id="verifyLogin" type="button" class="btn btn-primary" onclick="loginVerify(document.getElementById('StudentNumberLogin').value)">Verify</button>
-              </form>
-              <!-- Actual login through Google Identity -->
-              <form id="loginP2" style="display:none; margin-top:2%;">
-                <div class="g-signin2" data-onsuccess="onSignIn"></div>
-              </form>
-            </div>
-            <!-- Registration -->
-            <div role="tabpanel" class="tab-pane fade" id="register" aria-labelledby="register">
-              <p> Registration is limited to students in the appropriate University of Toronto HMB class. If you are not in the appropriate HMB class, you cannot register for SciGrade. Though once you have registered for SciGrade, you now have a permanent account and can use SciGrade whenever you want.</p>
-              <!-- First input form which includes student number and email -->
-              <p id="pP1">First, please verify that you are a student at the University of Toronto:</p>
-              <form id="registerP1">
-                <div class="form-group" id="studentID">
-                  <label for="StudentNumber">Student number:</label>
-                  <input class="form-control" id="StudentNumber" placeholder="1234567890" maxlength="10" onkeypress="IfPressEnter(event, 'firstSubmit')" type="text">
-                  <small id="studentNumberHelp" class="form-text text-muted">Insert your 9 to 10 digit student number to verify you are a student at the University of Toronto.</small>
-                </div>
-                <div class="form-group" id="studentumail">
-                  <label for="StudentEmail">Student uMail:</label>
-                  <input type="email" class="form-control" id="StudentEmail" placeholder="first.last@mail.utoronto.ca" onkeypress="IfPressEnter(event, 'firstSubmit')">
-                  <small id="studentEmailHelp" class="form-text text-muted">Insert your student uMail (email) from the University of Toronto.</small>
-                </div>
-                <button id="firstSubmit" type="button" class="btn btn-primary" onclick="checkStudentNumber(document.getElementById('StudentNumber').value, document.getElementById('StudentEmail').value);">Check</button>
-              </form>
-              <!-- Second which includes token ID -->
-              <p id="pP2"></p>
-              <form id="registerP2">
-              </form>
-              <!-- Third is registration using Google Identity -->
-              <p id="pP3"></p>
-              <form id="registerP3" style="display:none;">
-                <div class="g-signin2" data-onsuccess="onSignIn"></div>
-              </form>
-            </div>
-          </div>
-        </div>
-        <div class="col-sm-1"></div>
-      </div>
-    </div>
-  </div>
+	<body class="focusBody">
+		<!-- Google Tag Manager (noscript) -->
+		<noscript
+			><iframe
+				src="https://www.googletagmanager.com/ns.html?id=GTM-K9PRB9W"
+				height="0"
+				width="0"
+				style="display: none; visibility: hidden"
+			></iframe
+		></noscript>
+		<!-- End Google Tag Manager (noscript) -->
+		<div class="navigationBar">
+			<a href="../"
+				><img
+					src="images/logo_transparent.svg"
+					alt="logo"
+					style="width: 5em; margin: -50%; margin-bottom: -40%; margin-right: -40%"
+			/></a>
+			<a class="active" href="systemrun.html">Application</a>
+			<a href="about.html" aria-hidden="true" hidden>About</a>
+			<a
+				class="logIO"
+				data-toggle="modal"
+				href="#accountModal"
+				id="accountIO"
+				onclick="openAccountManagement();"
+				hidden
+			>
+				Account
+			</a>
+			<a class="logIO" id="logIO" href="systemrun.html" hidden>
+				<i class="material-icons" style="font-size: inherit">&#xE7FD;</i> Login</a
+			>
+		</div>
+		<div class="container focusContainer" role="tabpanel" id="mainContainer">
+			<!-- Login and Registration -->
+			<div>
+				<div class="row">
+					<div class="col-sm-1"></div>
+					<div class="col-sm-10">
+						<ul class="nav nav-tabs" id="logTabs" role="tablist">
+							<li class="nav-item">
+								<a
+									class="nav-link"
+									id="loginTab"
+									data-toggle="tab"
+									href="#login"
+									role="tab"
+									aria-controls="login"
+									>Login</a
+								>
+							</li>
+							<li class="nav-item">
+								<a
+									class="nav-link"
+									id="registerTab"
+									data-toggle="tab"
+									href="#register"
+									role="tab"
+									aria-controls="register"
+									>Register</a
+								>
+							</li>
+						</ul>
+						<div class="tab-content" id="logTabContent">
+							<!-- Login -->
+							<div role="tabpanel" class="tab-pane fade" id="login" aria-labelledby="login">
+								<!-- First form the user sees for login which includes student number input -->
+								<form id="loginForm">
+									<div class="form-group">
+										<label for="InputStudentNumberLogin">Student number</label>
+										<input
+											class="form-control"
+											id="StudentNumberLogin"
+											placeholder="1234567890"
+											maxlength="10"
+											onkeypress="IfPressEnter(event, 'verifyLogin')"
+											type="text"
+										/>
+										<small id="studentNumberLoginHelp" class="form-text text-muted"
+											>We'll never share your student number with anyone else.</small
+										>
+									</div>
+									<button
+										id="verifyLogin"
+										type="button"
+										class="btn btn-primary"
+										onclick="loginVerify(document.getElementById('StudentNumberLogin').value)"
+									>
+										Verify
+									</button>
+								</form>
+								<!-- Actual login through Google Identity -->
+								<form id="loginP2" style="display: none; margin-top: 2%">
+									<div class="g-signin2" data-onsuccess="onSignIn"></div>
+								</form>
+							</div>
+							<!-- Registration -->
+							<div role="tabpanel" class="tab-pane fade" id="register" aria-labelledby="register">
+								<p>
+									Registration is limited to students in the appropriate University of Toronto HMB
+									class. If you are not in the appropriate HMB class, you cannot register for
+									SciGrade. Though once you have registered for SciGrade, you now have a permanent
+									account and can use SciGrade whenever you want.
+								</p>
+								<!-- First input form which includes student number and email -->
+								<p id="pP1">
+									First, please verify that you are a student at the University of Toronto:
+								</p>
+								<form id="registerP1">
+									<div class="form-group" id="studentID">
+										<label for="StudentNumber">Student number:</label>
+										<input
+											class="form-control"
+											id="StudentNumber"
+											placeholder="1234567890"
+											maxlength="10"
+											onkeypress="IfPressEnter(event, 'firstSubmit')"
+											type="text"
+										/>
+										<small id="studentNumberHelp" class="form-text text-muted"
+											>Insert your 9 to 10 digit student number to verify you are a student at the
+											University of Toronto.</small
+										>
+									</div>
+									<div class="form-group" id="studentumail">
+										<label for="StudentEmail">Student uMail:</label>
+										<input
+											type="email"
+											class="form-control"
+											id="StudentEmail"
+											placeholder="first.last@mail.utoronto.ca"
+											onkeypress="IfPressEnter(event, 'firstSubmit')"
+										/>
+										<small id="studentEmailHelp" class="form-text text-muted"
+											>Insert your student uMail (email) from the University of Toronto.</small
+										>
+									</div>
+									<button
+										id="firstSubmit"
+										type="button"
+										class="btn btn-primary"
+										onclick="checkStudentNumber(document.getElementById('StudentNumber').value, document.getElementById('StudentEmail').value);"
+									>
+										Check
+									</button>
+								</form>
+								<!-- Second which includes token ID -->
+								<p id="pP2"></p>
+								<form id="registerP2"></form>
+								<!-- Third is registration using Google Identity -->
+								<p id="pP3"></p>
+								<form id="registerP3" style="display: none">
+									<div class="g-signin2" data-onsuccess="onSignIn"></div>
+								</form>
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-1"></div>
+				</div>
+			</div>
+		</div>
 
-  <!-- Error with registration modal -->
-  <button id="errorRegButton" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" hidden>
-    Error with registration
-  </button>
-  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Oops</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body" id="errorRegBody">
-          <p id="errorRegContent">An error happened. If no error is being displayed here, you are not supposed to see this error (unexpected error).</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
+		<!-- Error with registration modal -->
+		<button
+			id="errorRegButton"
+			type="button"
+			class="btn btn-primary"
+			data-toggle="modal"
+			data-target="#exampleModal"
+			hidden
+		>
+			Error with registration
+		</button>
+		<div
+			class="modal fade"
+			id="exampleModal"
+			tabindex="-1"
+			role="dialog"
+			aria-labelledby="exampleModalLabel"
+			aria-hidden="true"
+		>
+			<div class="modal-dialog modal-lg" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel">Oops</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body" id="errorRegBody">
+						<p id="errorRegContent">
+							An error happened. If no error is being displayed here, you are not supposed to see this
+							error (unexpected error).
+						</p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
 
-  <!-- Feedback button -->
-  <button id="feedbackButton" type="button" class="btn btn-primary" data-toggle="modal" data-target="#feedbackModal" hidden>
-    Open feedback modal
-  </button>
-  <div class="modal fade" id="feedbackModal" tabindex="-1" role="dialog" aria-labelledby="feedbackModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="feedbackModalLabel">Done!</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body" id="feedbackBody">
-          <p id="FeedbackContent">Congratulations! Your answers have been submitted.</p>
-          <p id="options_label">Would you like to see feedback on your answers or start a new assignment?</p>
-          <p>
-            <button type="button" id="seeFeedback" class="btn btn-primary" onclick="showFeedback(); $('#dismissFeedbackModal').click(); loadJSON_Files();">See Feedback</button>
-            <button type="button" id="backAssignments" class="btn btn-primary" onclick="backToAssignments(); $('#dismissFeedbackModal').click();">Back to Assignments</button>
-          </p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal" id="dismissFeedbackModal">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
+		<!-- Feedback button -->
+		<button
+			id="feedbackButton"
+			type="button"
+			class="btn btn-primary"
+			data-toggle="modal"
+			data-target="#feedbackModal"
+			hidden
+		>
+			Open feedback modal
+		</button>
+		<div
+			class="modal fade"
+			id="feedbackModal"
+			tabindex="-1"
+			role="dialog"
+			aria-labelledby="feedbackModalLabel"
+			aria-hidden="true"
+		>
+			<div class="modal-dialog modal-lg" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="feedbackModalLabel">Done!</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body" id="feedbackBody">
+						<p id="FeedbackContent">Congratulations! Your answers have been submitted.</p>
+						<p id="options_label">
+							Would you like to see feedback on your answers or start a new assignment?
+						</p>
+						<p>
+							<button
+								type="button"
+								id="seeFeedback"
+								class="btn btn-primary"
+								onclick="showFeedback(); $('#dismissFeedbackModal').click(); loadJSON_Files();"
+							>
+								See Feedback
+							</button>
+							<button
+								type="button"
+								id="backAssignments"
+								class="btn btn-primary"
+								onclick="backToAssignments(); $('#dismissFeedbackModal').click();"
+							>
+								Back to Assignments
+							</button>
+						</p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal" id="dismissFeedbackModal">
+							Close
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
 
-  <!-- Account management button -->
-  <button id="accountButton" type="button" class="btn btn-primary" data-toggle="modal" data-target="#accountModal" hidden>
-    Open account management modal
-  </button>
-  <div class="modal fade" id="accountModal" tabindex="-1" role="dialog" aria-labelledby="accountModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modalResponsive" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="accountModalLabel">Account Management</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body" id="accountManagementBody">
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal" id="dismissAccountModal">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
+		<!-- Account management button -->
+		<button
+			id="accountButton"
+			type="button"
+			class="btn btn-primary"
+			data-toggle="modal"
+			data-target="#accountModal"
+			hidden
+		>
+			Open account management modal
+		</button>
+		<div
+			class="modal fade"
+			id="accountModal"
+			tabindex="-1"
+			role="dialog"
+			aria-labelledby="accountModalLabel"
+			aria-hidden="true"
+		>
+			<div class="modal-dialog modal-lg modalResponsive" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="accountModalLabel">Account Management</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body" id="accountManagementBody"></div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal" id="dismissAccountModal">
+							Close
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
 
-  <!-- Admin send button -->
-  <button id="adminSendButton" type="button" class="btn btn-primary" data-toggle="modal" data-target="#adminSendModal" hidden>
-    Admin send modal
-  </button>
-  <div class="modal fade" id="adminSendModal" tabindex="-1" role="dialog" aria-labelledby="adminSendModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="adminSendModalLabel">SENT!</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body" id="adminSendBody" style="background-color: #98FB98;">
-          Successfully sent to the server!
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal" id="dismissAdminSendModal">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
+		<!-- Admin send button -->
+		<button
+			id="adminSendButton"
+			type="button"
+			class="btn btn-primary"
+			data-toggle="modal"
+			data-target="#adminSendModal"
+			hidden
+		>
+			Admin send modal
+		</button>
+		<div
+			class="modal fade"
+			id="adminSendModal"
+			tabindex="-1"
+			role="dialog"
+			aria-labelledby="adminSendModalLabel"
+			aria-hidden="true"
+		>
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="adminSendModalLabel">SENT!</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body" id="adminSendBody" style="background-color: #98fb98">
+						Successfully sent to the server!
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal" id="dismissAdminSendModal">
+							Close
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
 
-  <!-- Hidden student download modal -->
-  <div id="hiddenDownloadModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" aria-labelledby="myLargeModalLabel">
-    <div class="modal-dialog modal-lg" style="width: 940px;">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" style="margin-top: -5px;" data-dismiss="modal">&times;</button>
-        </div>
-        <div class="modal-body">
-          <div class="table-responsive json_modal_table" id="hiddenDownloadJSONCSV">
-            <table id="hiddenDownloadModal_table" class="table"></table>
-          </div>
-        </div>
-        <div class="modal-footer modal-footer-colour">
-          <button type="button" class="btn btn-default modal-close" data-dismiss="modal" id="closemodal">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</body>
-
+		<!-- Hidden student download modal -->
+		<div
+			id="hiddenDownloadModal"
+			class="modal fade"
+			tabindex="-1"
+			role="dialog"
+			aria-hidden="true"
+			aria-labelledby="myLargeModalLabel"
+		>
+			<div class="modal-dialog modal-lg" style="width: 940px">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" style="margin-top: -5px" data-dismiss="modal">
+							&times;
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="table-responsive json_modal_table" id="hiddenDownloadJSONCSV">
+							<table id="hiddenDownloadModal_table" class="table"></table>
+						</div>
+					</div>
+					<div class="modal-footer modal-footer-colour">
+						<button type="button" class="btn btn-default modal-close" data-dismiss="modal" id="closemodal">
+							Close
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
 </html>

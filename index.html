@@ -1,98 +1,117 @@
 <!DOCTYPE html>
 <html lang="en">
+	<head>
+		<title>SciGrade</title>
 
-<head>
-  <title>SciGrade</title>
+		<!-- META DATA -->
+		<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+		<meta name="title" content="SciGrade" />
+		<meta http-equiv="Cache-control" content="max-age=604800" />
+		<meta name="description" content="SciGrade - An online way to practice gRNA and primer design." />
+		<meta
+			name="keywords"
+			content="science, education, bioinformatics, uoft, crispr, pedagogy, grna-sequence, scigrade"
+		/>
+		<meta name="robots" content="index, follow" />
+		<meta name="language" content="English" />
+		<meta name="author" content="Alexander Sullivan, Quynh (Cathy) Cao, Alistair Dias" />
+		<meta property="og:title" content="SciGrade" />
+		<meta property="og:image" content="core/icon/og-image.jpg" />
+		<meta property="og:image:width" content="279" />
+		<meta property="og:image:height" content="279" />
+		<meta property="og:description" content="Practice gRNA+Primer design online with SciGrade!" />
+		<meta property="og:title" content="SciGrade" />
+		<meta property="og:url" content="https://scigrade.com/" />
+		<link rel="shortcut icon" href="core/images/dna.png" type="image/x-icon" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="apple-mobile-web-app-title" content="SciGrade" />
+		<link rel="apple-touch-icon" sizes="180x180" href="core/icon/apple-touch-icon.png" />
+		<link rel="icon" type="image/png" sizes="32x32" href="core/icon/favicon-32x32.png" />
+		<link rel="icon" type="image/png" sizes="16x16" href="core/icon/favicon-16x16.png" />
+		<link rel="manifest" href="core/icon/manifest.json" />
+		<link rel="mask-icon" href="core/icon/safari-pinned-tab.svg" color="#ffffff" />
+		<meta name="application-name" content="SciGrade" />
+		<meta name="msapplication-config" content="core/icon/browserconfig.xml" />
+		<meta name="msapplication-TileColor" content="#ffffff" />
+		<meta name="msapplication-TileImage" content="core/icon/mstile-150x150.png" />
+		<meta name="theme-color" content="#ffffff" />
+		<meta name="twitter:site" content="@AlexJSully" />
+		<!-- END META DATA -->
 
-  <!-- META DATA -->
-  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
-  <meta name="title" content="SciGrade">
-  <meta http-equiv="Cache-control" content="max-age=604800">
-  <meta name="description" content="SciGrade - An online way to practice gRNA and primer design.">
-  <meta name="keywords" content="science, education, bioinformatics, uoft, crispr, pedagogy, grna-sequence, scigrade">
-  <meta name="robots" content="index, follow">
-  <meta name="language" content="English">
-  <meta name="author" content="Alexander Sullivan, Quynh (Cathy) Cao, Alistair Dias">
-  <meta property="og:title" content="SciGrade" />
-  <meta property="og:image" content="core/icon/og-image.jpg">
-  <meta property="og:image:width" content="279">
-  <meta property="og:image:height" content="279">
-  <meta property="og:description" content="Practice gRNA+Primer design online with SciGrade!">
-  <meta property="og:title" content="SciGrade">
-  <meta property="og:url" content="https://scigrade.com/">
-  <link rel="shortcut icon" href="core/images/dna.png" type="image/x-icon" />
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="apple-mobile-web-app-title" content="SciGrade">
-  <link rel="apple-touch-icon" sizes="180x180" href="core/icon/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="core/icon/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="core/icon/favicon-16x16.png">
-  <link rel="manifest" href="core/icon/manifest.json">
-  <link rel="mask-icon" href="core/icon/safari-pinned-tab.svg" color="#ffffff">
-  <meta name="application-name" content="SciGrade">
-  <meta name="msapplication-config" content="core/icon/browserconfig.xml">
-  <meta name="msapplication-TileColor" content="#ffffff">
-  <meta name="msapplication-TileImage" content="core/icon/mstile-150x150.png">
-  <meta name="theme-color" content="#ffffff">
-  <meta name="twitter:site" content="@AlexJSully">
-  <!-- END META DATA -->
+		<!-- jQuery using Google Hosted Library -->
+		<script rel="preload" as="script" src="core/scripts/APIandLibraries/jQuery/jquery.min.js"></script>
+		<!-- Bootstrap -->
+		<link rel="stylesheet" href="core/scripts/APIandLibraries/Bootstrap/bootstrap.min.css" />
+		<script rel="preload" as="script" src="core\scripts\APIandLibraries\Bootstrap\popper.min.js"></script>
+		<script rel="preload" as="script" src="core/scripts/APIandLibraries/Bootstrap/bootstrap.min.js"></script>
+		<!-- Global site tag (gtag.js) - Google Analytics -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=UA-38961857-6"></script>
+		<script>
+			window.dataLayer = window.dataLayer || [];
+			function gtag() {
+				dataLayer.push(arguments);
+			}
+			gtag("js", new Date());
+			gtag("config", "UA-38961857-6");
+		</script>
+		<!-- Google Tag Manager -->
+		<script>
+			(function (w, d, s, l, i) {
+				w[l] = w[l] || [];
+				w[l].push({"gtm.start": new Date().getTime(), event: "gtm.js"});
+				var f = d.getElementsByTagName(s)[0],
+					j = d.createElement(s),
+					dl = l != "dataLayer" ? "&l=" + l : "";
+				j.async = true;
+				j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+				f.parentNode.insertBefore(j, f);
+			})(window, document, "script", "dataLayer", "GTM-K9PRB9W");
+		</script>
+		<!-- End Google Tag Manager -->
+		<!-- favicon -->
+		<link rel="apple-touch-icon" sizes="180x180" href="core/icon/apple-touch-icon.png" />
+		<link rel="icon" type="image/png" sizes="32x32" href="core/icon/favicon-32x32.png" />
+		<link rel="icon" type="image/png" sizes="16x16" href="core/icon/favicon-16x16.png" />
+		<link rel="manifest" href="core/icon/manifest.json" />
+		<link rel="mask-icon" href="core/icon/safari-pinned-tab.svg" color="#2b5797" />
+		<link rel="shortcut icon" href="core/icon/favicon.ico" />
+		<meta name="apple-mobile-web-app-title" content="SciGrade" />
+		<meta name="application-name" content="SciGrade" />
+		<meta name="msapplication-TileColor" content="#2b5797" />
+		<meta name="msapplication-config" content="core/icon/browserconfig.xml" />
+		<meta name="theme-color" content="#2b5797" />
+		<!-- Service worker -->
+		<script>
+			if ("serviceWorker" in navigator) {
+				navigator.serviceWorker.register("core/scripts/serviceWorker/sw.js");
+			}
+		</script>
+		<!-- Custom scripts -->
+		<link rel="stylesheet" href="core\styling\style.min.css" />
+		<meta name="cf-2fa-verify" content="d5006c4ce0d08ab" />
+	</head>
 
-  <!-- jQuery using Google Hosted Library -->
-  <script rel="preload" as="script" src="core/scripts/APIandLibraries/jQuery/jquery.min.js"></script>
-  <!-- Bootstrap -->
-  <link rel="stylesheet" href="core/scripts/APIandLibraries/Bootstrap/bootstrap.min.css">
-  <script rel="preload" as="script" src="core\scripts\APIandLibraries\Bootstrap\popper.min.js"></script>
-  <script rel="preload" as="script" src="core/scripts/APIandLibraries/Bootstrap/bootstrap.min.js"></script>
-  <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-38961857-6"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'UA-38961857-6');
-  </script>
-  <!-- Google Tag Manager -->
-  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-K9PRB9W');</script>
-  <!-- End Google Tag Manager -->
-  <!-- favicon -->
-  <link rel="apple-touch-icon" sizes="180x180" href="core/icon/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="core/icon/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="core/icon/favicon-16x16.png">
-  <link rel="manifest" href="core/icon/manifest.json">
-  <link rel="mask-icon" href="core/icon/safari-pinned-tab.svg" color="#2b5797">
-  <link rel="shortcut icon" href="core/icon/favicon.ico">
-  <meta name="apple-mobile-web-app-title" content="SciGrade">
-  <meta name="application-name" content="SciGrade">
-  <meta name="msapplication-TileColor" content="#2b5797">
-  <meta name="msapplication-config" content="core/icon/browserconfig.xml">
-  <meta name="theme-color" content="#2b5797">
-  <!-- Service worker -->
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker
-        .register('core/scripts/serviceWorker/sw.js');
-    };
-  </script>
-  <!-- Custom scripts -->
-  <link rel="stylesheet" href="core\styling\style.min.css" />
-  <meta name="cf-2fa-verify" content="d5006c4ce0d08ab">
-</head>
-
-<body class="focusBody homeBackground">
-  <!-- Google Tag Manager (noscript) -->
-  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-K9PRB9W" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-  <!-- End Google Tag Manager (noscript) -->
-  <div id="coverBody" class="fullSizeBody backgroundFrontLayer">
-  </div>
-  <div id="mainBody">
-    <a href="" style="opacity: 0;" aria-hidden="true">Empty</a>
-    <div id="logo"><img src="core/images/logo_transparent-Dark.svg" alt="logo" class="centerBody"></div>
-    <p class="centerBody frontPageFont">An online way to practice gRNA and primer design</p>
-    <a href="core/systemrun.html"><button type="button" class="btn btn-primary btn-lg centerButton" style="margin-top:3%;">Login</button></a>
-  </div>
-</body>
-
+	<body class="focusBody homeBackground">
+		<!-- Google Tag Manager (noscript) -->
+		<noscript
+			><iframe
+				src="https://www.googletagmanager.com/ns.html?id=GTM-K9PRB9W"
+				height="0"
+				width="0"
+				style="display: none; visibility: hidden"
+			></iframe
+		></noscript>
+		<!-- End Google Tag Manager (noscript) -->
+		<div id="coverBody" class="fullSizeBody backgroundFrontLayer"></div>
+		<div id="mainBody">
+			<a href="" style="opacity: 0" aria-hidden="true">Empty</a>
+			<div id="logo"><img src="core/images/logo_transparent-Dark.svg" alt="logo" class="centerBody" /></div>
+			<p class="centerBody frontPageFont">An online way to practice gRNA and primer design</p>
+			<a href="core/systemrun.html"
+				><button type="button" class="btn btn-primary btn-lg centerButton" style="margin-top: 3%">
+					Login
+				</button></a
+			>
+		</div>
+	</body>
 </html>
