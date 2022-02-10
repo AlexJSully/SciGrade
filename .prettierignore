@@ -4,6 +4,9 @@
 sw.js
 *.js.map
 
+# Packages
+core/scripts/APIandLibraries
+
 # R data files
 .Rproj.user
 .Rhistory
@@ -23,7 +26,16 @@ sw.js
 
 # workbox
 workbox-config.js
+core/scripts/serviceWorker
 
 # Visual Studio Code
 .vscode/settings.json
 .vscode/launch.json
+
+# Data files
+.fasta
+.xlsx
+.csv
+
+# PDFs
+.pdf

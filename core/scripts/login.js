@@ -199,27 +199,25 @@ function sendLogReg() {
 			}
 			if (checkstudentNum == true && studentNumber != 0 && googleEmail != null) {
 				client.login().then(() =>
-					db
-						.collection("Student_Information")
-						.updateOne(
-							{version: "0.3"},
-							{
-								$set: {
-									[gupper + ".studentClass"]: classRegister,
-									[gupper + ".student_number"]: studentNumber,
-									[gupper + ".name"]: name,
-									[gupper + ".umail"]: studentUmail,
-									[gupper + ".type"]: gupperType,
-									[gupper + ".gmail"]: googleEmail,
-									[manuallyAdded]: "true",
-								},
+					db.collection("Student_Information").updateOne(
+						{version: "0.3"},
+						{
+							$set: {
+								[gupper + ".studentClass"]: classRegister,
+								[gupper + ".student_number"]: studentNumber,
+								[gupper + ".name"]: name,
+								[gupper + ".umail"]: studentUmail,
+								[gupper + ".type"]: gupperType,
+								[gupper + ".gmail"]: googleEmail,
+								[manuallyAdded]: "true",
 							},
-							function (err, res) {
-								if (err) throw err;
-								console.log("1 document updated");
-								db.close();
-							},
-						),
+						},
+						function (err, res) {
+							if (err) throw err;
+							console.log("1 document updated");
+							db.close();
+						},
+					),
 				);
 				redirectCRISPR();
 			}
