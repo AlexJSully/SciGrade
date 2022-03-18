@@ -211,7 +211,7 @@ function sendLogReg() {
 						},
 						function (err, res) {
 							if (err) throw err;
-							console.log("1 document updated");
+							
 							db.close();
 						},
 					),
