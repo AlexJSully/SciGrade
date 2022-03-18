@@ -1,5 +1,41 @@
 version = 1
 
+exclude_patterns = [
+  "# Build files",
+  "*.min.js",
+  "*.min.css",
+  "sw.js",
+  "*.js.map",
+  "# Packages",
+  "core/scripts/APIandLibraries",
+  "# R data files",
+  ".Rproj.user",
+  ".Rhistory",
+  ".RData",
+  ".Ruserdata",
+  "# Server files",
+  ".htaccess",
+  "# misc",
+  ".DS_Store",
+  ".env.local",
+  ".env.development.local",
+  ".env.test.local",
+  ".env.production.local",
+  ".vscode",
+  "# workbox",
+  "workbox-config.js",
+  "core/scripts/serviceWorker",
+  "# Visual Studio Code",
+  ".vscode/settings.json",
+  ".vscode/launch.json",
+  "# Data files",
+  ".fasta",
+  ".xlsx",
+  ".csv",
+  "# PDFs",
+  ".pdf"
+]
+
 [[analyzers]]
 name = "javascript"
 enabled = true
