@@ -1,10 +1,10 @@
-//================================= SciGrade ==================================
+//= ================================ SciGrade ==================================
 //
 // Purpose: Login and registeration for SciGrade
 //
-//=============================================================================
+//= ============================================================================
 
-var student_reg_information;
+let student_reg_information;
 const client = new stitch.StitchClient("almark-wvohf");
 const db = client.service("mongodb", "mongodb-atlas").db("AlMark");
 /**
@@ -23,11 +23,11 @@ function loadJSON_Files() {
 		});
 }
 
-var checkstudentNum = false;
-var studentNumber = 0;
-var studentUmail;
-var alreadyRegistered = false;
-var classRegister;
+let checkstudentNum = false;
+let studentNumber = 0;
+let studentUmail;
+let alreadyRegistered = false;
+let classRegister;
 /**
  * Check to determine if the student is within
  * @param {Num} student_num Student number
@@ -36,19 +36,16 @@ var classRegister;
  */
 function checkStudentNumber(student_num, student_umail) {
 	loadJSON_Files();
-	var alreadyRegistered = false;
+	let alreadyRegistered = false;
 	checkstudentNum = false;
-	var maxNum = 0;
-	var classList = student_reg_information[0]["class_list"];
+	let maxNum = 0;
+	const classList = student_reg_information[0].class_list;
 	for (key in classList) {
-		if (
-			student_reg_information[0]["student_list"] != null &&
-			student_reg_information[0]["student_list"].length > 0
-		) {
-			for (i = 0; i < student_reg_information[0]["student_list"].length; i++) {
+		if (student_reg_information[0].student_list != null && student_reg_information[0].student_list.length > 0) {
+			for (i = 0; i < student_reg_information[0].student_list.length; i++) {
 				if (
-					student_reg_information[0]["student_list"][i]["student_number"] == student_num &&
-					student_reg_information[0]["student_list"][i]["studentClass"] == key
+					student_reg_information[0].student_list[i].student_number == student_num &&
+					student_reg_information[0].student_list[i].studentClass == key
 				) {
 					alreadyRegistered = true;
 				}
@@ -73,7 +70,7 @@ function checkStudentNumber(student_num, student_umail) {
 		addSecondSection();
 	} else if (alreadyRegistered == true) {
 		showRegError(4);
-	} else if (checkstudentNum == false && maxNum == student_reg_information[0]["student_list"].length) {
+	} else if (checkstudentNum == false && maxNum == student_reg_information[0].student_list.length) {
 		showRegError(1);
 	} else if (checkstudentNum == false) {
 		showRegError(2);
@@ -86,17 +83,17 @@ function checkStudentNumber(student_num, student_umail) {
  */
 function loginVerify(student_NumVerify) {
 	alreadyRegistered = false;
-	var maxNum = 0;
+	let maxNum = 0;
 	checkstudentNum = false;
-	if (student_reg_information[0]["student_list"] != null && student_reg_information[0]["student_list"].length > 0) {
-		for (i = 0; i < student_reg_information[0]["student_list"].length; i++) {
-			if (student_reg_information[0]["student_list"][i]["student_number"] == student_NumVerify) {
-				if (student_reg_information[0]["student_list"][i]["gmail"] != "unregistered") {
+	if (student_reg_information[0].student_list != null && student_reg_information[0].student_list.length > 0) {
+		for (i = 0; i < student_reg_information[0].student_list.length; i++) {
+			if (student_reg_information[0].student_list[i].student_number == student_NumVerify) {
+				if (student_reg_information[0].student_list[i].gmail != "unregistered") {
 					alreadyRegistered = true;
 					checkstudentNum = true;
 					studentNumber = student_NumVerify;
 					studentParseNum = i;
-				} else if (student_reg_information[0]["student_list"][i]["gmail"] == "unregistered") {
+				} else if (student_reg_information[0].student_list[i].gmail == "unregistered") {
 					alreadyRegistered = false;
 				}
 			} else {
@@ -109,7 +106,7 @@ function loginVerify(student_NumVerify) {
 		document.getElementById("loginP2").style.display = "block";
 	} else if (alreadyRegistered == false) {
 		showRegError(5);
-	} else if (maxNum == student_reg_information[0]["student_list"].length) {
+	} else if (maxNum == student_reg_information[0].student_list.length) {
 		showRegError(1);
 	}
 }
@@ -173,28 +170,28 @@ function addSecondSection() {
 	document.getElementById("registerP3").style.display = "block";
 }
 
-var gupper;
+let gupper;
 /**
  * Retrieves Google user information and stores it
  */
 function sendLogReg() {
 	if (alreadyRegistered == false) {
 		if (studentUmail) {
-			var gupper = "student_list." + studentParseNum;
+			const gupper = "student_list." + studentParseNum;
 			// Create student name
-			var splitName = studentUmail.split("@")[0].split(".");
-			var name = "";
-			for (var n = 0; n < splitName.length; n++) {
-				var capName = splitName[n].charAt(0).toUpperCase() + splitName[n].substr(1);
+			const splitName = studentUmail.split("@")[0].split(".");
+			let name = "";
+			for (let n = 0; n < splitName.length; n++) {
+				const capName = splitName[n].charAt(0).toUpperCase() + splitName[n].substr(1);
 				name += capName + " ";
 			}
 			name = name.trim();
-			var manuallyAdded = false;
-			var gupperType = "Student";
-			for (i = 0; i < student_reg_information[0]["student_list"].length; i++) {
-				if (student_reg_information[0]["student_list"][i].umail == studentUmail) {
+			let manuallyAdded = false;
+			let gupperType = "Student";
+			for (i = 0; i < student_reg_information[0].student_list.length; i++) {
+				if (student_reg_information[0].student_list[i].umail == studentUmail) {
 					manuallyAdded = true;
-					gupperType = student_reg_information[0]["student_list"][i].type;
+					gupperType = student_reg_information[0].student_list[i].type;
 				}
 			}
 			if (checkstudentNum == true && studentNumber != 0 && googleEmail != null) {
@@ -224,7 +221,7 @@ function sendLogReg() {
 		}
 	}
 	if (alreadyRegistered == true) {
-		if (googleEmail == student_reg_information[0]["student_list"][studentParseNum]["gmail"]) {
+		if (googleEmail == student_reg_information[0].student_list[studentParseNum].gmail) {
 			redirectCRISPR();
 		} else {
 			showRegError(6);
@@ -248,7 +245,7 @@ function signOutDisplay() {
 	}
 
 	$("#mainContainer").empty();
-	var append_str;
+	let append_str;
 	append_str = "<div class='row'>\n";
 	// Pre-all
 	append_str +=
@@ -273,7 +270,7 @@ var changeLogin = '<i class="material-icons" style="font-size:inherit;">&#xE7FD;
  */
 function redirectCRISPR() {
 	$("#mainContainer").empty();
-	var append_str;
+	let append_str;
 	append_str = "<div class='row'>\n";
 	append_str += "<div class='col-sm-1'></div>\n";
 	append_str += "<div class='col-sm-10' id='content_body'>\n";
