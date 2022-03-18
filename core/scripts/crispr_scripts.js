@@ -1,11 +1,11 @@
-//================================= SciGrade ==================================
+//= ================================ SciGrade ==================================
 //
 // Purpose: General script for SciGrade
 //
-//=============================================================================
-var selection_inMode = "practice";
-var possible_gene = "eBFP";
-var current_gene = "empty";
+//= ============================================================================
+const selection_inMode = "practice";
+const possible_gene = "eBFP";
+let current_gene = "empty";
 
 /**
  * Adds the genes to the Gene's dropdown menu
@@ -14,14 +14,14 @@ var current_gene = "empty";
 function ModeSelectionAdd(mode) {
 	$("#gene_dropdown_selection").empty();
 	document.getElementById("load_button").disabled;
-	var append_str;
+	let append_str;
 	if (mode == "practice") {
 		append_str = '<option value="eBFP" id="eBFP" tag="practice">eBFP</option>\n';
 		append_str += '<option value="ACTN3" id="ACTN3" tag="practice">ACTN3</option>\n';
 		// TODO: Add completed assignment genes into practice mode
 		$("#gene_dropdown_selection").append(append_str);
 	} else if (mode == "assignment") {
-		var useList = removeCompletedAssignments();
+		const useList = removeCompletedAssignments();
 		for (i = 0; i < useList.length; i++) {
 			if (i == 0) {
 				append_str = `<option value="${useList[i]}" id="${useList[i]}" tag="assignment">${useList[i]}</option>\n`;
@@ -58,8 +58,8 @@ function select_Gene() {
 	}
 }
 
-var gene_backgroundInfo;
-var benchling_grna_ouputs;
+let gene_backgroundInfo;
+let benchling_grna_ouputs;
 /**
  * Load JSON files
  */
@@ -104,8 +104,8 @@ function loadCRISPRJSON_Files() {
 		});
 }
 
-var list_of_practice = ["eBFP"];
-var list_of_assignments = ["CCR5"];
+let list_of_practice = ["eBFP"];
+let list_of_assignments = ["CCR5"];
 /**
  * Fill in and create a list of genes based on what is available in on the MongoDB server
  * @param itPos {number} The current iterative step of fillGeneList in the instance that gene_backgroundInfo is empty
@@ -120,11 +120,11 @@ function fillGeneList(itPos = 0) {
 					fillGeneList(itPos + 1);
 				}, 500);
 			} else {
-				var list_of_genes = Object.keys(gene_backgroundInfo[0]["gene_list"]);
+				const list_of_genes = Object.keys(gene_backgroundInfo[0].gene_list);
 				for (i = 0; i < list_of_genes.length; i++) {
-					if (gene_backgroundInfo[0]["gene_list"][list_of_genes[i]]["base_type"] == "practice") {
+					if (gene_backgroundInfo[0].gene_list[list_of_genes[i]].base_type == "practice") {
 						list_of_practice.push(list_of_genes[i]);
-					} else if (gene_backgroundInfo[0]["gene_list"][list_of_genes[i]]["base_type"] == "assignment") {
+					} else if (gene_backgroundInfo[0].gene_list[list_of_genes[i]].base_type == "assignment") {
 						list_of_assignments.push(list_of_genes[i]);
 					}
 				}
@@ -140,7 +140,7 @@ function fillGeneList(itPos = 0) {
 	}
 }
 
-var loadedMode = "practice";
+let loadedMode = "practice";
 /**
  * Dynamically creates the work page for SciGrade
  */
@@ -149,12 +149,12 @@ function loadWork() {
 		gene_backgroundInfo != null ||
 		gene_backgroundInfo != "" ||
 		gene_backgroundInfo != undefined ||
-		backgroundInfo[0]["gene_list"][current_gene] != undefined
+		backgroundInfo[0].gene_list[current_gene] != undefined
 	) {
 		$("#work").empty();
 		loadedMode = selection_inMode;
 		checkAnswers_executed = false;
-		var append_str;
+		let append_str;
 
 		// Begin background information
 		append_str = '<div class="work_background" style="margin-top:2%;">';
@@ -164,11 +164,11 @@ function loadWork() {
 			'<div id="crispr_header">\n<p>Please refer to your dry lab protocol for full instructions on how and what to do. Below is a brief reminder of what you are supposed to do with each gene: \n <b>Your objective is to find these mutations, design a gRNA and its corresponding F1/R1 primers</b></p> \n</div>\n';
 
 		// Gene information
-		append_str += `<div id="gene_info"><p>Here is some background information about your gene: ${gene_backgroundInfo[0]["gene_list"][current_gene]["name"]} (${current_gene})</p>\n`;
+		append_str += `<div id="gene_info"><p>Here is some background information about your gene: ${gene_backgroundInfo[0].gene_list[current_gene].name} (${current_gene})</p>\n`;
 		append_str +=
-			"<p> Background information: " + gene_backgroundInfo[0]["gene_list"][current_gene]["Background"] + "</p>\n";
-		append_str += "<p> Target site: " + gene_backgroundInfo[0]["gene_list"][current_gene]["Target site"] + "</p>\n";
-		append_str += `<p style="word-wrap:break-word;"> Modified genetic sequence: ${gene_backgroundInfo[0]["gene_list"][current_gene]["Sequence"]}</p>\n`;
+			"<p> Background information: " + gene_backgroundInfo[0].gene_list[current_gene].Background + "</p>\n";
+		append_str += "<p> Target site: " + gene_backgroundInfo[0].gene_list[current_gene]["Target site"] + "</p>\n";
+		append_str += `<p style="word-wrap:break-word;"> Modified genetic sequence: ${gene_backgroundInfo[0].gene_list[current_gene].Sequence}</p>\n`;
 		append_str += "</div>";
 
 		// End background information
@@ -258,7 +258,7 @@ function loadWork() {
 		gene_backgroundInfo == null ||
 		gene_backgroundInfo == "" ||
 		gene_backgroundInfo == undefined ||
-		backgroundInfo[0]["gene_list"][current_gene] == undefined
+		backgroundInfo[0].gene_list[current_gene] == undefined
 	) {
 		alert("Error code lFS50-66 occurred. Please contact admin or TA!");
 		console.log("Error code lFS50-66 occurred. Please contact admin or TA!");
@@ -271,30 +271,30 @@ function loadWork() {
  * Determine if a number or dash key is pressed
  */
 function isNumberOrDashKey(evt) {
-	var charCode = evt.which ? evt.which : event.keyCode;
+	const charCode = evt.which ? evt.which : event.keyCode;
 	if (charCode != 46 && charCode != 45 && charCode > 31 && (charCode < 48 || charCode > 57)) {
 		return false;
 	}
 	return true;
 }
 
-//Global marking variables:
-var MARgRNAseq = false;
-var MARgRNAseq_degree = 0; // 0 wrong, 1 correct, 2 partial of <20bp, 3 technically correct of <30bp
-var MARPAMseq = false;
-var MARCutPos = false;
-var MARstrand = false;
-var MAROffTarget = false;
-var MAROffTarget_degree = 0; // 0 wrong, 1 above 75, 2 above 35, 3 only option
-var MAROffTarget_aboveOpt = false;
-var MAROffTarget_above35 = false;
-var MAROffTarget_onlyOption = false;
-var MARF1primers = false;
-var MARR1primers = false;
+// Global marking variables:
+let MARgRNAseq = false;
+let MARgRNAseq_degree = 0; // 0 wrong, 1 correct, 2 partial of <20bp, 3 technically correct of <30bp
+let MARPAMseq = false;
+let MARCutPos = false;
+let MARstrand = false;
+let MAROffTarget = false;
+let MAROffTarget_degree = 0; // 0 wrong, 1 above 75, 2 above 35, 3 only option
+let MAROffTarget_aboveOpt = false;
+let MAROffTarget_above35 = false;
+let MAROffTarget_onlyOption = false;
+let MARF1primers = false;
+let MARR1primers = false;
 
-var possible_comparable_answers = [];
-var correctNucleotideIncluded = false;
-var true_counts = 0; // This exists for the instance that there is more than one match for inputedSeq
+let possible_comparable_answers = [];
+let correctNucleotideIncluded = false;
+let true_counts = 0; // This exists for the instance that there is more than one match for inputedSeq
 
 var checkAnswers_executed = false;
 /**
@@ -311,40 +311,40 @@ function checkAnswers() {
 	true_counts = 0;
 
 	// Verify answers
-	var correctNucleotide = gene_backgroundInfo[0]["gene_list"][current_gene]["Sequence"].charAt(
-		gene_backgroundInfo[0]["gene_list"][current_gene]["Target position"],
+	const correctNucleotide = gene_backgroundInfo[0].gene_list[current_gene].Sequence.charAt(
+		gene_backgroundInfo[0].gene_list[current_gene]["Target position"],
 	);
-	var correctNucleotidePosition = gene_backgroundInfo[0]["gene_list"][current_gene]["Target position"] - 1;
+	const correctNucleotidePosition = gene_backgroundInfo[0].gene_list[current_gene]["Target position"] - 1;
 
 	// Check gRNA Sequence:
-	var inputedSeq = document.getElementById("sequence_input").value.trim();
+	const inputedSeq = document.getElementById("sequence_input").value.trim();
 	// Check if gRNA sequence is in against listed
 	possible_comparable_answers = [];
-	for (i = 0; i < benchling_grna_ouputs[0]["gene_list"][current_gene].length; i++) {
-		if (benchling_grna_ouputs[0]["gene_list"][current_gene][i]["Sequence"] == inputedSeq) {
-			possible_comparable_answers.push(benchling_grna_ouputs[0]["gene_list"][current_gene][i]);
+	for (i = 0; i < benchling_grna_ouputs[0].gene_list[current_gene].length; i++) {
+		if (benchling_grna_ouputs[0].gene_list[current_gene][i].Sequence == inputedSeq) {
+			possible_comparable_answers.push(benchling_grna_ouputs[0].gene_list[current_gene][i]);
 		}
 	}
 
 	// Check against existing:
-	var possible_right_answers = [];
+	const possible_right_answers = [];
 	if (possible_comparable_answers.length > 0) {
 		for (i = 0; i < possible_comparable_answers.length; i++) {
 			true_counts = 0;
 			// Checking if the gene's target position is within correct nucleotide range
 			correctNucleotideIncluded = false;
-			if (possible_comparable_answers[i]["Strand"] == 1) {
-				var nucleotideIncludedRange_top = possible_comparable_answers[i]["Position"] - 1 - 1 + 3;
-				var nucleotideIncludedRange_bot = possible_comparable_answers[i]["Position"] - 1 - 17;
+			if (possible_comparable_answers[i].Strand == 1) {
+				var nucleotideIncludedRange_top = possible_comparable_answers[i].Position - 1 - 1 + 3;
+				var nucleotideIncludedRange_bot = possible_comparable_answers[i].Position - 1 - 17;
 				if (
 					correctNucleotidePosition >= nucleotideIncludedRange_bot &&
 					correctNucleotidePosition <= nucleotideIncludedRange_top
 				) {
 					correctNucleotideIncluded = true;
 				}
-			} else if (possible_comparable_answers[i]["Strand"] == -1) {
-				var nucleotideIncludedRange_top = possible_comparable_answers[i]["Position"] - 1 + 17;
-				var nucleotideIncludedRange_bot = possible_comparable_answers[i]["Position"] - 1 - 3;
+			} else if (possible_comparable_answers[i].Strand == -1) {
+				var nucleotideIncludedRange_top = possible_comparable_answers[i].Position - 1 + 17;
+				var nucleotideIncludedRange_bot = possible_comparable_answers[i].Position - 1 - 3;
 				if (
 					correctNucleotidePosition >= nucleotideIncludedRange_bot &&
 					correctNucleotidePosition <= nucleotideIncludedRange_top
@@ -358,9 +358,9 @@ function checkAnswers() {
 				var pamFirst;
 				var pamSecond;
 				// Sense is 1
-				if (possible_comparable_answers[i]["Strand"] == 1) {
-					pamFirst = possible_comparable_answers[i]["Position"] - 1 + 2;
-					pamSecond = possible_comparable_answers[i]["Position"] - 1 + 4;
+				if (possible_comparable_answers[i].Strand == 1) {
+					pamFirst = possible_comparable_answers[i].Position - 1 + 2;
+					pamSecond = possible_comparable_answers[i].Position - 1 + 4;
 					// If the sequence matches to be true, check other answers:
 					if (document.getElementById("strand_input").value == "Sense (+)") {
 						MARstrand = true;
@@ -368,9 +368,9 @@ function checkAnswers() {
 					}
 				}
 				// Antisense is -1
-				else if (possible_comparable_answers[i]["Strand"] == -1) {
-					pamFirst = possible_comparable_answers[i]["Position"] - 1 - 2;
-					pamSecond = possible_comparable_answers[i]["Position"] - 1 - 4;
+				else if (possible_comparable_answers[i].Strand == -1) {
+					pamFirst = possible_comparable_answers[i].Position - 1 - 2;
+					pamSecond = possible_comparable_answers[i].Position - 1 - 4;
 					// If the sequence matches to be true, check other answers:
 					if (document.getElementById("strand_input").value == "Antisense (-)") {
 						MARstrand = true;
@@ -384,28 +384,28 @@ function checkAnswers() {
 					MARgRNAseq = false;
 					MARgRNAseq_degree = 0;
 				} else if (
-					(correctNucleotidePosition >= possible_comparable_answers[i]["Position"] - 1 + 1 &&
-						correctNucleotidePosition <= possible_comparable_answers[i]["Position"] - 1 + 10) ||
-					(correctNucleotidePosition <= possible_comparable_answers[i]["Position"] - 1 - 1 &&
-						correctNucleotidePosition >= possible_comparable_answers[i]["Position"] - 1 - 10)
+					(correctNucleotidePosition >= possible_comparable_answers[i].Position - 1 + 1 &&
+						correctNucleotidePosition <= possible_comparable_answers[i].Position - 1 + 10) ||
+					(correctNucleotidePosition <= possible_comparable_answers[i].Position - 1 - 1 &&
+						correctNucleotidePosition >= possible_comparable_answers[i].Position - 1 - 10)
 				) {
 					MARgRNAseq = true;
 					MARgRNAseq_degree = 1;
 					true_counts++;
 				} else if (
-					(correctNucleotidePosition >= possible_comparable_answers[i]["Position"] - 1 &&
-						correctNucleotidePosition <= possible_comparable_answers[i]["Position"] - 1 + 20) ||
-					(correctNucleotidePosition <= possible_comparable_answers[i]["Position"] - 1 &&
-						correctNucleotidePosition >= possible_comparable_answers[i]["Position"] - 1 - 20)
+					(correctNucleotidePosition >= possible_comparable_answers[i].Position - 1 &&
+						correctNucleotidePosition <= possible_comparable_answers[i].Position - 1 + 20) ||
+					(correctNucleotidePosition <= possible_comparable_answers[i].Position - 1 &&
+						correctNucleotidePosition >= possible_comparable_answers[i].Position - 1 - 20)
 				) {
 					MARgRNAseq = true;
 					MARgRNAseq_degree = 2;
 					true_counts++;
 				} else if (
-					(correctNucleotidePosition >= possible_comparable_answers[i]["Position"] - 1 &&
-						correctNucleotidePosition <= possible_comparable_answers[i]["Position"] - 1 + 30) ||
-					(correctNucleotidePosition <= possible_comparable_answers[i]["Position"] - 1 &&
-						correctNucleotidePosition >= possible_comparable_answers[i]["Position"] - 1 - 30)
+					(correctNucleotidePosition >= possible_comparable_answers[i].Position - 1 &&
+						correctNucleotidePosition <= possible_comparable_answers[i].Position - 1 + 30) ||
+					(correctNucleotidePosition <= possible_comparable_answers[i].Position - 1 &&
+						correctNucleotidePosition >= possible_comparable_answers[i].Position - 1 - 30)
 				) {
 					MARgRNAseq = true;
 					MARgRNAseq_degree = 3;
@@ -414,15 +414,15 @@ function checkAnswers() {
 
 				// If the sequence if correct, check all other results:
 				if (MARgRNAseq == true) {
-					var temp_answer = possible_comparable_answers[i];
+					const temp_answer = possible_comparable_answers[i];
 					// Check if the cut position matches the answer's input
 					if (
-						(temp_answer["Position"] != null || temp_answer["Position"] != undefined) &&
-						parseInt(temp_answer["Position"]) == parseInt(document.getElementById("position_input").value)
+						(temp_answer.Position != null || temp_answer.Position != undefined) &&
+						parseInt(temp_answer.Position) == parseInt(document.getElementById("position_input").value)
 					) {
 						MARCutPos = true;
 						true_counts++;
-					} else if (temp_answer["Position"] == null || temp_answer["Position"] == undefined) {
+					} else if (temp_answer.Position == null || temp_answer.Position == undefined) {
 						alert(
 							"Error code cA302-307: retrieving server information on 'Position' answers occurred. Please contact admin or TA!",
 						);
@@ -433,12 +433,12 @@ function checkAnswers() {
 
 					// Check if the PAM matches the answer's input
 					if (
-						(temp_answer["PAM"] != null || temp_answer["PAM"] != undefined) &&
-						temp_answer["PAM"] == document.getElementById("pam_input").value.trim()
+						(temp_answer.PAM != null || temp_answer.PAM != undefined) &&
+						temp_answer.PAM == document.getElementById("pam_input").value.trim()
 					) {
 						MARPAMseq = true;
 						true_counts++;
-					} else if (temp_answer["PAM"] == null || temp_answer["PAM"] == undefined) {
+					} else if (temp_answer.PAM == null || temp_answer.PAM == undefined) {
 						alert(
 							"Error code cA311-317: retrieving server information on 'PAM' answers occurred. Please contact admin or TA!",
 						);
@@ -474,10 +474,10 @@ function checkAnswers() {
 	checkAnswers_executed = true;
 }
 
-var offtarget_List = [];
-var offtarget_dict = {};
-var offtarget_dictParse = [];
-var offtarget_Use = [];
+let offtarget_List = [];
+let offtarget_dict = {};
+let offtarget_dictParse = [];
+let offtarget_Use = [];
 /**
  * Checks the off-target score if it is correct
  * @param {int} score - The specificity score from possible_comparable_answers
@@ -491,9 +491,9 @@ function checkOffTarget(score) {
 	MAROffTarget_above35 = false;
 	MAROffTarget_onlyOption = false;
 	// Create off-target variables
-	var OffTargetValue_down = Math.floor(score);
-	var OffTargetValue_up = Math.ceil(score);
-	var InputOffTargetValue = parseInt(document.getElementById("offtarget_input").value);
+	const OffTargetValue_down = Math.floor(score);
+	const OffTargetValue_up = Math.ceil(score);
+	const InputOffTargetValue = parseInt(document.getElementById("offtarget_input").value);
 	// See if off-target value matches input value
 	if (correctNucleotideIncluded == true && MARgRNAseq == true) {
 		if (InputOffTargetValue >= OffTargetValue_down && InputOffTargetValue <= OffTargetValue_up) {
@@ -504,45 +504,45 @@ function checkOffTarget(score) {
 	// Determine how write it is based on its range
 	if (MAROffTarget == true) {
 		// Check for last-resort regions:
-		var rangeStarter_upper = parseInt(document.getElementById("position_input").value) + 35;
-		var rangeStarter_lower = parseInt(document.getElementById("position_input").value) - 35;
+		const rangeStarter_upper = parseInt(document.getElementById("position_input").value) + 35;
+		const rangeStarter_lower = parseInt(document.getElementById("position_input").value) - 35;
 		// Check if gRNA sequence is in against listed
 		offtarget_List = [];
 		offtarget_dict = {};
 		offtarget_dictParse = [];
 		offtarget_Use = [];
-		for (i = 0; i < benchling_grna_ouputs[0]["gene_list"][current_gene].length; i++) {
+		for (i = 0; i < benchling_grna_ouputs[0].gene_list[current_gene].length; i++) {
 			if (
-				benchling_grna_ouputs[0]["gene_list"][current_gene][i]["Position"] >= rangeStarter_lower &&
-				benchling_grna_ouputs[0]["gene_list"][current_gene][i]["Position"] <= rangeStarter_upper
+				benchling_grna_ouputs[0].gene_list[current_gene][i].Position >= rangeStarter_lower &&
+				benchling_grna_ouputs[0].gene_list[current_gene][i].Position <= rangeStarter_upper
 			) {
 				if (
-					benchling_grna_ouputs[0]["gene_list"][current_gene][i]["Specificity Score"] != null ||
-					benchling_grna_ouputs[0]["gene_list"][current_gene][i]["Specificity Score"] != undefined
+					benchling_grna_ouputs[0].gene_list[current_gene][i]["Specificity Score"] != null ||
+					benchling_grna_ouputs[0].gene_list[current_gene][i]["Specificity Score"] != undefined
 				) {
-					offtarget_List.push(benchling_grna_ouputs[0]["gene_list"][current_gene][i]["Specificity Score"]);
-					offtarget_dict[i] = benchling_grna_ouputs[0]["gene_list"][current_gene][i]["Specificity Score"];
+					offtarget_List.push(benchling_grna_ouputs[0].gene_list[current_gene][i]["Specificity Score"]);
+					offtarget_dict[i] = benchling_grna_ouputs[0].gene_list[current_gene][i]["Specificity Score"];
 					offtarget_dictParse.push[i];
 				}
 			}
 		}
-		var last_resort_okay = true;
+		let last_resort_okay = true;
 		if (Math.max.apply(null, offtarget_List) < 35) {
 			last_resort_okay = false;
 		}
 
 		// Is it within the optimal range?
-		var Max_range = Math.max.apply(null, offtarget_List);
-		var Min_optimal = Max_range - Max_range * 0.2;
-		var optimalValue = Min_optimal;
-		var studentClass = student_reg_information[0]["student_list"][studentParseNum]["studentClass"];
+		const Max_range = Math.max.apply(null, offtarget_List);
+		const Min_optimal = Max_range - Max_range * 0.2;
+		let optimalValue = Min_optimal;
+		const studentClass = student_reg_information[0].student_list[studentParseNum].studentClass;
 		// Change optimal range based on custom input
-		if (student_reg_information[0]["classMarkingMod"][studentClass][0] == "Optimal") {
+		if (student_reg_information[0].classMarkingMod[studentClass][0] == "Optimal") {
 			if (Min_optimal > 80 || Min_optimal < 35) {
 				optimalValue = 80;
 			}
 		} else {
-			optimalValue = student_reg_information[0]["classMarkingMod"][studentClass][0];
+			optimalValue = student_reg_information[0].classMarkingMod[studentClass][0];
 		}
 		// Determine if off-target is optimal or not
 		if (InputOffTargetValue >= optimalValue) {
@@ -563,7 +563,7 @@ function checkOffTarget(score) {
 	}
 }
 
-var possible_F1_primers = [];
+let possible_F1_primers = [];
 /**
  * Checks if the F1 primer is correct or not
  * @param {String} seq - The gRNA sequence
@@ -574,8 +574,8 @@ function checkF1Primers(seq) {
 	MARF1primers = false;
 	// Verify primers:
 	possible_F1_primers = [];
-	var begin_F1 = "TAATACGACTCACTATAG";
-	var count_First = true;
+	const begin_F1 = "TAATACGACTCACTATAG";
+	let count_First = true;
 	if (seq[0] == "G") {
 		count_First = false;
 	}
@@ -592,8 +592,8 @@ function checkF1Primers(seq) {
 	}
 }
 
-var possible_R1_primers = [];
-var complementary_nt_dict = {
+let possible_R1_primers = [];
+const complementary_nt_dict = {
 	A: "T",
 	T: "A",
 	C: "G",
@@ -609,8 +609,8 @@ function checkR1Primers(seq) {
 	MARR1primers = false;
 	// Verify primers:
 	possible_R1_primers = [];
-	var begin_R1 = "TTCTAGCTCTAAAAC";
-	var complemetary_seq = "";
+	const begin_R1 = "TTCTAGCTCTAAAAC";
+	let complemetary_seq = "";
 	for (i = 0; i < seq.length; i++) {
 		complemetary_seq = complementary_nt_dict[seq[i]] + complemetary_seq;
 	}
@@ -626,15 +626,15 @@ function checkR1Primers(seq) {
  * Creates a complementary sequence of the nucleotides
  */
 function createComplementarySeq(seq) {
-	var comp_seq = "";
+	let comp_seq = "";
 	for (i = 0; i < seq.length; i++) {
 		comp_seq = complementary_nt_dict[seq[i]] + comp_seq;
 	}
 }
 
-var studentMark = 0;
-var studentMarkPercentage = 0;
-var markTotal = 10;
+let studentMark = 0;
+let studentMarkPercentage = 0;
+const markTotal = 10;
 /**
  * Based on checkAnswers(), returns a float of a mark
  */
@@ -685,7 +685,7 @@ function markAnswers() {
  */
 function showFeedback() {
 	$("#mainContainer").empty();
-	var append_str =
+	let append_str =
 		"<p style='font-weight:bold;'> You would only receive feedback on your practice attempts and not your final assignments.</p>";
 	append_str +=
 		"<p> The assignment itself is marked out of 10 marks with 2 marks for each input excluding gRNA strand direction, cut position and target region range (these three values are used to calculate if you have the right answer or not which means they are still crucial that they are still correct).</p>";
@@ -695,8 +695,8 @@ function showFeedback() {
 
 	// Calculate all conditions:
 	/// gRNA:
-	var MARgRNAseq_degree_display = 0;
-	var MARgRNAseq_degree_explain =
+	let MARgRNAseq_degree_display = 0;
+	let MARgRNAseq_degree_explain =
 		"Your gRNA sequence was wrong and not found in the Benchling gRNA outputs. Either you made a typo or this answer was not correct and did not contain the target cut site within an acceptable range.";
 	if (MARgRNAseq == true) {
 		if (MARgRNAseq_degree == 1) {
@@ -713,16 +713,16 @@ function showFeedback() {
 		}
 	}
 	/// PAM:
-	var MARPAMseq_display = 0;
-	var MARPAMseq_explain =
+	let MARPAMseq_display = 0;
+	let MARPAMseq_explain =
 		"Your PAM sequence was wrong and not found relative to your gRNA sequence. Either you made a typo or this answer was not correct. Either it contained the cut site within the PAM site or it was not an NGG or NAG PAM site (SciGrade only accepts either of those two PAM sites).";
 	if (MARPAMseq == true) {
 		MARPAMseq_display = 2;
 		MARPAMseq_explain = "This means your answer was correct and you received full marks.";
 	}
 	/// Off-target:
-	var MAROffTarget_degree_display = 0;
-	var MAROffTarget_degree_explain =
+	let MAROffTarget_degree_display = 0;
+	let MAROffTarget_degree_explain =
 		"Your off-target score was wrong. Either it was not above/within the optimal range (or above 35) or the last-resort option.";
 	if (MAROffTarget == true) {
 		if (MAROffTarget_degree == 1) {
@@ -740,8 +740,8 @@ function showFeedback() {
 		}
 	}
 	/// F1 Primer:
-	var MARF1primers_display = 0;
-	var f1Options = "";
+	let MARF1primers_display = 0;
+	let f1Options = "";
 	for (i = 0; i < possible_F1_primers.length; i++) {
 		f1Options += possible_F1_primers[i];
 		if (i == possible_F1_primers.length - 1) {
@@ -750,7 +750,7 @@ function showFeedback() {
 			f1Options += ", ";
 		}
 	}
-	var MARF1primers_explain =
+	let MARF1primers_explain =
 		"Your F1 primer sequence was incorrectly matched to one of the following sequences generated based on your gRNA sequence inputted: " +
 		f1Options;
 	if (MARF1primers == true) {
@@ -758,8 +758,8 @@ function showFeedback() {
 		MARF1primers_explain = "This means your answer was correct and you received full marks.";
 	}
 	/// R1 Primer:
-	var MARR1primers_display = 0;
-	var r1Options = "";
+	let MARR1primers_display = 0;
+	let r1Options = "";
 	for (i = 0; i < possible_R1_primers.length; i++) {
 		r1Options += possible_F1_primers[i];
 		if (i == possible_R1_primers.length - 1) {
@@ -768,7 +768,7 @@ function showFeedback() {
 			r1Options += ", ";
 		}
 	}
-	var MARR1primers_explain =
+	let MARR1primers_explain =
 		"Your R1 primer sequence was incorrectly matched to one of the following sequences generated based on your gRNA sequence inputted: " +
 		r1Options;
 	if (MARR1primers == true) {
@@ -931,7 +931,7 @@ function showNewInput(docCheck, checkFor, docDisplay) {
 	}
 }
 
-var completed_assignments = [];
+let completed_assignments = [];
 /**
  * Generates a list of completed_assignments
  */
@@ -939,22 +939,22 @@ function generateCompletedAssignmentList() {
 	completed_assignments = [];
 	loadJSON_Files();
 	// Assignments
-	if (student_reg_information[0]["student_list"][studentParseNum]["assignment-HBB-Marks"] != null) {
+	if (student_reg_information[0].student_list[studentParseNum]["assignment-HBB-Marks"] != null) {
 		if (!completed_assignments.includes("HBB")) {
 			completed_assignments.push("HBB");
 		}
 	}
-	if (student_reg_information[0]["student_list"][studentParseNum]["assignment-CCR5-Marks"] != null) {
+	if (student_reg_information[0].student_list[studentParseNum]["assignment-CCR5-Marks"] != null) {
 		if (!completed_assignments.includes("CCR5")) {
 			completed_assignments.push("CCR5");
 		}
 	}
-	if (student_reg_information[0]["student_list"][studentParseNum]["assignment-ANKK1-Marks"] != null) {
+	if (student_reg_information[0].student_list[studentParseNum]["assignment-ANKK1-Marks"] != null) {
 		if (!completed_assignments.includes("ANKK1")) {
 			completed_assignments.push("ANKK1");
 		}
 	}
-	if (student_reg_information[0]["student_list"][studentParseNum]["assignment-APOE-Marks"] != null) {
+	if (student_reg_information[0].student_list[studentParseNum]["assignment-APOE-Marks"] != null) {
 		if (!completed_assignments.includes("APOE")) {
 			completed_assignments.push("APOE");
 		}
@@ -967,9 +967,9 @@ function generateCompletedAssignmentList() {
 function openAccountManagement() {
 	generateCompletedAssignmentList();
 	$("#accountManagementBody").empty();
-	var append_str =
+	let append_str =
 		"<div id='accordion'><p>Hello " +
-		student_reg_information[0]["student_list"][studentParseNum]["name"].split(" ")[0] +
+		student_reg_information[0].student_list[studentParseNum].name.split(" ")[0] +
 		"!</p>";
 	$("#accountManagementBody").append(append_str);
 
@@ -1004,16 +1004,16 @@ function openAccountManagement() {
 	append_str += "</div>";
 	$("#accountManagementBody").append(append_str);
 
-	var classList = student_reg_information[0]["class_list"];
+	const classList = student_reg_information[0].class_list;
 	// Obtain student marks
 	if (
-		student_reg_information[0]["student_list"][studentParseNum]["type"] == "admin" ||
-		student_reg_information[0]["student_list"][studentParseNum]["type"] == "TA"
+		student_reg_information[0].student_list[studentParseNum].type == "admin" ||
+		student_reg_information[0].student_list[studentParseNum].type == "TA"
 	) {
-		var encodedURI = encodeURIComponent(JSON.stringify(student_reg_information[0]["student_list"]));
+		const encodedURI = encodeURIComponent(JSON.stringify(student_reg_information[0].student_list));
 		append_str =
 			"<br> <p> <b> Oh wait! </b> Hello " +
-			student_reg_information[0]["student_list"][studentParseNum]["type"] +
+			student_reg_information[0].student_list[studentParseNum].type +
 			"! Would you like to download student marks? </p>";
 		append_str += '<label for="DownloadClass">Choose class: </label>';
 		append_str += '<select id="DownloadClass" class="form-control" style="margin-bottom: 1%">';
@@ -1030,8 +1030,8 @@ function openAccountManagement() {
 
 	// TA access to add new students:
 	if (
-		student_reg_information[0]["student_list"][studentParseNum]["type"] == "TA" ||
-		student_reg_information[0]["student_list"][studentParseNum]["type"] == "admin"
+		student_reg_information[0].student_list[studentParseNum].type == "TA" ||
+		student_reg_information[0].student_list[studentParseNum].type == "admin"
 	) {
 		loadJSON_Files();
 		append_str = "<p> <b> ADMIN POWER! </b> <p>";
@@ -1113,7 +1113,7 @@ function openAccountManagement() {
 		append_str += "<div id='addTA' class='collapse' aria-labelledby='headingOne' data-parent='#accordion'>";
 		append_str += "<div class='card-body'>";
 
-		//Append TAs or Admins:
+		// Append TAs or Admins:
 		append_str +=
 			"<p style='font-weight: bold;'>If you would like to add a single user (students, TAs or admins), please fill in the form below. Please note, this will default the user as a student. Only admins will be able to create new TAs or admins</p>";
 		// Form opening
@@ -1164,7 +1164,7 @@ function openAccountManagement() {
 	}
 
 	// Admin controls:
-	if (student_reg_information[0]["student_list"][studentParseNum]["type"] == "admin") {
+	if (student_reg_information[0].student_list[studentParseNum].type == "admin") {
 		// Create modifying controls card
 		append_str = "<div class='card about'>";
 		append_str += "<div class='card-header' id='modifyCard'>";
@@ -1179,7 +1179,7 @@ function openAccountManagement() {
 			"<div id='modifyControls' class='collapse' aria-labelledby='headingOne' data-parent='#accordion'>";
 		append_str += "<div class='card-body'>";
 
-		//Info:
+		// Info:
 		append_str +=
 			"<p style='font-weight: bold;'>If you would like to change a class's off-target optimal goal, you can do that here</p>";
 
@@ -1237,7 +1237,7 @@ function openAccountManagement() {
 		append_str += "<div id='typeControl' class='collapse' aria-labelledby='headingOne' data-parent='#accordion'>";
 		append_str += "<div class='card-body'>";
 
-		//Info:
+		// Info:
 		append_str +=
 			"<p style='font-weight: bold;'>If you would like to change a user's account type (to TA or admin or back to student), you can do that below</p>";
 
@@ -1310,8 +1310,8 @@ function UpdateChooseUser(domUser) {
  * @param {String} optionsInner The InnerHTML for the options being added
  */
 function AddToOptions(domID, optionsValue, optionsInner) {
-	var dom = document.getElementById(domID);
-	var option = document.createElement("option");
+	const dom = document.getElementById(domID);
+	const option = document.createElement("option");
 	option.value = optionsValue;
 	option.innerHTML = optionsInner;
 	dom.appendChild(option);
@@ -1322,7 +1322,7 @@ function AddToOptions(domID, optionsValue, optionsInner) {
  * @param {String} domID The DOM ID in the HTML for the select
  */
 function ClearSelectOptions(domID) {
-	var dom = document.getElementById(domID);
+	const dom = document.getElementById(domID);
 	while (dom.options.length > 0) {
 		dom.options.remove(0);
 	}
@@ -1335,10 +1335,10 @@ var updatedListOfStudents = {};
  */
 function UpdateStudentList(className) {
 	updatedListOfStudents = {};
-	var studentList = student_reg_information[0]["student_list"];
+	const studentList = student_reg_information[0].student_list;
 	for (i = 0; i < studentList.length; i++) {
-		if (studentList[i]["studentClass"] == className) {
-			updatedListOfStudents[studentList[i]["name"]] = studentList[i]["name"] + " - " + studentList[i]["type"];
+		if (studentList[i].studentClass == className) {
+			updatedListOfStudents[studentList[i].name] = studentList[i].name + " - " + studentList[i].type;
 		}
 	}
 }
@@ -1350,9 +1350,9 @@ function UpdateStudentList(className) {
  * @param {String} changeTo The type for the user to be changed to
  */
 function UpdateUserType(classname, username, changeTo) {
-	var studentList = student_reg_information[0]["student_list"];
+	const studentList = student_reg_information[0].student_list;
 	for (i = 0; i < studentList.length; i++) {
-		if (studentList[i]["studentClass"] == classname && studentList[i]["name"] == username) {
+		if (studentList[i].studentClass == classname && studentList[i].name == username) {
 			var changeType = "student_list." + i + "." + "type";
 			client.login().then(() =>
 				db.collection("Student_Information").updateOne(
@@ -1382,8 +1382,8 @@ function UpdateUserType(classname, username, changeTo) {
  * @param {String} offTargetChange The value of the modified control being changed to
  */
 function UpdateMarkingControls(classToMod, offTargetChange) {
-	var classChange = "classMarkingMod." + classToMod;
-	var markingChangeList = [offTargetChange];
+	const classChange = "classMarkingMod." + classToMod;
+	const markingChangeList = [offTargetChange];
 	client.login().then(() =>
 		db.collection("Student_Information").updateOne(
 			{
@@ -1415,9 +1415,9 @@ function ChangeDOMInnerhtml(domID, changeTo) {
 	document.getElementById(domID).innerHTML = changeTo;
 }
 
-var downloadIndexTable_start = "\t\t<tr>\n\t\t\t<th>Student Number</th>\n\t\t\t<th>Name</th>";
-var downloadIndexTable_end = "\n\t\t</tr>\n";
-var downloadIndexTable_fill = "";
+const downloadIndexTable_start = "\t\t<tr>\n\t\t\t<th>Student Number</th>\n\t\t\t<th>Name</th>";
+const downloadIndexTable_end = "\n\t\t</tr>\n";
+let downloadIndexTable_fill = "";
 /**
  * Generated the base IndexTable for downloading JSON as CSV
  * @param {String} whichIndexTable The string of which the index table start as, defaults as downloadIndexTable_start
@@ -1457,21 +1457,21 @@ function generateRestOfIndexTable(whichIndexTable, SimpleComplex) {
 function generateHiddenStudentDownload(whichClass, whichType) {
 	// Check if TA/Admin
 	if (
-		student_reg_information[0]["student_list"][studentParseNum]["type"] == "TA" ||
-		student_reg_information[0]["student_list"][studentParseNum]["type"] == "admin"
+		student_reg_information[0].student_list[studentParseNum].type == "TA" ||
+		student_reg_information[0].student_list[studentParseNum].type == "admin"
 	) {
 		downloadIndexTable_fill = generateRestOfIndexTable(downloadIndexTable_fill, whichType);
 		$("#hiddenDownloadModal_table").empty(); // reset
-		var d = new Date();
-		var downlodaIndexTable_str = "<table id='downloadIndexTable'>\n\t<tbody>\n";
-		var captionTitleBegin = "SciGrade_studentMark_";
+		const d = new Date();
+		let downlodaIndexTable_str = "<table id='downloadIndexTable'>\n\t<tbody>\n";
+		let captionTitleBegin = "SciGrade_studentMark_";
 		if (whichType == false) {
 			captionTitleBegin = "SciGrade_studentMarkRaw_";
 		}
 		downlodaIndexTable_str +=
 			"\t\t<caption>" +
 			captionTitleBegin +
-			student_reg_information[0]["student_list"][studentParseNum]["name"].replace(/\s/g, "") +
+			student_reg_information[0].student_list[studentParseNum].name.replace(/\s/g, "") +
 			"_" +
 			d.getFullYear() +
 			"-" +
@@ -1481,12 +1481,12 @@ function generateHiddenStudentDownload(whichClass, whichType) {
 			"</caption>\n";
 		downlodaIndexTable_str += downloadIndexTable_fill;
 		// Looping through each row of the table
-		var studentRegList = student_reg_information[0]["student_list"];
+		const studentRegList = student_reg_information[0].student_list;
 		for (i = 0; i < studentRegList.length; i++) {
-			if (studentRegList[i]["type"] == "Student" && studentRegList[i]["studentClass"] == whichClass) {
+			if (studentRegList[i].type == "Student" && studentRegList[i].studentClass == whichClass) {
 				downlodaIndexTable_str += "\t\t<tr>\n";
-				downlodaIndexTable_str += "\t\t\t<td>" + studentRegList[i]["student_number"] + "</td>\n";
-				downlodaIndexTable_str += "\t\t\t<td>" + studentRegList[i]["name"] + "</td>\n";
+				downlodaIndexTable_str += "\t\t\t<td>" + studentRegList[i].student_number + "</td>\n";
+				downlodaIndexTable_str += "\t\t\t<td>" + studentRegList[i].name + "</td>\n";
 				if (whichType == true) {
 					for (x = 0; x < list_of_assignments.length; x++) {
 						if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Marks"] != null) {
@@ -1510,7 +1510,7 @@ function generateHiddenStudentDownload(whichClass, whichType) {
 					for (x = 0; x < list_of_assignments.length; x++) {
 						if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Marks"] != null) {
 							downlodaIndexTable_str += "\t\t\t<td>" + list_of_assignments[x].toString() + "</td>\n";
-							var mark = 0;
+							let mark = 0;
 							// Raw values
 							downlodaIndexTable_str +=
 								"\t\t\t<td>" +
@@ -1631,13 +1631,13 @@ function changeInputClass(docCheck, checkFor, docChange, trueChangeValueTo) {
  * @param {String} umail User's email
  */
 function addUserToServer(inputClass, number, umail) {
-	var studentNumber = number;
-	var studentUmail = umail;
-	var setList = {};
+	const studentNumber = number;
+	const studentUmail = umail;
+	const setList = {};
 	setList[studentNumber] = studentUmail;
 	classList = "class_list." + inputClass;
 	classExists = false;
-	if (student_reg_information[0]["class_list"][inputClass] != undefined) {
+	if (student_reg_information[0].class_list[inputClass] != undefined) {
 		classExists = true;
 	}
 	for (var key in setList) {
@@ -1675,24 +1675,24 @@ var classExists = false;
  */
 function addMultipleUsersToServer(inputClass, number, umail) {
 	// Student information setup
-	var studentNumberList = number.value.trim().split(/,|\n|\t/);
+	const studentNumberList = number.value.trim().split(/,|\n|\t/);
 	if (studentNumberList[studentNumberList.length - 1].trim() == "") {
 		studentNumberList.pop();
 	}
-	var studentUmailList = umail.value.trim().split(/,|\n|\t/);
+	const studentUmailList = umail.value.trim().split(/,|\n|\t/);
 	if (studentUmailList[studentUmailList.length - 1].trim() == "") {
 		studentUmailList.pop();
 	}
 	if (studentNumberList.length == studentUmailList.length) {
-		var setList = {};
-		for (var i = 0; i < studentNumberList.length; i++) {
-			var studentAdd = studentNumberList[i];
-			var studentUmailAdd = studentUmailList[i];
+		const setList = {};
+		for (let i = 0; i < studentNumberList.length; i++) {
+			const studentAdd = studentNumberList[i];
+			const studentUmailAdd = studentUmailList[i];
 			setList[studentAdd] = studentUmailAdd;
 		}
 		classList = "class_list." + inputClass;
 		classExists = false;
-		if (student_reg_information[0]["class_list"][inputClass] != undefined) {
+		if (student_reg_information[0].class_list[inputClass] != undefined) {
 			classExists = true;
 		}
 		if (classExists == false) {
@@ -1714,8 +1714,8 @@ function addMultipleUsersToServer(inputClass, number, umail) {
 				),
 			);
 			$("#adminSendButton").click();
-			var classChange = "classMarkingMod." + inputClass;
-			var markingChangeList = ["Optimal"];
+			const classChange = "classMarkingMod." + inputClass;
+			const markingChangeList = ["Optimal"];
 			client.login().then(() =>
 				db.collection("Student_Information").updateOne(
 					{
@@ -1748,7 +1748,7 @@ function addMultipleUsersToServer(inputClass, number, umail) {
  */
 function removeCompletedAssignments() {
 	generateCompletedAssignmentList();
-	var returnAssignmentList = [];
+	let returnAssignmentList = [];
 	if (completed_assignments.length > 0) {
 		for (i = 0; i < list_of_assignments.length; i++) {
 			if (completed_assignments.includes(list_of_assignments[i]) == false) {
@@ -1762,11 +1762,11 @@ function removeCompletedAssignments() {
 }
 
 var all_answers = [];
-var all_outputs = [];
+let all_outputs = [];
 var all_marks = [];
-var studentanswers = "student_list." + studentParseNum + "." + loadedMode + "-" + current_gene + "-Answers";
-var studentoutputs = "student_list." + studentParseNum + "." + loadedMode + "-" + current_gene + "-Outputs";
-var studentmarks = "student_list." + studentParseNum + "." + loadedMode + "-" + current_gene + "-Marks";
+let studentanswers = "student_list." + studentParseNum + "." + loadedMode + "-" + current_gene + "-Answers";
+let studentoutputs = "student_list." + studentParseNum + "." + loadedMode + "-" + current_gene + "-Outputs";
+let studentmarks = "student_list." + studentParseNum + "." + loadedMode + "-" + current_gene + "-Marks";
 /**
  * Submit and sends the student's answers to the server
  */
