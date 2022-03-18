@@ -54,7 +54,6 @@ function select_Gene() {
 			current_gene == "empty";
 		}
 		alert("Error code sG34-42 occurred. Please contact admin or TA!");
-		
 	}
 }
 
@@ -136,7 +135,6 @@ function fillGeneList(itPos = 0) {
 		}
 	} else {
 		alert("Error code geneList-113 occurred. Please contact admin or TA!");
-		
 	}
 }
 
@@ -261,7 +259,6 @@ function loadWork() {
 		backgroundInfo[0].gene_list[current_gene] == undefined
 	) {
 		alert("Error code lFS50-66 occurred. Please contact admin or TA!");
-		
 	}
 }
 
@@ -426,7 +423,6 @@ function checkAnswers() {
 						alert(
 							"Error code cA302-307: retrieving server information on 'Position' answers occurred. Please contact admin or TA!",
 						);
-						
 					}
 
 					// Check if the PAM matches the answer's input
@@ -440,7 +436,6 @@ function checkAnswers() {
 						alert(
 							"Error code cA311-317: retrieving server information on 'PAM' answers occurred. Please contact admin or TA!",
 						);
-						
 					}
 
 					// Check if the Off-target matches the answer's input
@@ -453,7 +448,6 @@ function checkAnswers() {
 						alert(
 							"Error code cA342-348: retrieving server information on 'Specificity Score' answers occurred. Please contact admin or TA!",
 						);
-						
 					}
 
 					// Check if the F1 primer matches the answer's input
@@ -1360,7 +1354,7 @@ function UpdateUserType(classname, username, changeTo) {
 					},
 					function (err, res) {
 						if (err) throw err;
-						
+
 						db.close();
 					},
 				),
@@ -1390,7 +1384,7 @@ function UpdateMarkingControls(classToMod, offTargetChange) {
 			},
 			function (err, res) {
 				if (err) throw err;
-				
+
 				db.close();
 			},
 		),
@@ -1648,7 +1642,7 @@ function addUserToServer(inputClass, number, umail) {
 				},
 				function (err, res) {
 					if (err) throw err;
-					
+
 					db.close();
 				},
 			),
@@ -1702,7 +1696,7 @@ function addMultipleUsersToServer(inputClass, number, umail) {
 					},
 					function (err, res) {
 						if (err) throw err;
-						
+
 						db.close();
 					},
 				),
@@ -1722,7 +1716,7 @@ function addMultipleUsersToServer(inputClass, number, umail) {
 					},
 					function (err, res) {
 						if (err) throw err;
-						
+
 						db.close();
 					},
 				),
@@ -1812,7 +1806,7 @@ function submitAnswers() {
 				},
 				function (err, res) {
 					if (err) throw err;
-					
+
 					db.close();
 				},
 			),

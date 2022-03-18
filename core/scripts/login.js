@@ -211,7 +211,7 @@ function sendLogReg() {
 						},
 						function (err, res) {
 							if (err) throw err;
-							
+
 							db.close();
 						},
 					),
