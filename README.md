@@ -7,6 +7,10 @@ SciGrade is an online web-tool that allows students (or any user with access) to
 [![Maintainability](https://api.codeclimate.com/v1/badges/ed202653a7b430ccdbfb/maintainability)](https://codeclimate.com/github/ASully/SciGrade/maintainability)
 [![CodeFactor](https://www.codefactor.io/repository/github/asully/scigrade/badge)](https://www.codefactor.io/repository/github/asully/scigrade)
 [![DeepSource](https://deepsource.io/gh/ASully/SciGrade.svg/?label=active+issues&show_trend=true&token=STKEtvW3WQehO2ieS5XQg5cq)](https://deepsource.io/gh/ASully/SciGrade/?ref=repository-badge)
+[![Follow on Twitter](https://img.shields.io/twitter/follow/alexjsully?style=social)](https://twitter.com/alexjsully)
+[![GitHub repo size](https://img.shields.io/github/repo-size/ASully/SciGrade)](https://github.com/ASully/SciGrade)
+[![GitHub](https://img.shields.io/github/license/ASully/SciGrade)](https://github.com/ASully/SciGrade)
+[![Website](https://img.shields.io/website?url=https%3A%2F%2Fscigrade.com%2F)](https://scigrade.com/)
 
 ## Getting Started
 
