@@ -35,7 +35,7 @@ jQuery.fn.tableToCSV = function() {
 			if(caption==""){
 				download_link.download = ts+".csv";
 			} else {
-				download_link.download = caption+".csv"; // modified this line to remove the ts name
+				download_link.download = caption+"-"+ts+".csv";
 			}
 			document.body.appendChild(download_link);
 			download_link.click();
