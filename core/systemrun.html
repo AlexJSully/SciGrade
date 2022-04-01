@@ -187,13 +187,13 @@
 		></noscript>
 		<!-- End Google Tag Manager (noscript) -->
 		<div class="navigationBar">
-			<a href="../"
+			<a href="../" role="banner"
 				><img
 					src="images/logo_transparent.svg"
 					alt="logo"
 					style="width: 5em; margin: -50%; margin-bottom: -40%; margin-right: -40%"
 			/></a>
-			<a class="active" href="systemrun.html">Application</a>
+			<a class="active" href="systemrun.html" role="navigation">Application</a>
 			<a href="about.html" aria-hidden="true" hidden>About</a>
 			<a
 				class="logIO"
@@ -209,7 +209,7 @@
 				<i class="material-icons" style="font-size: inherit">&#xE7FD;</i> Login</a
 			>
 		</div>
-		<div class="container focusContainer" role="tabpanel" id="mainContainer">
+		<div class="container focusContainer" role="tabpanel" id="mainContainer" role="main">
 			<!-- Login and Registration -->
 			<div>
 				<div class="row">
@@ -242,10 +242,22 @@
 									>Register</a
 								>
 							</li>
+							<li class="nav-item">
+								<a
+									class="nav-link"
+									id="noLogin"
+									data-toggle="tab"
+									href="#noLogin"
+									role="navigation"
+									aria-selected="false"
+									onclick="continueWithoutLogin=true;redirectCRISPR();"
+									>Continue without logging in</a
+								>
+							</li>
 						</ul>
 						<div class="tab-content" id="logTabContent">
 							<!-- Login -->
-							<div role="tabpanel" class="tab-pane" id="login" aria-labelledby="loginTab">
+							<div role="tabpanel" class="tab-pane" id="login" aria-labelledby="loginTab" role="article">
 								<!-- First form the user sees for login which includes student number input -->
 								<form id="loginForm">
 									<div class="form-group">

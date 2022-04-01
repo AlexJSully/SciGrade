@@ -7,6 +7,8 @@
 let student_reg_information;
 const client = new stitch.StitchClient("almark-wvohf");
 const db = client.service("mongodb", "mongodb-atlas").db("AlMark");
+/** Let users continue with practice application without logging in (true) (default false) */
+let continueWithoutLogin = false;
 /**
  * Load JSON files
  */
@@ -264,6 +266,18 @@ function signOutDisplay() {
 	$("#mainContainer").append(append_str);
 }
 
+/**
+ * Load the content fill section for a gene
+ * @example <caption>Use this function to call and load the gene in the gene dropdown</caption>
+ * loadGeneContent()
+ * // returns null (does not return anything but loads the gene content on the web app)
+ */
+function loadGeneContent() {
+	checkAnswers_executed = false;
+	possible_gene = document.getElementById("gene_dropdown_selection").value;
+	select_Gene();
+}
+
 var changeLogin = '<i class="material-icons" style="font-size:inherit;">&#xE7FD;</i>';
 /**
  * Once users have registered OR logged in, the page dynamically generates the CRISPR assignment page
@@ -271,43 +285,72 @@ var changeLogin = '<i class="material-icons" style="font-size:inherit;">&#xE7FD;
 function redirectCRISPR() {
 	$("#mainContainer").empty();
 	let append_str;
-	append_str = "<div class='row'>\n";
-	append_str += "<div class='col-sm-1'></div>\n";
-	append_str += "<div class='col-sm-10' id='content_body'>\n";
-	append_str += "<div id='selection_process'>\n";
-	append_str += "<div id='mode_selection' style='margin-top: 2%;'>\n";
-	append_str += "<p>Please select the dry lab mode you would like to use: </p>\n";
-	append_str += "<div>\n";
-	append_str += "Mode: <div class='btn-group' data-toggle='buttons'>\n";
-	append_str +=
-		"<label class='btn btn-primary active' style='padding: .075rem .75rem;'' id='practice' onclick='selection_inMode = this.id; ModeSelectionAdd(this.id)'>\n";
-	append_str += "<input type='radio' name='practice_mode' autocomplete='off'  checked> Practice\n";
-	append_str += "</label>\n";
-	append_str +=
-		"<label class='btn btn-primary' style='padding: .075rem .75rem;' id='assignment' onclick='selection_inMode = this.id; ModeSelectionAdd(this.id);'>\n";
-	append_str += "<input type='radio' name='assignment_mode' autocomplete='off'> Assignment\n";
-	append_str += "</label>\n";
-	append_str += "</div>\n";
-	append_str += "</div>\n";
-	append_str += "</div>\n";
-	append_str += "<div id='gene_selection'>\n";
-	append_str += "Please select your gene:\n";
-	append_str += "<div class='btn-group'>\n";
-	append_str +=
-		"<select class='form-control' id='gene_dropdown_selection' onchange='possible_gene=(document.getElementById(\"gene_dropdown_selection\").value);'>\n";
-	append_str += "</select>\n";
-	append_str += "</div>\n";
-	append_str += "</div>\n";
-	append_str += "<div id='load_button'>\n";
-	append_str +=
-		"<button type='button' class='btn btn-success' style='margin-top: 2%;'' onclick='checkAnswers_executed=false; possible_gene=(document.getElementById(\"gene_dropdown_selection\").value); select_Gene();''>Load Gene</button>\n";
-	append_str += "</div>\n";
-	append_str += "</div>\n";
-	append_str += "<div id='work'>\n";
-	append_str += "</div>\n";
-	append_str += "</div>\n";
-	append_str += "<div class='col-sm-1'></div>\n";
-	append_str += "</div>\n";
+	append_str = `
+		<div class='row'>
+			<div class='col-sm-1'></div>
+				<div class='col-sm-10' id='content_body'>
+					<div id='selection_process'>
+					<div id='mode_selection' style='margin-top: 2%;'>
+					<p>Please select the dry lab mode you would like to use: </p>
+					<div>
+						Mode:
+						<div class='btn-group' data-toggle='buttons'>
+							<label
+								class='btn btn-primary active'
+								style='padding: .075rem .75rem;'
+								id='practice'
+								onclick='selection_inMode = this.id; ModeSelectionAdd(this.id)'
+							>
+								<input type='radio' name='practice_mode' autocomplete='off' hidden checked>
+									Practice
+								</input>
+							</label>
+	`;
+
+	if (!continueWithoutLogin) {
+		append_str += `
+			<label
+				class='btn btn-primary'
+				style='padding: .075rem .75rem;'
+				id='assignment'
+				onclick='selection_inMode = this.id; ModeSelectionAdd(this.id);'
+			>
+				<input type='radio' name='assignment_mode' autocomplete='off'>
+					Assignment
+				</input>
+			</label>
+		`;
+	}
+
+	append_str += `
+		</div></div></div>
+		<div id='gene_selection'>
+			Please select your gene:
+			<div class='btn-group'>
+				<select
+					class='form-control'
+					id='gene_dropdown_selection'
+					onchange='possible_gene=(document.getElementById(\"gene_dropdown_selection\").value);'
+				>
+				</select>
+			</div>
+		</div>
+		<div id='load_button'>
+			<button
+				type='button'
+				class='btn btn-success'
+				style='margin-top: 2%;'
+				onClick='loadGeneContent()'
+			>
+				Load Gene
+			</button>
+		</div></div>
+		<div id='work'>
+		</div></div>
+		<div class='col-sm-1'></div>
+		</div>
+	`;
+
 	$("#mainContainer").append(append_str);
 	ModeSelectionAdd(selection_inMode);
 	loadJSON_Files();
@@ -316,13 +359,15 @@ function redirectCRISPR() {
 		fillGeneList();
 	}, 700);
 
-	if (document.getElementById("accountIO")) {
-		document.getElementById("accountIO").removeAttribute("hidden");
-	}
-	if (document.getElementById("logIO")) {
-		document.getElementById("logIO").innerHTML = changeLogin + " Logout";
-		document.getElementById("logIO").setAttribute("onclick", "signOutDisplay();");
-		document.getElementById("logIO").removeAttribute("hidden");
+	if (!continueWithoutLogin) {
+		if (document.getElementById("accountIO")) {
+			document.getElementById("accountIO").removeAttribute("hidden");
+		}
+		if (document.getElementById("logIO")) {
+			document.getElementById("logIO").innerHTML = changeLogin + " Logout";
+			document.getElementById("logIO").setAttribute("onclick", "signOutDisplay();");
+			document.getElementById("logIO").removeAttribute("hidden");
+		}
 	}
 }
 

@@ -3,8 +3,8 @@
 // Purpose: General script for SciGrade
 //
 //= ============================================================================
-const selection_inMode = "practice";
-const possible_gene = "eBFP";
+let selection_inMode = "practice";
+let possible_gene = "eBFP";
 let current_gene = "empty";
 
 /**
@@ -1451,12 +1451,12 @@ function generateHiddenStudentDownload(whichClass, whichType) {
 		downloadIndexTable_fill = generateRestOfIndexTable(downloadIndexTable_fill, whichType);
 		$("#hiddenDownloadModal_table").empty(); // reset
 		const d = new Date();
-		let downlodaIndexTable_str = "<table id='downloadIndexTable'>\n\t<tbody>\n";
+		let downloadIndexTable_str = "<table id='downloadIndexTable'>\n\t<tbody>\n";
 		let captionTitleBegin = "SciGrade_studentMark_";
 		if (whichType == false) {
 			captionTitleBegin = "SciGrade_studentMarkRaw_";
 		}
-		downlodaIndexTable_str +=
+		downloadIndexTable_str +=
 			"\t\t<caption>" +
 			captionTitleBegin +
 			student_reg_information[0].student_list[studentParseNum].name.replace(/\s/g, "") +
@@ -1467,49 +1467,49 @@ function generateHiddenStudentDownload(whichClass, whichType) {
 			"_" +
 			d.getDate() +
 			"</caption>\n";
-		downlodaIndexTable_str += downloadIndexTable_fill;
+		downloadIndexTable_str += downloadIndexTable_fill;
 		// Looping through each row of the table
 		const studentRegList = student_reg_information[0].student_list;
 		for (i = 0; i < studentRegList.length; i++) {
 			if (studentRegList[i].type == "Student" && studentRegList[i].studentClass == whichClass) {
-				downlodaIndexTable_str += "\t\t<tr>\n";
-				downlodaIndexTable_str += "\t\t\t<td>" + studentRegList[i].student_number + "</td>\n";
-				downlodaIndexTable_str += "\t\t\t<td>" + studentRegList[i].name + "</td>\n";
+				downloadIndexTable_str += "\t\t<tr>\n";
+				downloadIndexTable_str += "\t\t\t<td>" + studentRegList[i].student_number + "</td>\n";
+				downloadIndexTable_str += "\t\t\t<td>" + studentRegList[i].name + "</td>\n";
 				if (whichType == true) {
 					for (x = 0; x < list_of_assignments.length; x++) {
 						if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Marks"] != null) {
-							downlodaIndexTable_str += "\t\t\t<td>" + list_of_assignments[x].toString() + "</td>\n";
-							downlodaIndexTable_str +=
+							downloadIndexTable_str += "\t\t\t<td>" + list_of_assignments[x].toString() + "</td>\n";
+							downloadIndexTable_str +=
 								"\t\t\t<td>" +
 								studentRegList[i]["assignment-" + list_of_assignments[x] + "-Marks"][1].toString() +
 								"</td>\n";
-							downlodaIndexTable_str +=
+							downloadIndexTable_str +=
 								"\t\t\t<td>" +
 								studentRegList[i]["assignment-" + list_of_assignments[x] + "-Marks"][0].toString() +
 								"</td>\n";
 						} else if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Marks"] == null) {
-							downlodaIndexTable_str += "\t\t\t<td>" + list_of_assignments[x].toString() + "</td>\n";
-							downlodaIndexTable_str += "\t\t\t<td> Incompleted </td>\n";
-							downlodaIndexTable_str += "\t\t\t<td> 0.00 </td>\n";
+							downloadIndexTable_str += "\t\t\t<td>" + list_of_assignments[x].toString() + "</td>\n";
+							downloadIndexTable_str += "\t\t\t<td> Incompleted </td>\n";
+							downloadIndexTable_str += "\t\t\t<td> 0.00 </td>\n";
 						}
 					}
 				}
 				if (whichType == false) {
 					for (x = 0; x < list_of_assignments.length; x++) {
 						if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Marks"] != null) {
-							downlodaIndexTable_str += "\t\t\t<td>" + list_of_assignments[x].toString() + "</td>\n";
+							downloadIndexTable_str += "\t\t\t<td>" + list_of_assignments[x].toString() + "</td>\n";
 							let mark = 0;
 							// Raw values
-							downlodaIndexTable_str +=
+							downloadIndexTable_str +=
 								"\t\t\t<td>" +
 								studentRegList[i]["assignment-" + list_of_assignments[x] + "-Marks"][1].toString() +
 								"</td>\n";
-							downlodaIndexTable_str +=
+							downloadIndexTable_str +=
 								"\t\t\t<td>" +
 								studentRegList[i]["assignment-" + list_of_assignments[x] + "-Marks"][0].toString() +
 								"</td>\n";
 							// gRNA
-							downlodaIndexTable_str +=
+							downloadIndexTable_str +=
 								"\t\t\t<td>" +
 								studentRegList[i]["assignment-" + list_of_assignments[x] + "-Answers"][0].toString() +
 								"</td>\n";
@@ -1520,9 +1520,9 @@ function generateHiddenStudentDownload(whichClass, whichType) {
 							} else if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Outputs"][2] == 3) {
 								mark = 0.5;
 							}
-							downlodaIndexTable_str += "\t\t\t<td>" + mark.toString() + "</td>\n";
+							downloadIndexTable_str += "\t\t\t<td>" + mark.toString() + "</td>\n";
 							// PAM
-							downlodaIndexTable_str +=
+							downloadIndexTable_str +=
 								"\t\t\t<td>" +
 								studentRegList[i]["assignment-" + list_of_assignments[x] + "-Answers"][1].toString() +
 								"</td>\n";
@@ -1531,9 +1531,9 @@ function generateHiddenStudentDownload(whichClass, whichType) {
 							} else {
 								mark = 0;
 							}
-							downlodaIndexTable_str += "\t\t\t<td>" + mark.toString() + "</td>\n";
+							downloadIndexTable_str += "\t\t\t<td>" + mark.toString() + "</td>\n";
 							// Off-target
-							downlodaIndexTable_str +=
+							downloadIndexTable_str +=
 								"\t\t\t<td>" +
 								studentRegList[i]["assignment-" + list_of_assignments[x] + "-Answers"][4].toString() +
 								"</td>\n";
@@ -1544,9 +1544,9 @@ function generateHiddenStudentDownload(whichClass, whichType) {
 							} else if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Outputs"][6] == 3) {
 								mark = 0.5;
 							}
-							downlodaIndexTable_str += "\t\t\t<td>" + mark.toString() + "</td>\n";
+							downloadIndexTable_str += "\t\t\t<td>" + mark.toString() + "</td>\n";
 							// F1 Primers
-							downlodaIndexTable_str +=
+							downloadIndexTable_str +=
 								"\t\t\t<td>" +
 								studentRegList[i]["assignment-" + list_of_assignments[x] + "-Answers"][5].toString() +
 								"</td>\n";
@@ -1555,9 +1555,9 @@ function generateHiddenStudentDownload(whichClass, whichType) {
 							} else {
 								mark = 0;
 							}
-							downlodaIndexTable_str += "\t\t\t<td>" + mark.toString() + "</td>\n";
+							downloadIndexTable_str += "\t\t\t<td>" + mark.toString() + "</td>\n";
 							// R1 primers
-							downlodaIndexTable_str +=
+							downloadIndexTable_str +=
 								"\t\t\t<td>" +
 								studentRegList[i]["assignment-" + list_of_assignments[x] + "-Answers"][6].toString() +
 								"</td>\n";
@@ -1566,29 +1566,29 @@ function generateHiddenStudentDownload(whichClass, whichType) {
 							} else {
 								mark = 0;
 							}
-							downlodaIndexTable_str += "\t\t\t<td>" + mark.toString() + "</td>\n";
+							downloadIndexTable_str += "\t\t\t<td>" + mark.toString() + "</td>\n";
 						} else if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Marks"] == null) {
-							downlodaIndexTable_str += "\t\t\t<td>" + list_of_assignments[x].toString() + "</td>\n";
-							downlodaIndexTable_str += "\t\t\t<td> Incompleted </td>\n";
-							downlodaIndexTable_str += "\t\t\t<td> 0.00 </td>\n";
-							downlodaIndexTable_str += "\t\t\t<td> Incompleted </td>\n";
-							downlodaIndexTable_str += "\t\t\t<td> 0.00 </td>\n";
-							downlodaIndexTable_str += "\t\t\t<td> Incompleted </td>\n";
-							downlodaIndexTable_str += "\t\t\t<td> 0.00 </td>\n";
-							downlodaIndexTable_str += "\t\t\t<td> Incompleted </td>\n";
-							downlodaIndexTable_str += "\t\t\t<td> 0.00 </td>\n";
-							downlodaIndexTable_str += "\t\t\t<td> Incompleted </td>\n";
-							downlodaIndexTable_str += "\t\t\t<td> 0.00 </td>\n";
-							downlodaIndexTable_str += "\t\t\t<td> Incompleted </td>\n";
-							downlodaIndexTable_str += "\t\t\t<td> 0.00 </td>\n";
+							downloadIndexTable_str += "\t\t\t<td>" + list_of_assignments[x].toString() + "</td>\n";
+							downloadIndexTable_str += "\t\t\t<td> Incompleted </td>\n";
+							downloadIndexTable_str += "\t\t\t<td> 0.00 </td>\n";
+							downloadIndexTable_str += "\t\t\t<td> Incompleted </td>\n";
+							downloadIndexTable_str += "\t\t\t<td> 0.00 </td>\n";
+							downloadIndexTable_str += "\t\t\t<td> Incompleted </td>\n";
+							downloadIndexTable_str += "\t\t\t<td> 0.00 </td>\n";
+							downloadIndexTable_str += "\t\t\t<td> Incompleted </td>\n";
+							downloadIndexTable_str += "\t\t\t<td> 0.00 </td>\n";
+							downloadIndexTable_str += "\t\t\t<td> Incompleted </td>\n";
+							downloadIndexTable_str += "\t\t\t<td> 0.00 </td>\n";
+							downloadIndexTable_str += "\t\t\t<td> Incompleted </td>\n";
+							downloadIndexTable_str += "\t\t\t<td> 0.00 </td>\n";
 						}
 					}
 				}
-				downlodaIndexTable_str += "\t\t</tr>\n";
+				downloadIndexTable_str += "\t\t</tr>\n";
 			}
 		}
-		downlodaIndexTable_str += "\t</tbody>\n</table>"; // Closing
-		document.getElementById("hiddenDownloadModal_table").innerHTML += downlodaIndexTable_str;
+		downloadIndexTable_str += "\t</tbody>\n</table>"; // Closing
+		document.getElementById("hiddenDownloadModal_table").innerHTML += downloadIndexTable_str;
 		$("#hiddenDownloadModal_table").tableToCSV();
 	} else {
 		showRegError(7);
@@ -1792,25 +1792,29 @@ function submitAnswers() {
 			MARR1primers,
 		);
 		all_marks.push(studentMark, studentMarkPercentage);
-		client.login().then(() =>
-			db.collection("Student_Information").updateOne(
-				{
-					version: "0.3",
-				},
-				{
-					$set: {
-						[studentanswers]: all_answers,
-						[studentoutputs]: all_outputs,
-						[studentmarks]: all_marks,
-					},
-				},
-				function (err, res) {
-					if (err) throw err;
 
-					db.close();
-				},
-			),
-		);
+		if (!continueWithoutLogin) {
+			client.login().then(() =>
+				db.collection("Student_Information").updateOne(
+					{
+						version: "0.3",
+					},
+					{
+						$set: {
+							[studentanswers]: all_answers,
+							[studentoutputs]: all_outputs,
+							[studentmarks]: all_marks,
+						},
+					},
+					function (err, res) {
+						if (err) throw err;
+
+						db.close();
+					},
+				),
+			);
+		}
+
 		loadJSON_Files();
 		if (loadedMode == "assignment") {
 			document.getElementById("options_label").innerHTML = "Would you like to start a new assignment?";
@@ -1819,6 +1823,8 @@ function submitAnswers() {
 			document.getElementById("options_label").innerHTML =
 				"Would you like to see feedback on your answers or start a new assignment?";
 			document.getElementById("seeFeedback").removeAttribute("hidden");
+
+			showFeedback();
 		}
 		$("#feedbackButton").click();
 	}, 750);
