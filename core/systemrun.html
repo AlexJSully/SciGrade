@@ -62,7 +62,6 @@
 		<script rel="preload" as="script" src="scripts/APIandLibraries/jQuery/jquery.min.js"></script>
 		<!-- Bootstrap -->
 		<link rel="stylesheet" href="./scripts/APIandLibraries/Bootstrap/css/bootstrap.min.css" />
-		<script src="./scripts/APIandLibraries/Bootstrap/js/popper.min.js" rel="preload" as="script"></script>
 		<script src="./scripts/APIandLibraries/Bootstrap/js/bootstrap.min.js" rel="preload" as="script"></script>
 		<!-- Stitch/mongoDB -->
 		<link rel="preconnect" href="https://s3.amazonaws.com" />
@@ -99,11 +98,39 @@
 			}
 
 			/**
-			 * Google signout
+			 * Google sign-out
 			 */
 			function signOut() {
 				var auth2 = gapi.auth2.getAuthInstance();
 				auth2.signOut();
+			}
+
+			/**
+			 * Handle changing navigation tabs between login and register
+			 * @param {String} [which='login'] Which tab is being switched to (default login)
+			 * @example <caption>Use this function to handle switching between the login and register content</caption>
+			 * handleLoginTabChange('login')
+			 * // returns null (does not return anything but rather un-hides the login content)
+			 */
+			function handleLoginTabChange(which = "login") {
+				// Add class active to click <a> tab and remove from other and make tab content visible
+				if (which === "login") {
+					// Selecting tab
+					$("#loginTab").addClass("active");
+					$("#registerTab").removeClass("active");
+
+					// Adjusting tab content
+					document.getElementById("login").style.display = "block";
+					document.getElementById("register").style.display = "none";
+				} else {
+					// Selecting tab
+					$("#loginTab").removeClass("active");
+					$("#registerTab").addClass("active");
+
+					// Adjusting tab content
+					document.getElementById("login").style.display = "none";
+					document.getElementById("register").style.display = "block";
+				}
 			}
 		</script>
 		<!-- Global site tag (gtag.js) - Google Analytics -->
@@ -195,9 +222,10 @@
 									id="loginTab"
 									data-toggle="tab"
 									href="#login"
-									role="tab"
+									role="navigation"
 									aria-controls="login"
 									aria-selected="true"
+									onclick="handleLoginTabChange('login')"
 									>Login</a
 								>
 							</li>
@@ -207,16 +235,17 @@
 									id="registerTab"
 									data-toggle="tab"
 									href="#register"
-									role="tab"
+									role="navigation"
 									aria-controls="register"
 									aria-selected="false"
+									onclick="handleLoginTabChange('register')"
 									>Register</a
 								>
 							</li>
 						</ul>
 						<div class="tab-content" id="logTabContent">
 							<!-- Login -->
-							<div role="tabpanel" class="tab-pane fade show activ" id="login" aria-labelledby="loginTab">
+							<div role="tabpanel" class="tab-pane" id="login" aria-labelledby="loginTab">
 								<!-- First form the user sees for login which includes student number input -->
 								<form id="loginForm">
 									<div class="form-group">
@@ -248,7 +277,7 @@
 								</form>
 							</div>
 							<!-- Registration -->
-							<div role="tabpanel" class="tab-pane fade" id="register" aria-labelledby="registerTab">
+							<div role="tabpanel" class="tab-pane" id="register" aria-labelledby="registerTab">
 								<p>
 									Registration is limited to students in the appropriate University of Toronto HMB
 									class. If you are not in the appropriate HMB class, you cannot register for
