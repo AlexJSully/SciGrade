@@ -19,31 +19,31 @@
 		<meta name="robots" content="index, follow" />
 		<meta name="language" content="English" />
 		<meta name="author" content="Alexander Sullivan, Quynh (Cathy) Cao, Alistair Dias" />
-		<link rel="shortcut icon" href="core/images/dna.png" type="image/x-icon" />
+		<link rel="shortcut icon" href="images/dna.png" type="image/x-icon" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="apple-mobile-web-app-title" content="SciGrade" />
-		<link rel="apple-touch-icon" sizes="180x180" href="core/icon/apple-touch-icon.png" />
-		<link rel="icon" type="image/png" sizes="32x32" href="core/icon/favicon-32x32.png" />
-		<link rel="icon" type="image/png" sizes="16x16" href="core/icon/favicon-16x16.png" />
-		<link rel="manifest" href="core/icon/manifest.json" />
-		<link rel="mask-icon" href="core/icon/safari-pinned-tab.svg" color="#ffffff" />
+		<link rel="apple-touch-icon" sizes="180x180" href="icon/apple-touch-icon.png" />
+		<link rel="icon" type="image/png" sizes="32x32" href="icon/favicon-32x32.png" />
+		<link rel="icon" type="image/png" sizes="16x16" href="icon/favicon-16x16.png" />
+		<link rel="manifest" href="icon/manifest.json" />
+		<link rel="mask-icon" href="icon/safari-pinned-tab.svg" color="#ffffff" />
 		<meta name="application-name" content="SciGrade" />
-		<meta name="msapplication-config" content="core/icon/browserconfig.xml" />
+		<meta name="msapplication-config" content="icon/browserconfig.xml" />
 		<meta name="msapplication-TileColor" content="#ffffff" />
-		<meta name="msapplication-TileImage" content="core/icon/mstile-150x150.png" />
+		<meta name="msapplication-TileImage" content="icon/mstile-150x150.png" />
 		<meta name="theme-color" content="#ffffff" />
 		<!-- Open Graph / Facebook -->
 		<meta property="og:type" content="website" />
 		<meta property="og:url" content="https://scigrade.com/" />
 		<meta property="og:title" content="SciGrade" />
 		<meta property="og:description" content="SciGrade - An online way to practice gRNA and primer design." />
-		<meta property="og:image" content="https://scigrade.com/core/icon/resoc.png" />
+		<meta property="og:image" content="https://scigrade.com/icon/resoc.png" />
 		<!-- Twitter -->
 		<meta property="twitter:card" content="summary_large_image" />
 		<meta property="twitter:url" content="https://scigrade.com/" />
 		<meta property="twitter:title" content="SciGrade" />
 		<meta property="twitter:description" content="SciGrade - An online way to practice gRNA and primer design." />
-		<meta property="twitter:image" content="https://scigrade.com/core/icon/resoc.png" />
+		<meta property="twitter:image" content="https://scigrade.com/icon/resoc.png" />
 		<meta name="twitter:site" content="@AlexJSully" />
 		<!-- Schema/Structured Data -->
 		<script type="application/ld+json">
@@ -51,7 +51,7 @@
 				"url": "https://scigrade.com/",
 				"name": "SciGrade",
 				"description": "Practice gRNA+Primer design online with SciGrade!",
-				"image": "https://scigrade.com/core/icon/resoc.png",
+				"image": "https://scigrade.com/icon/resoc.png",
 				"@context": "http://schema.org",
 				"@type": "WebSite"
 			}
@@ -61,10 +61,11 @@
 		<!-- jQuery using Google Hosted Library -->
 		<script rel="preload" as="script" src="scripts/APIandLibraries/jQuery/jquery.min.js"></script>
 		<!-- Bootstrap -->
-		<link rel="stylesheet" href="scripts/APIandLibraries/Bootstrap/css/bootstrap.min.css" />
-		<script src="scripts/APIandLibraries/Bootstrap/js/popper.min.js" rel="preload" as="script"></script>
-		<script src="scripts/APIandLibraries/Bootstrap/js/bootstrap.min.js" rel="preload" as="script"></script>
-		<!-- Stictch/mongoDB -->
+		<link rel="stylesheet" href="./scripts/APIandLibraries/Bootstrap/css/bootstrap.min.css" />
+		<script src="./scripts/APIandLibraries/Bootstrap/js/popper.min.js" rel="preload" as="script"></script>
+		<script src="./scripts/APIandLibraries/Bootstrap/js/bootstrap.min.js" rel="preload" as="script"></script>
+		<!-- Stitch/mongoDB -->
+		<link rel="preconnect" href="https://s3.amazonaws.com" />
 		<script
 			rel="preload"
 			as="script"
@@ -73,6 +74,7 @@
 		<!-- Google Material Icons -->
 		<link defer href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
 		<!-- Google Identity Platform Scripts -->
+		<link rel="preconnect" href="https://apis.google.com" />
 		<script src="https://apis.google.com/js/platform.js" async defer></script>
 		<meta
 			name="google-signin-client_id"
@@ -105,6 +107,7 @@
 			}
 		</script>
 		<!-- Global site tag (gtag.js) - Google Analytics -->
+		<link rel="preconnect" href="https://www.googletagmanager.com" />
 		<script async src="https://www.googletagmanager.com/gtag/js?id=UA-38961857-6"></script>
 		<script>
 			window.dataLayer = window.dataLayer || [];
@@ -188,12 +191,13 @@
 						<ul class="nav nav-tabs" id="logTabs" role="tablist">
 							<li class="nav-item">
 								<a
-									class="nav-link"
+									class="nav-link active"
 									id="loginTab"
 									data-toggle="tab"
 									href="#login"
 									role="tab"
 									aria-controls="login"
+									aria-selected="true"
 									>Login</a
 								>
 							</li>
@@ -205,13 +209,14 @@
 									href="#register"
 									role="tab"
 									aria-controls="register"
+									aria-selected="false"
 									>Register</a
 								>
 							</li>
 						</ul>
 						<div class="tab-content" id="logTabContent">
 							<!-- Login -->
-							<div role="tabpanel" class="tab-pane fade" id="login" aria-labelledby="login">
+							<div role="tabpanel" class="tab-pane fade show activ" id="login" aria-labelledby="loginTab">
 								<!-- First form the user sees for login which includes student number input -->
 								<form id="loginForm">
 									<div class="form-group">
@@ -243,7 +248,7 @@
 								</form>
 							</div>
 							<!-- Registration -->
-							<div role="tabpanel" class="tab-pane fade" id="register" aria-labelledby="register">
+							<div role="tabpanel" class="tab-pane fade" id="register" aria-labelledby="registerTab">
 								<p>
 									Registration is limited to students in the appropriate University of Toronto HMB
 									class. If you are not in the appropriate HMB class, you cannot register for
