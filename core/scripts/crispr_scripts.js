@@ -3,8 +3,8 @@
 // Purpose: General script for SciGrade
 //
 //= ============================================================================
-let selection_inMode = "practice";
-let possible_gene = "eBFP";
+const selection_inMode = "practice";
+const possible_gene = "eBFP";
 let current_gene = "empty";
 
 /**
