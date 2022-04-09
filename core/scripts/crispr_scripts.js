@@ -22,7 +22,7 @@ function ModeSelectionAdd(mode) {
 		$("#gene_dropdown_selection").append(append_str);
 	} else if (mode == "assignment") {
 		const useList = removeCompletedAssignments();
-		for (i = 0; i < useList.length; i++) {
+		for (let i = 0; i < useList.length; i++) {
 			if (i == 0) {
 				append_str = `<option value="${useList[i]}" id="${useList[i]}" tag="assignment">${useList[i]}</option>\n`;
 			} else {
@@ -58,7 +58,7 @@ function select_Gene() {
 }
 
 let gene_backgroundInfo;
-let benchling_grna_ouputs;
+let benchling_grna_outputs;
 /**
  * Load JSON files
  */
@@ -96,7 +96,7 @@ function loadCRISPRJSON_Files() {
 				.execute(),
 		)
 		.then((docs) => {
-			benchling_grna_ouputs = docs;
+			benchling_grna_outputs = docs;
 		})
 		.catch((err) => {
 			console.error(err);
@@ -120,11 +120,11 @@ function fillGeneList(itPos = 0) {
 				}, 500);
 			} else {
 				const list_of_genes = Object.keys(gene_backgroundInfo[0].gene_list);
-				for (i = 0; i < list_of_genes.length; i++) {
-					if (gene_backgroundInfo[0].gene_list[list_of_genes[i]].base_type == "practice") {
-						list_of_practice.push(list_of_genes[i]);
-					} else if (gene_backgroundInfo[0].gene_list[list_of_genes[i]].base_type == "assignment") {
-						list_of_assignments.push(list_of_genes[i]);
+				for (const gene of list_of_genes) {
+					if (gene_backgroundInfo[0].gene_list[gene].base_type == "practice") {
+						list_of_practice.push(gene);
+					} else if (gene_backgroundInfo[0].gene_list[gene].base_type == "assignment") {
+						list_of_assignments.push(gene);
 					}
 				}
 			}
@@ -269,10 +269,7 @@ function loadWork() {
  */
 function isNumberOrDashKey(evt) {
 	const charCode = evt.which ? evt.which : event.keyCode;
-	if (charCode != 46 && charCode != 45 && charCode > 31 && (charCode < 48 || charCode > 57)) {
-		return false;
-	}
-	return true;
+	return !(charCode != 46 && charCode != 45 && charCode > 31 && (charCode < 48 || charCode > 57));
 }
 
 // Global marking variables:
@@ -291,9 +288,9 @@ let MARR1primers = false;
 
 let possible_comparable_answers = [];
 let correctNucleotideIncluded = false;
-let true_counts = 0; // This exists for the instance that there is more than one match for inputedSeq
+let true_counts = 0; // This exists for the instance that there is more than one match for inputtedSeq
 
-var checkAnswers_executed = false;
+let checkAnswers_executed = false;
 /**
  * Checks the answer in the submission form and determines if they are correct or not
  */
@@ -314,34 +311,34 @@ function checkAnswers() {
 	const correctNucleotidePosition = gene_backgroundInfo[0].gene_list[current_gene]["Target position"] - 1;
 
 	// Check gRNA Sequence:
-	const inputedSeq = document.getElementById("sequence_input").value.trim();
+	const inputtedSeq = document.getElementById("sequence_input").value.trim();
 	// Check if gRNA sequence is in against listed
 	possible_comparable_answers = [];
-	for (i = 0; i < benchling_grna_ouputs[0].gene_list[current_gene].length; i++) {
-		if (benchling_grna_ouputs[0].gene_list[current_gene][i].Sequence == inputedSeq) {
-			possible_comparable_answers.push(benchling_grna_ouputs[0].gene_list[current_gene][i]);
+	for (const answer of benchling_grna_outputs[0].gene_list[current_gene]) {
+		if (answer.Sequence == inputtedSeq) {
+			possible_comparable_answers.push(answer);
 		}
 	}
 
 	// Check against existing:
 	const possible_right_answers = [];
 	if (possible_comparable_answers.length > 0) {
-		for (i = 0; i < possible_comparable_answers.length; i++) {
+		for (const possibleAnswer of possible_comparable_answers) {
 			true_counts = 0;
 			// Checking if the gene's target position is within correct nucleotide range
 			correctNucleotideIncluded = false;
-			if (possible_comparable_answers[i].Strand == 1) {
-				var nucleotideIncludedRange_top = possible_comparable_answers[i].Position - 1 - 1 + 3;
-				var nucleotideIncludedRange_bot = possible_comparable_answers[i].Position - 1 - 17;
+			if (possibleAnswer.Strand == 1) {
+				const nucleotideIncludedRange_top = possibleAnswer.Position - 1 - 1 + 3;
+				const nucleotideIncludedRange_bot = possibleAnswer.Position - 1 - 17;
 				if (
 					correctNucleotidePosition >= nucleotideIncludedRange_bot &&
 					correctNucleotidePosition <= nucleotideIncludedRange_top
 				) {
 					correctNucleotideIncluded = true;
 				}
-			} else if (possible_comparable_answers[i].Strand == -1) {
-				var nucleotideIncludedRange_top = possible_comparable_answers[i].Position - 1 + 17;
-				var nucleotideIncludedRange_bot = possible_comparable_answers[i].Position - 1 - 3;
+			} else if (possibleAnswer.Strand == -1) {
+				const nucleotideIncludedRange_top = possibleAnswer.Position - 1 + 17;
+				const nucleotideIncludedRange_bot = possibleAnswer.Position - 1 - 3;
 				if (
 					correctNucleotidePosition >= nucleotideIncludedRange_bot &&
 					correctNucleotidePosition <= nucleotideIncludedRange_top
@@ -350,14 +347,14 @@ function checkAnswers() {
 				}
 			}
 			// If in correct nucleotide range, check if nucleotide is included in cut site
-			if (correctNucleotideIncluded == true) {
+			if (correctNucleotideIncluded) {
 				// Determine where PAM site would be and if PAM site matches inputted value
-				var pamFirst;
-				var pamSecond;
+				let pamFirst;
+				let pamSecond;
 				// Sense is 1
-				if (possible_comparable_answers[i].Strand == 1) {
-					pamFirst = possible_comparable_answers[i].Position - 1 + 2;
-					pamSecond = possible_comparable_answers[i].Position - 1 + 4;
+				if (possibleAnswer.Strand == 1) {
+					pamFirst = possibleAnswer.Position - 1 + 2;
+					pamSecond = possibleAnswer.Position - 1 + 4;
 					// If the sequence matches to be true, check other answers:
 					if (document.getElementById("strand_input").value == "Sense (+)") {
 						MARstrand = true;
@@ -365,9 +362,9 @@ function checkAnswers() {
 					}
 				}
 				// Antisense is -1
-				else if (possible_comparable_answers[i].Strand == -1) {
-					pamFirst = possible_comparable_answers[i].Position - 1 - 2;
-					pamSecond = possible_comparable_answers[i].Position - 1 - 4;
+				else if (possibleAnswer.Strand == -1) {
+					pamFirst = possibleAnswer.Position - 1 - 2;
+					pamSecond = possibleAnswer.Position - 1 - 4;
 					// If the sequence matches to be true, check other answers:
 					if (document.getElementById("strand_input").value == "Antisense (-)") {
 						MARstrand = true;
@@ -381,28 +378,28 @@ function checkAnswers() {
 					MARgRNAseq = false;
 					MARgRNAseq_degree = 0;
 				} else if (
-					(correctNucleotidePosition >= possible_comparable_answers[i].Position - 1 + 1 &&
-						correctNucleotidePosition <= possible_comparable_answers[i].Position - 1 + 10) ||
-					(correctNucleotidePosition <= possible_comparable_answers[i].Position - 1 - 1 &&
-						correctNucleotidePosition >= possible_comparable_answers[i].Position - 1 - 10)
+					(correctNucleotidePosition >= element.Position - 1 + 1 &&
+						correctNucleotidePosition <= element.Position - 1 + 10) ||
+					(correctNucleotidePosition <= element.Position - 1 - 1 &&
+						correctNucleotidePosition >= element.Position - 1 - 10)
 				) {
 					MARgRNAseq = true;
 					MARgRNAseq_degree = 1;
 					true_counts++;
 				} else if (
-					(correctNucleotidePosition >= possible_comparable_answers[i].Position - 1 &&
-						correctNucleotidePosition <= possible_comparable_answers[i].Position - 1 + 20) ||
-					(correctNucleotidePosition <= possible_comparable_answers[i].Position - 1 &&
-						correctNucleotidePosition >= possible_comparable_answers[i].Position - 1 - 20)
+					(correctNucleotidePosition >= element.Position - 1 &&
+						correctNucleotidePosition <= element.Position - 1 + 20) ||
+					(correctNucleotidePosition <= element.Position - 1 &&
+						correctNucleotidePosition >= element.Position - 1 - 20)
 				) {
 					MARgRNAseq = true;
 					MARgRNAseq_degree = 2;
 					true_counts++;
 				} else if (
-					(correctNucleotidePosition >= possible_comparable_answers[i].Position - 1 &&
-						correctNucleotidePosition <= possible_comparable_answers[i].Position - 1 + 30) ||
-					(correctNucleotidePosition <= possible_comparable_answers[i].Position - 1 &&
-						correctNucleotidePosition >= possible_comparable_answers[i].Position - 1 - 30)
+					(correctNucleotidePosition >= element.Position - 1 &&
+						correctNucleotidePosition <= element.Position - 1 + 30) ||
+					(correctNucleotidePosition <= element.Position - 1 &&
+						correctNucleotidePosition >= element.Position - 1 - 30)
 				) {
 					MARgRNAseq = true;
 					MARgRNAseq_degree = 3;
@@ -410,8 +407,8 @@ function checkAnswers() {
 				}
 
 				// If the sequence if correct, check all other results:
-				if (MARgRNAseq == true) {
-					const temp_answer = possible_comparable_answers[i];
+				if (MARgRNAseq) {
+					const temp_answer = element;
 					// Check if the cut position matches the answer's input
 					if (
 						(temp_answer.Position != null || temp_answer.Position != undefined) &&
@@ -483,14 +480,14 @@ function checkOffTarget(score) {
 	const OffTargetValue_up = Math.ceil(score);
 	const InputOffTargetValue = parseInt(document.getElementById("offtarget_input").value);
 	// See if off-target value matches input value
-	if (correctNucleotideIncluded == true && MARgRNAseq == true) {
+	if (correctNucleotideIncluded && MARgRNAseq) {
 		if (InputOffTargetValue >= OffTargetValue_down && InputOffTargetValue <= OffTargetValue_up) {
 			MAROffTarget = true;
 			true_counts++;
 		}
 	}
 	// Determine how write it is based on its range
-	if (MAROffTarget == true) {
+	if (MAROffTarget) {
 		// Check for last-resort regions:
 		const rangeStarter_upper = parseInt(document.getElementById("position_input").value) + 35;
 		const rangeStarter_lower = parseInt(document.getElementById("position_input").value) - 35;
@@ -499,17 +496,17 @@ function checkOffTarget(score) {
 		offtarget_dict = {};
 		offtarget_dictParse = [];
 		offtarget_Use = [];
-		for (i = 0; i < benchling_grna_ouputs[0].gene_list[current_gene].length; i++) {
+		for (let i = 0; i < benchling_grna_outputs[0].gene_list[current_gene].length; i++) {
 			if (
-				benchling_grna_ouputs[0].gene_list[current_gene][i].Position >= rangeStarter_lower &&
-				benchling_grna_ouputs[0].gene_list[current_gene][i].Position <= rangeStarter_upper
+				benchling_grna_outputs[0].gene_list[current_gene][i].Position >= rangeStarter_lower &&
+				benchling_grna_outputs[0].gene_list[current_gene][i].Position <= rangeStarter_upper
 			) {
 				if (
-					benchling_grna_ouputs[0].gene_list[current_gene][i]["Specificity Score"] != null ||
-					benchling_grna_ouputs[0].gene_list[current_gene][i]["Specificity Score"] != undefined
+					benchling_grna_outputs[0].gene_list[current_gene][i]["Specificity Score"] != null ||
+					benchling_grna_outputs[0].gene_list[current_gene][i]["Specificity Score"] != undefined
 				) {
-					offtarget_List.push(benchling_grna_ouputs[0].gene_list[current_gene][i]["Specificity Score"]);
-					offtarget_dict[i] = benchling_grna_ouputs[0].gene_list[current_gene][i]["Specificity Score"];
+					offtarget_List.push(benchling_grna_outputs[0].gene_list[current_gene][i]["Specificity Score"]);
+					offtarget_dict[i] = benchling_grna_outputs[0].gene_list[current_gene][i]["Specificity Score"];
 					offtarget_dictParse.push[i];
 				}
 			}
@@ -544,7 +541,7 @@ function checkOffTarget(score) {
 			} else {
 				MAROffTarget_degree = 2;
 			}
-		} else if (last_resort_okay == false) {
+		} else if (!last_resort_okay) {
 			MAROffTarget_onlyOption = true;
 			MAROffTarget_degree = 3;
 		}
@@ -567,11 +564,11 @@ function checkF1Primers(seq) {
 	if (seq[0] == "G") {
 		count_First = false;
 	}
-	for (i = 16; i <= 20; i++) {
+	for (let i = 16; i <= 20; i++) {
 		possible_F1_primers.push(begin_F1 + seq.slice(0, i));
 	}
-	if (count_First == false) {
-		for (i = 16; i <= 20; i++) {
+	if (!count_First) {
+		for (let i = 16; i <= 20; i++) {
 			possible_F1_primers.push(begin_F1 + seq.slice(1, i));
 		}
 	}
@@ -598,12 +595,12 @@ function checkR1Primers(seq) {
 	// Verify primers:
 	possible_R1_primers = [];
 	const begin_R1 = "TTCTAGCTCTAAAAC";
-	let complemetary_seq = "";
-	for (i = 0; i < seq.length; i++) {
-		complemetary_seq = complementary_nt_dict[seq[i]] + complemetary_seq;
+	let complementary_seq = "";
+	for (const sequence of seq) {
+		complementary_seq = complementary_nt_dict[sequence] + complementary_seq;
 	}
-	for (i = 19; i <= 20; i++) {
-		possible_R1_primers.push(begin_R1 + complemetary_seq.slice(0, i));
+	for (let i = 19; i <= 20; i++) {
+		possible_R1_primers.push(begin_R1 + complementary_seq.slice(0, i));
 	}
 	if (possible_R1_primers.includes(document.getElementById("r1_input").value.trim())) {
 		MARR1primers = true;
@@ -615,8 +612,8 @@ function checkR1Primers(seq) {
  */
 function createComplementarySeq(seq) {
 	let comp_seq = "";
-	for (i = 0; i < seq.length; i++) {
-		comp_seq = complementary_nt_dict[seq[i]] + comp_seq;
+	for (const element of seq) {
+		comp_seq = complementary_nt_dict[element] + comp_seq;
 	}
 }
 
@@ -628,11 +625,11 @@ const markTotal = 10;
  */
 function markAnswers() {
 	studentMark = 0;
-	if (checkAnswers_executed == false) {
+	if (!checkAnswers_executed) {
 		checkAnswers();
 	}
-	if (checkAnswers_executed == true) {
-		if (MARgRNAseq == true) {
+	if (checkAnswers_executed) {
+		if (MARgRNAseq) {
 			if (MARgRNAseq_degree == 1) {
 				studentMark += 2;
 			} else if (MARgRNAseq_degree == 2) {
@@ -641,10 +638,10 @@ function markAnswers() {
 				studentMark += 0.5;
 			}
 		}
-		if (MARPAMseq == true) {
+		if (MARPAMseq) {
 			studentMark += 2;
 		}
-		if (MAROffTarget == true) {
+		if (MAROffTarget) {
 			if (MAROffTarget_degree == 1) {
 				studentMark += 2;
 			} else if (MAROffTarget_degree == 2) {
@@ -653,10 +650,10 @@ function markAnswers() {
 				studentMark += 0.5;
 			}
 		}
-		if (MARF1primers == true) {
+		if (MARF1primers) {
 			studentMark += 2;
 		}
-		if (MARR1primers == true) {
+		if (MARR1primers) {
 			studentMark += 2;
 		}
 		studentMarkPercentage = ((studentMark / markTotal) * 100).toFixed(2);
@@ -686,7 +683,7 @@ function showFeedback() {
 	let MARgRNAseq_degree_display = 0;
 	let MARgRNAseq_degree_explain =
 		"Your gRNA sequence was wrong and not found in the Benchling gRNA outputs. Either you made a typo or this answer was not correct and did not contain the target cut site within an acceptable range.";
-	if (MARgRNAseq == true) {
+	if (MARgRNAseq) {
 		if (MARgRNAseq_degree == 1) {
 			MARgRNAseq_degree_display = 2;
 			MARgRNAseq_degree_explain = "This means your answer was correct and you received full marks.";
@@ -704,7 +701,7 @@ function showFeedback() {
 	let MARPAMseq_display = 0;
 	let MARPAMseq_explain =
 		"Your PAM sequence was wrong and not found relative to your gRNA sequence. Either you made a typo or this answer was not correct. Either it contained the cut site within the PAM site or it was not an NGG or NAG PAM site (SciGrade only accepts either of those two PAM sites).";
-	if (MARPAMseq == true) {
+	if (MARPAMseq) {
 		MARPAMseq_display = 2;
 		MARPAMseq_explain = "This means your answer was correct and you received full marks.";
 	}
@@ -712,7 +709,7 @@ function showFeedback() {
 	let MAROffTarget_degree_display = 0;
 	let MAROffTarget_degree_explain =
 		"Your off-target score was wrong. Either it was not above/within the optimal range (or above 35) or the last-resort option.";
-	if (MAROffTarget == true) {
+	if (MAROffTarget) {
 		if (MAROffTarget_degree == 1) {
 			MAROffTarget_degree_display = 2;
 			MAROffTarget_degree_explain =
@@ -730,7 +727,7 @@ function showFeedback() {
 	/// F1 Primer:
 	let MARF1primers_display = 0;
 	let f1Options = "";
-	for (i = 0; i < possible_F1_primers.length; i++) {
+	for (let i = 0; i < possible_F1_primers.length; i++) {
 		f1Options += possible_F1_primers[i];
 		if (i == possible_F1_primers.length - 1) {
 			f1Options += ".";
@@ -741,14 +738,14 @@ function showFeedback() {
 	let MARF1primers_explain =
 		"Your F1 primer sequence was incorrectly matched to one of the following sequences generated based on your gRNA sequence inputted: " +
 		f1Options;
-	if (MARF1primers == true) {
+	if (MARF1primers) {
 		MARF1primers_display = 2;
 		MARF1primers_explain = "This means your answer was correct and you received full marks.";
 	}
 	/// R1 Primer:
 	let MARR1primers_display = 0;
 	let r1Options = "";
-	for (i = 0; i < possible_R1_primers.length; i++) {
+	for (let i = 0; i < possible_R1_primers.length; i++) {
 		r1Options += possible_F1_primers[i];
 		if (i == possible_R1_primers.length - 1) {
 			r1Options += ".";
@@ -759,7 +756,7 @@ function showFeedback() {
 	let MARR1primers_explain =
 		"Your R1 primer sequence was incorrectly matched to one of the following sequences generated based on your gRNA sequence inputted: " +
 		r1Options;
-	if (MARR1primers == true) {
+	if (MARR1primers) {
 		MARR1primers_display = 2;
 		MARR1primers_explain = "This means your answer was correct and you received full marks.";
 	}
@@ -978,8 +975,8 @@ function openAccountManagement() {
 	// Card content
 	if (completed_assignments.length != 0) {
 		append_str += "<p>You have completed the following assignments: <p> <ul>";
-		for (i = 0; i < completed_assignments.length; i++) {
-			append_str += "<li>" + completed_assignments[i] + "</li>";
+		for (const element of completed_assignments) {
+			append_str += "<li>" + element + "</li>";
 		}
 		append_str += "</ul>";
 	} else if (completed_assignments.length == 0) {
@@ -998,14 +995,13 @@ function openAccountManagement() {
 		student_reg_information[0].student_list[studentParseNum].type == "admin" ||
 		student_reg_information[0].student_list[studentParseNum].type == "TA"
 	) {
-		const encodedURI = encodeURIComponent(JSON.stringify(student_reg_information[0].student_list));
 		append_str =
 			"<br> <p> <b> Oh wait! </b> Hello " +
 			student_reg_information[0].student_list[studentParseNum].type +
 			"! Would you like to download student marks? </p>";
 		append_str += '<label for="DownloadClass">Choose class: </label>';
 		append_str += '<select id="DownloadClass" class="form-control" style="margin-bottom: 1%">';
-		for (key in classList) {
+		for (const key in classList) {
 			append_str += '<option value="' + key + '" id="' + key + '" tag="assignment">' + key + "</option>\n";
 		}
 		append_str += "</select>";
@@ -1111,7 +1107,7 @@ function openAccountManagement() {
 		append_str += '<div class="form-group">';
 		append_str += '<label for="InputClassSingle" style="font-weight: bold;">Choose class: </label>';
 		append_str += '<select id="InputClassSingle" class="form-control" style="margin-bottom: 1%;">';
-		for (key in classList) {
+		for (const key in classList) {
 			append_str += '<option value="' + key + '" id="' + key + '" tag="assignment">' + key + "</option>\n";
 		}
 		append_str += "</select>";
@@ -1176,7 +1172,7 @@ function openAccountManagement() {
 		append_str += '<label for="ClassModChange" style="font-weight: bold;">Choose class: </label>';
 		append_str +=
 			"<select id=\"ClassModChange\" class=\"form-control\" style=\"margin-bottom: 1%;\" onchange=\"ChangeDOMInnerhtml('CurrentOffTarget', 'Current off-target marking is set to: ' + student_reg_information[0]['classMarkingMod'][document.getElementById('ClassModChange').value][0])\">";
-		for (key in classList) {
+		for (const key in classList) {
 			append_str += '<option value="' + key + '" id="' + key + '" tag="assignment">' + key + "</option>\n";
 		}
 		append_str += "</select>";
@@ -1234,7 +1230,7 @@ function openAccountManagement() {
 		append_str += '<label for="ClassChange" style="font-weight: bold;">Choose class: </label>';
 		append_str +=
 			'<select id="ClassChange" class="form-control" style="margin-bottom: 1%;" onchange="UpdateStudentList(document.getElementById(\'ClassChange\').value); UpdateChooseUser(\'ClassUserChange\');">';
-		for (key in classList) {
+		for (const key in classList) {
 			append_str += '<option value="' + key + '" id="' + key + '" tag="assignment">' + key + "</option>\n";
 		}
 		append_str += "</select>";
@@ -1316,7 +1312,7 @@ function ClearSelectOptions(domID) {
 	}
 }
 
-var updatedListOfStudents = {};
+let updatedListOfStudents = {};
 /**
  * Update the list of students available for a class
  * @param {String} className The class for which the students belong to
@@ -1324,9 +1320,9 @@ var updatedListOfStudents = {};
 function UpdateStudentList(className) {
 	updatedListOfStudents = {};
 	const studentList = student_reg_information[0].student_list;
-	for (i = 0; i < studentList.length; i++) {
-		if (studentList[i].studentClass == className) {
-			updatedListOfStudents[studentList[i].name] = studentList[i].name + " - " + studentList[i].type;
+	for (const student of studentList) {
+		if (student.studentClass == className) {
+			updatedListOfStudents[student.name] = student.name + " - " + student.type;
 		}
 	}
 }
@@ -1339,9 +1335,9 @@ function UpdateStudentList(className) {
  */
 function UpdateUserType(classname, username, changeTo) {
 	const studentList = student_reg_information[0].student_list;
-	for (i = 0; i < studentList.length; i++) {
+	for (let i = 0; i < studentList.length; i++) {
 		if (studentList[i].studentClass == classname && studentList[i].name == username) {
-			var changeType = "student_list." + i + "." + "type";
+			let changeType = "student_list." + i + "." + "type";
 			client.login().then(() =>
 				db.collection("Student_Information").updateOne(
 					{
@@ -1413,12 +1409,12 @@ let downloadIndexTable_fill = "";
  */
 function generateRestOfIndexTable(whichIndexTable, SimpleComplex) {
 	whichIndexTable = downloadIndexTable_start;
-	for (i = 0; i < list_of_assignments.length; i++) {
-		whichIndexTable += "\n\t\t\t<th>" + list_of_assignments[i] + "</th>";
-		if (SimpleComplex == true) {
+	for (const assignment of list_of_assignments) {
+		whichIndexTable += "\n\t\t\t<th>" + assignment + "</th>";
+		if (SimpleComplex) {
 			whichIndexTable += "\n\t\t\t<th>Percent</th>";
 			whichIndexTable += "\n\t\t\t<th>Raw</th>";
-		} else if (SimpleComplex == false) {
+		} else if (!SimpleComplex) {
 			whichIndexTable += "\n\t\t\t<th>Percent</th>";
 			whichIndexTable += "\n\t\t\t<th>Raw</th>";
 			whichIndexTable += "\n\t\t\t<th>gRNA</th>";
@@ -1453,7 +1449,7 @@ function generateHiddenStudentDownload(whichClass, whichType) {
 		const d = new Date();
 		let downloadIndexTable_str = "<table id='downloadIndexTable'>\n\t<tbody>\n";
 		let captionTitleBegin = "SciGrade_studentMark_";
-		if (whichType == false) {
+		if (!whichType) {
 			captionTitleBegin = "SciGrade_studentMarkRaw_";
 		}
 		downloadIndexTable_str +=
@@ -1470,63 +1466,55 @@ function generateHiddenStudentDownload(whichClass, whichType) {
 		downloadIndexTable_str += downloadIndexTable_fill;
 		// Looping through each row of the table
 		const studentRegList = student_reg_information[0].student_list;
-		for (i = 0; i < studentRegList.length; i++) {
-			if (studentRegList[i].type == "Student" && studentRegList[i].studentClass == whichClass) {
+		for (const student of studentRegList) {
+			if (student.type == "Student" && student.studentClass == whichClass) {
 				downloadIndexTable_str += "\t\t<tr>\n";
-				downloadIndexTable_str += "\t\t\t<td>" + studentRegList[i].student_number + "</td>\n";
-				downloadIndexTable_str += "\t\t\t<td>" + studentRegList[i].name + "</td>\n";
-				if (whichType == true) {
-					for (x = 0; x < list_of_assignments.length; x++) {
-						if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Marks"] != null) {
-							downloadIndexTable_str += "\t\t\t<td>" + list_of_assignments[x].toString() + "</td>\n";
+				downloadIndexTable_str += "\t\t\t<td>" + student.student_number + "</td>\n";
+				downloadIndexTable_str += "\t\t\t<td>" + student.name + "</td>\n";
+				if (whichType) {
+					for (const assignment of list_of_assignments) {
+						if (student["assignment-" + assignment + "-Marks"] != null) {
+							downloadIndexTable_str += "\t\t\t<td>" + assignment.toString() + "</td>\n";
 							downloadIndexTable_str +=
-								"\t\t\t<td>" +
-								studentRegList[i]["assignment-" + list_of_assignments[x] + "-Marks"][1].toString() +
-								"</td>\n";
+								"\t\t\t<td>" + student["assignment-" + assignment + "-Marks"][1].toString() + "</td>\n";
 							downloadIndexTable_str +=
-								"\t\t\t<td>" +
-								studentRegList[i]["assignment-" + list_of_assignments[x] + "-Marks"][0].toString() +
-								"</td>\n";
-						} else if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Marks"] == null) {
-							downloadIndexTable_str += "\t\t\t<td>" + list_of_assignments[x].toString() + "</td>\n";
+								"\t\t\t<td>" + student["assignment-" + assignment + "-Marks"][0].toString() + "</td>\n";
+						} else if (student["assignment-" + assignment + "-Marks"] == null) {
+							downloadIndexTable_str += "\t\t\t<td>" + assignment.toString() + "</td>\n";
 							downloadIndexTable_str += "\t\t\t<td> Incompleted </td>\n";
 							downloadIndexTable_str += "\t\t\t<td> 0.00 </td>\n";
 						}
 					}
 				}
-				if (whichType == false) {
-					for (x = 0; x < list_of_assignments.length; x++) {
-						if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Marks"] != null) {
-							downloadIndexTable_str += "\t\t\t<td>" + list_of_assignments[x].toString() + "</td>\n";
+				if (!whichType) {
+					for (const assignment of list_of_assignments) {
+						if (student["assignment-" + assignment + "-Marks"] != null) {
+							downloadIndexTable_str += "\t\t\t<td>" + assignment.toString() + "</td>\n";
 							let mark = 0;
 							// Raw values
 							downloadIndexTable_str +=
-								"\t\t\t<td>" +
-								studentRegList[i]["assignment-" + list_of_assignments[x] + "-Marks"][1].toString() +
-								"</td>\n";
+								"\t\t\t<td>" + student["assignment-" + assignment + "-Marks"][1].toString() + "</td>\n";
 							downloadIndexTable_str +=
-								"\t\t\t<td>" +
-								studentRegList[i]["assignment-" + list_of_assignments[x] + "-Marks"][0].toString() +
-								"</td>\n";
+								"\t\t\t<td>" + student["assignment-" + assignment + "-Marks"][0].toString() + "</td>\n";
 							// gRNA
 							downloadIndexTable_str +=
 								"\t\t\t<td>" +
-								studentRegList[i]["assignment-" + list_of_assignments[x] + "-Answers"][0].toString() +
+								student["assignment-" + assignment + "-Answers"][0].toString() +
 								"</td>\n";
-							if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Outputs"][2] == 1) {
+							if (student["assignment-" + assignment + "-Outputs"][2] == 1) {
 								mark = 2;
-							} else if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Outputs"][2] == 2) {
+							} else if (student["assignment-" + assignment + "-Outputs"][2] == 2) {
 								mark = 1;
-							} else if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Outputs"][2] == 3) {
+							} else if (student["assignment-" + assignment + "-Outputs"][2] == 3) {
 								mark = 0.5;
 							}
 							downloadIndexTable_str += "\t\t\t<td>" + mark.toString() + "</td>\n";
 							// PAM
 							downloadIndexTable_str +=
 								"\t\t\t<td>" +
-								studentRegList[i]["assignment-" + list_of_assignments[x] + "-Answers"][1].toString() +
+								student["assignment-" + assignment + "-Answers"][1].toString() +
 								"</td>\n";
-							if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Outputs"][4] == true) {
+							if (student["assignment-" + assignment + "-Outputs"][4]) {
 								mark = 2;
 							} else {
 								mark = 0;
@@ -1535,22 +1523,22 @@ function generateHiddenStudentDownload(whichClass, whichType) {
 							// Off-target
 							downloadIndexTable_str +=
 								"\t\t\t<td>" +
-								studentRegList[i]["assignment-" + list_of_assignments[x] + "-Answers"][4].toString() +
+								student["assignment-" + assignment + "-Answers"][4].toString() +
 								"</td>\n";
-							if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Outputs"][6] == 1) {
+							if (student["assignment-" + assignment + "-Outputs"][6] == 1) {
 								mark = 2;
-							} else if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Outputs"][6] == 2) {
+							} else if (student["assignment-" + assignment + "-Outputs"][6] == 2) {
 								mark = 1;
-							} else if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Outputs"][6] == 3) {
+							} else if (student["assignment-" + assignment + "-Outputs"][6] == 3) {
 								mark = 0.5;
 							}
 							downloadIndexTable_str += "\t\t\t<td>" + mark.toString() + "</td>\n";
 							// F1 Primers
 							downloadIndexTable_str +=
 								"\t\t\t<td>" +
-								studentRegList[i]["assignment-" + list_of_assignments[x] + "-Answers"][5].toString() +
+								student["assignment-" + assignment + "-Answers"][5].toString() +
 								"</td>\n";
-							if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Outputs"][10] == true) {
+							if (student["assignment-" + assignment + "-Outputs"][10]) {
 								mark = 2;
 							} else {
 								mark = 0;
@@ -1559,16 +1547,16 @@ function generateHiddenStudentDownload(whichClass, whichType) {
 							// R1 primers
 							downloadIndexTable_str +=
 								"\t\t\t<td>" +
-								studentRegList[i]["assignment-" + list_of_assignments[x] + "-Answers"][6].toString() +
+								student["assignment-" + assignment + "-Answers"][6].toString() +
 								"</td>\n";
-							if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Outputs"][11] == true) {
+							if (student["assignment-" + assignment + "-Outputs"][11]) {
 								mark = 2;
 							} else {
 								mark = 0;
 							}
 							downloadIndexTable_str += "\t\t\t<td>" + mark.toString() + "</td>\n";
-						} else if (studentRegList[i]["assignment-" + list_of_assignments[x] + "-Marks"] == null) {
-							downloadIndexTable_str += "\t\t\t<td>" + list_of_assignments[x].toString() + "</td>\n";
+						} else if (!student["assignment-" + assignment + "-Marks"]) {
+							downloadIndexTable_str += "\t\t\t<td>" + assignment.toString() + "</td>\n";
 							downloadIndexTable_str += "\t\t\t<td> Incompleted </td>\n";
 							downloadIndexTable_str += "\t\t\t<td> 0.00 </td>\n";
 							downloadIndexTable_str += "\t\t\t<td> Incompleted </td>\n";
@@ -1628,8 +1616,8 @@ function addUserToServer(inputClass, number, umail) {
 	if (student_reg_information[0].class_list[inputClass] != undefined) {
 		classExists = true;
 	}
-	for (var key in setList) {
-		var newKey = "class_list." + inputClass + "." + key;
+	for (let key in setList) {
+		let newKey = "class_list." + inputClass + "." + key;
 		client.login().then(() =>
 			db.collection("Student_Information").updateOne(
 				{
@@ -1654,7 +1642,7 @@ function addUserToServer(inputClass, number, umail) {
 	document.getElementById("StudentUmail").value = "";
 }
 
-var classExists = false;
+let classExists = false;
 /**
  * Adds multiple users to the MongoDB server
  * @param {String} inputClass The class the users are being added to
@@ -1678,12 +1666,12 @@ function addMultipleUsersToServer(inputClass, number, umail) {
 			const studentUmailAdd = studentUmailList[i];
 			setList[studentAdd] = studentUmailAdd;
 		}
-		classList = "class_list." + inputClass;
+		const classList = "class_list." + inputClass;
 		classExists = false;
 		if (student_reg_information[0].class_list[inputClass] != undefined) {
 			classExists = true;
 		}
-		if (classExists == false) {
+		if (!classExists) {
 			client.login().then(() =>
 				db.collection("Student_Information").updateOne(
 					{
@@ -1694,7 +1682,7 @@ function addMultipleUsersToServer(inputClass, number, umail) {
 							[classList]: setList,
 						},
 					},
-					function (err, res) {
+					function (err, _res) {
 						if (err) throw err;
 
 						db.close();
@@ -1714,7 +1702,7 @@ function addMultipleUsersToServer(inputClass, number, umail) {
 							[classChange]: markingChangeList,
 						},
 					},
-					function (err, res) {
+					function (err, _res) {
 						if (err) throw err;
 
 						db.close();
@@ -1738,9 +1726,9 @@ function removeCompletedAssignments() {
 	generateCompletedAssignmentList();
 	let returnAssignmentList = [];
 	if (completed_assignments.length > 0) {
-		for (i = 0; i < list_of_assignments.length; i++) {
-			if (completed_assignments.includes(list_of_assignments[i]) == false) {
-				returnAssignmentList.push(list_of_assignments[i]);
+		for (const assignment of list_of_assignments) {
+			if (!completed_assignments.includes(assignment)) {
+				returnAssignmentList.push(assignment);
 			}
 		}
 	} else if (completed_assignments.length == 0) {
@@ -1749,12 +1737,12 @@ function removeCompletedAssignments() {
 	return returnAssignmentList;
 }
 
-var all_answers = [];
+let all_answers = [];
 let all_outputs = [];
-var all_marks = [];
-let studentanswers = "student_list." + studentParseNum + "." + loadedMode + "-" + current_gene + "-Answers";
-let studentoutputs = "student_list." + studentParseNum + "." + loadedMode + "-" + current_gene + "-Outputs";
-let studentmarks = "student_list." + studentParseNum + "." + loadedMode + "-" + current_gene + "-Marks";
+let all_marks = [];
+let studentAnswers = "student_list." + studentParseNum + "." + loadedMode + "-" + current_gene + "-Answers";
+let studentOutputs = "student_list." + studentParseNum + "." + loadedMode + "-" + current_gene + "-Outputs";
+let studentMarks = "student_list." + studentParseNum + "." + loadedMode + "-" + current_gene + "-Marks";
 /**
  * Submit and sends the student's answers to the server
  */
@@ -1765,9 +1753,9 @@ function submitAnswers() {
 	checkAnswers();
 	setTimeout(function () {
 		markAnswers();
-		studentanswers = "student_list." + studentParseNum + "." + loadedMode + "-" + current_gene + "-Answers";
-		studentoutputs = "student_list." + studentParseNum + "." + loadedMode + "-" + current_gene + "-Outputs";
-		studentmarks = "student_list." + studentParseNum + "." + loadedMode + "-" + current_gene + "-Marks";
+		studentAnswers = "student_list." + studentParseNum + "." + loadedMode + "-" + current_gene + "-Answers";
+		studentOutputs = "student_list." + studentParseNum + "." + loadedMode + "-" + current_gene + "-Outputs";
+		studentMarks = "student_list." + studentParseNum + "." + loadedMode + "-" + current_gene + "-Marks";
 		all_answers.push(
 			document.getElementById("sequence_input").value.trim(),
 			document.getElementById("pam_input").value.trim(),
@@ -1801,9 +1789,9 @@ function submitAnswers() {
 					},
 					{
 						$set: {
-							[studentanswers]: all_answers,
-							[studentoutputs]: all_outputs,
-							[studentmarks]: all_marks,
+							[studentAnswers]: all_answers,
+							[studentOutputs]: all_outputs,
+							[studentMarks]: all_marks,
 						},
 					},
 					function (err, res) {

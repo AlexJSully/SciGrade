@@ -1,6 +1,6 @@
 //= ================================ SciGrade ==================================
 //
-// Purpose: Login and registeration for SciGrade
+// Purpose: Login and registration for SciGrade
 //
 //= ============================================================================
 
@@ -25,7 +25,7 @@ function loadJSON_Files() {
 		});
 }
 
-let checkstudentNum = false;
+let checkStudentNum = false;
 let studentNumber = 0;
 let studentUmail;
 let alreadyRegistered = false;
@@ -34,30 +34,27 @@ let classRegister;
  * Check to determine if the student is within
  * @param {Num} student_num Student number
  * @param {String} student_umail Student's email/uMail
- * @return {bool} checkstudentNum - Whether the student is a student in the system or not
+ * @return {bool} checkStudentNum - Whether the student is a student in the system or not
  */
 function checkStudentNumber(student_num, student_umail) {
 	loadJSON_Files();
 	let alreadyRegistered = false;
-	checkstudentNum = false;
+	checkStudentNum = false;
 	let maxNum = 0;
 	const classList = student_reg_information[0].class_list;
-	for (key in classList) {
+	for (const key in classList) {
 		if (student_reg_information[0].student_list != null && student_reg_information[0].student_list.length > 0) {
-			for (i = 0; i < student_reg_information[0].student_list.length; i++) {
-				if (
-					student_reg_information[0].student_list[i].student_number == student_num &&
-					student_reg_information[0].student_list[i].studentClass == key
-				) {
+			for (const student of student_reg_information[0].student_list) {
+				if (student.student_number == student_num && student.studentClass == key) {
 					alreadyRegistered = true;
 				}
 			}
 		}
 	}
-	if (alreadyRegistered == false) {
-		for (key in classList) {
+	if (!alreadyRegistered) {
+		for (const key in classList) {
 			if (classList[key][student_num] == student_umail) {
-				checkstudentNum = true;
+				checkStudentNum = true;
 				studentNumber = student_num;
 				studentUmail = student_umail;
 				studentParseNum = i;
@@ -68,13 +65,13 @@ function checkStudentNumber(student_num, student_umail) {
 			}
 		}
 	}
-	if (checkstudentNum == true) {
+	if (checkStudentNum) {
 		addSecondSection();
-	} else if (alreadyRegistered == true) {
+	} else if (alreadyRegistered) {
 		showRegError(4);
-	} else if (checkstudentNum == false && maxNum == student_reg_information[0].student_list.length) {
+	} else if (!checkStudentNum && maxNum == student_reg_information[0].student_list.length) {
 		showRegError(1);
-	} else if (checkstudentNum == false) {
+	} else if (!checkStudentNum) {
 		showRegError(2);
 	}
 }
@@ -86,13 +83,13 @@ function checkStudentNumber(student_num, student_umail) {
 function loginVerify(student_NumVerify) {
 	alreadyRegistered = false;
 	let maxNum = 0;
-	checkstudentNum = false;
+	checkStudentNum = false;
 	if (student_reg_information[0].student_list != null && student_reg_information[0].student_list.length > 0) {
-		for (i = 0; i < student_reg_information[0].student_list.length; i++) {
+		for (let i = 0; i < student_reg_information[0].student_list.length; i++) {
 			if (student_reg_information[0].student_list[i].student_number == student_NumVerify) {
 				if (student_reg_information[0].student_list[i].gmail != "unregistered") {
 					alreadyRegistered = true;
-					checkstudentNum = true;
+					checkStudentNum = true;
 					studentNumber = student_NumVerify;
 					studentParseNum = i;
 				} else if (student_reg_information[0].student_list[i].gmail == "unregistered") {
@@ -103,10 +100,10 @@ function loginVerify(student_NumVerify) {
 			}
 		}
 	}
-	if (alreadyRegistered == true && checkstudentNum == true) {
+	if (alreadyRegistered && checkStudentNum) {
 		$("#loginForm").empty();
 		document.getElementById("loginP2").style.display = "block";
-	} else if (alreadyRegistered == false) {
+	} else if (!alreadyRegistered) {
 		showRegError(5);
 	} else if (maxNum == student_reg_information[0].student_list.length) {
 		showRegError(1);
@@ -172,31 +169,30 @@ function addSecondSection() {
 	document.getElementById("registerP3").style.display = "block";
 }
 
-let gupper;
 /**
  * Retrieves Google user information and stores it
  */
 function sendLogReg() {
-	if (alreadyRegistered == false) {
+	if (!alreadyRegistered) {
 		if (studentUmail) {
 			const gupper = "student_list." + studentParseNum;
 			// Create student name
 			const splitName = studentUmail.split("@")[0].split(".");
 			let name = "";
-			for (let n = 0; n < splitName.length; n++) {
-				const capName = splitName[n].charAt(0).toUpperCase() + splitName[n].substr(1);
+			for (const studentName of splitName) {
+				const capName = studentName.charAt(0).toUpperCase() + studentName.substring(1);
 				name += capName + " ";
 			}
 			name = name.trim();
 			let manuallyAdded = false;
 			let gupperType = "Student";
-			for (i = 0; i < student_reg_information[0].student_list.length; i++) {
-				if (student_reg_information[0].student_list[i].umail == studentUmail) {
+			for (const student of student_reg_information[0].student_list) {
+				if (student.umail == studentUmail) {
 					manuallyAdded = true;
-					gupperType = student_reg_information[0].student_list[i].type;
+					gupperType = student.type;
 				}
 			}
-			if (checkstudentNum == true && studentNumber != 0 && googleEmail != null) {
+			if (checkStudentNum && studentNumber != 0 && googleEmail != null) {
 				client.login().then(() =>
 					db.collection("Student_Information").updateOne(
 						{version: "0.3"},
@@ -222,7 +218,7 @@ function sendLogReg() {
 			}
 		}
 	}
-	if (alreadyRegistered == true) {
+	if (alreadyRegistered) {
 		if (googleEmail == student_reg_information[0].student_list[studentParseNum].gmail) {
 			redirectCRISPR();
 		} else {
@@ -278,7 +274,7 @@ function loadGeneContent() {
 	select_Gene();
 }
 
-var changeLogin = '<i class="material-icons" style="font-size:inherit;">&#xE7FD;</i>';
+const changeLogin = '<i class="material-icons" style="font-size:inherit;">&#xE7FD;</i>';
 /**
  * Once users have registered OR logged in, the page dynamically generates the CRISPR assignment page
  */
