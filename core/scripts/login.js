@@ -8,7 +8,7 @@ let student_reg_information;
 const client = new stitch.StitchClient("almark-wvohf");
 const db = client.service("mongodb", "mongodb-atlas").db("AlMark");
 /** Let users continue with practice application without logging in (true) (default false) */
-let continueWithoutLogin = false;
+const continueWithoutLogin = false;
 /**
  * Load JSON files
  */

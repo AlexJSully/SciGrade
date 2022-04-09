@@ -3,8 +3,8 @@
 // Purpose: General script for SciGrade
 //
 //= ============================================================================
-let selection_inMode = "practice";
-let possible_gene = "eBFP";
+const selection_inMode = "practice";
+const possible_gene = "eBFP";
 let current_gene = "empty";
 
 /**
@@ -1337,7 +1337,7 @@ function UpdateUserType(classname, username, changeTo) {
 	const studentList = student_reg_information[0].student_list;
 	for (let i = 0; i < studentList.length; i++) {
 		if (studentList[i].studentClass == classname && studentList[i].name == username) {
-			let changeType = "student_list." + i + "." + "type";
+			const changeType = "student_list." + i + "." + "type";
 			client.login().then(() =>
 				db.collection("Student_Information").updateOne(
 					{
@@ -1616,8 +1616,8 @@ function addUserToServer(inputClass, number, umail) {
 	if (student_reg_information[0].class_list[inputClass] != undefined) {
 		classExists = true;
 	}
-	for (let key in setList) {
-		let newKey = "class_list." + inputClass + "." + key;
+	for (const key in setList) {
+		const newKey = "class_list." + inputClass + "." + key;
 		client.login().then(() =>
 			db.collection("Student_Information").updateOne(
 				{
