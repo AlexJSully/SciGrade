@@ -38,7 +38,7 @@ let classRegister;
  */
 function checkStudentNumber(student_num, student_umail) {
 	loadJSON_Files();
-	let alreadyRegistered = false;
+	alreadyRegistered = false;
 	checkStudentNum = false;
 	let maxNum = 0;
 	const classList = student_reg_information[0].class_list;

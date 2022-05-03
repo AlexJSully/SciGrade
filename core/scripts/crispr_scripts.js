@@ -51,7 +51,7 @@ function select_Gene() {
 			current_gene != "ANKK1" ||
 			current_gene != "APOE"
 		) {
-			current_gene == "empty";
+			current_gene = "empty";
 		}
 		alert("Error code sG34-42 occurred. Please contact admin or TA!");
 	}
@@ -305,9 +305,6 @@ function checkAnswers() {
 	true_counts = 0;
 
 	// Verify answers
-	const correctNucleotide = gene_backgroundInfo[0].gene_list[current_gene].Sequence.charAt(
-		gene_backgroundInfo[0].gene_list[current_gene]["Target position"],
-	);
 	const correctNucleotidePosition = gene_backgroundInfo[0].gene_list[current_gene]["Target position"] - 1;
 
 	// Check gRNA Sequence:
@@ -321,7 +318,6 @@ function checkAnswers() {
 	}
 
 	// Check against existing:
-	const possible_right_answers = [];
 	if (possible_comparable_answers.length > 0) {
 		for (const possibleAnswer of possible_comparable_answers) {
 			true_counts = 0;
@@ -507,7 +503,7 @@ function checkOffTarget(score) {
 				) {
 					offtarget_List.push(benchling_grna_outputs[0].gene_list[current_gene][i]["Specificity Score"]);
 					offtarget_dict[i] = benchling_grna_outputs[0].gene_list[current_gene][i]["Specificity Score"];
-					offtarget_dictParse.push[i];
+					offtarget_dictParse.push(i);
 				}
 			}
 		}
@@ -1282,7 +1278,7 @@ function openAccountManagement() {
  */
 function UpdateChooseUser(domUser) {
 	ClearSelectOptions(domUser);
-	for (key in updatedListOfStudents) {
+	for (let key in updatedListOfStudents) {
 		AddToOptions(domUser, key, updatedListOfStudents[key]);
 	}
 }
@@ -1348,7 +1344,7 @@ function UpdateUserType(classname, username, changeTo) {
 							[changeType]: changeTo,
 						},
 					},
-					function (err, res) {
+					function (err, _res) {
 						if (err) throw err;
 
 						db.close();
@@ -1378,7 +1374,7 @@ function UpdateMarkingControls(classToMod, offTargetChange) {
 					[classChange]: markingChangeList,
 				},
 			},
-			function (err, res) {
+			function (err, _res) {
 				if (err) throw err;
 
 				db.close();
@@ -1628,7 +1624,7 @@ function addUserToServer(inputClass, number, umail) {
 						[newKey]: setList[key],
 					},
 				},
-				function (err, res) {
+				function (err, _res) {
 					if (err) throw err;
 
 					db.close();
@@ -1794,7 +1790,7 @@ function submitAnswers() {
 							[studentMarks]: all_marks,
 						},
 					},
-					function (err, res) {
+					function (err, _res) {
 						if (err) throw err;
 
 						db.close();

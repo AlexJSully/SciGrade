@@ -154,7 +154,7 @@ Or in the javaScript files (such as [login.js](core/scripts/login.js) and [crisp
 
 ```javascript
 let gene_backgroundInfo;
-let benchling_grna_ouputs;
+let benchling_grna_outputs;
 /**
  * Load JSON files
  */
