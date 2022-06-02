@@ -175,7 +175,7 @@
 		<link rel="stylesheet" href="styling/style.min.css" />
 	</head>
 
-	<body class="focusBody">
+	<body class="focusBody" aria-role="main">
 		<!-- Google Tag Manager (noscript) -->
 		<noscript
 			><iframe
@@ -188,11 +188,13 @@
 		></noscript>
 		<!-- End Google Tag Manager (noscript) -->
 		<div class="navigationBar">
-			<a href="../" role="banner"
+			<a href="../" role="button"
 				><img
 					src="images/logo_transparent.svg"
 					alt="logo"
 					style="width: 5em; margin: -50%; margin-bottom: -40%; margin-right: -40%"
+					aria-label="Back to home page"
+					title="Back to home page"
 			/></a>
 			<a
 				class="active"
@@ -233,6 +235,8 @@
 									aria-controls="login"
 									aria-selected="true"
 									aria-label="Login"
+									aria-role="tab"
+									title="Login to your account and practice gRNA design"
 									onclick="handleLoginTabChange('login')"
 									>Login</a
 								>
@@ -246,6 +250,9 @@
 									role="navigation"
 									aria-controls="register"
 									aria-selected="false"
+									aria-role="tab"
+									aria-label="Register for new account"
+									title="Register for new account"
 									onclick="handleLoginTabChange('register')"
 									>Register</a
 								>
@@ -259,6 +266,8 @@
 									role="navigation"
 									aria-selected="false"
 									aria-label="Continue without logging in"
+									aria-role="tab"
+									title="Continue without logging in to practice gRNA design"
 									onclick="continueWithoutLogin=true;redirectCRISPR();"
 									>Continue without logging in</a
 								>
