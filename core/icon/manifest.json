@@ -68,7 +68,9 @@
 	"description": "SciGrade - An online way to practice gRNA and primer design.",
 	"theme_color": "#ffffff",
 	"background_color": "#ffffff",
-	"start_url": "/",
+	"start_url": "https://scigrade.com/",
+	"id": "/",
 	"display": "standalone",
-	"prefer_related_applications": false
+	"prefer_related_applications": false,
+	"orientation": "any"
 }
