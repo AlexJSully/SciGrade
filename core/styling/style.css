@@ -3,15 +3,15 @@
 }
 
 .focusContainer {
-	border-radius: 12px 12px 12px 12px;
 	-moz-border-radius: 12px 12px 12px 12px;
 	-webkit-border-radius: 12px 12px 12px 12px;
-	border: 1px solid #000000;
 	background-color: white;
+	border-radius: 12px 12px 12px 12px;
+	border: 1px solid #000000;
+	margin-bottom: 1%;
+	margin-top: 4%;
 	padding-bottom: 5%;
 	padding-top: 2%;
-	margin-top: 4%;
-	margin-bottom: 1%;
 }
 
 .focusBody {
@@ -19,17 +19,17 @@
 }
 
 .navigationBar {
-	overflow: hidden;
 	background-color: #30338d;
+	overflow: hidden;
 }
 
 .navigationBar a {
-	float: left;
 	color: #f2f2f2;
-	text-align: center;
-	padding: 14px 16px;
-	text-decoration: none;
+	float: left;
 	font-size: 17px;
+	padding: 14px 16px;
+	text-align: center;
+	text-decoration: none;
 }
 
 .navigationBar a:hover {
@@ -48,34 +48,34 @@
 
 .homeBackground {
 	/* Browser background */
-	background: url("../images/BackgroundImage/homeBackground.webp") no-repeat center center fixed;
-	-webkit-background-size: cover;
 	-moz-background-size: cover;
 	-o-background-size: cover;
+	-webkit-background-size: cover;
 	background-size: cover;
+	background: url("../images/BackgroundImage/homeBackground.webp") no-repeat center center fixed;
 	/* IE */
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/BackgroundImage/homeBackground.webp', sizingMethod='scale');
 	-ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src=../images/BackgroundImage/homeBackground.webp', sizingMethod='scale')";
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/BackgroundImage/homeBackground.webp', sizingMethod='scale');
 }
 
 .backgroundFrontLayer {
 	/* Browser foreground */
-	background: url("../images/BackgroundImage/grey.webp") no-repeat center center fixed;
-	-webkit-background-size: cover;
 	-moz-background-size: cover;
 	-o-background-size: cover;
+	-webkit-background-size: cover;
 	background-size: cover;
+	background: url("../images/BackgroundImage/grey.webp") no-repeat center center fixed;
 	opacity: 0.5;
 	/* IE */
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/BackgroundImage/grey.webp', sizingMethod='scale');
 	-ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src=../images/BackgroundImage/grey.webp', sizingMethod='scale')";
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/BackgroundImage/grey.webp', sizingMethod='scale');
 }
 
 .fullSizeBody {
 	height: 100%;
-	width: 100%;
 	overflow: hidden;
 	position: fixed;
+	width: 100%;
 	z-index: -1;
 }
 
@@ -105,12 +105,12 @@
 }
 
 .frontPageFont {
-	font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif, "Times New Roman";
 	color: #353b6e;
-	text-align: center;
+	font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif, "Times New Roman";
 	font-size: 2em;
-	text-shadow: 2px 1px 5px rgba(150, 150, 150, 1);
 	font-weight: bold;
+	text-align: center;
+	text-shadow: 2px 1px 5px rgba(150, 150, 150, 1);
 }
 
 .modalResponsive {
@@ -123,9 +123,9 @@
 	}
 
 	.homeBackground {
-		-webkit-background-size: auto;
 		-moz-background-size: auto;
 		-o-background-size: auto;
+		-webkit-background-size: auto;
 		background-size: auto;
 	}
 }
