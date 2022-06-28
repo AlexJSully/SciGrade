@@ -35,3 +35,7 @@ engines:
                 enabled: false
             MD030:
                 enabled: false
+exclude_patterns:
+    - "core/scripts/APIandLibraries"
+    - "**/*.min.js"
+    - "**/*.min.css"
