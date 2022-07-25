@@ -112,6 +112,11 @@
 				// We recommend adjusting this value in production, or using tracesSampler for finer control
 				tracesSampleRate: 1.0,
 			});
+
+			Sentry.configureScope((scope) => {
+				// @AlexJSully when updating the package version number in package.json, update the version number here as well.
+				scope.setTag("app-version", "1.0.11");
+			});
 		</script>
 		<!-- Bootstrap -->
 		<link rel="stylesheet" href="core/scripts/APIandLibraries/Bootstrap/css/bootstrap.min.css" />
