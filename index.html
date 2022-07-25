@@ -9,7 +9,7 @@
 		<meta http-equiv="Cache-control" content="max-age=604800" />
 		<meta
 			http-equiv="Content-Security-Policy"
-			content="default-src 'self' 'unsafe-inline' data: *.cloudflareinsights.com *.cloudstinger.com *.googletagmanager.com *.google-analytics.com *.googleapis.com *.google.com *.amazonaws.com *.mongodb.com *.doubleclick.net *.gstatic.com; object-src 'self'"
+			content="default-src 'self' 'unsafe-inline' data: *.cloudflareinsights.com *.cloudstinger.com *.googletagmanager.com *.google-analytics.com *.googleapis.com *.google.com *.amazonaws.com *.mongodb.com *.doubleclick.net *.gstatic.com *.sentry-cdn.com *.sentry.io; object-src 'self'"
 		/>
 
 		<!-- META DATA -->
@@ -91,6 +91,28 @@
 
 		<!-- jQuery using Google Hosted Library -->
 		<script rel="preload" as="script" src="core/scripts/APIandLibraries/jQuery/jquery.min.js"></script>
+		<!-- Sentry -->
+		<script
+			src="https://browser.sentry-cdn.com/7.7.0/bundle.min.js"
+			integrity="sha384-zVycKakbFST6m0pi9RFIAnb5nw7mrA1n/mE4C8grImB4B6iqCp/0LHOcTIu9AI7+"
+			crossorigin="anonymous"
+		></script>
+		<script
+			src="https://browser.sentry-cdn.com/7.7.0/bundle.tracing.min.js"
+			integrity="sha384-lr/bDcE0vmUPBU6dhVBXfmhNYAEilrIepu1BRdVUJ8mZ0Hxhm17aIJ2bt4UfxC72"
+			crossorigin="anonymous"
+		></script>
+		<script>
+			Sentry.init({
+				dsn: "https://4661e72aaeb74d2fbd9e23b79e9506e0@o1185775.ingest.sentry.io/6600341",
+				// @AlexJSully when updating the package version number in package.json, update the version number here as well.
+				release: "my-project-name@1.0.11",
+				integrations: [new Sentry.BrowserTracing()],
+
+				// We recommend adjusting this value in production, or using tracesSampler for finer control
+				tracesSampleRate: 1.0,
+			});
+		</script>
 		<!-- Bootstrap -->
 		<link rel="stylesheet" href="core/scripts/APIandLibraries/Bootstrap/css/bootstrap.min.css" />
 		<script rel="preload" as="script" src="core/scripts/APIandLibraries/Bootstrap/js/bootstrap.min.js"></script>
@@ -119,18 +141,6 @@
 			})(window, document, "script", "dataLayer", "GTM-K9PRB9W");
 		</script>
 		<!-- End Google Tag Manager -->
-		<!-- favicon -->
-		<link rel="apple-touch-icon" sizes="180x180" href="core/icon/apple-touch-icon.png" />
-		<link rel="icon" type="image/png" sizes="32x32" href="core/icon/favicon-32x32.png" />
-		<link rel="icon" type="image/png" sizes="16x16" href="core/icon/favicon-16x16.png" />
-		<link rel="manifest" href="core/icon/manifest.json" />
-		<link rel="mask-icon" href="core/icon/safari-pinned-tab.svg" color="#2b5797" />
-		<link rel="shortcut icon" href="core/icon/favicon.ico" />
-		<meta name="apple-mobile-web-app-title" content="SciGrade" />
-		<meta name="application-name" content="SciGrade" />
-		<meta name="msapplication-TileColor" content="#2b5797" />
-		<meta name="msapplication-config" content="core/icon/browserconfig.xml" />
-		<meta name="theme-color" content="#2b5797" />
 		<!-- Service worker -->
 		<script>
 			if ("serviceWorker" in navigator) {
