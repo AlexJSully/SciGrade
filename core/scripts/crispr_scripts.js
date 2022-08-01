@@ -37,7 +37,7 @@ function ModeSelectionAdd(mode) {
  * Purpose of this is to assign the current gene and check for errors
  */
 function select_Gene() {
-	if (possible_gene != null || possible_gene != "" || possible_gene != undefined) {
+	if (possible_gene !== null || possible_gene != "" || possible_gene != undefined) {
 		current_gene = possible_gene;
 		loadWork();
 		checkAnswers_executed = false;
@@ -144,7 +144,7 @@ let loadedMode = "practice";
  */
 function loadWork() {
 	if (
-		gene_backgroundInfo != null ||
+		gene_backgroundInfo !== null ||
 		gene_backgroundInfo != "" ||
 		gene_backgroundInfo != undefined ||
 		backgroundInfo[0].gene_list[current_gene] != undefined
@@ -253,7 +253,7 @@ function loadWork() {
 
 		$("#work").append(append_str);
 	} else if (
-		gene_backgroundInfo == null ||
+		gene_backgroundInfo === null ||
 		gene_backgroundInfo == "" ||
 		gene_backgroundInfo == undefined ||
 		backgroundInfo[0].gene_list[current_gene] == undefined
@@ -407,12 +407,12 @@ function checkAnswers() {
 					const temp_answer = element;
 					// Check if the cut position matches the answer's input
 					if (
-						(temp_answer.Position != null || temp_answer.Position != undefined) &&
+						(temp_answer.Position !== null || temp_answer.Position != undefined) &&
 						parseInt(temp_answer.Position) == parseInt(document.getElementById("position_input").value)
 					) {
 						MARCutPos = true;
 						true_counts++;
-					} else if (temp_answer.Position == null || temp_answer.Position == undefined) {
+					} else if (temp_answer.Position === null || temp_answer.Position == undefined) {
 						alert(
 							"Error code cA302-307: retrieving server information on 'Position' answers occurred. Please contact admin or TA!",
 						);
@@ -420,22 +420,22 @@ function checkAnswers() {
 
 					// Check if the PAM matches the answer's input
 					if (
-						(temp_answer.PAM != null || temp_answer.PAM != undefined) &&
+						(temp_answer.PAM !== null || temp_answer.PAM != undefined) &&
 						temp_answer.PAM == document.getElementById("pam_input").value.trim()
 					) {
 						MARPAMseq = true;
 						true_counts++;
-					} else if (temp_answer.PAM == null || temp_answer.PAM == undefined) {
+					} else if (temp_answer.PAM === null || temp_answer.PAM == undefined) {
 						alert(
 							"Error code cA311-317: retrieving server information on 'PAM' answers occurred. Please contact admin or TA!",
 						);
 					}
 
 					// Check if the Off-target matches the answer's input
-					if (temp_answer["Specificity Score"] != null || temp_answer["Specificity Score"] != undefined) {
+					if (temp_answer["Specificity Score"] !== null || temp_answer["Specificity Score"] != undefined) {
 						checkOffTarget(temp_answer["Specificity Score"]);
 					} else if (
-						temp_answer["Specificity Score"] == null ||
+						temp_answer["Specificity Score"] === null ||
 						temp_answer["Specificity Score"] == undefined
 					) {
 						alert(
@@ -498,7 +498,7 @@ function checkOffTarget(score) {
 				benchling_grna_outputs[0].gene_list[current_gene][i].Position <= rangeStarter_upper
 			) {
 				if (
-					benchling_grna_outputs[0].gene_list[current_gene][i]["Specificity Score"] != null ||
+					benchling_grna_outputs[0].gene_list[current_gene][i]["Specificity Score"] !== null ||
 					benchling_grna_outputs[0].gene_list[current_gene][i]["Specificity Score"] != undefined
 				) {
 					offtarget_List.push(benchling_grna_outputs[0].gene_list[current_gene][i]["Specificity Score"]);
@@ -920,22 +920,22 @@ function generateCompletedAssignmentList() {
 	completed_assignments = [];
 	loadJSON_Files();
 	// Assignments
-	if (student_reg_information[0].student_list[studentParseNum]["assignment-HBB-Marks"] != null) {
+	if (student_reg_information[0].student_list[studentParseNum]["assignment-HBB-Marks"] !== null) {
 		if (!completed_assignments.includes("HBB")) {
 			completed_assignments.push("HBB");
 		}
 	}
-	if (student_reg_information[0].student_list[studentParseNum]["assignment-CCR5-Marks"] != null) {
+	if (student_reg_information[0].student_list[studentParseNum]["assignment-CCR5-Marks"] !== null) {
 		if (!completed_assignments.includes("CCR5")) {
 			completed_assignments.push("CCR5");
 		}
 	}
-	if (student_reg_information[0].student_list[studentParseNum]["assignment-ANKK1-Marks"] != null) {
+	if (student_reg_information[0].student_list[studentParseNum]["assignment-ANKK1-Marks"] !== null) {
 		if (!completed_assignments.includes("ANKK1")) {
 			completed_assignments.push("ANKK1");
 		}
 	}
-	if (student_reg_information[0].student_list[studentParseNum]["assignment-APOE-Marks"] != null) {
+	if (student_reg_information[0].student_list[studentParseNum]["assignment-APOE-Marks"] !== null) {
 		if (!completed_assignments.includes("APOE")) {
 			completed_assignments.push("APOE");
 		}
@@ -1469,13 +1469,13 @@ function generateHiddenStudentDownload(whichClass, whichType) {
 				downloadIndexTable_str += "\t\t\t<td>" + student.name + "</td>\n";
 				if (whichType) {
 					for (const assignment of list_of_assignments) {
-						if (student["assignment-" + assignment + "-Marks"] != null) {
+						if (student["assignment-" + assignment + "-Marks"] !== null) {
 							downloadIndexTable_str += "\t\t\t<td>" + assignment.toString() + "</td>\n";
 							downloadIndexTable_str +=
 								"\t\t\t<td>" + student["assignment-" + assignment + "-Marks"][1].toString() + "</td>\n";
 							downloadIndexTable_str +=
 								"\t\t\t<td>" + student["assignment-" + assignment + "-Marks"][0].toString() + "</td>\n";
-						} else if (student["assignment-" + assignment + "-Marks"] == null) {
+						} else if (student["assignment-" + assignment + "-Marks"] === null) {
 							downloadIndexTable_str += "\t\t\t<td>" + assignment.toString() + "</td>\n";
 							downloadIndexTable_str += "\t\t\t<td> Incompleted </td>\n";
 							downloadIndexTable_str += "\t\t\t<td> 0.00 </td>\n";
@@ -1484,7 +1484,7 @@ function generateHiddenStudentDownload(whichClass, whichType) {
 				}
 				if (!whichType) {
 					for (const assignment of list_of_assignments) {
-						if (student["assignment-" + assignment + "-Marks"] != null) {
+						if (student["assignment-" + assignment + "-Marks"] !== null) {
 							downloadIndexTable_str += "\t\t\t<td>" + assignment.toString() + "</td>\n";
 							let mark = 0;
 							// Raw values

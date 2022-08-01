@@ -43,7 +43,7 @@ function checkStudentNumber(student_num, student_umail) {
 	let maxNum = 0;
 	const classList = student_reg_information[0].class_list;
 	for (const key in classList) {
-		if (student_reg_information[0].student_list != null && student_reg_information[0].student_list.length > 0) {
+		if (student_reg_information[0].student_list !== null && student_reg_information[0].student_list.length > 0) {
 			for (const student of student_reg_information[0].student_list) {
 				if (student.student_number == student_num && student.studentClass == key) {
 					alreadyRegistered = true;
@@ -84,7 +84,7 @@ function loginVerify(student_NumVerify) {
 	alreadyRegistered = false;
 	let maxNum = 0;
 	checkStudentNum = false;
-	if (student_reg_information[0].student_list != null && student_reg_information[0].student_list.length > 0) {
+	if (student_reg_information[0].student_list !== null && student_reg_information[0].student_list.length > 0) {
 		for (let i = 0; i < student_reg_information[0].student_list.length; i++) {
 			if (student_reg_information[0].student_list[i].student_number == student_NumVerify) {
 				if (student_reg_information[0].student_list[i].gmail != "unregistered") {
@@ -192,7 +192,7 @@ function sendLogReg() {
 					gupperType = student.type;
 				}
 			}
-			if (checkStudentNum && studentNumber != 0 && googleEmail != null) {
+			if (checkStudentNum && studentNumber != 0 && googleEmail !== null) {
 				client.login().then(() =>
 					db.collection("Student_Information").updateOne(
 						{version: "0.3"},
