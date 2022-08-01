@@ -1497,11 +1497,11 @@ function generateHiddenStudentDownload(whichClass, whichType) {
 								"\t\t\t<td>" +
 								student["assignment-" + assignment + "-Answers"][0].toString() +
 								"</td>\n";
-							if (student["assignment-" + assignment + "-Outputs"][2] == 1) {
+							if (student[`assignment-${assignment}-Outputs`][2] == 1) {
 								mark = 2;
-							} else if (student["assignment-" + assignment + "-Outputs"][2] == 2) {
+							} else if (student[`assignment-${assignment}-Outputs`][2] == 2) {
 								mark = 1;
-							} else if (student["assignment-" + assignment + "-Outputs"][2] == 3) {
+							} else if (student[`assignment-${assignment}-Outputs`][2] == 3) {
 								mark = 0.5;
 							}
 							downloadIndexTable_str += "\t\t\t<td>" + mark.toString() + "</td>\n";
@@ -1510,7 +1510,7 @@ function generateHiddenStudentDownload(whichClass, whichType) {
 								"\t\t\t<td>" +
 								student["assignment-" + assignment + "-Answers"][1].toString() +
 								"</td>\n";
-							if (student["assignment-" + assignment + "-Outputs"][4]) {
+							if (student[`assignment-${assignment}-Outputs`][4]) {
 								mark = 2;
 							} else {
 								mark = 0;
@@ -1521,11 +1521,11 @@ function generateHiddenStudentDownload(whichClass, whichType) {
 								"\t\t\t<td>" +
 								student["assignment-" + assignment + "-Answers"][4].toString() +
 								"</td>\n";
-							if (student["assignment-" + assignment + "-Outputs"][6] == 1) {
+							if (student[`assignment-${assignment}-Outputs`][6] == 1) {
 								mark = 2;
-							} else if (student["assignment-" + assignment + "-Outputs"][6] == 2) {
+							} else if (student[`assignment-${assignment}-Outputs`][6] == 2) {
 								mark = 1;
-							} else if (student["assignment-" + assignment + "-Outputs"][6] == 3) {
+							} else if (student[`assignment-${assignment}-Outputs`][6] == 3) {
 								mark = 0.5;
 							}
 							downloadIndexTable_str += "\t\t\t<td>" + mark.toString() + "</td>\n";
@@ -1534,7 +1534,7 @@ function generateHiddenStudentDownload(whichClass, whichType) {
 								"\t\t\t<td>" +
 								student["assignment-" + assignment + "-Answers"][5].toString() +
 								"</td>\n";
-							if (student["assignment-" + assignment + "-Outputs"][10]) {
+							if (student[`assignment-${assignment}-Outputs`][10]) {
 								mark = 2;
 							} else {
 								mark = 0;
@@ -1545,7 +1545,7 @@ function generateHiddenStudentDownload(whichClass, whichType) {
 								"\t\t\t<td>" +
 								student["assignment-" + assignment + "-Answers"][6].toString() +
 								"</td>\n";
-							if (student["assignment-" + assignment + "-Outputs"][11]) {
+							if (student[`assignment-${assignment}-Outputs`][11]) {
 								mark = 2;
 							} else {
 								mark = 0;
