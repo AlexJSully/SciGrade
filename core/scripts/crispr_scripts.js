@@ -13,7 +13,11 @@ let current_gene = "empty";
  */
 function ModeSelectionAdd(mode) {
 	$("#gene_dropdown_selection").empty();
-	document.getElementById("load_button").disabled;
+
+	if (document.getElementById("load_button")) {
+		document.getElementById("load_button").disabled;
+	}
+
 	let append_str;
 	if (mode == "practice") {
 		append_str = '<option value="eBFP" id="eBFP" tag="practice">eBFP</option>\n';
