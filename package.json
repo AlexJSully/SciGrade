@@ -23,11 +23,11 @@
 		"workbox": "workbox generateSW"
 	},
 	"bugs": {
-		"url": "https://github.com/ASully/SciGrade/issues"
+		"url": "https://github.com/AlexJSully/SciGrade/issues"
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/ASully/SciGrade.git"
+		"url": "git+https://github.com/AlexJSully/SciGrade.git"
 	},
 	"keywords": [
 		"science",
@@ -40,5 +40,5 @@
 		"scigrade"
 	],
 	"license": "GPL-3.0",
-	"homepage": "https://github.com/ASully/SciGrade#readme"
+	"homepage": "https://github.com/AlexJSully/SciGrade#readme"
 }

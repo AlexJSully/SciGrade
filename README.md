@@ -4,12 +4,12 @@ SciGrade is an online web-tool that allows students (or any user with access) to
 
 [![Codiga Code Quality Score](https://api.codiga.io/project/32060/score/svg)](https://api.codiga.io/project/32060/score/svg)
 [![Codiga Code Grade](https://api.codiga.io/project/32060/status/svg)](https://api.codiga.io/project/32060/status/svg)
-[![Maintainability](https://api.codeclimate.com/v1/badges/ed202653a7b430ccdbfb/maintainability)](https://codeclimate.com/github/ASully/SciGrade/maintainability)
-[![CodeFactor](https://www.codefactor.io/repository/github/asully/scigrade/badge)](https://www.codefactor.io/repository/github/asully/scigrade)
-[![DeepSource](https://deepsource.io/gh/ASully/SciGrade.svg/?label=active+issues&show_trend=true&token=STKEtvW3WQehO2ieS5XQg5cq)](https://deepsource.io/gh/ASully/SciGrade/?ref=repository-badge)
+[![Maintainability](https://api.codeclimate.com/v1/badges/ed202653a7b430ccdbfb/maintainability)](https://codeclimate.com/github/AlexJSully/SciGrade/maintainability)
+[![CodeFactor](https://www.codefactor.io/repository/github/AlexJSully/scigrade/badge)](https://www.codefactor.io/repository/github/AlexJSully/scigrade)
+[![DeepSource](https://deepsource.io/gh/AlexJSully/SciGrade.svg/?label=active+issues&show_trend=true&token=STKEtvW3WQehO2ieS5XQg5cq)](https://deepsource.io/gh/AlexJSully/SciGrade/?ref=repository-badge)
 [![Follow on Twitter](https://img.shields.io/twitter/follow/alexjsully?style=social)](https://twitter.com/alexjsully)
-[![GitHub repo size](https://img.shields.io/github/repo-size/ASully/SciGrade)](https://github.com/ASully/SciGrade)
-[![GitHub](https://img.shields.io/github/license/ASully/SciGrade)](https://github.com/ASully/SciGrade)
+[![GitHub repo size](https://img.shields.io/github/repo-size/AlexJSully/SciGrade)](https://github.com/AlexJSully/SciGrade)
+[![GitHub](https://img.shields.io/github/license/AlexJSully/SciGrade)](https://github.com/AlexJSully/SciGrade)
 [![Website](https://img.shields.io/website?url=https%3A%2F%2Fscigrade.com%2F)](https://scigrade.com/)
 
 ## Getting Started
@@ -28,7 +28,7 @@ There is nothing to install, just download all the files and open [index.html](i
 
 ## Known issues
 
-We aim to make the SciGrade as perfect as possible but unfortunately, there may be some unforeseen bugs. If you manage to find one that is not here, feel free to create a [bug report](https://github.com/ASully/SciGrade/issues/new?template=bug_report.md) so we can fix it.
+We aim to make the SciGrade as perfect as possible but unfortunately, there may be some unforeseen bugs. If you manage to find one that is not here, feel free to create a [bug report](https://github.com/AlexJSully/SciGrade/issues/new?template=bug_report.md) so we can fix it.
 
 -   None at the moment... Help us find some!
 
@@ -54,6 +54,6 @@ Please read [EDIT.md](EDIT.MD) if you want to understand how SciGrade works and 
 
 ## Authors
 
--   Alexander Sullivan - [GitHub](https://github.com/ASully), [Twitter](https://twitter.com/alexjsully), [LinkedIn](https://www.linkedin.com/in/alexanderjsullivan/), [Website](https://alexjsully.me/)
+-   Alexander Sullivan - [GitHub](https://github.com/AlexJSully), [Twitter](https://twitter.com/alexjsully), [LinkedIn](https://www.linkedin.com/in/alexanderjsullivan/), [Website](https://alexjsully.me/)
 -   Quynh (Cathy) Cao - [GitHub](https://github.com/cathycao54), [Twitter](https://twitter.com/cathyqcao), [LinkedIn](https://www.linkedin.com/in/cathyquynhcao/)
 -   Alistair Dias - [LinkedIn](https://www.linkedin.com/in/alistair-dias-090a8629/), [Website](https://hmb.utoronto.ca/profiles/alistair-dias/)
