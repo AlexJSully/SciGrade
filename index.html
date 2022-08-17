@@ -120,7 +120,7 @@
 			});
 		</script>
 		<!-- Bootstrap -->
-		<link rel="stylesheet" href="core/scripts/APIandLibraries/Bootstrap/css/bootstrap.min.css" />
+		<link rel="stylesheet preload" href="core/scripts/APIandLibraries/Bootstrap/css/bootstrap.min.css" as="style" />
 		<script rel="preload" as="script" src="core/scripts/APIandLibraries/Bootstrap/js/bootstrap.min.js"></script>
 		<!-- Global site tag (gtag.js) - Google Analytics -->
 		<link rel="preconnect" href="https://www.googletagmanager.com" />
@@ -154,7 +154,7 @@
 			}
 		</script>
 		<!-- Custom scripts -->
-		<link rel="stylesheet" href="core\styling\style.min.css" />
+		<link rel="stylesheet preload" href="core\styling\style.min.css" as="style" />
 		<meta name="cf-2fa-verify" content="d5006c4ce0d08ab" />
 	</head>
 
@@ -173,7 +173,15 @@
 		<div id="coverBody" class="fullSizeBody backgroundFrontLayer"></div>
 		<div id="mainBody" role="main">
 			<a href="" style="opacity: 0" aria-hidden="true">Empty</a>
-			<div id="logo"><img src="core/images/logo_transparent-Dark.svg" alt="logo" class="centerBody" /></div>
+			<div id="logo">
+				<img
+					src="core/images/logo_transparent-Dark.svg"
+					alt="logo"
+					class="centerBody"
+					fetchpriority="high"
+					loading="auto"
+				/>
+			</div>
 			<h1 class="centerBody frontPageFont">An online way to practice gRNA and primer design</h1>
 			<a href="core/systemrun.html"
 				><button type="button" class="btn btn-primary btn-lg centerButton" style="margin-top: 3%">

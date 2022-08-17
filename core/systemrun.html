@@ -91,7 +91,7 @@
 			});
 		</script>
 		<!-- Bootstrap -->
-		<link rel="stylesheet" href="./scripts/APIandLibraries/Bootstrap/css/bootstrap.min.css" />
+		<link rel="stylesheet preload" href="./scripts/APIandLibraries/Bootstrap/css/bootstrap.min.css" as="style" />
 		<script src="./scripts/APIandLibraries/Bootstrap/js/bootstrap.min.js" rel="preload" as="script"></script>
 		<!-- Stitch/mongoDB -->
 		<link rel="preconnect" href="https://s3.amazonaws.com" />
@@ -202,7 +202,7 @@
 		<!-- Custom scripts -->
 		<script rel="preload" as="script" src="scripts/login.min.js"></script>
 		<script rel="preload" as="script" src="scripts/crispr_scripts.min.js"></script>
-		<link rel="stylesheet" href="styling/style.min.css" />
+		<link rel="stylesheet preload" href="styling/style.min.css" as="style" />
 	</head>
 
 	<body class="focusBody" aria-role="main">
@@ -225,6 +225,8 @@
 					style="width: 5em; margin: -50%; margin-bottom: -40%; margin-right: -40%"
 					aria-label="Back to home page"
 					title="Back to home page"
+					fetchpriority="high"
+					loading="auto"
 			/></a>
 			<a
 				class="active"

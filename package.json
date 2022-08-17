@@ -40,5 +40,9 @@
 		"scigrade"
 	],
 	"license": "GPL-3.0",
-	"homepage": "https://github.com/AlexJSully/SciGrade#readme"
+	"homepage": "https://github.com/AlexJSully/SciGrade#readme",
+	"devDependencies": {
+		"prettier": "^2.7.1",
+		"workbox-cli": "^6.5.4"
+	}
 }
