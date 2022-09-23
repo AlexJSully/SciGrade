@@ -30,14 +30,14 @@
 		"url": "git+https://github.com/AlexJSully/SciGrade.git"
 	},
 	"keywords": [
-		"science",
-		"education",
 		"bioinformatics",
-		"uoft",
 		"crispr",
-		"pedagogy",
+		"education",
 		"grna-sequence",
-		"scigrade"
+		"pedagogy",
+		"science",
+		"scigrade",
+		"uoft"
 	],
 	"license": "GPL-3.0",
 	"homepage": "https://github.com/AlexJSully/SciGrade#readme",
