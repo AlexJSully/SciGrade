@@ -2,8 +2,6 @@
 
 SciGrade is an online web-tool that allows students (or any user with access) to mark and assist in gRNA+Primer generation.
 
-[![Codiga Code Quality Score](https://api.codiga.io/project/32060/score/svg)](https://api.codiga.io/project/32060/score/svg)
-[![Codiga Code Grade](https://api.codiga.io/project/32060/status/svg)](https://api.codiga.io/project/32060/status/svg)
 [![Maintainability](https://api.codeclimate.com/v1/badges/ed202653a7b430ccdbfb/maintainability)](https://codeclimate.com/github/AlexJSully/SciGrade/maintainability)
 [![CodeFactor](https://www.codefactor.io/repository/github/AlexJSully/scigrade/badge)](https://www.codefactor.io/repository/github/AlexJSully/scigrade)
 [![DeepSource](https://deepsource.io/gh/AlexJSully/SciGrade.svg/?label=active+issues&show_trend=true&token=STKEtvW3WQehO2ieS5XQg5cq)](https://deepsource.io/gh/AlexJSully/SciGrade/?ref=repository-badge)
