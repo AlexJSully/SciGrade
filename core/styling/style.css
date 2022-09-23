@@ -5,8 +5,8 @@
 .focusContainer {
 	-moz-border-radius: 12px;
 	-webkit-border-radius: 12px;
-	background-color: white;
-	border: 1px solid #000000;
+	background-color: #fff;
+	border: 1px solid #000;
 	border-radius: 12px;
 	margin-bottom: 1%;
 	margin-top: 4%;
@@ -34,12 +34,12 @@
 
 .navigationBar a:hover {
 	background-color: #ddd;
-	color: black;
+	color: #000;
 }
 
 .navigationBar a.active {
 	background-color: #2c632e;
-	color: white;
+	color: #fff;
 }
 
 .navigationBar a.logIO {
@@ -51,8 +51,8 @@
 	-moz-background-size: cover;
 	-o-background-size: cover;
 	-webkit-background-size: cover;
-	background: url("../images/BackgroundImage/homeBackground.webp") no-repeat center center fixed;
 	background-size: cover;
+	background: url("../images/BackgroundImage/homeBackground.webp") no-repeat center center fixed;
 	/* IE */
 	-ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src=../images/BackgroundImage/homeBackground.webp', sizingMethod='scale')";
 	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/BackgroundImage/homeBackground.webp', sizingMethod='scale');
