@@ -3,8 +3,8 @@
 // Purpose: General script for SciGrade
 //
 //= ============================================================================
-let selection_inMode = "practice";
-let possible_gene = "eBFP";
+const selection_inMode = "practice";
+const possible_gene = "eBFP";
 let current_gene = "empty";
 
 /**
@@ -1268,7 +1268,7 @@ function openAccountManagement() {
  */
 function UpdateChooseUser(domUser) {
 	ClearSelectOptions(domUser);
-	for (let key in updatedListOfStudents) {
+	for (const key in updatedListOfStudents) {
 		AddToOptions(domUser, key, updatedListOfStudents[key]);
 	}
 }
@@ -1602,7 +1602,7 @@ function addUserToServer(inputClass, number, umail) {
 	if (student_reg_information[0].class_list[inputClass]) {
 		classExists = true;
 	}
-	for (let key in setList) {
+	for (const key in setList) {
 		const newKey = `class_list.${inputClass}.${key}`;
 		client.login().then(() =>
 			db.collection("Student_Information").updateOne(
