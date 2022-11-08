@@ -16,7 +16,7 @@ function loadJSON_Files() {
 	// Student information
 	client
 		.login()
-		.then(() => db.collection("Student_Information").find({version: "0.3"}).limit(100).execute())
+		.then(() => db.collection("Student_Information").find({ version: "0.3" }).limit(100).execute())
 		.then((docs) => {
 			student_reg_information = docs;
 		})
@@ -195,7 +195,7 @@ function sendLogReg() {
 			if (checkStudentNum && studentNumber != 0 && googleEmail !== null) {
 				client.login().then(() =>
 					db.collection("Student_Information").updateOne(
-						{version: "0.3"},
+						{ version: "0.3" },
 						{
 							$set: {
 								[gupper + ".studentClass"]: classRegister,

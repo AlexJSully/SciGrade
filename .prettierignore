@@ -44,3 +44,6 @@ core/scripts/serviceWorker
 
 # PDFs
 .pdf
+
+# Ignore minified files
+*.min.*
