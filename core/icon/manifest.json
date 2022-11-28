@@ -93,7 +93,7 @@
 			"src": "./maskable_icon.png",
 			"sizes": "any",
 			"type": "image/png",
-			"purpose": "any maskable"
+			"purpose": "any"
 		},
 		{
 			"src": "./safari-pinned-tab.svg",
@@ -142,8 +142,12 @@
 	"background_color": "#ffffff",
 	"start_url": "https://scigrade.com/",
 	"id": "/",
+	"display_override": ["standalone", "minimal-ui", "window-controls-overlay"],
 	"display": "standalone",
 	"prefer_related_applications": false,
 	"orientation": "any",
+	"dir": "ltr",
+	"lang": "en",
+	"scope": "/",
 	"categories": ["bioinformatics", "crispr", "education", "grna-sequence", "pedagogy", "science", "scigrade", "uoft"]
 }

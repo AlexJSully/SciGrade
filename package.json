@@ -42,7 +42,7 @@
 	"license": "GPL-3.0",
 	"homepage": "https://github.com/AlexJSully/SciGrade#readme",
 	"devDependencies": {
-		"prettier": "^2.7.1",
+		"prettier": "^2.8.0",
 		"workbox-cli": "^6.5.4"
 	}
 }
