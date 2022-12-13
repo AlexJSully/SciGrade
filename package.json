@@ -19,7 +19,7 @@
 	"description": "SciGrade is an online web-tool that allows students (or any user with access) to mark and assist in gRNA+Primer generation.",
 	"main": "index.html",
 	"scripts": {
-		"prettier": "prettier --write --end-of-line auto ./",
+		"prettier": "prettier --write ./",
 		"workbox": "workbox generateSW"
 	},
 	"bugs": {
@@ -42,7 +42,7 @@
 	"license": "GPL-3.0",
 	"homepage": "https://github.com/AlexJSully/SciGrade#readme",
 	"devDependencies": {
-		"prettier": "^2.8.0",
+		"prettier": "^2.8.1",
 		"workbox-cli": "^6.5.4"
 	}
 }
