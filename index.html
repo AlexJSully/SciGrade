@@ -122,10 +122,10 @@
 				release: "scigrade@1.1.0",
 				integrations: [
 					new Sentry.BrowserTracing(),
-					new Sentry.CaptureConsole({
+					new Sentry.Integrations.CaptureConsole({
 						levels: ["error"],
 					}),
-					new Sentry.Offline(),
+					new Sentry.Integrations.Offline(),
 				],
 
 				// We recommend adjusting this value in production, or using tracesSampler for finer control
