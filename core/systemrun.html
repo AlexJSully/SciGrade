@@ -74,12 +74,28 @@
 			integrity="sha384-9UNrOU09f7Nw+gWAVO29TC7sVmL2ov5sDkhb3qNiJ0VoSNtPk3QaLumCQg9mJ56r"
 			crossorigin="anonymous"
 		></script>
+		<script
+			src="https://browser.sentry-cdn.com/7.26.0/captureconsole.min.js"
+			integrity="sha384-BnJOeR8mRS6anqV1YFpvL+tN0CZBJwKjlVUAISjSnK+Mlv0dOP84JzsD0ls3Mraf"
+			crossorigin="anonymous"
+		></script>
+		<script
+			src="https://browser.sentry-cdn.com/7.26.0/offline.min.js"
+			integrity="sha384-82Ed4/TLabfc/rXtX2O2Qeu+rP+SbDbTbYOKfHk9GXVroynkuujPQ+ocCJVcHX7M"
+			crossorigin="anonymous"
+		></script>
 		<script>
 			Sentry.init({
 				dsn: "https://4661e72aaeb74d2fbd9e23b79e9506e0@o1185775.ingest.sentry.io/6600341",
 				// @AlexJSully when updating the package version number in package.json, update the version number here as well.
 				release: "scigrade@1.0.11",
-				integrations: [new Sentry.BrowserTracing()],
+				integrations: [
+					new Sentry.BrowserTracing(),
+					new Sentry.CaptureConsole({
+						levels: ["error"],
+					}),
+					new Sentry.Offline(),
+				],
 
 				// We recommend adjusting this value in production, or using tracesSampler for finer control
 				tracesSampleRate: 1.0,
