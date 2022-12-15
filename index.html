@@ -110,7 +110,13 @@
 				dsn: "https://4661e72aaeb74d2fbd9e23b79e9506e0@o1185775.ingest.sentry.io/6600341",
 				// @AlexJSully when updating the package version number in package.json, update the version number here as well.
 				release: "scigrade@1.1.0",
-				integrations: [new Sentry.BrowserTracing()],
+				integrations: [
+					new Sentry.BrowserTracing(),
+					new Sentry.CaptureConsole({
+						levels: ["error"],
+					}),
+					new Sentry.Offline(),
+				],
 
 				// We recommend adjusting this value in production, or using tracesSampler for finer control
 				tracesSampleRate: 1.0,
