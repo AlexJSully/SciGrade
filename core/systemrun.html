@@ -65,23 +65,23 @@
 		<script rel="preload" as="script" src="scripts/APIandLibraries/jQuery/jquery.min.js"></script>
 		<!-- Sentry -->
 		<script
-			src="https://browser.sentry-cdn.com/7.26.0/bundle.min.js"
-			integrity="sha384-DtFxcx3Er7+3JvQGIPpORR1QsfMKJUh4NdVZNd6NGrjzEKRbqmogZWDX+q5C81U8"
+			src="https://browser.sentry-cdn.com/7.27.0/bundle.min.js"
+			integrity="sha384-NeQUgjakD8MJ0LyWlSNlOV7HdZJKUGnV/sk/If+U2yrttV35xaDjMqiviIMuDDGf"
 			crossorigin="anonymous"
 		></script>
 		<script
-			src="https://browser.sentry-cdn.com/7.26.0/bundle.tracing.min.js"
-			integrity="sha384-9UNrOU09f7Nw+gWAVO29TC7sVmL2ov5sDkhb3qNiJ0VoSNtPk3QaLumCQg9mJ56r"
+			src="https://browser.sentry-cdn.com/7.27.0/bundle.tracing.min.js"
+			integrity="sha384-9DbxFQbHqgid8ADllNDRZcmsuQRYnnDVDkw+5/e8VzfpHAiIZM71uGj+p3CVeheW"
 			crossorigin="anonymous"
 		></script>
 		<script
-			src="https://browser.sentry-cdn.com/7.26.0/captureconsole.min.js"
-			integrity="sha384-BnJOeR8mRS6anqV1YFpvL+tN0CZBJwKjlVUAISjSnK+Mlv0dOP84JzsD0ls3Mraf"
+			src="https://browser.sentry-cdn.com/7.27.0/captureconsole.min.js"
+			integrity="sha384-lus/CmUSrTLaiDkwFs4BoNCh2c4WzlBYRTy4okBqPDq6mwrVTzNnpXi0ZppWQqqT"
 			crossorigin="anonymous"
 		></script>
 		<script
 			src="https://browser.sentry-cdn.com/7.26.0/offline.min.js"
-			integrity="sha384-82Ed4/TLabfc/rXtX2O2Qeu+rP+SbDbTbYOKfHk9GXVroynkuujPQ+ocCJVcHX7M"
+			integrity="sha384-ku/bbv/8kMFQGbYsPyD9BO107im4LcvJWj07MdsWvzQMNXsFpOTWZouxei/XTTDZ"
 			crossorigin="anonymous"
 		></script>
 		<script>
@@ -543,13 +543,25 @@
 				<div class="modal-content">
 					<div class="modal-header">
 						<h5 class="modal-title" id="accountModalLabel">Account Management</h5>
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<button
+							aria-label="Close"
+							class="close"
+							data-dismiss="modal"
+							onclick="$('#accountModal').modal('hide');"
+							type="button"
+						>
 							<span aria-hidden="true">&times;</span>
 						</button>
 					</div>
 					<div class="modal-body" id="accountManagementBody"></div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-secondary" data-dismiss="modal" id="dismissAccountModal">
+						<button
+							class="btn btn-secondary"
+							data-dismiss="modal"
+							id="dismissAccountModal"
+							onclick="$('#accountModal').modal('hide');"
+							type="button"
+						>
 							Close
 						</button>
 					</div>

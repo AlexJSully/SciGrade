@@ -941,41 +941,45 @@ function generateCompletedAssignmentList() {
 function openAccountManagement() {
 	generateCompletedAssignmentList();
 	$("#accountManagementBody").empty();
-	let append_str =
-		"<div id='accordion'><p>Hello " +
-		student_reg_information[0].student_list[studentParseNum].name.split(" ")[0] +
-		"!</p>";
+	let append_str = `
+		<div id='accordion'>
+			<p>
+				Hello ${student_reg_information[0].student_list[studentParseNum].name.split(" ")[0]}!
+			</p>
+		</div>
+		`;
 	$("#accountManagementBody").append(append_str);
 
 	// Create assignments card
-	append_str = "<div class='card about'>";
-	append_str += "<div class='card-header' id='assignmentCard'>";
-	append_str += "<h5 class='mb-0'>";
-	append_str +=
-		"<button class='btn btn-link' data-toggle='collapse' data-target='#completedAssignments' aria-expanded='true' aria-controls='completedAssignments'>";
-	append_str += "Completed assignments: ";
-	append_str += "</button>";
-	append_str += "</h5>";
-	append_str += "</div>";
-	append_str +=
-		"<div id='completedAssignments' class='collapse show' aria-labelledby='headingOne' data-parent='#accordion'>";
-	append_str += "<div class='card-body'>";
+	append_str = `
+		<div class='card about'>
+			<div class='card-header' id='assignmentCard'>
+				<h5 class='mb-0'>
+					<button class='btn btn-link' data-toggle='collapse' data-target='#completedAssignments' aria-expanded='true' aria-controls='completedAssignments'>
+						Completed assignments:
+					</button>
+				</h5>
+			</div>
 
-	// Card content
-	if (completed_assignments.length !== 0) {
-		append_str += "<p>You have completed the following assignments: <p> <ul>";
-		for (const element of completed_assignments) {
-			append_str += "<li>" + element + "</li>";
-		}
-		append_str += "</ul>";
-	} else if (completed_assignments.length === 0) {
-		append_str += "<p>You have not yet completed any assignments. </p>";
-	}
+			<div id='completedAssignments' class='collapse show' aria-labelledby='headingOne' data-parent='#accordion'>
+				<div class='card-body'>
+					${
+						completed_assignments.length > 0
+							? `
+							<p>You have completed the following assignments: <p>
+							<ul>
+								${completed_assignments.map((assignment) => `<li>${assignment}</li>`).join("")}
+							</ul>
+							`
+							: `
+							<p> You have not completed any assignments yet. </p>
+							`
+					}
+				</div>
+			</div>
+		</div>
+	`;
 
-	// Close card
-	append_str += "</div>";
-	append_str += "</div>";
-	append_str += "</div>";
 	$("#accountManagementBody").append(append_str);
 
 	const classList = student_reg_information[0].class_list;
@@ -1260,6 +1264,9 @@ function openAccountManagement() {
 	// Close account management
 	append_str = "</div>";
 	$("#accountManagementBody").append(append_str);
+
+	// Open the Bootstrap modal
+	$("#accountModal").modal("show");
 }
 
 /**
