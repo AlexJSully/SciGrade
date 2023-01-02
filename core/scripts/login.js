@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 //= ================================ SciGrade ==================================
 //
 // Purpose: Login and registration for SciGrade
@@ -5,9 +6,11 @@
 //= ============================================================================
 
 let student_reg_information;
+// eslint-disable-next-line no-undef
 const client = new stitch.StitchClient("almark-wvohf");
 const db = client.service("mongodb", "mongodb-atlas").db("AlMark");
 /** Let users continue with practice application without logging in (true) (default false) */
+// eslint-disable-next-line prefer-const
 let continueWithoutLogin = false;
 /**
  * Load JSON files
@@ -36,6 +39,7 @@ let classRegister;
  * @param {String} student_umail Student's email/uMail
  * @return {bool} checkStudentNum - Whether the student is a student in the system or not
  */
+// eslint-disable-next-line no-unused-vars
 function checkStudentNumber(student_num, student_umail) {
 	loadJSON_Files();
 	alreadyRegistered = false;
@@ -45,7 +49,7 @@ function checkStudentNumber(student_num, student_umail) {
 	for (const key in classList) {
 		if (student_reg_information[0].student_list !== null && student_reg_information[0].student_list.length > 0) {
 			for (const student of student_reg_information[0].student_list) {
-				if (student.student_number == student_num && student.studentClass == key) {
+				if (student.student_number === student_num && student.studentClass === key) {
 					alreadyRegistered = true;
 				}
 			}
@@ -53,7 +57,7 @@ function checkStudentNumber(student_num, student_umail) {
 	}
 	if (!alreadyRegistered) {
 		for (const key in classList) {
-			if (classList[key][student_num] == student_umail) {
+			if (classList[key][student_num] === student_umail) {
 				checkStudentNum = true;
 				studentNumber = student_num;
 				studentUmail = student_umail;
@@ -61,7 +65,7 @@ function checkStudentNumber(student_num, student_umail) {
 				classRegister = key;
 				break;
 			} else {
-				maxNum++;
+				maxNum += 1;
 			}
 		}
 	}
@@ -69,7 +73,7 @@ function checkStudentNumber(student_num, student_umail) {
 		addSecondSection();
 	} else if (alreadyRegistered) {
 		showRegError(4);
-	} else if (!checkStudentNum && maxNum == student_reg_information[0].student_list.length) {
+	} else if (!checkStudentNum && maxNum === student_reg_information[0].student_list.length) {
 		showRegError(1);
 	} else if (!checkStudentNum) {
 		showRegError(2);
@@ -85,14 +89,14 @@ function loginVerify(student_NumVerify) {
 	let maxNum = 0;
 	checkStudentNum = false;
 	if (student_reg_information[0].student_list !== null && student_reg_information[0].student_list.length > 0) {
-		for (let i = 0; i < student_reg_information[0].student_list.length; i++) {
-			if (student_reg_information[0].student_list[i].student_number == student_NumVerify) {
-				if (student_reg_information[0].student_list[i].gmail != "unregistered") {
+		for (let i = 0; i < student_reg_information[0].student_list.length; i += 1) {
+			if (student_reg_information[0].student_list[i].student_number === student_NumVerify) {
+				if (student_reg_information[0].student_list[i].gmail !== "unregistered") {
 					alreadyRegistered = true;
 					checkStudentNum = true;
 					studentNumber = student_NumVerify;
 					studentParseNum = i;
-				} else if (student_reg_information[0].student_list[i].gmail == "unregistered") {
+				} else if (student_reg_information[0].student_list[i].gmail === "unregistered") {
 					alreadyRegistered = false;
 				}
 			} else {
@@ -105,7 +109,7 @@ function loginVerify(student_NumVerify) {
 		document.getElementById("loginP2").style.display = "block";
 	} else if (!alreadyRegistered) {
 		showRegError(5);
-	} else if (maxNum == student_reg_information[0].student_list.length) {
+	} else if (maxNum === student_reg_information[0].student_list.length) {
 		showRegError(1);
 	}
 }
@@ -115,42 +119,42 @@ function loginVerify(student_NumVerify) {
  * @param {Num} whichOne - Number indicator for which error to show
  */
 function showRegError(whichOne) {
-	if (whichOne == 1) {
+	if (whichOne === 1) {
 		// Not in our database
 		document.getElementById("errorRegContent").innerHTML =
 			"It appears that you are not a student in our database.\n Are you a UofT student? If so, contact your TA, Professor or Admin for further help.";
 		$("#errorRegButton").click();
-	} else if (whichOne == 2) {
+	} else if (whichOne === 2) {
 		// Something went wrong with registration
 		document.getElementById("errorRegContent").innerHTML =
 			"Something went wrong. Please refresh the page and try again. If this persists, please contact your TA, Professor or Admin with the following error code: lgn83-85";
 		$("#errorRegButton").click();
-	} else if (whichOne == 3) {
+	} else if (whichOne === 3) {
 		// Verify ID was incorrect
 		document.getElementById("errorRegContent").innerHTML =
 			"It appears that your verification ID is incorrect. Please retype it and try again. If this persists, contact your TA, Professor or Admin for further help. NOTE: Only students of HMB311 can register for SciGrade.";
 		$("#errorRegButton").click();
-	} else if (whichOne == 4) {
+	} else if (whichOne === 4) {
 		// Verify ID was incorrect
 		document.getElementById("errorRegContent").innerHTML =
 			"You are already registered for SciGrade, please navigate to the login tab instead of the register. If an issue arises, please contact your TA, Professor or Admin for further help.";
 		$("#errorRegButton").click();
-	} else if (whichOne == 5) {
+	} else if (whichOne === 5) {
 		// Not yet registered for SciGrade
 		document.getElementById("errorRegContent").innerHTML =
 			"It appears that you have not yet registered for SciGrade, please navigate to the register tab and register first. If an issue arises, please contact your TA, Professor or Admin for further help.";
 		$("#errorRegButton").click();
-	} else if (whichOne == 6) {
+	} else if (whichOne === 6) {
 		// Not yet registered for SciGrade
 		document.getElementById("errorRegContent").innerHTML =
 			"This is not the Google account associated with this student number. If an issue arises, please contact your TA, Professor or Admin for further help.";
 		$("#errorRegButton").click();
-	} else if (whichOne == 7) {
+	} else if (whichOne === 7) {
 		// Restricted access to only TA's and Admins'
 		document.getElementById("errorRegContent").innerHTML =
 			"This feature is restricted to only TA's and admins. You do not have access. Please contact a TA or admin for access.";
 		$("#errorRegButton").click();
-	} else if (whichOne == 8) {
+	} else if (whichOne === 8) {
 		// Unequal amount of student numbers and student emails
 		document.getElementById("errorRegContent").innerHTML =
 			"There is an unequal amount of student numbers and student uMails, please correct this to proceed";
@@ -175,39 +179,39 @@ function addSecondSection() {
 function sendLogReg() {
 	if (!alreadyRegistered) {
 		if (studentUmail) {
-			const gupper = "student_list." + studentParseNum;
+			const gupper = `student_list.${studentParseNum}`;
 			// Create student name
 			const splitName = studentUmail.split("@")[0].split(".");
 			let name = "";
 			for (const studentName of splitName) {
 				const capName = studentName.charAt(0).toUpperCase() + studentName.substring(1);
-				name += capName + " ";
+				name += `${capName} `;
 			}
 			name = name.trim();
 			let manuallyAdded = false;
 			let gupperType = "Student";
 			for (const student of student_reg_information[0].student_list) {
-				if (student.umail == studentUmail) {
+				if (student.umail === studentUmail) {
 					manuallyAdded = true;
 					gupperType = student.type;
 				}
 			}
-			if (checkStudentNum && studentNumber != 0 && googleEmail !== null) {
+			if (checkStudentNum && studentNumber !== 0 && googleEmail !== null) {
 				client.login().then(() =>
 					db.collection("Student_Information").updateOne(
 						{ version: "0.3" },
 						{
 							$set: {
-								[gupper + ".studentClass"]: classRegister,
-								[gupper + ".student_number"]: studentNumber,
-								[gupper + ".name"]: name,
-								[gupper + ".umail"]: studentUmail,
-								[gupper + ".type"]: gupperType,
-								[gupper + ".gmail"]: googleEmail,
+								[`${gupper}.studentClass`]: classRegister,
+								[`${gupper}.student_number`]: studentNumber,
+								[`${gupper}.name`]: name,
+								[`${gupper}.umail`]: studentUmail,
+								[`${gupper}.type`]: gupperType,
+								[`${gupper}.gmail`]: googleEmail,
 								[manuallyAdded]: "true",
 							},
 						},
-						function (err, res) {
+						(err, res) => {
 							if (err) throw err;
 
 							db.close();
@@ -219,7 +223,7 @@ function sendLogReg() {
 		}
 	}
 	if (alreadyRegistered) {
-		if (googleEmail == student_reg_information[0].student_list[studentParseNum].gmail) {
+		if (googleEmail === student_reg_information[0].student_list[studentParseNum].gmail) {
 			redirectCRISPR();
 		} else {
 			showRegError(6);
@@ -238,7 +242,7 @@ function signOutDisplay() {
 	}
 	if (document.getElementById("logIO")) {
 		document.getElementById("logIO").setAttribute("hidden", true);
-		document.getElementById("logIO").innerHTML = changeLogin + " Login";
+		document.getElementById("logIO").innerHTML = `${changeLogin} Login`;
 		document.getElementById("logIO").setAttribute("onclick");
 	}
 
@@ -370,7 +374,7 @@ function redirectCRISPR() {
 				<select
 					class='form-control'
 					id='gene_dropdown_selection'
-					onchange='possible_gene=(document.getElementById(\"gene_dropdown_selection\").value);'
+					onchange='possible_gene=(document.getElementById("gene_dropdown_selection").value);'
 				>
 				</select>
 			</div>
@@ -395,7 +399,7 @@ function redirectCRISPR() {
 	ModeSelectionAdd(selection_inMode);
 	loadJSON_Files();
 	loadCRISPRJSON_Files();
-	setTimeout(function () {
+	setTimeout(() => {
 		fillGeneList();
 	}, 700);
 
@@ -404,14 +408,14 @@ function redirectCRISPR() {
 			document.getElementById("accountIO").removeAttribute("hidden");
 		}
 		if (document.getElementById("logIO")) {
-			document.getElementById("logIO").innerHTML = changeLogin + " Logout";
+			document.getElementById("logIO").innerHTML = `${changeLogin} Logout`;
 			document.getElementById("logIO").setAttribute("onclick", "signOutDisplay();");
 			document.getElementById("logIO").removeAttribute("hidden");
 		}
 	}
 }
 
-$(document).ready(function () {
+$(document).ready(() => {
 	loadJSON_Files();
 	$("#loginTab").click();
 });

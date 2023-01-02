@@ -1,9 +1,12 @@
+/* eslint-disable indent */
 //= ================================ SciGrade ==================================
 //
 // Purpose: General script for SciGrade
 //
 //= ============================================================================
+// eslint-disable-next-line prefer-const
 let selection_inMode = "practice";
+// eslint-disable-next-line prefer-const
 let possible_gene = "eBFP";
 let current_gene = "empty";
 
@@ -14,9 +17,8 @@ let current_gene = "empty";
 function ModeSelectionAdd(mode) {
 	$("#gene_dropdown_selection").empty();
 
-	if (document.getElementById("load_button")) {
-		document.getElementById("load_button").disabled;
-	}
+	// eslint-disable-next-line no-unused-expressions
+	document.getElementById("load_button")?.disabled;
 
 	let append_str;
 	if (mode === "practice") {
@@ -25,7 +27,7 @@ function ModeSelectionAdd(mode) {
 		$("#gene_dropdown_selection").append(append_str);
 	} else if (mode === "assignment") {
 		const useList = removeCompletedAssignments();
-		for (let i = 0; i < useList.length; i++) {
+		for (let i = 0; i < useList.length; i += 1) {
 			if (i === 0) {
 				append_str = `<option value="${useList[i]}" id="${useList[i]}" tag="assignment">${useList[i]}</option>\n`;
 			} else {
@@ -118,7 +120,7 @@ function fillGeneList(itPos = 0) {
 	if (itPos < 100) {
 		if (gene_backgroundInfo || gene_backgroundInfo !== "") {
 			if (!gene_backgroundInfo[0]) {
-				setTimeout(function () {
+				setTimeout(() => {
 					fillGeneList(itPos + 1);
 				}, 500);
 			} else {
@@ -132,7 +134,7 @@ function fillGeneList(itPos = 0) {
 				}
 			}
 		} else {
-			setTimeout(function () {
+			setTimeout(() => {
 				fillGeneList(itPos + 1);
 			}, 500);
 		}
@@ -161,9 +163,8 @@ function loadWork() {
 
 		// Gene information
 		append_str += `<div id="gene_info"><p>Here is some background information about your gene: ${gene_backgroundInfo[0].gene_list[current_gene].name} (${current_gene})</p>\n`;
-		append_str +=
-			"<p> Background information: " + gene_backgroundInfo[0].gene_list[current_gene].Background + "</p>\n";
-		append_str += "<p> Target site: " + gene_backgroundInfo[0].gene_list[current_gene]["Target site"] + "</p>\n";
+		append_str += `<p> Background information: ${gene_backgroundInfo[0].gene_list[current_gene].Background}</p>\n`;
+		append_str += `<p> Target site: ${gene_backgroundInfo[0].gene_list[current_gene]["Target site"]}</p>\n`;
 		append_str += `<p style="word-wrap:break-word;"> Modified genetic sequence: ${gene_backgroundInfo[0].gene_list[current_gene].Sequence}</p>\n`;
 		append_str += "</div>";
 
@@ -261,7 +262,7 @@ function loadWork() {
  * Determine if a number or dash key is pressed
  */
 function isNumberOrDashKey(evt) {
-	const charCode = evt.which ? evt.which : event.keyCode;
+	const charCode = evt.which ? evt.which : evt.keyCode;
 	return !(charCode !== 46 && charCode !== 45 && charCode > 31 && (charCode < 48 || charCode > 57));
 }
 
@@ -347,7 +348,7 @@ function checkAnswers() {
 					// If the sequence matches to be true, check other answers:
 					if (document.getElementById("strand_input").value === "Sense (+)") {
 						MARstrand = true;
-						true_counts++;
+						true_counts += 1;
 					}
 				}
 				// Antisense is -1
@@ -357,7 +358,7 @@ function checkAnswers() {
 					// If the sequence matches to be true, check other answers:
 					if (document.getElementById("strand_input").value === "Antisense (-)") {
 						MARstrand = true;
-						true_counts++;
+						true_counts += 1;
 					}
 				}
 
@@ -374,7 +375,7 @@ function checkAnswers() {
 				) {
 					MARgRNAseq = true;
 					MARgRNAseq_degree = 1;
-					true_counts++;
+					true_counts += 1;
 				} else if (
 					(correctNucleotidePosition >= element.Position - 1 &&
 						correctNucleotidePosition <= element.Position - 1 + 20) ||
@@ -383,7 +384,7 @@ function checkAnswers() {
 				) {
 					MARgRNAseq = true;
 					MARgRNAseq_degree = 2;
-					true_counts++;
+					true_counts += 1;
 				} else if (
 					(correctNucleotidePosition >= element.Position - 1 &&
 						correctNucleotidePosition <= element.Position - 1 + 30) ||
@@ -392,7 +393,7 @@ function checkAnswers() {
 				) {
 					MARgRNAseq = true;
 					MARgRNAseq_degree = 3;
-					true_counts++;
+					true_counts += 1;
 				}
 
 				// If the sequence if correct, check all other results:
@@ -400,11 +401,12 @@ function checkAnswers() {
 					const temp_answer = element;
 					// Check if the cut position matches the answer's input
 					if (
-						(temp_answer.Position || temp_answer.Position) &&
-						parseInt(temp_answer.Position) === parseInt(document.getElementById("position_input").value)
+						temp_answer.Position &&
+						parseInt(temp_answer.Position, 10) ===
+							parseInt(document.getElementById("position_input").value, 10)
 					) {
 						MARCutPos = true;
-						true_counts++;
+						true_counts += 1;
 					} else if (temp_answer.Position === null || temp_answer.Position === undefined) {
 						alert(
 							"Error code cA302-307: retrieving server information on 'Position' answers occurred. Please contact admin or TA!",
@@ -417,7 +419,7 @@ function checkAnswers() {
 						temp_answer.PAM === document.getElementById("pam_input").value.trim()
 					) {
 						MARPAMseq = true;
-						true_counts++;
+						true_counts += 1;
 					} else if (temp_answer.PAM === null || temp_answer.PAM === undefined) {
 						alert(
 							"Error code cA311-317: retrieving server information on 'PAM' answers occurred. Please contact admin or TA!",
@@ -467,33 +469,30 @@ function checkOffTarget(score) {
 	// Create off-target variables
 	const OffTargetValue_down = Math.floor(score);
 	const OffTargetValue_up = Math.ceil(score);
-	const InputOffTargetValue = parseInt(document.getElementById("offtarget_input").value);
+	const InputOffTargetValue = parseInt(document.getElementById("offtarget_input").value, 10);
 	// See if off-target value matches input value
 	if (correctNucleotideIncluded && MARgRNAseq) {
 		if (InputOffTargetValue >= OffTargetValue_down && InputOffTargetValue <= OffTargetValue_up) {
 			MAROffTarget = true;
-			true_counts++;
+			true_counts += 1;
 		}
 	}
 	// Determine how write it is based on its range
 	if (MAROffTarget) {
 		// Check for last-resort regions:
-		const rangeStarter_upper = parseInt(document.getElementById("position_input").value) + 35;
-		const rangeStarter_lower = parseInt(document.getElementById("position_input").value) - 35;
+		const rangeStarter_upper = parseInt(document.getElementById("position_input").value, 10) + 35;
+		const rangeStarter_lower = parseInt(document.getElementById("position_input").value, 10) - 35;
 		// Check if gRNA sequence is in against listed
 		offtarget_List = [];
 		offtarget_dict = {};
 		offtarget_dictParse = [];
 		offtarget_Use = [];
-		for (let i = 0; i < benchling_grna_outputs[0].gene_list[current_gene].length; i++) {
+		for (let i = 0; i < benchling_grna_outputs[0].gene_list[current_gene].length; i += 1) {
 			if (
 				benchling_grna_outputs[0].gene_list[current_gene][i].Position >= rangeStarter_lower &&
 				benchling_grna_outputs[0].gene_list[current_gene][i].Position <= rangeStarter_upper
 			) {
-				if (
-					benchling_grna_outputs[0].gene_list[current_gene][i]["Specificity Score"] ||
-					benchling_grna_outputs[0].gene_list[current_gene][i]["Specificity Score"]
-				) {
+				if (benchling_grna_outputs[0].gene_list[current_gene][i]["Specificity Score"]) {
 					offtarget_List.push(benchling_grna_outputs[0].gene_list[current_gene][i]["Specificity Score"]);
 					offtarget_dict[i] = benchling_grna_outputs[0].gene_list[current_gene][i]["Specificity Score"];
 					offtarget_dictParse.push(i);
@@ -509,13 +508,14 @@ function checkOffTarget(score) {
 		const Max_range = Math.max.apply(null, offtarget_List);
 		const Min_optimal = Max_range - Max_range * 0.2;
 		let optimalValue = Min_optimal;
-		const studentClass = student_reg_information[0].student_list[studentParseNum].studentClass;
+		const { studentClass } = student_reg_information[0].student_list[studentParseNum];
 		// Change optimal range based on custom input
 		if (student_reg_information[0].classMarkingMod[studentClass][0] === "Optimal") {
 			if (Min_optimal > 80 || Min_optimal < 35) {
 				optimalValue = 80;
 			}
 		} else {
+			// eslint-disable-next-line prefer-destructuring
 			optimalValue = student_reg_information[0].classMarkingMod[studentClass][0];
 		}
 		// Determine if off-target is optimal or not
@@ -553,11 +553,11 @@ function checkF1Primers(seq) {
 	if (seq[0] === "G") {
 		count_First = false;
 	}
-	for (let i = 16; i <= 20; i++) {
+	for (let i = 16; i <= 20; i += 1) {
 		possible_F1_primers.push(begin_F1 + seq.slice(0, i));
 	}
 	if (!count_First) {
-		for (let i = 16; i <= 20; i++) {
+		for (let i = 16; i <= 20; i += 1) {
 			possible_F1_primers.push(begin_F1 + seq.slice(1, i));
 		}
 	}
@@ -588,7 +588,7 @@ function checkR1Primers(seq) {
 	for (const sequence of seq) {
 		complementary_seq = complementary_nt_dict[sequence] + complementary_seq;
 	}
-	for (let i = 19; i <= 20; i++) {
+	for (let i = 19; i <= 20; i += 1) {
 		possible_R1_primers.push(begin_R1 + complementary_seq.slice(0, i));
 	}
 	if (possible_R1_primers.includes(document.getElementById("r1_input").value.trim())) {
@@ -665,7 +665,7 @@ function showFeedback() {
 		"<p> The assignment itself is marked out of 10 marks with 2 marks for each input excluding gRNA strand direction, cut position and target region range (these three values are used to calculate if you have the right answer or not which means they are still crucial that they are still correct).</p>";
 	append_str +=
 		"<p> The following is the breakdown of what marks you would have received and why you would have gotten them: </p>";
-	append_str += "<p style='font-weight:bold;'>Mark: " + all_marks[0] + "/10 (" + all_marks[1] + ")</p>";
+	append_str += `<p style='font-weight:bold;'>Mark: ${all_marks[0]}/10 (${all_marks[1]})</p>`;
 
 	// Calculate all conditions:
 	/// gRNA:
@@ -716,7 +716,7 @@ function showFeedback() {
 	/// F1 Primer:
 	let MARF1primers_display = 0;
 	let f1Options = "";
-	for (let i = 0; i < possible_F1_primers.length; i++) {
+	for (let i = 0; i < possible_F1_primers.length; i += 1) {
 		f1Options += possible_F1_primers[i];
 		if (i === possible_F1_primers.length - 1) {
 			f1Options += ".";
@@ -724,9 +724,7 @@ function showFeedback() {
 			f1Options += ", ";
 		}
 	}
-	let MARF1primers_explain =
-		"Your F1 primer sequence was incorrectly matched to one of the following sequences generated based on your gRNA sequence inputted: " +
-		f1Options;
+	let MARF1primers_explain = `Your F1 primer sequence was incorrectly matched to one of the following sequences generated based on your gRNA sequence inputted: ${f1Options}`;
 	if (MARF1primers) {
 		MARF1primers_display = 2;
 		MARF1primers_explain = "This means your answer was correct and you received full marks.";
@@ -734,7 +732,7 @@ function showFeedback() {
 	/// R1 Primer:
 	let MARR1primers_display = 0;
 	let r1Options = "";
-	for (let i = 0; i < possible_R1_primers.length; i++) {
+	for (let i = 0; i < possible_R1_primers.length; i += 1) {
 		r1Options += possible_F1_primers[i];
 		if (i === possible_R1_primers.length - 1) {
 			r1Options += ".";
@@ -742,9 +740,7 @@ function showFeedback() {
 			r1Options += ", ";
 		}
 	}
-	let MARR1primers_explain =
-		"Your R1 primer sequence was incorrectly matched to one of the following sequences generated based on your gRNA sequence inputted: " +
-		r1Options;
+	let MARR1primers_explain = `Your R1 primer sequence was incorrectly matched to one of the following sequences generated based on your gRNA sequence inputted: ${r1Options}`;
 	if (MARR1primers) {
 		MARR1primers_display = 2;
 		MARR1primers_explain = "This means your answer was correct and you received full marks.";
@@ -756,19 +752,14 @@ function showFeedback() {
 	append_str += "<h5 class='mb-0'>";
 	append_str +=
 		"<button class='btn btn-link' data-toggle='collapse' data-target='#gRNAOutput' aria-expanded='false' aria-controls='gRNAOutput'>";
-	append_str += "gRNA Strand Sequence: " + MARgRNAseq_degree_display + "/2";
+	append_str += `gRNA Strand Sequence: ${MARgRNAseq_degree_display}/2`;
 	append_str += "</button>";
 	append_str += "</h5>";
 	append_str += "</div>";
 	append_str += "<div id='gRNAOutput' class='collapse' aria-labelledby='headingOne' data-parent='#accordion'>";
 	append_str += "<div class='card-body'>";
 	// Content
-	append_str +=
-		'<p> For gRNA Strand Sequence, you put down "' +
-		all_answers[0] +
-		'" which gave you the mark ' +
-		MARgRNAseq_degree_display +
-		".</p>";
+	append_str += `<p> For gRNA Strand Sequence, you put down "${all_answers[0]}" which gave you the mark ${MARgRNAseq_degree_display}.</p>`;
 	append_str += MARgRNAseq_degree_explain;
 	// Close gRNA card
 	append_str += "</div>";
@@ -782,19 +773,14 @@ function showFeedback() {
 	append_str += "<h5 class='mb-0'>";
 	append_str +=
 		"<button class='btn btn-link' data-toggle='collapse' data-target='#PAMOutput' aria-expanded='false' aria-controls='PAMOutput'>";
-	append_str += "gRNA PAM Sequence: " + MARPAMseq_display + "/2";
+	append_str += `gRNA PAM Sequence: ${MARPAMseq_display}/2`;
 	append_str += "</button>";
 	append_str += "</h5>";
 	append_str += "</div>";
 	append_str += "<div id='PAMOutput' class='collapse' aria-labelledby='headingOne' data-parent='#accordion'>";
 	append_str += "<div class='card-body'>";
 	// Content
-	append_str +=
-		'<p> For gRNA PAM Sequence, you put down "' +
-		all_answers[1] +
-		'" which gave you the mark ' +
-		MARPAMseq_display +
-		".</p>";
+	append_str += `<p> For gRNA PAM Sequence, you put down "${all_answers[1]}" which gave you the mark ${MARPAMseq_display}.</p>`;
 	append_str += MARPAMseq_explain;
 	// Close PAM card
 	append_str += "</div>";
@@ -808,19 +794,14 @@ function showFeedback() {
 	append_str += "<h5 class='mb-0'>";
 	append_str +=
 		"<button class='btn btn-link' data-toggle='collapse' data-target='#OffTargetOutput' aria-expanded='false' aria-controls='OffTargetOutput'>";
-	append_str += "Off-target Score: " + MAROffTarget_degree_display + "/2";
+	append_str += `Off-target Score: ${MAROffTarget_degree_display}/2`;
 	append_str += "</button>";
 	append_str += "</h5>";
 	append_str += "</div>";
 	append_str += "<div id='OffTargetOutput' class='collapse' aria-labelledby='headingOne' data-parent='#accordion'>";
 	append_str += "<div class='card-body'>";
 	// Content
-	append_str +=
-		'<p> For Off-Target Score, you put down "' +
-		all_answers[4] +
-		'" which gave you the mark ' +
-		MAROffTarget_degree_display +
-		".</p>";
+	append_str += `<p> For Off-Target Score, you put down "${all_answers[4]}" which gave you the mark ${MAROffTarget_degree_display}.</p>`;
 	append_str += MAROffTarget_degree_explain;
 	// Close Off-target Score card
 	append_str += "</div>";
@@ -834,19 +815,14 @@ function showFeedback() {
 	append_str += "<h5 class='mb-0'>";
 	append_str +=
 		"<button class='btn btn-link' data-toggle='collapse' data-target='#F1PrimerOutput' aria-expanded='false' aria-controls='F1PrimerOutput'>";
-	append_str += "F1 Primer: " + MARF1primers_display + "/2";
+	append_str += `F1 Primer: ${MARF1primers_display}/2`;
 	append_str += "</button>";
 	append_str += "</h5>";
 	append_str += "</div>";
 	append_str += "<div id='F1PrimerOutput' class='collapse' aria-labelledby='headingOne' data-parent='#accordion'>";
 	append_str += "<div class='card-body'>";
 	// Content
-	append_str +=
-		'<p> For F1 Primer, you put down "' +
-		all_answers[5] +
-		'" which gave you the mark ' +
-		MARF1primers_display +
-		".</p>";
+	append_str += `<p> For F1 Primer, you put down "${all_answers[5]}" which gave you the mark ${MARF1primers_display}.</p>`;
 	append_str += MARF1primers_explain;
 	// Close F1 Primer card
 	append_str += "</div>";
@@ -860,19 +836,14 @@ function showFeedback() {
 	append_str += "<h5 class='mb-0'>";
 	append_str +=
 		"<button class='btn btn-link' data-toggle='collapse' data-target='#R1PrimerOutput' aria-expanded='false' aria-controls='R1PrimerOutput'>";
-	append_str += "R1 Primer: " + MARR1primers_display + "/2";
+	append_str += `R1 Primer: ${MARR1primers_display}/2`;
 	append_str += "</button>";
 	append_str += "</h5>";
 	append_str += "</div>";
 	append_str += "<div id='R1PrimerOutput' class='collapse' aria-labelledby='headingOne' data-parent='#accordion'>";
 	append_str += "<div class='card-body'>";
 	// Content
-	append_str +=
-		'<p> For R1 Primer, you put down "' +
-		all_answers[6] +
-		'" which gave you the mark ' +
-		MARR1primers_display +
-		".</p>";
+	append_str += `<p> For R1 Primer, you put down "${all_answers[6]}" which gave you the mark ${MARR1primers_display}.</p>`;
 	append_str += MARR1primers_explain;
 	// Close F1 Primer card
 	append_str += "</div>";
@@ -992,7 +963,9 @@ function openAccountManagement() {
 		append_str += '<label for="DownloadClass">Choose class: </label>';
 		append_str += '<select id="DownloadClass" class="form-control" style="margin-bottom: 1%">';
 		for (const key in classList) {
-			append_str += `<option value="${key}" id="${key}" tag="assignment">${key}</option>\n`;
+			if (key) {
+				append_str += `<option value="${key}" id="${key}" tag="assignment">${key}</option>\n`;
+			}
 		}
 		append_str += "</select>";
 		append_str +=
@@ -1098,7 +1071,9 @@ function openAccountManagement() {
 		append_str += '<label for="InputClassSingle" style="font-weight: bold;">Choose class: </label>';
 		append_str += '<select id="InputClassSingle" class="form-control" style="margin-bottom: 1%;">';
 		for (const key in classList) {
-			append_str += '<option value="' + key + '" id="' + key + '" tag="assignment">' + key + "</option>\n";
+			if (key) {
+				append_str += `<option value="${key}" id="${key}" tag="assignment">${key}</option>\n`;
+			}
 		}
 		append_str += "</select>";
 		append_str +=
@@ -1163,7 +1138,9 @@ function openAccountManagement() {
 		append_str +=
 			"<select id=\"ClassModChange\" class=\"form-control\" style=\"margin-bottom: 1%;\" onchange=\"ChangeDOMInnerhtml('CurrentOffTarget', 'Current off-target marking is set to: ' + student_reg_information[0]['classMarkingMod'][document.getElementById('ClassModChange').value][0])\">";
 		for (const key in classList) {
-			append_str += '<option value="' + key + '" id="' + key + '" tag="assignment">' + key + "</option>\n";
+			if (key) {
+				append_str += `<option value="${key}" id="${key}" tag="assignment">${key}</option>\n`;
+			}
 		}
 		append_str += "</select>";
 		append_str +=
@@ -1221,7 +1198,9 @@ function openAccountManagement() {
 		append_str +=
 			'<select id="ClassChange" class="form-control" style="margin-bottom: 1%;" onchange="UpdateStudentList(document.getElementById(\'ClassChange\').value); UpdateChooseUser(\'ClassUserChange\');">';
 		for (const key in classList) {
-			append_str += '<option value="' + key + '" id="' + key + '" tag="assignment">' + key + "</option>\n";
+			if (key) {
+				append_str += `<option value="${key}" id="${key}" tag="assignment">${key}</option>\n`;
+			}
 		}
 		append_str += "</select>";
 		append_str +=
@@ -1275,8 +1254,10 @@ function openAccountManagement() {
  */
 function UpdateChooseUser(domUser) {
 	ClearSelectOptions(domUser);
-	for (let key in updatedListOfStudents) {
-		AddToOptions(domUser, key, updatedListOfStudents[key]);
+	for (const key in updatedListOfStudents) {
+		if (updatedListOfStudents[key]) {
+			AddToOptions(domUser, key, updatedListOfStudents[key]);
+		}
 	}
 }
 
@@ -1315,7 +1296,7 @@ function UpdateStudentList(className) {
 	const studentList = student_reg_information[0].student_list;
 	for (const student of studentList) {
 		if (student.studentClass === className) {
-			updatedListOfStudents[student.name] = student.name + " - " + student.type;
+			updatedListOfStudents[student.name] = `${student.name} - ${student.type}`;
 		}
 	}
 }
@@ -1328,9 +1309,10 @@ function UpdateStudentList(className) {
  */
 function UpdateUserType(classname, username, changeTo) {
 	const studentList = student_reg_information[0].student_list;
-	for (let i = 0; i < studentList.length; i++) {
+	for (let i = 0; i < studentList.length; i += 1) {
 		if (studentList[i].studentClass === classname && studentList[i].name === username) {
 			const changeType = `student_list.${i}.type`;
+			// eslint-disable-next-line no-loop-func
 			client.login().then(() =>
 				db.collection("Student_Information").updateOne(
 					{
@@ -1341,7 +1323,7 @@ function UpdateUserType(classname, username, changeTo) {
 							[changeType]: changeTo,
 						},
 					},
-					function (err, _res) {
+					(err, _res) => {
 						if (err) throw err;
 
 						db.close();
@@ -1359,7 +1341,7 @@ function UpdateUserType(classname, username, changeTo) {
  * @param {String} offTargetChange The value of the modified control being changed to
  */
 function UpdateMarkingControls(classToMod, offTargetChange) {
-	const classChange = "classMarkingMod." + classToMod;
+	const classChange = `classMarkingMod.${classToMod}`;
 	const markingChangeList = [offTargetChange];
 	client.login().then(() =>
 		db.collection("Student_Information").updateOne(
@@ -1371,7 +1353,7 @@ function UpdateMarkingControls(classToMod, offTargetChange) {
 					[classChange]: markingChangeList,
 				},
 			},
-			function (err, _res) {
+			(err, _res) => {
 				if (err) throw err;
 
 				db.close();
@@ -1403,7 +1385,7 @@ let downloadIndexTable_fill = "";
 function generateRestOfIndexTable(whichIndexTable, SimpleComplex) {
 	whichIndexTable = downloadIndexTable_start;
 	for (const assignment of list_of_assignments) {
-		whichIndexTable += "\n\t\t\t<th>" + assignment + "</th>";
+		whichIndexTable += `\n\t\t\t<th>${assignment}</th>`;
 		if (SimpleComplex) {
 			whichIndexTable += "\n\t\t\t<th>Percent</th>";
 			whichIndexTable += "\n\t\t\t<th>Raw</th>";
@@ -1445,35 +1427,27 @@ function generateHiddenStudentDownload(whichClass, whichType) {
 		if (!whichType) {
 			captionTitleBegin = "SciGrade_studentMarkRaw_";
 		}
-		downloadIndexTable_str +=
-			"\t\t<caption>" +
-			captionTitleBegin +
-			student_reg_information[0].student_list[studentParseNum].name.replace(/\s/g, "") +
-			"_" +
-			d.getFullYear() +
-			"-" +
-			d.getMonth() +
-			"_" +
-			d.getDate() +
-			"</caption>\n";
+		downloadIndexTable_str += `\t\t<caption>${captionTitleBegin}${student_reg_information[0].student_list[
+			studentParseNum
+		].name.replace(/\s/g, "")}_${d.getFullYear()}-${d.getMonth()}_${d.getDate()}</caption>\n`;
 		downloadIndexTable_str += downloadIndexTable_fill;
 		// Looping through each row of the table
 		const studentRegList = student_reg_information[0].student_list;
 		for (const student of studentRegList) {
 			if (student.type === "Student" && student.studentClass === whichClass) {
 				downloadIndexTable_str += "\t\t<tr>\n";
-				downloadIndexTable_str += "\t\t\t<td>" + student.student_number + "</td>\n";
-				downloadIndexTable_str += "\t\t\t<td>" + student.name + "</td>\n";
+				downloadIndexTable_str += `\t\t\t<td>${student.student_number}</td>\n`;
+				downloadIndexTable_str += `\t\t\t<td>${student.name}</td>\n`;
 				if (whichType) {
 					for (const assignment of list_of_assignments) {
-						if (student["assignment-" + assignment + "-Marks"]) {
-							downloadIndexTable_str += "\t\t\t<td>" + assignment.toString() + "</td>\n";
-							downloadIndexTable_str +=
-								"\t\t\t<td>" + student["assignment-" + assignment + "-Marks"][1].toString() + "</td>\n";
-							downloadIndexTable_str +=
-								"\t\t\t<td>" + student["assignment-" + assignment + "-Marks"][0].toString() + "</td>\n";
-						} else if (student["assignment-" + assignment + "-Marks"] === null) {
-							downloadIndexTable_str += "\t\t\t<td>" + assignment.toString() + "</td>\n";
+						const studentAssignment = `assignment-${assignment}-Marks`;
+
+						if (student[studentAssignment]) {
+							downloadIndexTable_str += `\t\t\t<td>${assignment.toString()}</td>\n`;
+							downloadIndexTable_str += `\t\t\t<td>${student[studentAssignment][1].toString()}</td>\n`;
+							downloadIndexTable_str += `\t\t\t<td>${student[studentAssignment][0].toString()}</td>\n`;
+						} else if (student[studentAssignment] === null) {
+							downloadIndexTable_str += `\t\t\t<td>${assignment.toString()}</td>\n`;
 							downloadIndexTable_str += "\t\t\t<td> Incompleted </td>\n";
 							downloadIndexTable_str += "\t\t\t<td> 0.00 </td>\n";
 						}
@@ -1481,19 +1455,21 @@ function generateHiddenStudentDownload(whichClass, whichType) {
 				}
 				if (!whichType) {
 					for (const assignment of list_of_assignments) {
-						if (student["assignment-" + assignment + "-Marks"]) {
-							downloadIndexTable_str += "\t\t\t<td>" + assignment.toString() + "</td>\n";
+						const studentAssignment = `assignment-${assignment}-Marks`;
+
+						if (student[studentAssignment]) {
+							downloadIndexTable_str += `\t\t\t<td>${assignment.toString()}</td>\n`;
 							let mark = 0;
 							// Raw values
-							downloadIndexTable_str +=
-								"\t\t\t<td>" + student["assignment-" + assignment + "-Marks"][1].toString() + "</td>\n";
-							downloadIndexTable_str +=
-								"\t\t\t<td>" + student["assignment-" + assignment + "-Marks"][0].toString() + "</td>\n";
+							downloadIndexTable_str += `\t\t\t<td>${student[studentAssignment][1].toString()}</td>\n`;
+							downloadIndexTable_str += `\t\t\t<td>${student[studentAssignment][0].toString()}</td>\n`;
 							// gRNA
-							downloadIndexTable_str +=
-								"\t\t\t<td>" +
-								student["assignment-" + assignment + "-Answers"][0].toString() +
-								"</td>\n";
+							downloadIndexTable_str += `\t\t\t
+								<td>
+								${student[`assignment-${assignment}-Answers`][0].toString()}
+								</td>
+							`;
+
 							if (student[`assignment-${assignment}-Outputs`][2] === 1) {
 								mark = 2;
 							} else if (student[`assignment-${assignment}-Outputs`][2] === 2) {
@@ -1501,23 +1477,27 @@ function generateHiddenStudentDownload(whichClass, whichType) {
 							} else if (student[`assignment-${assignment}-Outputs`][2] === 3) {
 								mark = 0.5;
 							}
-							downloadIndexTable_str += "\t\t\t<td>" + mark.toString() + "</td>\n";
+							downloadIndexTable_str += `\t\t\t<td>${mark.toString()}</td>\n`;
 							// PAM
-							downloadIndexTable_str +=
-								"\t\t\t<td>" +
-								student["assignment-" + assignment + "-Answers"][1].toString() +
-								"</td>\n";
+							downloadIndexTable_str += `\t\t\t
+								<td>
+								${student[`assignment-${assignment}-Answers`][1].toString()}
+								</td>
+							`;
+
 							if (student[`assignment-${assignment}-Outputs`][4]) {
 								mark = 2;
 							} else {
 								mark = 0;
 							}
-							downloadIndexTable_str += "\t\t\t<td>" + mark.toString() + "</td>\n";
+							downloadIndexTable_str += `\t\t\t<td>${mark.toString()}</td>\n`;
 							// Off-target
-							downloadIndexTable_str +=
-								"\t\t\t<td>" +
-								student["assignment-" + assignment + "-Answers"][4].toString() +
-								"</td>\n";
+							downloadIndexTable_str += `\t\t\t
+								<td>
+								${student[`assignment-${assignment}-Answers`][4].toString()}
+								</td>
+							`;
+
 							if (student[`assignment-${assignment}-Outputs`][6] === 1) {
 								mark = 2;
 							} else if (student[`assignment-${assignment}-Outputs`][6] === 2) {
@@ -1525,31 +1505,34 @@ function generateHiddenStudentDownload(whichClass, whichType) {
 							} else if (student[`assignment-${assignment}-Outputs`][6] === 3) {
 								mark = 0.5;
 							}
-							downloadIndexTable_str += "\t\t\t<td>" + mark.toString() + "</td>\n";
+							downloadIndexTable_str += `\t\t\t<td>${mark.toString()}</td>\n`;
 							// F1 Primers
-							downloadIndexTable_str +=
-								"\t\t\t<td>" +
-								student["assignment-" + assignment + "-Answers"][5].toString() +
-								"</td>\n";
+							downloadIndexTable_str += `\t\t\t
+								<td>
+								${student[`assignment-${assignment}-Answers`][5].toString()}
+								</td>
+							`;
 							if (student[`assignment-${assignment}-Outputs`][10]) {
 								mark = 2;
 							} else {
 								mark = 0;
 							}
-							downloadIndexTable_str += "\t\t\t<td>" + mark.toString() + "</td>\n";
+							downloadIndexTable_str += `\t\t\t<td>${mark.toString()}</td>\n`;
 							// R1 primers
-							downloadIndexTable_str +=
-								"\t\t\t<td>" +
-								student["assignment-" + assignment + "-Answers"][6].toString() +
-								"</td>\n";
+							downloadIndexTable_str += `
+								\t\t\t
+								<td>
+								${student[`assignment-${assignment}-Answers`][6].toString()}
+								</td>
+							`;
 							if (student[`assignment-${assignment}-Outputs`][11]) {
 								mark = 2;
 							} else {
 								mark = 0;
 							}
-							downloadIndexTable_str += "\t\t\t<td>" + mark.toString() + "</td>\n";
-						} else if (!student["assignment-" + assignment + "-Marks"]) {
-							downloadIndexTable_str += "\t\t\t<td>" + assignment.toString() + "</td>\n";
+							downloadIndexTable_str += `\t\t\t<td>${mark.toString()}</td>\n`;
+						} else if (!student[studentAssignment]) {
+							downloadIndexTable_str += `\t\t\t<td>${assignment.toString()}</td>\n`;
 							downloadIndexTable_str += "\t\t\t<td> Incompleted </td>\n";
 							downloadIndexTable_str += "\t\t\t<td> 0.00 </td>\n";
 							downloadIndexTable_str += "\t\t\t<td> Incompleted </td>\n";
@@ -1604,30 +1587,33 @@ function addUserToServer(inputClass, number, umail) {
 	const studentUmail = umail;
 	const setList = {};
 	setList[studentNumber] = studentUmail;
-	classList = "class_list." + inputClass;
+	classList = `class_list.${inputClass}`;
 	classExists = false;
 	if (student_reg_information[0].class_list[inputClass]) {
 		classExists = true;
 	}
-	for (let key in setList) {
-		const newKey = `class_list.${inputClass}.${key}`;
-		client.login().then(() =>
-			db.collection("Student_Information").updateOne(
-				{
-					version: "0.3",
-				},
-				{
-					$set: {
-						[newKey]: setList[key],
+	for (const key in setList) {
+		if (setList[key]) {
+			const newKey = `class_list.${inputClass}.${key}`;
+			// eslint-disable-next-line no-loop-func
+			client.login().then(() =>
+				db.collection("Student_Information").updateOne(
+					{
+						version: "0.3",
 					},
-				},
-				function (err, _res) {
-					if (err) throw err;
+					{
+						$set: {
+							[newKey]: setList[key],
+						},
+					},
+					(err, _res) => {
+						if (err) throw err;
 
-					db.close();
-				},
-			),
-		);
+						db.close();
+					},
+				),
+			);
+		}
 	}
 	$("#adminSendButton").click();
 	// Clear inputs
@@ -1654,12 +1640,12 @@ function addMultipleUsersToServer(inputClass, number, umail) {
 	}
 	if (studentNumberList.length === studentUmailList.length) {
 		const setList = {};
-		for (let i = 0; i < studentNumberList.length; i++) {
+		for (let i = 0; i < studentNumberList.length; i += 1) {
 			const studentAdd = studentNumberList[i];
 			const studentUmailAdd = studentUmailList[i];
 			setList[studentAdd] = studentUmailAdd;
 		}
-		const classList = "class_list." + inputClass;
+		const classList = `class_list.${inputClass}`;
 		classExists = false;
 		if (student_reg_information[0].class_list[inputClass]) {
 			classExists = true;
@@ -1675,7 +1661,7 @@ function addMultipleUsersToServer(inputClass, number, umail) {
 							[classList]: setList,
 						},
 					},
-					function (err, _res) {
+					(err, _res) => {
 						if (err) throw err;
 
 						db.close();
@@ -1683,7 +1669,7 @@ function addMultipleUsersToServer(inputClass, number, umail) {
 				),
 			);
 			$("#adminSendButton").click();
-			const classChange = "classMarkingMod." + inputClass;
+			const classChange = `classMarkingMod.${inputClass}`;
 			const markingChangeList = ["Optimal"];
 			client.login().then(() =>
 				db.collection("Student_Information").updateOne(
@@ -1695,7 +1681,7 @@ function addMultipleUsersToServer(inputClass, number, umail) {
 							[classChange]: markingChangeList,
 						},
 					},
-					function (err, _res) {
+					(err, _res) => {
 						if (err) throw err;
 
 						db.close();
@@ -1733,9 +1719,9 @@ function removeCompletedAssignments() {
 let all_answers = [];
 let all_outputs = [];
 let all_marks = [];
-let studentAnswers = "student_list." + studentParseNum + "." + loadedMode + "-" + current_gene + "-Answers";
-let studentOutputs = "student_list." + studentParseNum + "." + loadedMode + "-" + current_gene + "-Outputs";
-let studentMarks = "student_list." + studentParseNum + "." + loadedMode + "-" + current_gene + "-Marks";
+let studentAnswers = `student_list.${studentParseNum}.${loadedMode}-${current_gene}-Answers`;
+let studentOutputs = `student_list.${studentParseNum}.${loadedMode}-${current_gene}-Outputs`;
+let studentMarks = `student_list.${studentParseNum}.${loadedMode}-${current_gene}-Marks`;
 /**
  * Submit and sends the student's answers to the server
  */
@@ -1744,11 +1730,11 @@ function submitAnswers() {
 	all_outputs = [];
 	all_marks = [];
 	checkAnswers();
-	setTimeout(function () {
+	setTimeout(() => {
 		markAnswers();
-		studentAnswers = "student_list." + studentParseNum + "." + loadedMode + "-" + current_gene + "-Answers";
-		studentOutputs = "student_list." + studentParseNum + "." + loadedMode + "-" + current_gene + "-Outputs";
-		studentMarks = "student_list." + studentParseNum + "." + loadedMode + "-" + current_gene + "-Marks";
+		studentAnswers = `student_list.${studentParseNum}.${loadedMode}-${current_gene}-Answers`;
+		studentOutputs = `student_list.${studentParseNum}.${loadedMode}-${current_gene}-Outputs`;
+		studentMarks = `student_list.${studentParseNum}.${loadedMode}-${current_gene}-Marks`;
 		all_answers.push(
 			document.getElementById("sequence_input").value.trim(),
 			document.getElementById("pam_input").value.trim(),
@@ -1787,7 +1773,7 @@ function submitAnswers() {
 							[studentMarks]: all_marks,
 						},
 					},
-					function (err, _res) {
+					(err, _res) => {
 						if (err) throw err;
 
 						db.close();
@@ -1818,7 +1804,7 @@ function submitAnswers() {
  */
 function IfPressEnter(event, toClickButton) {
 	if (event.which === 13 || event.keyCode === 13) {
-		$("#" + toClickButton).click();
+		$(`#${toClickButton}`).click();
 	}
 }
 
@@ -1832,8 +1818,6 @@ function backToAssignments() {
 }
 
 // Block submit calls on keypress
-$(function () {
-	$("form").submit(function () {
-		return false;
-	});
+$(() => {
+	$("form").submit(() => false);
 });
