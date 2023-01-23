@@ -119,11 +119,11 @@ function fillGeneList(itPos = 0) {
 	list_of_assignments = [];
 	if (itPos < 100) {
 		if (gene_backgroundInfo || gene_backgroundInfo !== "") {
-			if (!gene_backgroundInfo[0]) {
+			if (!gene_backgroundInfo?.[0]) {
 				setTimeout(() => {
 					fillGeneList(itPos + 1);
 				}, 500);
-			} else {
+			} else if (gene_backgroundInfo && gene_backgroundInfo[0] && gene_backgroundInfo[0].gene_list) {
 				const list_of_genes = Object.keys(gene_backgroundInfo[0].gene_list);
 				for (const gene of list_of_genes) {
 					if (gene_backgroundInfo[0].gene_list[gene].base_type === "practice") {
@@ -148,7 +148,7 @@ let loadedMode = "practice";
  * Dynamically creates the work page for SciGrade
  */
 function loadWork() {
-	if (gene_backgroundInfo || gene_backgroundInfo !== "" || backgroundInfo[0].gene_list[current_gene]) {
+	if (gene_backgroundInfo || gene_backgroundInfo !== "" || backgroundInfo?.[0].gene_list[current_gene]) {
 		$("#work").empty();
 		loadedMode = selection_inMode;
 		checkAnswers_executed = false;
@@ -162,10 +162,10 @@ function loadWork() {
 			'<div id="crispr_header">\n<p>Please refer to your dry lab protocol for full instructions on how and what to do. Below is a brief reminder of what you are supposed to do with each gene: \n <b>Your objective is to find these mutations, design a gRNA and its corresponding F1/R1 primers</b></p> \n</div>\n';
 
 		// Gene information
-		append_str += `<div id="gene_info"><p>Here is some background information about your gene: ${gene_backgroundInfo[0].gene_list[current_gene].name} (${current_gene})</p>\n`;
-		append_str += `<p> Background information: ${gene_backgroundInfo[0].gene_list[current_gene].Background}</p>\n`;
-		append_str += `<p> Target site: ${gene_backgroundInfo[0].gene_list[current_gene]["Target site"]}</p>\n`;
-		append_str += `<p style="word-wrap:break-word;"> Modified genetic sequence: ${gene_backgroundInfo[0].gene_list[current_gene].Sequence}</p>\n`;
+		append_str += `<div id="gene_info"><p>Here is some background information about your gene: ${gene_backgroundInfo?.[0].gene_list[current_gene].name} (${current_gene})</p>\n`;
+		append_str += `<p> Background information: ${gene_backgroundInfo?.[0].gene_list[current_gene].Background}</p>\n`;
+		append_str += `<p> Target site: ${gene_backgroundInfo?.[0].gene_list[current_gene]["Target site"]}</p>\n`;
+		append_str += `<p style="word-wrap:break-word;"> Modified genetic sequence: ${gene_backgroundInfo?.[0].gene_list[current_gene].Sequence}</p>\n`;
 		append_str += "</div>";
 
 		// End background information
@@ -251,7 +251,7 @@ function loadWork() {
 		append_str += "</div>";
 
 		$("#work").append(append_str);
-	} else if (gene_backgroundInfo === "" || !gene_backgroundInfo || !backgroundInfo[0].gene_list[current_gene]) {
+	} else if (gene_backgroundInfo === "" || !gene_backgroundInfo || !backgroundInfo?.[0].gene_list[current_gene]) {
 		alert("Error code lFS50-66 occurred. Please contact admin or TA!");
 	}
 }
