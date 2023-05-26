@@ -48,34 +48,23 @@
 
 .homeBackground {
 	/* Browser background */
-	-moz-background-size: cover;
-	-o-background-size: cover;
-	-webkit-background-size: cover;
-	background-attachment: fixed;
-	background-position: center;
-	background-repeat: no-repeat;
+	background: url("../images/BackgroundImage/homeBackground.webp") no-repeat center center fixed;
 	background-size: cover;
-	background: url("../images/BackgroundImage/homeBackground.webp");
 
 	/* IE */
-	-ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src=../images/BackgroundImage/homeBackground.webp', sizingMethod='scale')";
+	-ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/BackgroundImage/homeBackground.webp', sizingMethod='scale')";
 	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/BackgroundImage/homeBackground.webp', sizingMethod='scale');
 }
 
 .backgroundFrontLayer {
-	/* Browser foreground */
-	-moz-background-size: cover;
-	-o-background-size: cover;
-	-webkit-background-size: cover;
-	background-attachment: fixed;
-	background-position: center;
-	background-repeat: no-repeat;
-	background-size: cover;
-	background: url("../images/BackgroundImage/grey.webp");
-	opacity: 0.5;
 	/* IE */
 	-ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src=../images/BackgroundImage/grey.webp', sizingMethod='scale')";
 	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/BackgroundImage/grey.webp', sizingMethod='scale');
+
+	/* Browser foreground */
+	background: url("../images/BackgroundImage/grey.webp") no-repeat center center fixed;
+	background-size: cover;
+	opacity: 0.5;
 }
 
 .fullSizeBody {

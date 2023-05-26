@@ -1,6 +1,19 @@
 {
 	"name": "SciGrade",
+	"background_color": "#ffffff",
+	"description": "SciGrade - An online way to practice gRNA and primer design.",
+	"dir": "ltr",
+	"display": "minimal-ui",
+	"display_override": ["minimal-ui", "standalone", "window-controls-overlay"],
+	"id": "/",
+	"lang": "en",
+	"orientation": "any",
+	"prefer_related_applications": false,
+	"scope": "/",
 	"short_name": "SciGrade",
+	"start_url": "/",
+	"theme_color": "#ffffff",
+	"edge_side_panel": {},
 	"icons": [
 		{
 			"src": "./android-chrome-36x36.png",
@@ -145,18 +158,6 @@
 			]
 		}
 	],
-	"description": "SciGrade - An online way to practice gRNA and primer design.",
-	"theme_color": "#ffffff",
-	"background_color": "#ffffff",
-	"start_url": "/",
-	"id": "/",
-	"display_override": ["standalone", "minimal-ui", "window-controls-overlay"],
-	"display": "standalone",
-	"prefer_related_applications": false,
-	"orientation": "any",
-	"dir": "ltr",
-	"lang": "en",
-	"scope": "/",
 	"categories": [
 		"bioinformatics",
 		"crispr",
