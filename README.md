@@ -18,7 +18,7 @@ It is recommended that you use the web-version available at https://scigrade.com
 
 | Chrome | Firefox | Edge | Safari | Opera | Mobile |
 | ------ | ------- | ---- | ------ | ----- | ------ |
-| ✔      | ✔       | ✔    | ✔      | ?     | ✔      |
+| ✔     | ✔      | ✔   | ✔     | ?     | ✔     |
 
 ## Installation/Open
 
