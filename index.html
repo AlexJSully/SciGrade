@@ -100,17 +100,17 @@
 			crossorigin="anonymous"
 		></script>
 		<script
-			src="https://browser.sentry-cdn.com/7.60.0/bundle.tracing.min.js"
-			integrity="sha384-rbuFCd4zq5tzSjTwZzFzfq90x6nTBcF6kqvGH9cU/o1rTXPL0k/9x2TPR/P8fExy"
+			src="https://browser.sentry-cdn.com/7.64.0/bundle.tracing.min.js"
+			integrity="sha384-sXRXtf4iGK2XdQEaG7eOlZtJaVq+DKmnpe2Du8Bl4Di2LacdP7aR+VuLqk5ip9az"
 			crossorigin="anonymous"
 		></script>
 		<script
-			src="https://browser.sentry-cdn.com/7.60.0/bundle.tracing.replay.min.js"
-			integrity="sha384-rVCQrguk5ch0HGFpfwUdZ1iTMrxpN7hA0/BPq/IobiE5wZzh0pz/MTNraxWXopUN"
+			src="https://browser.sentry-cdn.com/7.64.0/bundle.tracing.replay.min.js"
+			integrity="sha384-dS0vEoM8E0IzoGVKpXCmS030gN8VyUqHgYw8H9Waud0UjrKeu+gwWbwY80HAzp3U"
 			crossorigin="anonymous"
 		></script>
 		<script
-			src="https://browser.sentry-cdn.com/7.60.0/captureconsole.min.js"
+			src="https://browser.sentry-cdn.com/7.64.0/captureconsole.min.js"
 			integrity="sha384-4uetf3yZ5nc9gQ22FQhBJ1kNlftEr6TagBEcRgfBGq8RGB6Nxk4cbDSp2v1XRrOx"
 			crossorigin="anonymous"
 		></script>
@@ -166,7 +166,7 @@
 		<!-- End Google Tag Manager -->
 		<!-- Service worker -->
 		<script>
-			if ("serviceWorker" in navigator) {
+			if (typeof navigator !== "undefined" && "serviceWorker" in navigator) {
 				navigator.serviceWorker.register("core/scripts/serviceWorker/sw.js");
 			}
 		</script>
