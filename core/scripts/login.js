@@ -45,16 +45,22 @@ function checkStudentNumber(student_num, student_umail) {
 	alreadyRegistered = false;
 	checkStudentNum = false;
 	let maxNum = 0;
-	const classList = student_reg_information[0].class_list;
-	for (const key in classList) {
-		if (student_reg_information[0].student_list !== null && student_reg_information[0].student_list.length > 0) {
-			for (const student of student_reg_information[0].student_list) {
-				if (student.student_number === student_num && student.studentClass === key) {
-					alreadyRegistered = true;
+	const classList = student_reg_information?.[0]?.class_list;
+	if (classList) {
+		for (const key in classList) {
+			if (
+				student_reg_information[0].student_list !== null &&
+				student_reg_information[0].student_list.length > 0
+			) {
+				for (const student of student_reg_information[0].student_list) {
+					if (student.student_number === student_num && student.studentClass === key) {
+						alreadyRegistered = true;
+					}
 				}
 			}
 		}
 	}
+
 	if (!alreadyRegistered) {
 		for (const key in classList) {
 			if (classList[key][student_num] === student_umail) {
@@ -73,7 +79,7 @@ function checkStudentNumber(student_num, student_umail) {
 		addSecondSection();
 	} else if (alreadyRegistered) {
 		showRegError(4);
-	} else if (!checkStudentNum && maxNum === student_reg_information[0].student_list.length) {
+	} else if (!checkStudentNum && maxNum === student_reg_information?.[0]?.student_list.length) {
 		showRegError(1);
 	} else if (!checkStudentNum) {
 		showRegError(2);
@@ -88,7 +94,8 @@ function loginVerify(student_NumVerify) {
 	alreadyRegistered = false;
 	let maxNum = 0;
 	checkStudentNum = false;
-	if (student_reg_information[0].student_list !== null && student_reg_information[0].student_list.length > 0) {
+
+	if (student_reg_information?.[0]?.student_list && student_reg_information[0].student_list.length > 0) {
 		for (let i = 0; i < student_reg_information[0].student_list.length; i += 1) {
 			if (student_reg_information[0].student_list[i].student_number === student_NumVerify) {
 				if (student_reg_information[0].student_list[i].gmail !== "unregistered") {
@@ -104,6 +111,7 @@ function loginVerify(student_NumVerify) {
 			}
 		}
 	}
+
 	if (alreadyRegistered && checkStudentNum) {
 		$("#loginForm").empty();
 		document.getElementById("loginP2").style.display = "block";
@@ -240,6 +248,7 @@ function signOutDisplay() {
 	if (document.getElementById("accountIO")) {
 		document.getElementById("accountIO").setAttribute("hidden", true);
 	}
+
 	if (document.getElementById("logIO")) {
 		document.getElementById("logIO").setAttribute("hidden", true);
 		document.getElementById("logIO").innerHTML = `${changeLogin} Login`;
@@ -247,6 +256,7 @@ function signOutDisplay() {
 	}
 
 	$("#mainContainer").empty();
+
 	let append_str;
 	append_str = "<div class='row'>\n";
 	// Pre-all
