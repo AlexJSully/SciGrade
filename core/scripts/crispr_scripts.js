@@ -123,7 +123,7 @@ function fillGeneList(itPos = 0) {
 				setTimeout(() => {
 					fillGeneList(itPos + 1);
 				}, 500);
-			} else if (gene_backgroundInfo && gene_backgroundInfo[0] && gene_backgroundInfo[0].gene_list) {
+			} else if (gene_backgroundInfo?.[0] && gene_backgroundInfo[0].gene_list) {
 				const list_of_genes = Object.keys(gene_backgroundInfo[0].gene_list);
 				for (const gene of list_of_genes) {
 					if (gene_backgroundInfo[0].gene_list[gene].base_type === "practice") {
