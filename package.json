@@ -46,7 +46,7 @@
 	"license": "GPL-3.0",
 	"homepage": "https://github.com/AlexJSully/SciGrade#readme",
 	"devDependencies": {
-		"eslint": "^8.51.0",
+		"eslint": "^8.52.0",
 		"eslint-config-airbnb": "^19.0.4",
 		"eslint-config-prettier": "^9.0.0",
 		"eslint-plugin-prettier": "^5.0.1",
