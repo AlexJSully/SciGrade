@@ -164,7 +164,7 @@ function loadCRISPRJSON_Files() {
 	// Gene background information
 	client
 		.login()
-		.then(() => db.collection("Gene_Information").find({version: "0.3"}).limit(100).execute())
+		.then(() => db.collection("Gene_Information").find({ version: "0.3" }).limit(100).execute())
 		.then((docs) => {
 			gene_backgroundInfo = docs;
 		})
@@ -174,7 +174,7 @@ function loadCRISPRJSON_Files() {
 	// Benchling gRNA outputs
 	client
 		.login()
-		.then(() => db.collection("Benchling_gRNA_Outputs").find({version: "0.2"}).limit(100).execute())
+		.then(() => db.collection("Benchling_gRNA_Outputs").find({ version: "0.2" }).limit(100).execute())
 		.then((docs) => {
 			benchling_grna_outputs = docs;
 		})
