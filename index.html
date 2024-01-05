@@ -100,25 +100,25 @@
 			crossorigin="anonymous"
 		></script>
 		<script
-			src="https://browser.sentry-cdn.com/7.81.0/bundle.tracing.min.js"
-			integrity="sha384-kFkea7IpJRcPCVIeHBdLWixKQ5TPwKCwh8P0CS4IBzDQktC/wEyNYfgQmXtLtqua"
+			src="https://browser.sentry-cdn.com/7.92.0/bundle.tracing.min.js"
+			integrity="sha384-aKJDoBURezKiYbbVgK4fy5qi3QvO0Fc/A2PLTMTxZpg4FD6ejGgRx8AbBN47vpyL"
 			crossorigin="anonymous"
 		></script>
 		<script
-			src="https://browser.sentry-cdn.com/7.81.0/bundle.tracing.replay.min.js"
-			integrity="sha384-dmRZ2HF+92eHaSZwCtETSkgABycBCq8La4zLlogiDQUfcAd1rarcwBjk+3boawVm"
+			src="https://browser.sentry-cdn.com/7.92.0/bundle.tracing.replay.min.js"
+			integrity="sha384-vXCJALug3Wie1D5nr1T2TiCZjgc0nF79OhFiYxLG5ZpdJi3ppl8nxj620x6RWS/O"
 			crossorigin="anonymous"
 		></script>
 		<script
-			src="https://browser.sentry-cdn.com/7.81.0/captureconsole.min.js"
-			integrity="sha384-vDsDCuwWmsGWrHbN0KUXY5l/ucpKcyCe/WLX2r1QrL7hl2UlTsow3wCJasVX7T7Z"
+			src="https://browser.sentry-cdn.com/7.92.0/captureconsole.min.js"
+			integrity="sha384-clp/PAPOgrkU3rkFBv0Ov6cvfG7Rlse9uXwTfBccluX6g4uhIHI6g0EocYQ8V1iy"
 			crossorigin="anonymous"
 		></script>
 		<script>
 			Sentry.init({
 				dsn: "https://4661e72aaeb74d2fbd9e23b79e9506e0@o1185775.ingest.sentry.io/6600341",
 				// @AlexJSully when updating the package version number in package.json, update the version number here as well.
-				release: "scigrade@1.1.1",
+				release: "scigrade@1.1.2",
 
 				integrations: [
 					new Sentry.BrowserTracing(),
@@ -133,7 +133,7 @@
 
 			Sentry.configureScope((scope) => {
 				// @AlexJSully when updating the package version number in package.json, update the version number here as well.
-				scope.setTag("app-version", "1.1.1");
+				scope.setTag("app-version", "1.1.2");
 			});
 		</script>
 		<!-- Bootstrap -->

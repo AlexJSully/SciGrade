@@ -6,22 +6,35 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 To see tags and releases, please go to [Tags](https://github.com/AlexJSully/SciGrade/tags) on [GitHub](https://github.com/AlexJSully/SciGrade).
 
+## [1.1.2] - 2024-01-04
+
+Update:
+
+-   Update Sentry version
+-   Update packages
+
+Bug fix:
+
+-   Fixed checking possible correct answers returning null
+-   Fixed issue where if no student information was present, would prevent further use of SciGrade
+-   Fixed issue where service worker would try and register before browser was ready or if the browser did not support service workers
+
 ## [1.1.1] - 2023-08-03
 
 No longer supports Internet Explorer.
 
-**Optimization**:
+Optimization:
 
 -   Added ESLint
 -   Optimized images
 -   Updated web manifest
 
-**Update**:
+Update:
 
 -   Updated OSSAR workflow
 -   Updated packages
 
-**Bug fixes**:
+Bug fixes:
 
 -   Fixed CaptureConsole not found and unable to call CaptureConsole
 -   Fixed TypeError cannot read undefined 0
@@ -30,15 +43,15 @@ No longer supports Internet Explorer.
 
 ## [1.1.0] - 2022-11-03
 
-**A brand new version of the [SciGrade](https://scigrade.com/) has dropped!**
+A brand new version of the [SciGrade](https://scigrade.com/) has dropped!
 
 Version 1.1.0 has now dropped and it includes the ability to do practice genes without an account as well as optimizations and bug fixes.
 
-**Feature**:
+Feature:
 
 -   Can now do practice genes without an account
 
-**Optimization**:
+Optimization:
 
 -   Added Sentry
 -   Added high fetch priority to LCP image
@@ -56,17 +69,17 @@ Version 1.1.0 has now dropped and it includes the ability to do practice genes w
 -   Updated Google Analytics to GA4
 -   Updated robots.txt
 
-**Security**:
+Security:
 
 -   Added Content Security Policy
 -   Added Strict-Transport-Security
 
-**Update**:
+Update:
 
 -   Updated packages
 -   Updated service worker scripts
 
-**Documentation**:
+Documentation:
 
 -   Added CI/CDs and GitHub Actions
 -   Added Quynh (Cathy) Cao's GitHub URL
@@ -76,7 +89,7 @@ Version 1.1.0 has now dropped and it includes the ability to do practice genes w
 -   Updated README
 -   Updated prettier to ignore line endings
 
-**Bug fix**:
+Bug fix:
 
 -   Fixed background size not being read correctly
 -   Fixed being unable to switch login tabs
@@ -91,7 +104,7 @@ Version 1.1.0 has now dropped and it includes the ability to do practice genes w
 
 ## [1.0.7] - 2021-11-22
 
-**A brand new version of the [SciGrade](https://scigrade.com/) has dropped!**
+A brand new version of the [SciGrade](https://scigrade.com/) has dropped!
 
 Version 1.0.7 has now dropped and it includes tons of optimizations and bug fixes
 

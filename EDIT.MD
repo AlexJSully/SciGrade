@@ -1,10 +1,10 @@
-# Welcome to [SciGrade](http://scigrade.com)!
+# Welcome to [SciGrade](http://scigrade.com)
 
 If you opened this document, that means you are most likely interested in how to edit or modify SciGrade. In here, I will go over how you can change, edit and/or modify what makes SciGrade.
 
 I recommend you read our [README](README.md) and [CONTRIBUTING](CONTRIBUTING.md) if you haven't before you start editing SciGrade.
 
-## What’s available with SciGrade and how it works:
+## What’s available with SciGrade and how it works
 
 Everything on SciGrade is generated dynamically on the client side to reduce the number of pages that are needed to be loaded.
 
@@ -34,15 +34,15 @@ There is also a feedback page for practice assignments screen which is displayed
 
 ![feedback example](core/images/EDITmd/004_FeedbackPage.png "Example of the feedback page")
 
-## Example protocol:
+## Example protocol
 
 There is an example protocol for students to follow in the PDF file [LabProtocol](LabProtocol.pdf). It is recommended that you customize it to your teaching class, but the protocol includes all the necessary details for students to follow to understand how to create gRNAs and where they can get the information to input into SciGrade.
 
-## Adding users:
+## Adding users
 
 Only TAs and admins can add new students and only admins can add other admins or TAs. This is done through the account management modal.
 
-### Adding students:
+### Adding students
 
 Multiple students at once can be added through the "Create new class:" card. Within this card, there are three input boxes. A "Choose class" option where you can add to an existing class or create a new class. It is important to note that spaces will be deleted when being added to the MongoDB server once you submit so use capital letters to separate words. To change this, just remove
 
@@ -58,7 +58,7 @@ For student's numbers and emails, there must be an equal amount of each while th
 
 ![adding students](core/images/EDITmd/006_AddStudents.png "Adding students to SciGrade servers")
 
-### Adding a single student:
+### Adding a single student
 
 Adding a single user must be done individually within the "Add single user:" card which can only be accessed by an admin. To change this from being admin only to allowing TAs, within the `openAccountManagement()` in [crispr_script.js](core/scripts/crispr_script.js), change the order of `append_str` or find the `// Admin controls: ` and combine that with the `// TA access to add new students:`.
 
@@ -66,7 +66,7 @@ If you are adding a TA or admin, it recommended you add them to the "AdminTA-Lis
 
 ![adding students](core/images/EDITmd/007_AddTA.png "Adding a TA to SciGrade servers")
 
-## Marking algorithm:
+## Marking algorithm
 
 SciGrade marks the gRNA strand, PAM sequence, off-target score and the F1 and R1 primers. Using [markAnswers()](core/scripts/crispr_script.js), the student's input into the form on the practice/assignment form will be used to determine the marking.
 
@@ -86,7 +86,7 @@ The following image describes where student's marks come from in the marking alg
 
 ![SciGrade marking algorithm](core/images/EDITmd/005_Algorithm.png "How the SciGrade marking algorithm works")
 
-### Adjusting the marking algorithm:
+### Adjusting the marking algorithm
 
 There are two ways to adjust the marking algorithm
 
@@ -94,13 +94,13 @@ There are two ways to adjust the marking algorithm
    ![modify marking controls](core/images/EDITmd/008_AdjustMarks.png "Example of the account modal modify marking control's card")
 2. Edit the code within [crispr_script.js](core/scripts/crispr_script.js). The following functions are related to marking: `checkAnswers()`, `checkOffTarget(score)`, `checkF1Primers(seq)` and `checkR1Primers(seq)` to determine if answers are correct or not and then `markAnswers()` to assign marks.
 
-### Changing a user's type:
+### Changing a user's type
 
 If you change the MongoDB database, this will not work unless it is structured exactly like ours.
 
 In the "Change a user's account type:" card within the Account module, you can select a user from a class and change this account type from Student or TA or admin (each with their respective properties)
 
-## Downloading marks:
+## Downloading marks
 
 SciGrade has a built-in option to download marks as a CSV (Excel) file. There are two options:
 
@@ -112,7 +112,7 @@ If you wish to change what is visible in the exported CSV file, you can modify i
 1. `generateRestOfIndexTable(whichIndexTable, SimpleComplex)`: Used to generate the template/header for each downloaded CSV mark's file (SimpleComplex is true for marks, false for raw marks)
 2. `generateHiddenStudentDownload(whichClass, whichType)`: Used to fill the template and download the generated CSV mark's file
 
-## Adding new genes:
+## Adding new genes
 
 Currently, there is no interface that allows you to add a new gene from the front-end. Adding a new gene requires access to the MongoDB server and requires the following things:
 
@@ -136,7 +136,7 @@ Add those to the MongoDB server and make sure `loadCRISPRJSON_Files()` within [c
 
 It is important to note that SciGrade's system is meant for human (Homo sapiens) GRCH38 (HG38) gene annotations using the [crispr.mit.edu from Hsu et al., 2013](http://crispr.mit.edu/) algorithm for off-target scoring.
 
-## Connection to MongoDB:
+## Connection to MongoDB
 
 The current version of SciGrade uses MongoDB Atlas as our data hosting service. If you are trying to create your own custom version of SciGrade, I recommend you to create your own MongoDB Atlas cluster ([more information on their website](https://www.mongodb.com/cloud/atlas), including [pricing](https://www.mongodb.com/cloud/atlas/pricing)).
 
