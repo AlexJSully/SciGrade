@@ -18,12 +18,13 @@
 	"private": true,
 	"description": "SciGrade is an online web-tool that allows students (or any user with access) to mark and assist in gRNA+Primer generation.",
 	"main": "index.html",
+	"type": "module",
 	"scripts": {
-		"eslint": "eslint --fix ./ --ignore-path .prettierignore",
-		"eslint:check": "eslint ./ --ignore-path .prettierignore",
-		"pre-commit": "npm run prettier && npm run eslint",
+		"eslint": "eslint --fix ./",
+		"eslint:check": "eslint ./",
 		"prettier": "prettier --write ./",
 		"prettier:check": "prettier --check ./",
+		"validate": "npm run prettier && npm run eslint",
 		"workbox": "workbox generateSW"
 	},
 	"bugs": {
@@ -46,11 +47,11 @@
 	"license": "GPL-3.0",
 	"homepage": "https://github.com/AlexJSully/SciGrade#readme",
 	"devDependencies": {
-		"eslint": "^8.56.0",
-		"eslint-config-airbnb": "^19.0.4",
+		"eslint": "^9.1.1",
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-plugin-prettier": "^5.1.3",
-		"prettier": "^3.2.4",
-		"workbox-cli": "^7.0.0"
+		"globals": "^15.1.0",
+		"prettier": "^3.2.5",
+		"workbox-cli": "^7.1.0"
 	}
 }

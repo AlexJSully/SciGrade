@@ -4,9 +4,9 @@
 // Purpose: General script for SciGrade
 //
 //= ============================================================================
-// eslint-disable-next-line prefer-const
+
 let selection_inMode = "practice";
-// eslint-disable-next-line prefer-const
+
 let possible_gene = "eBFP";
 let current_gene = "empty";
 
@@ -17,7 +17,6 @@ let current_gene = "empty";
 function ModeSelectionAdd(mode) {
 	$("#gene_dropdown_selection").empty();
 
-	// eslint-disable-next-line no-unused-expressions
 	document.getElementById("load_button")?.disabled;
 
 	let append_str;
@@ -515,7 +514,6 @@ function checkOffTarget(score) {
 				optimalValue = 80;
 			}
 		} else {
-			// eslint-disable-next-line prefer-destructuring
 			optimalValue = student_reg_information[0].classMarkingMod[studentClass][0];
 		}
 		// Determine if off-target is optimal or not
@@ -1312,7 +1310,7 @@ function UpdateUserType(classname, username, changeTo) {
 	for (let i = 0; i < studentList.length; i += 1) {
 		if (studentList[i].studentClass === classname && studentList[i].name === username) {
 			const changeType = `student_list.${i}.type`;
-			// eslint-disable-next-line no-loop-func
+
 			client.login().then(() =>
 				db.collection("Student_Information").updateOne(
 					{
@@ -1595,7 +1593,7 @@ function addUserToServer(inputClass, number, umail) {
 	for (const key in setList) {
 		if (setList[key]) {
 			const newKey = `class_list.${inputClass}.${key}`;
-			// eslint-disable-next-line no-loop-func
+
 			client.login().then(() =>
 				db.collection("Student_Information").updateOne(
 					{

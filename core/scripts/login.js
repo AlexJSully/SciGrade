@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 //= ================================ SciGrade ==================================
 //
 // Purpose: Login and registration for SciGrade
@@ -6,11 +5,11 @@
 //= ============================================================================
 
 let student_reg_information;
-// eslint-disable-next-line no-undef
+
 const client = new stitch.StitchClient("almark-wvohf");
 const db = client.service("mongodb", "mongodb-atlas").db("AlMark");
 /** Let users continue with practice application without logging in (true) (default false) */
-// eslint-disable-next-line prefer-const
+
 let continueWithoutLogin = false;
 /**
  * Load JSON files
@@ -39,7 +38,7 @@ let classRegister;
  * @param {String} student_umail Student's email/uMail
  * @return {bool} checkStudentNum - Whether the student is a student in the system or not
  */
-// eslint-disable-next-line no-unused-vars
+
 function checkStudentNumber(student_num, student_umail) {
 	loadJSON_Files();
 	alreadyRegistered = false;

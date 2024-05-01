@@ -10,7 +10,7 @@ sw.js
 *.js.map
 
 # Packages
-core/scripts/APIandLibraries
+core/scripts/APIandLibraries/**/*
 
 # R data files
 .Rproj.user
