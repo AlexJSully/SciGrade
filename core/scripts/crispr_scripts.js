@@ -7,35 +7,9 @@
 
 let selection_inMode = "practice";
 
+const listOfGenes = ["eBFP", "ACTN3", "HBB", "CCR5", "ANKK1", "APOE"];
 let possible_gene = "eBFP";
 let current_gene = "empty";
-
-/**
- * Adds the genes to the Gene's dropdown menu
- * @param {String} mode - The CRISPR dry lab's mode ("practice" or "assignment")
- */
-function ModeSelectionAdd(mode) {
-	$("#gene_dropdown_selection").empty();
-
-	document.getElementById("load_button")?.disabled;
-
-	let append_str;
-	if (mode === "practice") {
-		append_str = '<option value="eBFP" id="eBFP" tag="practice">eBFP</option>\n';
-		append_str += '<option value="ACTN3" id="ACTN3" tag="practice">ACTN3</option>\n';
-		$("#gene_dropdown_selection").append(append_str);
-	} else if (mode === "assignment") {
-		const useList = removeCompletedAssignments();
-		for (let i = 0; i < useList.length; i += 1) {
-			if (i === 0) {
-				append_str = `<option value="${useList[i]}" id="${useList[i]}" tag="assignment">${useList[i]}</option>\n`;
-			} else {
-				append_str += `<option value="${useList[i]}" id="${useList[i]}" tag="assignment">${useList[i]}</option>\n`;
-			}
-		}
-		$("#gene_dropdown_selection").append(append_str);
-	}
-}
 
 /**
  * Purpose of this is to assign the current gene and check for errors
@@ -66,79 +40,41 @@ let benchling_grna_outputs;
 /**
  * Load JSON files
  */
-function loadCRISPRJSON_Files() {
-	const client = new stitch.StitchClient("almark-wvohf");
-	const db = client.service("mongodb", "mongodb-atlas").db("AlMark");
-	// Gene background information
-	client
-		.login()
-		.then(() =>
-			db
-				.collection("Gene_Information")
-				.find({
-					version: "0.3",
-				})
-				.limit(100)
-				.execute(),
-		)
-		.then((docs) => {
-			gene_backgroundInfo = docs;
-		})
-		.catch((err) => {
-			console.error(err);
-		});
-	// Benchling gRNA outputs
-	client
-		.login()
-		.then(() =>
-			db
-				.collection("Benchling_gRNA_Outputs")
-				.find({
-					version: "0.2",
-				})
-				.limit(100)
-				.execute(),
-		)
-		.then((docs) => {
-			benchling_grna_outputs = docs;
-		})
-		.catch((err) => {
-			console.error(err);
-		});
+async function loadCRISPRJSON_Files() {
+	try {
+		// Fetch Benchling_gRNA_Ouputs.json
+		const responseBenchling = await fetch("data/Benchling_gRNA_Outputs.json");
+		benchling_grna_outputs = await responseBenchling.json();
+
+		// Fetch gene_background_info.json
+		const responseGeneBackground = await fetch("data/Background_info/gene_background_info.json");
+		gene_backgroundInfo = await responseGeneBackground.json();
+	} catch (err) {
+		console.error("Error fetching file:", err);
+	}
 }
 
 let list_of_practice = ["eBFP"];
-let list_of_assignments = ["CCR5"];
 /**
- * Fill in and create a list of genes based on what is available in on the MongoDB server
- * @param itPos {number} The current iterative step of fillGeneList in the instance that gene_backgroundInfo is empty
+ * Fill in and create a list of genes
  */
-function fillGeneList(itPos = 0) {
-	list_of_practice = [];
-	list_of_assignments = [];
-	if (itPos < 100) {
-		if (gene_backgroundInfo || gene_backgroundInfo !== "") {
-			if (!gene_backgroundInfo?.[0]) {
-				setTimeout(() => {
-					fillGeneList(itPos + 1);
-				}, 500);
-			} else if (gene_backgroundInfo && gene_backgroundInfo[0] && gene_backgroundInfo[0].gene_list) {
-				const list_of_genes = Object.keys(gene_backgroundInfo[0].gene_list);
-				for (const gene of list_of_genes) {
-					if (gene_backgroundInfo[0].gene_list[gene].base_type === "practice") {
-						list_of_practice.push(gene);
-					} else if (gene_backgroundInfo[0].gene_list[gene].base_type === "assignment") {
-						list_of_assignments.push(gene);
-					}
-				}
-			}
-		} else {
-			setTimeout(() => {
-				fillGeneList(itPos + 1);
-			}, 500);
+function fillGeneList() {
+	if (gene_backgroundInfo?.gene_list) {
+		$("#gene_dropdown_selection").empty();
+		list_of_practice = [];
+
+		let append_str;
+
+		const listOfGenes = Object.keys(gene_backgroundInfo.gene_list);
+
+		for (const gene of listOfGenes) {
+			list_of_practice.push(gene);
+			append_str += `
+				<option value="${gene}" id="${gene}" tag="practice">${gene}</option>
+			`;
 		}
-	} else {
-		alert("Error code geneList-113 occurred. Please contact admin or TA!");
+
+		$("#gene_dropdown_selection").append(append_str);
 	}
 }
 
@@ -161,10 +97,10 @@ function loadWork() {
 			'<div id="crispr_header">\n<p>Please refer to your dry lab protocol for full instructions on how and what to do. Below is a brief reminder of what you are supposed to do with each gene: \n <b>Your objective is to find these mutations, design a gRNA and its corresponding F1/R1 primers</b></p> \n</div>\n';
 
 		// Gene information
-		append_str += `<div id="gene_info"><p>Here is some background information about your gene: ${gene_backgroundInfo?.[0].gene_list[current_gene].name} (${current_gene})</p>\n`;
-		append_str += `<p> Background information: ${gene_backgroundInfo?.[0].gene_list[current_gene].Background}</p>\n`;
-		append_str += `<p> Target site: ${gene_backgroundInfo?.[0].gene_list[current_gene]["Target site"]}</p>\n`;
-		append_str += `<p style="word-wrap:break-word;"> Modified genetic sequence: ${gene_backgroundInfo?.[0].gene_list[current_gene].Sequence}</p>\n`;
+		append_str += `<div id="gene_info"><p>Here is some background information about your gene: ${gene_backgroundInfo?.gene_list[current_gene].name} (${current_gene})</p>\n`;
+		append_str += `<p> Background information: ${gene_backgroundInfo?.gene_list[current_gene].Background}</p>\n`;
+		append_str += `<p> Target site: ${gene_backgroundInfo?.gene_list[current_gene]["Target site"]}</p>\n`;
+		append_str += `<p style="word-wrap:break-word;"> Modified genetic sequence: ${gene_backgroundInfo?.gene_list[current_gene].Sequence}</p>\n`;
 		append_str += "</div>";
 
 		// End background information
@@ -298,13 +234,13 @@ function checkAnswers() {
 	true_counts = 0;
 
 	// Verify answers
-	const correctNucleotidePosition = gene_backgroundInfo[0].gene_list[current_gene]["Target position"] - 1;
+	const correctNucleotidePosition = gene_backgroundInfo.gene_list[current_gene]["Target position"] - 1;
 
 	// Check gRNA Sequence:
 	const inputtedSeq = document.getElementById("sequence_input").value.trim();
 	// Check if gRNA sequence is in against listed
 	possible_comparable_answers = [];
-	for (const answer of benchling_grna_outputs[0].gene_list[current_gene]) {
+	for (const answer of benchling_grna_outputs.gene_list[current_gene]) {
 		if (answer.Sequence === inputtedSeq) {
 			possible_comparable_answers.push(answer);
 		}
@@ -486,14 +422,14 @@ function checkOffTarget(score) {
 		offtarget_dict = {};
 		offtarget_dictParse = [];
 		offtarget_Use = [];
-		for (let i = 0; i < benchling_grna_outputs[0].gene_list[current_gene].length; i += 1) {
+		for (let i = 0; i < benchling_grna_outputs.gene_list[current_gene].length; i += 1) {
 			if (
-				benchling_grna_outputs[0].gene_list[current_gene][i].Position >= rangeStarter_lower &&
-				benchling_grna_outputs[0].gene_list[current_gene][i].Position <= rangeStarter_upper
+				benchling_grna_outputs.gene_list[current_gene][i].Position >= rangeStarter_lower &&
+				benchling_grna_outputs.gene_list[current_gene][i].Position <= rangeStarter_upper
 			) {
-				if (benchling_grna_outputs[0].gene_list[current_gene][i]["Specificity Score"]) {
-					offtarget_List.push(benchling_grna_outputs[0].gene_list[current_gene][i]["Specificity Score"]);
-					offtarget_dict[i] = benchling_grna_outputs[0].gene_list[current_gene][i]["Specificity Score"];
+				if (benchling_grna_outputs.gene_list[current_gene][i]["Specificity Score"]) {
+					offtarget_List.push(benchling_grna_outputs.gene_list[current_gene][i]["Specificity Score"]);
+					offtarget_dict[i] = benchling_grna_outputs.gene_list[current_gene][i]["Specificity Score"];
 					offtarget_dictParse.push(i);
 				}
 			}
@@ -1299,26 +1235,6 @@ let downloadIndexTable_fill = "";
  */
 function generateRestOfIndexTable(whichIndexTable, SimpleComplex) {
 	whichIndexTable = downloadIndexTable_start;
-	for (const assignment of list_of_assignments) {
-		whichIndexTable += `\n\t\t\t<th>${assignment}</th>`;
-		if (SimpleComplex) {
-			whichIndexTable += "\n\t\t\t<th>Percent</th>";
-			whichIndexTable += "\n\t\t\t<th>Raw</th>";
-		} else if (!SimpleComplex) {
-			whichIndexTable += "\n\t\t\t<th>Percent</th>";
-			whichIndexTable += "\n\t\t\t<th>Raw</th>";
-			whichIndexTable += "\n\t\t\t<th>gRNA</th>";
-			whichIndexTable += "\n\t\t\t<th>Mark</th>";
-			whichIndexTable += "\n\t\t\t<th>PAM</th>";
-			whichIndexTable += "\n\t\t\t<th>Mark</th>";
-			whichIndexTable += "\n\t\t\t<th>Off-target score</th>";
-			whichIndexTable += "\n\t\t\t<th>Mark</th>";
-			whichIndexTable += "\n\t\t\t<th>F1 primers</th>";
-			whichIndexTable += "\n\t\t\t<th>Mark</th>";
-			whichIndexTable += "\n\t\t\t<th>R1 primers</th>";
-			whichIndexTable += "\n\t\t\t<th>Mark</th>";
-		}
-	}
 	whichIndexTable += downloadIndexTable_end;
 	return whichIndexTable;
 }
@@ -1353,116 +1269,6 @@ function generateHiddenStudentDownload(whichClass, whichType) {
 				downloadIndexTable_str += "\t\t<tr>\n";
 				downloadIndexTable_str += `\t\t\t<td>${student.student_number}</td>\n`;
 				downloadIndexTable_str += `\t\t\t<td>${student.name}</td>\n`;
-				if (whichType) {
-					for (const assignment of list_of_assignments) {
-						const studentAssignment = `assignment-${assignment}-Marks`;
-
-						if (student[studentAssignment]) {
-							downloadIndexTable_str += `\t\t\t<td>${assignment.toString()}</td>\n`;
-							downloadIndexTable_str += `\t\t\t<td>${student[studentAssignment][1].toString()}</td>\n`;
-							downloadIndexTable_str += `\t\t\t<td>${student[studentAssignment][0].toString()}</td>\n`;
-						} else if (student[studentAssignment] === null) {
-							downloadIndexTable_str += `\t\t\t<td>${assignment.toString()}</td>\n`;
-							downloadIndexTable_str += "\t\t\t<td> Incompleted </td>\n";
-							downloadIndexTable_str += "\t\t\t<td> 0.00 </td>\n";
-						}
-					}
-				}
-				if (!whichType) {
-					for (const assignment of list_of_assignments) {
-						const studentAssignment = `assignment-${assignment}-Marks`;
-
-						if (student[studentAssignment]) {
-							downloadIndexTable_str += `\t\t\t<td>${assignment.toString()}</td>\n`;
-							let mark = 0;
-							// Raw values
-							downloadIndexTable_str += `\t\t\t<td>${student[studentAssignment][1].toString()}</td>\n`;
-							downloadIndexTable_str += `\t\t\t<td>${student[studentAssignment][0].toString()}</td>\n`;
-							// gRNA
-							downloadIndexTable_str += `\t\t\t
-								<td>
-								${student[`assignment-${assignment}-Answers`][0].toString()}
-								</td>
-							`;
-
-							if (student[`assignment-${assignment}-Outputs`][2] === 1) {
-								mark = 2;
-							} else if (student[`assignment-${assignment}-Outputs`][2] === 2) {
-								mark = 1;
-							} else if (student[`assignment-${assignment}-Outputs`][2] === 3) {
-								mark = 0.5;
-							}
-							downloadIndexTable_str += `\t\t\t<td>${mark.toString()}</td>\n`;
-							// PAM
-							downloadIndexTable_str += `\t\t\t
-								<td>
-								${student[`assignment-${assignment}-Answers`][1].toString()}
-								</td>
-							`;
-
-							if (student[`assignment-${assignment}-Outputs`][4]) {
-								mark = 2;
-							} else {
-								mark = 0;
-							}
-							downloadIndexTable_str += `\t\t\t<td>${mark.toString()}</td>\n`;
-							// Off-target
-							downloadIndexTable_str += `\t\t\t
-								<td>
-								${student[`assignment-${assignment}-Answers`][4].toString()}
-								</td>
-							`;
-
-							if (student[`assignment-${assignment}-Outputs`][6] === 1) {
-								mark = 2;
-							} else if (student[`assignment-${assignment}-Outputs`][6] === 2) {
-								mark = 1;
-							} else if (student[`assignment-${assignment}-Outputs`][6] === 3) {
-								mark = 0.5;
-							}
-							downloadIndexTable_str += `\t\t\t<td>${mark.toString()}</td>\n`;
-							// F1 Primers
-							downloadIndexTable_str += `\t\t\t
-								<td>
-								${student[`assignment-${assignment}-Answers`][5].toString()}
-								</td>
-							`;
-							if (student[`assignment-${assignment}-Outputs`][10]) {
-								mark = 2;
-							} else {
-								mark = 0;
-							}
-							downloadIndexTable_str += `\t\t\t<td>${mark.toString()}</td>\n`;
-							// R1 primers
-							downloadIndexTable_str += `
-								\t\t\t
-								<td>
-								${student[`assignment-${assignment}-Answers`][6].toString()}
-								</td>
-							`;
-							if (student[`assignment-${assignment}-Outputs`][11]) {
-								mark = 2;
-							} else {
-								mark = 0;
-							}
-							downloadIndexTable_str += `\t\t\t<td>${mark.toString()}</td>\n`;
-						} else if (!student[studentAssignment]) {
-							downloadIndexTable_str += `\t\t\t<td>${assignment.toString()}</td>\n`;
-							downloadIndexTable_str += "\t\t\t<td> Incompleted </td>\n";
-							downloadIndexTable_str += "\t\t\t<td> 0.00 </td>\n";
-							downloadIndexTable_str += "\t\t\t<td> Incompleted </td>\n";
-							downloadIndexTable_str += "\t\t\t<td> 0.00 </td>\n";
-							downloadIndexTable_str += "\t\t\t<td> Incompleted </td>\n";
-							downloadIndexTable_str += "\t\t\t<td> 0.00 </td>\n";
-							downloadIndexTable_str += "\t\t\t<td> Incompleted </td>\n";
-							downloadIndexTable_str += "\t\t\t<td> 0.00 </td>\n";
-							downloadIndexTable_str += "\t\t\t<td> Incompleted </td>\n";
-							downloadIndexTable_str += "\t\t\t<td> 0.00 </td>\n";
-							downloadIndexTable_str += "\t\t\t<td> Incompleted </td>\n";
-							downloadIndexTable_str += "\t\t\t<td> 0.00 </td>\n";
-						}
-					}
-				}
 				downloadIndexTable_str += "\t\t</tr>\n";
 			}
 		}
@@ -1489,25 +1295,6 @@ function changeInputClass(docCheck, checkFor, docChange, trueChangeValueTo) {
 	if (document.getElementById(docCheck).value === checkFor) {
 		document.getElementById(docChange).value = trueChangeValueTo;
 	}
-}
-
-/**
- * Remove completed assignments from the assignment selection option
- * @returns returnAssignmentList - The list of non-completed assignments
- */
-function removeCompletedAssignments() {
-	generateCompletedAssignmentList();
-	let returnAssignmentList = [];
-	if (completed_assignments.length > 0) {
-		for (const assignment of list_of_assignments) {
-			if (!completed_assignments.includes(assignment)) {
-				returnAssignmentList.push(assignment);
-			}
-		}
-	} else if (completed_assignments.length === 0) {
-		returnAssignmentList = list_of_assignments;
-	}
-	return returnAssignmentList;
 }
 
 let all_answers = [];

@@ -9,7 +9,7 @@
 		<meta http-equiv="Cache-Control" content="max-age=604800" />
 		<meta
 			http-equiv="Content-Security-Policy"
-			content="default-src 'self' 'unsafe-inline' data: *.cloudflareinsights.com *.cloudstinger.com *.googletagmanager.com *.google-analytics.com *.googleapis.com *.google.com *.amazonaws.com *.mongodb.com *.doubleclick.net *.gstatic.com *.sentry-cdn.com *.sentry.io; object-src 'self'; base-uri 'self'; form-action 'self';"
+			content="default-src 'self' 'unsafe-inline' data: *.cloudflareinsights.com *.cloudstinger.com *.googletagmanager.com *.google-analytics.com *.googleapis.com *.google.com *.amazonaws.com  *.doubleclick.net *.gstatic.com *.sentry-cdn.com *.sentry.io; object-src 'self'; base-uri 'self'; form-action 'self';"
 		/>
 		<meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains; preload" />
 
@@ -104,22 +104,8 @@
 		<!-- Bootstrap -->
 		<link rel="stylesheet preload" href="./scripts/APIandLibraries/Bootstrap/css/bootstrap.min.css" as="style" />
 		<script src="./scripts/APIandLibraries/Bootstrap/js/bootstrap.min.js" rel="preload" as="script"></script>
-		<!-- Stitch/mongoDB -->
-		<link rel="preconnect" href="https://s3.amazonaws.com" />
-		<script
-			rel="preload"
-			as="script"
-			src="https://s3.amazonaws.com/stitch-sdks/js/library/v2/stable/stitch.min.js"
-		></script>
 		<!-- Google Material Icons -->
 		<link defer href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-		<!-- Google Identity Platform Scripts -->
-		<link rel="preconnect" href="https://apis.google.com" />
-		<script src="https://apis.google.com/js/platform.js" async defer></script>
-		<meta
-			name="google-signin-client_id"
-			content="1034277489697-g473uqcd0oc1c02td9off07b9mbe1353.apps.googleusercontent.com"
-		/>
 		<!-- tabletoCSV tool to create an option to download XML as CSV -->
 		<script rel="preload" as="script" src="scripts/APIandLibraries/tabletoCSV/jquery.tabletoCSV.js"></script>
 
@@ -216,8 +202,8 @@
 			}
 		</script>
 		<!-- Custom scripts -->
-		<script rel="preload" as="script" src="scripts/login.min.js"></script>
-		<script rel="preload" as="script" src="scripts/crispr_scripts.min.js"></script>
+		<script rel="preload" as="script" src="scripts/login.js"></script>
+		<script rel="preload" as="script" src="scripts/crispr_scripts.js"></script>
 		<link rel="stylesheet preload" href="styling/style.min.css" as="style" />
 	</head>
 

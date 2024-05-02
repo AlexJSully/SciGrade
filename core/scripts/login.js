@@ -6,9 +6,6 @@
 
 let student_reg_information;
 
-const client = new stitch.StitchClient("almark-wvohf");
-const db = client.service("mongodb", "mongodb-atlas").db("AlMark");
-
 /** Let users continue with practice application without logging in (true) (default false) */
 let continueWithoutLogin = true;
 
@@ -207,7 +204,7 @@ const changeLogin = '<i class="material-icons" style="font-size:inherit;">&#xE7F
 /**
  * Once users have registered OR logged in, the page dynamically generates the CRISPR assignment page
  */
-function redirectCRISPR() {
+async function redirectCRISPR() {
 	$("#mainContainer").empty();
 	let append_str;
 	append_str = `
@@ -216,72 +213,46 @@ function redirectCRISPR() {
 				<div class='col-sm-10' id='content_body'>
 					<div id='selection_process'>
 					<div id='mode_selection' style='margin-top: 2%;'>
-					<p>Please select the dry lab mode you would like to use: </p>
-					<div>
-						Mode:
-						<div class='btn-group' data-toggle='buttons'>
-							<label
-								class='btn btn-primary active'
-								style='padding: .075rem .75rem;'
-								id='practice'
-								onclick='selection_inMode = this.id; ModeSelectionAdd(this.id)'
+						<p>Please select the dry lab mode you would like to use: </p>
+					</div>
+
+					<div id='gene_selection'>
+						Please select your gene:
+						<div class='btn-group'>
+							<select
+								class='form-select'
+								id='gene_dropdown_selection'
+								onchange='possible_gene=(document.getElementById("gene_dropdown_selection").value);'
 							>
-								<input type='radio' name='practice_mode' autocomplete='off' hidden checked>
-									Practice
-								</input>
-							</label>
-	`;
+							</select>
+						</div>
+					</div>
 
-	if (!continueWithoutLogin) {
-		append_str += `
-			<label
-				class='btn btn-primary'
-				style='padding: .075rem .75rem;'
-				id='assignment'
-				onclick='selection_inMode = this.id; ModeSelectionAdd(this.id);'
-			>
-				<input type='radio' name='assignment_mode' autocomplete='off'>
-					Assignment
-				</input>
-			</label>
-		`;
-	}
+					<div id='load_button'>
+						<button
+							type='button'
+							class='btn btn-success'
+							style='margin-top: 2%;'
+							onClick='loadGeneContent()'
+						>
+							Load Gene
+						</button>
+					</div>
+				</div>
 
-	append_str += `
-		</div></div></div>
-		<div id='gene_selection'>
-			Please select your gene:
-			<div class='btn-group'>
-				<select
-					class='form-control'
-					id='gene_dropdown_selection'
-					onchange='possible_gene=(document.getElementById("gene_dropdown_selection").value);'
-				>
-				</select>
+				<div id='work'>
+				</div>
 			</div>
-		</div>
-		<div id='load_button'>
-			<button
-				type='button'
-				class='btn btn-success'
-				style='margin-top: 2%;'
-				onClick='loadGeneContent()'
-			>
-				Load Gene
-			</button>
-		</div></div>
-		<div id='work'>
-		</div></div>
-		<div class='col-sm-1'></div>
+
+			<div class='col-sm-1'></div>
 		</div>
 	`;
 
 	$("#mainContainer").append(append_str);
-	ModeSelectionAdd(selection_inMode);
-	loadCRISPRJSON_Files();
-	setTimeout(() => {
-		fillGeneList();
-	}, 700);
+
+	await loadCRISPRJSON_Files();
+
+	fillGeneList();
 
 	if (!continueWithoutLogin) {
 		if (document.getElementById("accountIO")) {
