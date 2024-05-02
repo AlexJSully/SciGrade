@@ -10,18 +10,6 @@ Everything on SciGrade is generated dynamically on the client side to reduce the
 
 ![practice example](core/images/EDITmd/002_SciGradePracticeGene.png "Example of the practice content page")
 
-The account management modal will be different for each person based on their account "type". There are three types:
-
--   Student
--   TA
--   admin
-
-A student will only see the completed assignments section which displays to the students, which assignments they have completed that is logged on the MongoDB server.
-
-A TA will be able to see the same as students but also the option to download student marks as well as add multiple students.
-
-An admin will see the same as TA but also have the option to add a new TA (one by one) and adjust how the marking algorithm works.
-
 There is also a feedback page for practice assignments screen which is displayed as an option whenever a user submits a practice assignment.
 
 ![feedback example](core/images/EDITmd/004_FeedbackPage.png "Example of the feedback page")
@@ -34,7 +22,7 @@ There is an example protocol for students to follow in the PDF file [LabProtocol
 
 SciGrade marks the gRNA strand, PAM sequence, off-target score and the F1 and R1 primers. Using [markAnswers()](core/scripts/crispr_script.js), the student's input into the form on the practice/assignment form will be used to determine the marking.
 
-It is important to note, the off-target scoring is dependent on the class' marking modification value. This can be changed within the account management's "Modify marking controls:" card.
+It is important to note, the off-target scoring is dependent on the class' marking modification value.
 
 Regarding the algorithm, student marks are dependent on 5 inputs:
 

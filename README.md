@@ -22,7 +22,17 @@ It is recommended that you use the web-version available at <https://scigrade.co
 
 ## Installation/Open
 
-There is nothing to install, just download all the files and open [index.html](index.html).
+After downloading the repository, just install the dependencies.
+
+```bash
+npm install
+```
+
+To open the web-app, run the following command and then go to <http://localhost:3000> in your browser.
+
+```bash
+npm run start
+```
 
 ## Known issues
 
