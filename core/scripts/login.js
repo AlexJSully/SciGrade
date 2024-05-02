@@ -8,24 +8,9 @@ let student_reg_information;
 
 const client = new stitch.StitchClient("almark-wvohf");
 const db = client.service("mongodb", "mongodb-atlas").db("AlMark");
-/** Let users continue with practice application without logging in (true) (default false) */
 
-let continueWithoutLogin = false;
-/**
- * Load JSON files
- */
-function loadJSON_Files() {
-	// Student information
-	client
-		.login()
-		.then(() => db.collection("Student_Information").find({ version: "0.3" }).limit(100).execute())
-		.then((docs) => {
-			student_reg_information = docs;
-		})
-		.catch((err) => {
-			console.error(err);
-		});
-}
+/** Let users continue with practice application without logging in (true) (default false) */
+let continueWithoutLogin = true;
 
 let checkStudentNum = false;
 let studentNumber = 0;
@@ -40,7 +25,6 @@ let classRegister;
  */
 
 function checkStudentNumber(student_num, student_umail) {
-	loadJSON_Files();
 	alreadyRegistered = false;
 	checkStudentNum = false;
 	let maxNum = 0;
@@ -181,69 +165,9 @@ function addSecondSection() {
 }
 
 /**
- * Retrieves Google user information and stores it
- */
-function sendLogReg() {
-	if (!alreadyRegistered) {
-		if (studentUmail) {
-			const gupper = `student_list.${studentParseNum}`;
-			// Create student name
-			const splitName = studentUmail.split("@")[0].split(".");
-			let name = "";
-			for (const studentName of splitName) {
-				const capName = studentName.charAt(0).toUpperCase() + studentName.substring(1);
-				name += `${capName} `;
-			}
-			name = name.trim();
-			let manuallyAdded = false;
-			let gupperType = "Student";
-			for (const student of student_reg_information[0].student_list) {
-				if (student.umail === studentUmail) {
-					manuallyAdded = true;
-					gupperType = student.type;
-				}
-			}
-			if (checkStudentNum && studentNumber !== 0 && googleEmail !== null) {
-				client.login().then(() =>
-					db.collection("Student_Information").updateOne(
-						{ version: "0.3" },
-						{
-							$set: {
-								[`${gupper}.studentClass`]: classRegister,
-								[`${gupper}.student_number`]: studentNumber,
-								[`${gupper}.name`]: name,
-								[`${gupper}.umail`]: studentUmail,
-								[`${gupper}.type`]: gupperType,
-								[`${gupper}.gmail`]: googleEmail,
-								[manuallyAdded]: "true",
-							},
-						},
-						(err, res) => {
-							if (err) throw err;
-
-							db.close();
-						},
-					),
-				);
-				redirectCRISPR();
-			}
-		}
-	}
-	if (alreadyRegistered) {
-		if (googleEmail === student_reg_information[0].student_list[studentParseNum].gmail) {
-			redirectCRISPR();
-		} else {
-			showRegError(6);
-		}
-	}
-}
-
-/**
  * Signs the user out and returns screen back to login/register display
  */
 function signOutDisplay() {
-	signOut();
-
 	if (document.getElementById("accountIO")) {
 		document.getElementById("accountIO").setAttribute("hidden", true);
 	}
@@ -261,58 +185,6 @@ function signOutDisplay() {
 	// Pre-all
 	append_str +=
 		'<div class="col-sm-1"></div><div class="col-sm-10"><ul class="nav nav-tabs"  id="logTabs" role="tablist"><li class="nav-item"><a class="nav-link" id="login-tab" data-toggle="tab" href="#login" role="tab" aria-controls="login">Login</a></li><li class="nav-item"><a class="nav-link" id="register-tab" data-toggle="tab" href="#register" role="tab" aria-controls="register">Register</a></li></ul><div class="tab-content" id="logTabContent">\n';
-	// Login
-	append_str += `
-		<!-- Login -->
-		<div
-			role="tabpanel"
-			class="tab-pane fade"
-			id="login"
-			aria-labelledby="login"
-		>
-			<form id="loginForm">
-				<div class="form-group">
-					<label for="InputStudentNumberLogin">
-						Student number
-					</label>
-					<input
-						class="form-control"
-						id="StudentNumberLogin"
-						placeholder="1234567890"
-						maxlength="10"
-						onkeypress="IfPressEnter(event, 'verifyLogin')"
-						type="text"
-						aria-label="Login with student number"
-						title="Enter your student number"
-					>
-						<small
-							id="studentNumberLoginHelp"
-							class="form-text text-muted"
-						>
-								We'll never share your student number with anyone else.
-						</small>
-					</div>
-
-					<button
-						id="verifyLogin"
-						type="button"
-						class="btn btn-primary"
-						onclick="loginVerify(document.getElementById('StudentNumberLogin').value)"
-					>
-						Verify
-					</button>
-				</form>
-				<form
-					id="loginP2"
-					style="display:none; margin-top:2%;"
-				>
-					<div class="g-signin2" data-onsuccess="onSignIn">
-					</div>
-				</form>
-			</div>\n`;
-	// Registration
-	append_str +=
-		'<!-- Registration --><div role="tabpanel" class="tab-pane fade" id="register" aria-labelledby="register"><p> Registration is limited to students in the appropriate University of Toronto HMB class. If you are not in the appropriate HMB class, you cannot register for SciGrade. Though once you have registered for SciGrade, you now have a permanent account and can use SciGrade whenever you want. <p><p id="pP1"> First, please verify that you are a student at the University of Toronto:</p><form id="registerP1"><div class="form-group" id="studentID"><label for="StudentNumber">Student number:</label><input class="form-control" id="StudentNumber" placeholder="1234567890" maxlength="10" onkeypress="IfPressEnter(event, \'firstSubmit\')" type="text"><small id="studentNumberHelp" class="form-text text-muted">Insert your 9 to 10 digit student number to verify you are a student at the University of Toronto.</small></div><div class="form-group" id="studentumail"><label for="StudentEmail">Student uMail:</label><input type="email" class="form-control" id="StudentEmail" placeholder="first.last@mail.utoronto.ca" onkeypress="IfPressEnter(event, \'firstSubmit\')"><small id="studentEmailHelp" class="form-text text-muted">Insert your student uMail (email) from the University of Toronto.</small></div><button id="firstSubmit" type="button" class="btn btn-primary" onclick="checkStudentNumber(document.getElementById(\'StudentNumber\').value, document.getElementById(\'StudentEmail\').value);">Check</button></form><p id="pP2"></p><form id="registerP2"></form><p id="pP3"></p><form id="registerP3" style="display:none;"><div class="g-signin2" data-onsuccess="onSignIn"></div></form></div>\n';
 	// Close
 	append_str += '</div><div class="col-sm-1"></div>\n';
 	append_str += "</div>\n";
@@ -406,7 +278,6 @@ function redirectCRISPR() {
 
 	$("#mainContainer").append(append_str);
 	ModeSelectionAdd(selection_inMode);
-	loadJSON_Files();
 	loadCRISPRJSON_Files();
 	setTimeout(() => {
 		fillGeneList();
@@ -425,6 +296,5 @@ function redirectCRISPR() {
 }
 
 $(document).ready(() => {
-	loadJSON_Files();
 	$("#loginTab").click();
 });

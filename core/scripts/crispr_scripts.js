@@ -880,7 +880,6 @@ let completed_assignments = [];
  */
 function generateCompletedAssignmentList() {
 	completed_assignments = [];
-	loadJSON_Files();
 	// Assignments
 	if (student_reg_information[0].student_list[studentParseNum]["assignment-HBB-Marks"]) {
 		if (!completed_assignments.includes("HBB")) {
@@ -978,7 +977,6 @@ function openAccountManagement() {
 		student_reg_information[0].student_list[studentParseNum].type === "TA" ||
 		student_reg_information[0].student_list[studentParseNum].type === "admin"
 	) {
-		loadJSON_Files();
 		append_str = "<p> <b> ADMIN POWER! </b> <p>";
 
 		// Create student card
@@ -1030,11 +1028,6 @@ function openAccountManagement() {
 		append_str +=
 			'<small id="InputStudentUmailUmail" class="form-text text-muted">Input student University associated email in the same order of the student numbers, separated by commas, new lines and/or tab indentation (BEWARE OF TYPOS!)</small>';
 		append_str += "</div>";
-
-		// Submit button
-		append_str +=
-			"<p> <button type=\"button\" class=\"btn btn-primary\" onclick=\"changeInputClass('InputClassMultiple', 'newClass', 'newClassMultiple', document.getElementById('InputNewClassMultiple').value), addMultipleUsersToServer(document.getElementById('InputClassMultiple').value, document.getElementById('StudentNumbers'), document.getElementById('StudentUmails'));\"> Send multiple students to Server </button>";
-		append_str += "<br>";
 
 		// Close form
 		append_str += "</form>";
@@ -1094,11 +1087,6 @@ function openAccountManagement() {
 		append_str +=
 			'<small id="InputStudentNumberHelp" class="form-text text-muted">The user\'s University associated email</small>';
 		append_str += "</div>";
-
-		// Submit button
-		append_str +=
-			"<p> <button type=\"button\" class=\"btn btn-primary\" onclick=\"addUserToServer(document.getElementById('InputClassSingle').value, document.getElementById('StudentNumber').value.trim(), document.getElementById('StudentUmail').value.trim());\"> Send single user to Server </button>";
-		append_str += "<br>";
 
 		// Form closing
 		append_str += "</form>";
@@ -1162,11 +1150,6 @@ function openAccountManagement() {
 			'<small id="InputModifyControlsHelp" class="form-text text-muted">Choose how you want the off-target score to be marked. Optimal is Min_optimal = Max_range - (Max_range * 0.2) if below 80 (if below, optimal = 80). Custom value can be any number between 0.01 and 100 which will be the new custom "optimal" value for your class.</small>';
 		append_str += "</div>";
 
-		// Submit button
-		append_str +=
-			"<p> <button type=\"button\" class=\"btn btn-primary\" onclick=\"changeInputClass('SelectModifyControls', 'Custom', 'CustomOffTarget', document.getElementById('InputModifyControls').value), UpdateMarkingControls(document.getElementById('ClassModChange').value, document.getElementById('SelectModifyControls').value)\"> Update Marking Scheme </button>";
-		append_str += "<br>";
-
 		// Close card
 		append_str += "</div>";
 		append_str += "</div>";
@@ -1227,8 +1210,6 @@ function openAccountManagement() {
 		append_str += "</div>";
 
 		// Submit button
-		append_str +=
-			"<p> <button type=\"button\" class=\"btn btn-primary\" onclick=\"UpdateUserType(document.getElementById('ClassChange').value, document.getElementById('ClassUserChange').value, document.getElementById('ClassTypeChange').value);\"> Update User's Type </button>";
 		append_str += "<br>";
 
 		// Close card
@@ -1297,70 +1278,6 @@ function UpdateStudentList(className) {
 			updatedListOfStudents[student.name] = `${student.name} - ${student.type}`;
 		}
 	}
-}
-
-/**
- * Change the user's type
- * @param {String} classname The class for which the user belongs to
- * @param {String} username The user's name that is listed in the database
- * @param {String} changeTo The type for the user to be changed to
- */
-function UpdateUserType(classname, username, changeTo) {
-	const studentList = student_reg_information[0].student_list;
-	for (let i = 0; i < studentList.length; i += 1) {
-		if (studentList[i].studentClass === classname && studentList[i].name === username) {
-			const changeType = `student_list.${i}.type`;
-
-			client.login().then(() =>
-				db.collection("Student_Information").updateOne(
-					{
-						version: "0.3",
-					},
-					{
-						$set: {
-							[changeType]: changeTo,
-						},
-					},
-					(err, _res) => {
-						if (err) throw err;
-
-						db.close();
-					},
-				),
-			);
-			$("#adminSendButton").click();
-		}
-	}
-}
-
-/**
- * Change values in the marking controls
- * @param {String} classToMod Class being modified
- * @param {String} offTargetChange The value of the modified control being changed to
- */
-function UpdateMarkingControls(classToMod, offTargetChange) {
-	const classChange = `classMarkingMod.${classToMod}`;
-	const markingChangeList = [offTargetChange];
-	client.login().then(() =>
-		db.collection("Student_Information").updateOne(
-			{
-				version: "0.3",
-			},
-			{
-				$set: {
-					[classChange]: markingChangeList,
-				},
-			},
-			(err, _res) => {
-				if (err) throw err;
-
-				db.close();
-			},
-		),
-	);
-	$("#adminSendButton").click();
-	document.getElementById("InputModifyControls").value = "";
-	document.getElementById("CustomOffTarget").value = "Custom";
 }
 
 /**
@@ -1575,127 +1492,6 @@ function changeInputClass(docCheck, checkFor, docChange, trueChangeValueTo) {
 }
 
 /**
- * Adds the user to the MongoDB server
- * @param {String} inputClass Class user belongs to
- * @param {String} number User number
- * @param {String} umail User's email
- */
-function addUserToServer(inputClass, number, umail) {
-	const studentNumber = number;
-	const studentUmail = umail;
-	const setList = {};
-	setList[studentNumber] = studentUmail;
-	classList = `class_list.${inputClass}`;
-	classExists = false;
-	if (student_reg_information[0].class_list[inputClass]) {
-		classExists = true;
-	}
-	for (const key in setList) {
-		if (setList[key]) {
-			const newKey = `class_list.${inputClass}.${key}`;
-
-			client.login().then(() =>
-				db.collection("Student_Information").updateOne(
-					{
-						version: "0.3",
-					},
-					{
-						$set: {
-							[newKey]: setList[key],
-						},
-					},
-					(err, _res) => {
-						if (err) throw err;
-
-						db.close();
-					},
-				),
-			);
-		}
-	}
-	$("#adminSendButton").click();
-	// Clear inputs
-	document.getElementById("StudentNumber").value = "";
-	document.getElementById("StudentUmail").value = "";
-}
-
-let classExists = false;
-/**
- * Adds multiple users to the MongoDB server
- * @param {String} inputClass The class the users are being added to
- * @param {String} number The list of student numbers
- * @param {String} umail The list of student uMails
- */
-function addMultipleUsersToServer(inputClass, number, umail) {
-	// Student information setup
-	const studentNumberList = number.value.trim().split(/,|\n|\t/);
-	if (studentNumberList[studentNumberList.length - 1].trim() === "") {
-		studentNumberList.pop();
-	}
-	const studentUmailList = umail.value.trim().split(/,|\n|\t/);
-	if (studentUmailList[studentUmailList.length - 1].trim() === "") {
-		studentUmailList.pop();
-	}
-	if (studentNumberList.length === studentUmailList.length) {
-		const setList = {};
-		for (let i = 0; i < studentNumberList.length; i += 1) {
-			const studentAdd = studentNumberList[i];
-			const studentUmailAdd = studentUmailList[i];
-			setList[studentAdd] = studentUmailAdd;
-		}
-		const classList = `class_list.${inputClass}`;
-		classExists = false;
-		if (student_reg_information[0].class_list[inputClass]) {
-			classExists = true;
-		}
-		if (!classExists) {
-			client.login().then(() =>
-				db.collection("Student_Information").updateOne(
-					{
-						version: "0.3",
-					},
-					{
-						$set: {
-							[classList]: setList,
-						},
-					},
-					(err, _res) => {
-						if (err) throw err;
-
-						db.close();
-					},
-				),
-			);
-			$("#adminSendButton").click();
-			const classChange = `classMarkingMod.${inputClass}`;
-			const markingChangeList = ["Optimal"];
-			client.login().then(() =>
-				db.collection("Student_Information").updateOne(
-					{
-						version: "0.3",
-					},
-					{
-						$set: {
-							[classChange]: markingChangeList,
-						},
-					},
-					(err, _res) => {
-						if (err) throw err;
-
-						db.close();
-					},
-				),
-			);
-			$("#adminSendButton").click();
-		}
-		document.getElementById("StudentNumbers").value = "";
-		document.getElementById("StudentUmails").value = "";
-	} else {
-		showRegError(8);
-	}
-}
-
-/**
  * Remove completed assignments from the assignment selection option
  * @returns returnAssignmentList - The list of non-completed assignments
  */
@@ -1758,39 +1554,12 @@ function submitAnswers() {
 		);
 		all_marks.push(studentMark, studentMarkPercentage);
 
-		if (!continueWithoutLogin) {
-			client.login().then(() =>
-				db.collection("Student_Information").updateOne(
-					{
-						version: "0.3",
-					},
-					{
-						$set: {
-							[studentAnswers]: all_answers,
-							[studentOutputs]: all_outputs,
-							[studentMarks]: all_marks,
-						},
-					},
-					(err, _res) => {
-						if (err) throw err;
+		document.getElementById("options_label").innerHTML =
+			"Would you like to see feedback on your answers or start a new assignment?";
+		document.getElementById("seeFeedback").removeAttribute("hidden");
 
-						db.close();
-					},
-				),
-			);
-		}
+		showFeedback();
 
-		loadJSON_Files();
-		if (loadedMode === "assignment") {
-			document.getElementById("options_label").innerHTML = "Would you like to start a new assignment?";
-			document.getElementById("seeFeedback").setAttribute("hidden", true);
-		} else if (loadedMode === "practice") {
-			document.getElementById("options_label").innerHTML =
-				"Would you like to see feedback on your answers or start a new assignment?";
-			document.getElementById("seeFeedback").removeAttribute("hidden");
-
-			showFeedback();
-		}
 		$("#feedbackButton").click();
 	}, 750);
 }
@@ -1811,7 +1580,6 @@ function IfPressEnter(event, toClickButton) {
  */
 function backToAssignments() {
 	redirectCRISPR();
-	loadJSON_Files();
 	$("#practice").click();
 }
 
