@@ -6,6 +6,50 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 To see tags and releases, please go to [Tags](https://github.com/AlexJSully/SciGrade/tags) on [GitHub](https://github.com/AlexJSully/SciGrade).
 
+## [1.2.0] - 2024-05-02
+
+🔬 **SciGrade Online Features Depreciation Notice**
+
+Dear SciGrade Community,
+
+With heartfelt gratitude, I extend my deepest thanks to each and every one of you who has been a part of the SciGrade journey. From its release on September 20, 2018, to today, May 2, 2024, witnessing students and enthusiasts alike utilize SciGrade to learn about CRISPR gRNA+Primer sequence generation has been nothing short of awe-inspiring.
+
+After careful consideration, I've made the difficult decision to depreciate the online features of SciGrade, including account management, class functionalities, and access to the database. As the landscape of technology evolves, so too must our applications. Reflecting on the growth I've experienced as a developer since SciGrade's inception, it became evident that significant enhancements, spanning from UI refinements to bolstered security measures, are imperative to uphold the highest standards of user experience and data protection.
+
+However, I assure you that the SciGrade website and web app will remain accessible at [scigrade.com](https://scigrade.com/). Regrettably, access to class features will cease, and in adherence to our commitment to user privacy, all associated data has been promptly deleted.
+
+To all our users, past and present, I extend my sincerest appreciation for your unwavering support and enthusiasm. Your engagement has been the driving force behind SciGrade's evolution, and for that, I am profoundly grateful.
+
+Thank you, from the depths of my heart, for being part of the SciGrade community.
+
+-[Alexander Joo-Hyun Sullivan](https://twitter.com/alexjsully)
+
+---
+
+Depreciation:
+
+-   Depreciated online features, including account management, class functionalities, and access to the database
+
+Optimization:
+
+-   Added an `npm run start` command to launch SciGrade faster
+-   Updated GitHub Actions
+
+Update:
+
+-   Update ESLint to v9
+-   Update Sentry version
+-   Update packages
+-   Update service worker files
+
+Documentation:
+
+-   Update public facing email
+
+Bug fix:
+
+-   Fixed too many Sentry CDN error
+
 ## [1.1.2] - 2024-01-04
 
 Update:

@@ -83,7 +83,7 @@
 			Sentry.init({
 				dsn: "https://4661e72aaeb74d2fbd9e23b79e9506e0@o1185775.ingest.sentry.io/6600341",
 				// @AlexJSully when updating the package version number in package.json, update the version number here as well.
-				release: "scigrade@1.1.2",
+				release: "scigrade@1.2..0",
 
 				integrations: [
 					new Sentry.BrowserTracing(),
@@ -98,7 +98,7 @@
 
 			Sentry.configureScope((scope) => {
 				// @AlexJSully when updating the package version number in package.json, update the version number here as well.
-				scope.setTag("app-version", "1.1.2");
+				scope.setTag("app-version", "1.2..0");
 			});
 		</script>
 		<!-- Bootstrap -->
