@@ -54,21 +54,18 @@ async function loadCRISPRJSON_Files() {
 	}
 }
 
-let list_of_practice = ["eBFP"];
 /**
  * Fill in and create a list of genes
  */
 function fillGeneList() {
 	if (gene_backgroundInfo?.gene_list) {
 		$("#gene_dropdown_selection").empty();
-		list_of_practice = [];
 
 		let append_str;
 
 		const listOfGenes = Object.keys(gene_backgroundInfo.gene_list);
 
 		for (const gene of listOfGenes) {
-			list_of_practice.push(gene);
 			append_str += `
 				<option value="${gene}" id="${gene}" tag="practice">${gene}</option>
 			`;
@@ -237,12 +234,14 @@ function checkAnswers() {
 	const correctNucleotidePosition = gene_backgroundInfo.gene_list[current_gene]["Target position"] - 1;
 
 	// Check gRNA Sequence:
-	const inputtedSeq = document.getElementById("sequence_input").value.trim();
+	const inputtedSeq = document?.getElementById("sequence_input")?.value?.trim() || undefined;
 	// Check if gRNA sequence is in against listed
 	possible_comparable_answers = [];
-	for (const answer of benchling_grna_outputs.gene_list[current_gene]) {
-		if (answer.Sequence === inputtedSeq) {
-			possible_comparable_answers.push(answer);
+	if (inputtedSeq) {
+		for (const answer of benchling_grna_outputs.gene_list[current_gene]) {
+			if (answer.Sequence === inputtedSeq) {
+				possible_comparable_answers.push(answer);
+			}
 		}
 	}
 
@@ -374,10 +373,10 @@ function checkAnswers() {
 					}
 
 					// Check if the F1 primer matches the answer's input
-					checkF1Primers(document.getElementById("sequence_input").value.trim());
+					checkF1Primers(document?.getElementById("sequence_input")?.value?.trim() || "");
 
 					// Check if the F1 primer matches the answer's input
-					checkR1Primers(document.getElementById("sequence_input").value.trim());
+					checkR1Primers(document?.getElementById("sequence_input")?.value?.trim() || "");
 				}
 			}
 		}
@@ -1317,7 +1316,7 @@ function submitAnswers() {
 		studentOutputs = `student_list.${studentParseNum}.${loadedMode}-${current_gene}-Outputs`;
 		studentMarks = `student_list.${studentParseNum}.${loadedMode}-${current_gene}-Marks`;
 		all_answers.push(
-			document.getElementById("sequence_input").value.trim(),
+			document?.getElementById("sequence_input")?.value?.trim() || "",
 			document.getElementById("pam_input").value.trim(),
 			document.getElementById("position_input").value,
 			document.getElementById("strand_input").value,
