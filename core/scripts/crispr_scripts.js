@@ -139,7 +139,7 @@ function loadWork() {
 		append_str += '<div class="form-group">';
 		append_str += '<label for="strand_input">gRNA Strand:</label>';
 		append_str +=
-			'<select class="form-control" id="strand_input"><option>Antisense (-)</option><option>Sense (+)</option></select>';
+			'<select class="form-control" id="strand_input" style="border: 1px solid #28a745;" required><option>Antisense (-)</option><option>Sense (+)</option></select>';
 		append_str +=
 			'<small id="strand_inputSmall" class="form-text text-muted">This would be for which strand your gRNA is on.</small>';
 		append_str += "</div>";
