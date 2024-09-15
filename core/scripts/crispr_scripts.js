@@ -42,8 +42,8 @@ let benchling_grna_outputs;
  */
 async function loadCRISPRJSON_Files() {
 	try {
-		// Fetch Benchling_gRNA_Ouputs.json
-		const responseBenchling = await fetch("data/Benchling_gRNA_Outputs.json");
+		// Fetch Benchling_gRNA_Outputs.json
+		const responseBenchling = await fetch("./data/Benchling_gRNA_Outputs.json");
 		benchling_grna_outputs = await responseBenchling.json();
 
 		// Fetch gene_background_info.json
