@@ -49,21 +49,21 @@ There are two ways to adjust the marking algorithm
 
 Currently, there is no interface that allows you to add a new gene from the front-end. Adding a new gene requires access to the MongoDB server and requires the following things:
 
--   Information about the gene which will be added to [Gene's Background Information](core/data/Background_info/gene_background_info.json) on the MongoDB server which includes the following information:
-    -   `base_type`: "practice" or "assignment"
-    -   `name`: The name of the gene
-    -   `Background`: Background information of the gene
-    -   `Target site`: A description of what you are targeting
-    -   `Target position`: The location of what you are targeting
-    -   `Sequence`: The sequence of the gene that has the target on it
-    -   `NCBI gene link`: A NCBI's Gene link
--   The [gRNA outputs/answers](core/data/Benchling_gRNA_Outputs.json) which is used in the marking algorithm to assign marks which include the following information for each gene within the collection/JSON object:
-    -   `Position`: Position of output
-    -   `Strand`: -1 for antisense, 1 for sense
-    -   `Sequence`: The gRNA sequence output
-    -   `PAM`: The gRNA PAM sequence output
-    -   `Specificity Score`: Off-target score
-    -   `Efficiency Score`: On-target score
+- Information about the gene which will be added to [Gene's Background Information](core/data/Background_info/gene_background_info.json) on the MongoDB server which includes the following information:
+    - `base_type`: "practice" or "assignment"
+    - `name`: The name of the gene
+    - `Background`: Background information of the gene
+    - `Target site`: A description of what you are targeting
+    - `Target position`: The location of what you are targeting
+    - `Sequence`: The sequence of the gene that has the target on it
+    - `NCBI gene link`: A NCBI's Gene link
+- The [gRNA outputs/answers](core/data/Benchling_gRNA_Outputs.json) which is used in the marking algorithm to assign marks which include the following information for each gene within the collection/JSON object:
+    - `Position`: Position of output
+    - `Strand`: -1 for antisense, 1 for sense
+    - `Sequence`: The gRNA sequence output
+    - `PAM`: The gRNA PAM sequence output
+    - `Specificity Score`: Off-target score
+    - `Efficiency Score`: On-target score
 
 Add those to the appropriate data files and make sure `loadCRISPRJSON_Files()` within [crispr_scripts.js](core/scripts/crispr_script.js) is accurately calling them and SciGrade will automatically generate the rest of the front-end information (through `fillGeneList()` and `loadWork()`).
 

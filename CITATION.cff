@@ -1,0 +1,42 @@
+cff-version: 1.2.0
+title: SciGrade
+message: >-
+    Open-source website and code for SciGrade, a web-tool for gRNA+Primer
+    generation.
+type: software
+authors:
+    - given-names: Alexander
+      family-names: Sullivan
+      orcid: "https://orcid.org/0000-0002-4463-4473"
+      email: alexjsully.connect@outlook.com
+    - given-names: Quynh
+      family-names: Cao
+      orcid: "https://orcid.org/0000-0002-3067-4343"
+    - given-names: Alistair
+      family-names: Dias
+      affiliation: University of Toronto
+contact:
+    - email: alexjsully.connect@outlook.com
+      family-names: Sullivan
+      given-names: Alexander
+      country: CA
+      orcid: "https://orcid.org/0000-0002-4463-4473"
+      website: "https://alexjsully.me/"
+identifiers:
+    - type: url
+      value: "https://scigrade.com/"
+repository-code: "https://github.com/AlexJSully/SciGrade"
+url: "https://scigrade.com/"
+abstract: >-
+    SciGrade is an online web-tool that allows users
+    to mark and assist in gRNA+Primer generation.
+keywords:
+    - bioinformatics
+    - gaming
+    - portfolio
+    - science
+    - web application
+license: GPL-3.0
+commit: 0677d7c76e441a8ac4e1b1c57bf07701cf7ae821
+version: 1.2.0
+date-released: "2024-05-02"
