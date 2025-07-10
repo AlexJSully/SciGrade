@@ -20,6 +20,7 @@
 	"main": "index.html",
 	"type": "module",
 	"scripts": {
+		"audit:fix": "npm i && npm audit fix",
 		"eslint": "eslint --fix ./",
 		"eslint:check": "eslint ./",
 		"prettier": "prettier --write ./",
@@ -46,14 +47,14 @@
 		"uoft"
 	],
 	"license": "GPL-3.0",
-	"homepage": "https://github.com/AlexJSully/SciGrade#readme",
+	"homepage": "https://scigrade.com/",
 	"devDependencies": {
-		"eslint": "^9.11.1",
-		"eslint-config-prettier": "^9.1.0",
-		"eslint-plugin-prettier": "^5.2.1",
-		"globals": "^15.9.0",
+		"eslint": "^9.30.1",
+		"eslint-config-prettier": "^10.1.5",
+		"eslint-plugin-prettier": "^5.5.1",
+		"globals": "^16.3.0",
 		"http-server": "^14.1.1",
-		"prettier": "^3.3.3",
-		"workbox-cli": "^7.1.0"
+		"prettier": "^3.6.2",
+		"workbox-cli": "^7.3.0"
 	}
 }

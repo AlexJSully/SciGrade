@@ -28,40 +28,40 @@ Thank you, from the depths of my heart, for being part of the SciGrade community
 
 Depreciation:
 
--   Depreciated online features, including account management, class functionalities, and access to the database
+- Depreciated online features, including account management, class functionalities, and access to the database
 
 Optimization:
 
--   Added an `npm run start` command to launch SciGrade faster
--   Updated GitHub Actions
+- Added an `npm run start` command to launch SciGrade faster
+- Updated GitHub Actions
 
 Update:
 
--   Update ESLint to v9
--   Update Sentry version
--   Update packages
--   Update service worker files
+- Update ESLint to v9
+- Update Sentry version
+- Update packages
+- Update service worker files
 
 Documentation:
 
--   Update public facing email
+- Update public facing email
 
 Bug fix:
 
--   Fixed too many Sentry CDN error
+- Fixed too many Sentry CDN error
 
 ## [1.1.2] - 2024-01-04
 
 Update:
 
--   Update Sentry version
--   Update packages
+- Update Sentry version
+- Update packages
 
 Bug fix:
 
--   Fixed checking possible correct answers returning null
--   Fixed issue where if no student information was present, would prevent further use of SciGrade
--   Fixed issue where service worker would try and register before browser was ready or if the browser did not support service workers
+- Fixed checking possible correct answers returning null
+- Fixed issue where if no student information was present, would prevent further use of SciGrade
+- Fixed issue where service worker would try and register before browser was ready or if the browser did not support service workers
 
 ## [1.1.1] - 2023-08-03
 
@@ -69,21 +69,21 @@ No longer supports Internet Explorer.
 
 Optimization:
 
--   Added ESLint
--   Optimized images
--   Updated web manifest
+- Added ESLint
+- Optimized images
+- Updated web manifest
 
 Update:
 
--   Updated OSSAR workflow
--   Updated packages
+- Updated OSSAR workflow
+- Updated packages
 
 Bug fixes:
 
--   Fixed CaptureConsole not found and unable to call CaptureConsole
--   Fixed TypeError cannot read undefined 0
--   Fixed unable to open or close account modal
--   Fixed wrong version of Sentry offline integrations
+- Fixed CaptureConsole not found and unable to call CaptureConsole
+- Fixed TypeError cannot read undefined 0
+- Fixed unable to open or close account modal
+- Fixed wrong version of Sentry offline integrations
 
 ## [1.1.0] - 2022-11-03
 
@@ -93,58 +93,58 @@ Version 1.1.0 has now dropped and it includes the ability to do practice genes w
 
 Feature:
 
--   Can now do practice genes without an account
+- Can now do practice genes without an account
 
 Optimization:
 
--   Added Sentry
--   Added high fetch priority to LCP image
--   Added missing dynamic structured data
--   Added more accessibility support
--   Added sitemap
--   Converted single declaration variables to const
--   Optimized images and SVGs
--   Preload styles
--   Removed depreciated code
--   Removed redundant code
--   Removed unused variables
--   Update IE cache control
--   Update metadata and optimized SEO
--   Updated Google Analytics to GA4
--   Updated robots.txt
+- Added Sentry
+- Added high fetch priority to LCP image
+- Added missing dynamic structured data
+- Added more accessibility support
+- Added sitemap
+- Converted single declaration variables to const
+- Optimized images and SVGs
+- Preload styles
+- Removed depreciated code
+- Removed redundant code
+- Removed unused variables
+- Update IE cache control
+- Update metadata and optimized SEO
+- Updated Google Analytics to GA4
+- Updated robots.txt
 
 Security:
 
--   Added Content Security Policy
--   Added Strict-Transport-Security
+- Added Content Security Policy
+- Added Strict-Transport-Security
 
 Update:
 
--   Updated packages
--   Updated service worker scripts
+- Updated packages
+- Updated service worker scripts
 
 Documentation:
 
--   Added CI/CDs and GitHub Actions
--   Added Quynh (Cathy) Cao's GitHub URL
--   Change GitHub alias from ASully to AlexJSully
--   Prettified code and improved readability
--   Sorted uncategorized CSS styles to make them more readable
--   Updated README
--   Updated prettier to ignore line endings
+- Added CI/CDs and GitHub Actions
+- Added Quynh (Cathy) Cao's GitHub URL
+- Change GitHub alias from ASully to AlexJSully
+- Prettified code and improved readability
+- Sorted uncategorized CSS styles to make them more readable
+- Updated README
+- Updated prettier to ignore line endings
 
 Bug fix:
 
--   Fixed background size not being read correctly
--   Fixed being unable to switch login tabs
--   Fixed being unable to switch tabs on login
--   Fixed broken manifest
--   Fixed incorrect canonical URL on system run page
--   Fixed issue if load button does not exist, causes error
--   Fixed issue where loading genes no longer work
--   Fixed issue where maskable icons were not matching appropriate sizes
--   Fixed issue with Safari 10's iterator bug
--   Fixed spelling mistakes
+- Fixed background size not being read correctly
+- Fixed being unable to switch login tabs
+- Fixed being unable to switch tabs on login
+- Fixed broken manifest
+- Fixed incorrect canonical URL on system run page
+- Fixed issue if load button does not exist, causes error
+- Fixed issue where loading genes no longer work
+- Fixed issue where maskable icons were not matching appropriate sizes
+- Fixed issue with Safari 10's iterator bug
+- Fixed spelling mistakes
 
 ## [1.0.7] - 2021-11-22
 
