@@ -32,10 +32,11 @@ abstract: >-
     to mark and assist in gRNA+Primer generation.
 keywords:
     - bioinformatics
-    - gaming
-    - portfolio
+    - crispr
+    - education
     - science
     - web application
+    - pedagogy
 license: GPL-3.0
 commit: 0677d7c76e441a8ac4e1b1c57bf07701cf7ae821
 version: 1.2.0
