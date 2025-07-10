@@ -14,8 +14,12 @@ name: "CodeQL"
 on:
     push:
         branches: ["master"]
+        paths-ignore:
+            - "core/scripts/APIandLibraries/**"
     pull_request:
         branches: ["master"]
+        paths-ignore:
+            - "core/scripts/APIandLibraries/**"
 
 jobs:
     analyze:
