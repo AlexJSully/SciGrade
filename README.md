@@ -3,7 +3,6 @@
 SciGrade is an online web-tool that allows students (or any user with access) to mark and assist in gRNA+Primer generation.
 
 [![CodeFactor](https://www.codefactor.io/repository/github/AlexJSully/scigrade/badge)](https://www.codefactor.io/repository/github/AlexJSully/scigrade)
-[![DeepSource](https://deepsource.io/gh/AlexJSully/SciGrade.svg/?label=active+issues&show_trend=true&token=STKEtvW3WQehO2ieS5XQg5cq)](https://deepsource.io/gh/AlexJSully/SciGrade/?ref=repository-badge)
 [![Follow on Twitter](https://img.shields.io/twitter/follow/alexjsully?style=social)](https://twitter.com/alexjsully)
 [![GitHub repo size](https://img.shields.io/github/repo-size/AlexJSully/SciGrade)](https://github.com/AlexJSully/SciGrade)
 [![GitHub](https://img.shields.io/github/license/AlexJSully/SciGrade)](https://github.com/AlexJSully/SciGrade)
@@ -24,7 +23,7 @@ It is recommended that you use the web-version available at <https://scigrade.co
 After downloading the repository, just install the dependencies.
 
 ```bash
-npm install
+npm ci
 ```
 
 To open the web-app, run the following command and then go to <http://localhost:3000> in your browser.
