@@ -14,6 +14,7 @@ export async function testAccessibility(page, url) {
 			detailedReportOptions: {
 				html: true,
 			},
+			verbose: false,
 			axeOptions: {
 				rules: {
 					"page-has-heading-one": { enabled: false },
