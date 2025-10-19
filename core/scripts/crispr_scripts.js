@@ -36,7 +36,7 @@ function select_Gene() {
 }
 
 let gene_backgroundInfo;
-let benchling_grna_outputs;
+let benchling_gRNA_outputs;
 /**
  * Load JSON files
  */
@@ -44,7 +44,7 @@ async function loadCRISPRJSON_Files() {
 	try {
 		// Fetch Benchling_gRNA_Outputs.json
 		const responseBenchling = await fetch("./data/Benchling_gRNA_Outputs.json");
-		benchling_grna_outputs = await responseBenchling.json();
+		benchling_gRNA_outputs = await responseBenchling.json();
 
 		// Fetch gene_background_info.json
 		const responseGeneBackground = await fetch("data/Background_info/gene_background_info.json");
@@ -136,13 +136,22 @@ function loadWork() {
 		append_str += "</div>";
 
 		// Strand
-		append_str += '<div class="form-group">';
-		append_str += '<label for="strand_input">gRNA Strand:</label>';
-		append_str +=
-			'<select class="form-control" id="strand_input" style="border: 1px solid #28a745;" required><option>Antisense (-)</option><option>Sense (+)</option></select>';
-		append_str +=
-			'<small id="strand_inputSmall" class="form-text text-muted">This would be for which strand your gRNA is on.</small>';
-		append_str += "</div>";
+		append_str += `
+			<div class="form-group">
+				<label for="strand_input">gRNA Strand:</label>
+
+				<select
+					aria-label="Select gRNA strand"
+					class="form-control"
+					id="strand_input"
+					required
+					style="border: 1px solid #28a745;"
+				>
+					<option>Antisense (-)</option>
+					<option>Sense (+)</option>
+				</select>
+			</div>
+		`;
 
 		// Off-target score
 		append_str += '<div class="form-group">';
@@ -238,7 +247,7 @@ function checkAnswers() {
 	// Check if gRNA sequence is in against listed
 	possible_comparable_answers = [];
 	if (inputtedSeq) {
-		for (const answer of benchling_grna_outputs.gene_list[current_gene]) {
+		for (const answer of benchling_gRNA_outputs.gene_list[current_gene]) {
 			if (answer.Sequence === inputtedSeq) {
 				possible_comparable_answers.push(answer);
 			}
@@ -421,14 +430,14 @@ function checkOffTarget(score) {
 		offtarget_dict = {};
 		offtarget_dictParse = [];
 		offtarget_Use = [];
-		for (let i = 0; i < benchling_grna_outputs.gene_list[current_gene].length; i += 1) {
+		for (let i = 0; i < benchling_gRNA_outputs.gene_list[current_gene].length; i += 1) {
 			if (
-				benchling_grna_outputs.gene_list[current_gene][i].Position >= rangeStarter_lower &&
-				benchling_grna_outputs.gene_list[current_gene][i].Position <= rangeStarter_upper
+				benchling_gRNA_outputs.gene_list[current_gene][i].Position >= rangeStarter_lower &&
+				benchling_gRNA_outputs.gene_list[current_gene][i].Position <= rangeStarter_upper
 			) {
-				if (benchling_grna_outputs.gene_list[current_gene][i]["Specificity Score"]) {
-					offtarget_List.push(benchling_grna_outputs.gene_list[current_gene][i]["Specificity Score"]);
-					offtarget_dict[i] = benchling_grna_outputs.gene_list[current_gene][i]["Specificity Score"];
+				if (benchling_gRNA_outputs.gene_list[current_gene][i]["Specificity Score"]) {
+					offtarget_List.push(benchling_gRNA_outputs.gene_list[current_gene][i]["Specificity Score"]);
+					offtarget_dict[i] = benchling_gRNA_outputs.gene_list[current_gene][i]["Specificity Score"];
 					offtarget_dictParse.push(i);
 				}
 			}
@@ -888,22 +897,48 @@ function openAccountManagement() {
 	const classList = student_reg_information[0].class_list;
 	// Obtain student marks
 	if (["admin", "TA"].includes(student_reg_information[0].student_list[studentParseNum].type)) {
-		append_str = `<br>
+		append_str = `
+			<br>
+
 			<p>
 				<b> Oh wait! </b> Hello ${student_reg_information[0].student_list[studentParseNum].type}! Would you like to download student marks?
-			</p>`;
-		append_str += '<label for="DownloadClass">Choose class: </label>';
-		append_str += '<select id="DownloadClass" class="form-control" style="margin-bottom: 1%">';
-		for (const key in classList) {
-			if (key) {
-				append_str += `<option value="${key}" id="${key}" tag="assignment">${key}</option>\n`;
-			}
-		}
-		append_str += "</select>";
-		append_str +=
-			'<p style="text-align: center;"> <button type="button" class="btn btn-primary" onclick="generateHiddenStudentDownload(document.getElementById(\'DownloadClass\').value, true);"> Download Marks </button>';
-		append_str +=
-			'<button type="button" class="btn btn-primary" onclick="generateHiddenStudentDownload(document.getElementById(\'DownloadClass\').value, false);" style="margin-left: 2%;"> Download Raw Marks </button> </p>';
+			</p>
+
+			<label for="DownloadClass">Choose class: </label>
+
+			<select
+				id="DownloadClass"
+				class="form-control"
+				style="margin-bottom: 1%"
+				aria-label="Download student marks by class"
+			>
+
+			${Object.keys(classList)
+				.filter((key) => key)
+				.map((key) => `<option value="${key}" id="${key}" tag="assignment">${key}</option>\n`)
+				.join("")}
+			</select>
+
+			<p style="text-align: center;">
+				<button
+					type="button"
+					class="btn btn-primary"
+					onclick="generateHiddenStudentDownload(document.getElementById(\'DownloadClass\').value, true);"
+				>
+					Download Marks
+				</button>
+
+				<button
+					type="button"
+					class="btn btn-primary"
+					onclick="generateHiddenStudentDownload(document.getElementById(\'DownloadClass\').value, false);"
+					style="margin-left: 2%;"
+				>
+					Download Raw Marks
+				</button>
+			</p>
+		`;
+
 		$("#accountManagementBody").append(append_str);
 	}
 
@@ -936,7 +971,8 @@ function openAccountManagement() {
 		// Class choice:
 		append_str += '<div class="form-group">';
 		append_str += '<label for="InputClassMultiple" style="font-weight: bold;">Create class name: </label>';
-		append_str += '<select id="InputClassMultiple" class="form-control" style="margin-bottom: 1%" disabled>';
+		append_str +=
+			'<select id="InputClassMultiple" class="form-control" style="margin-bottom: 1%" disabled aria-label="Select class or create new class">';
 		append_str += '<option value="newClass" id="newClassMultiple" tag="assignment" >New Class</option>\n';
 		append_str += "</select>";
 		append_str +=
@@ -995,7 +1031,8 @@ function openAccountManagement() {
 		// Class choice:
 		append_str += '<div class="form-group">';
 		append_str += '<label for="InputClassSingle" style="font-weight: bold;">Choose class: </label>';
-		append_str += '<select id="InputClassSingle" class="form-control" style="margin-bottom: 1%;">';
+		append_str +=
+			'<select id="InputClassSingle" class="form-control" style="margin-bottom: 1%;" aria-label="Select class">';
 		for (const key in classList) {
 			if (key) {
 				append_str += `<option value="${key}" id="${key}" tag="assignment">${key}</option>\n`;
@@ -1056,8 +1093,7 @@ function openAccountManagement() {
 		// Choose class:
 		append_str += '<div class="form-group">';
 		append_str += '<label for="ClassModChange" style="font-weight: bold;">Choose class: </label>';
-		append_str +=
-			"<select id=\"ClassModChange\" class=\"form-control\" style=\"margin-bottom: 1%;\" onchange=\"ChangeDOMInnerhtml('CurrentOffTarget', 'Current off-target marking is set to: ' + student_reg_information[0]['classMarkingMod'][document.getElementById('ClassModChange').value][0])\">";
+		append_str += `<select id="ClassModChange" class="form-control" style="margin-bottom: 1%;" onchange="ChangeDOMInnerhtml('CurrentOffTarget', 'Current off-target marking is set to: ' + student_reg_information[0]['classMarkingMod'][document.getElementById('ClassModChange').value][0])" aria-label="Choose class to modify marking controls">`;
 		for (const key in classList) {
 			if (key) {
 				append_str += `<option value="${key}" id="${key}" tag="assignment">${key}</option>\n`;
@@ -1075,7 +1111,7 @@ function openAccountManagement() {
 
 		append_str += '<p id="CurrentOffTarget">Current off-target marking is set to: </p>';
 		append_str +=
-			'<select id="SelectModifyControls" class="form-control" onchange="showNewInput(\'SelectModifyControls\', \'Custom\', \'InputModifyControls\')" style="margin-bottom: 1%">';
+			'<select id="SelectModifyControls" class="form-control" onchange="showNewInput(\'SelectModifyControls\', \'Custom\', \'InputModifyControls\')" style="margin-bottom: 1%" aria-label="Select off-target marking control">';
 		append_str += '<option value="Optimal" id="Optimal" tag="assignment">Optimal</option>\n';
 		append_str += '<option value="Custom" id="CustomOffTarget" tag="assignment">Custom</option>\n';
 		append_str += "</select>";
@@ -1111,8 +1147,7 @@ function openAccountManagement() {
 		// Choose class:
 		append_str += '<div class="form-group">';
 		append_str += '<label for="ClassChange" style="font-weight: bold;">Choose class: </label>';
-		append_str +=
-			'<select id="ClassChange" class="form-control" style="margin-bottom: 1%;" onchange="UpdateStudentList(document.getElementById(\'ClassChange\').value); UpdateChooseUser(\'ClassUserChange\');">';
+		append_str += `<select id="ClassChange" class="form-control" style="margin-bottom: 1%;" onchange="UpdateStudentList(document.getElementById(\'ClassChange\').value); UpdateChooseUser(\'ClassUserChange\');" aria-label="Change class">`;
 		for (const key in classList) {
 			if (key) {
 				append_str += `<option value="${key}" id="${key}" tag="assignment">${key}</option>\n`;
@@ -1126,7 +1161,8 @@ function openAccountManagement() {
 		// Choose user:
 		append_str += '<div class="form-group">';
 		append_str += '<label for="ClassUserChange" style="font-weight: bold;">Choose user: </label>';
-		append_str += '<select id="ClassUserChange" class="form-control" style="margin-bottom: 1%;" onchange="">';
+		append_str +=
+			'<select id="ClassUserChange" class="form-control" style="margin-bottom: 1%;" onchange="" aira-label="Choose user to change account type">';
 		append_str += "</select>";
 		append_str +=
 			'<small id="ClassUserChangeHelp" class="form-text text-muted">Choose the user for which you change their account type for.</small>';
@@ -1135,7 +1171,8 @@ function openAccountManagement() {
 		// Choose type:
 		append_str += '<div class="form-group">';
 		append_str += '<label for="ClassTypeChange" style="font-weight: bold;">Choose type: </label>';
-		append_str += '<select id="ClassTypeChange" class="form-control" style="margin-bottom: 1%;" onchange="">';
+		append_str +=
+			'<select id="ClassTypeChange" class="form-control" style="margin-bottom: 1%;" onchange="" aria-label="Choose user type">';
 		append_str += '<option value="Student" id="Student" tag="userType">Student</option>\n';
 		append_str += '<option value="TA" id="TA" tag="userType">TA</option>\n';
 		append_str += '<option value="admin" id="admin" tag="userType">admin</option>\n';

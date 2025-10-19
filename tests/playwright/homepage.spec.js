@@ -1,6 +1,12 @@
 import { test, expect } from "@playwright/test";
+import { testAccessibility } from "./utils/accessibility.js";
 
 test.describe("SciGrade Homepage", () => {
+	test.afterEach(async ({ page }) => {
+		// Test accessibility on every page after each test
+		await testAccessibility(page);
+	});
+
 	test("should load and display the main title", async ({ page }) => {
 		await page.goto("http://localhost:3000");
 		await expect(page).toHaveTitle(/SciGrade/i);
