@@ -6,9 +6,9 @@
 /** @type {import('jest').Config} */
 const config = {
 	coverageProvider: "v8",
-	setupFilesAfterEnv: ["<rootDir>/test/setupTest.js"],
+	setupFilesAfterEnv: ["<rootDir>/tests/jest/setupTest.js"],
 	testEnvironment: "jsdom",
-	testMatch: ["**/__tests__/**/*.?([mc])[jt]s?(x)", "**/?(*.)+(spec|test).?([mc])[jt]s?(x)"],
+	testMatch: ["**/__tests__/**/*.?([mc])[jt]s?(x)", "**/?(*.)+(test).?([mc])[jt]s?(x)"],
 	testPathIgnorePatterns: ["/node_modules/", "/core/scripts/APIandLibraries/", "\\.min\\.js$"],
 	verbose: true,
 };

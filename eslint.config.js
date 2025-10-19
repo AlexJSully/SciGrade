@@ -35,10 +35,26 @@ export default [
 	},
 	// Jest-specific configuration for test files
 	{
-		files: ["**/*.test.js", "**/*.spec.js", "**/test/**/*.js"],
+		files: ["**/*.test.js", "**/test/**/*.js"],
 		languageOptions: {
 			globals: {
 				...globals.jest,
+			},
+		},
+	},
+	// Playwright-specific configuration for e2e test files
+	{
+		files: ["**/playwright/**/*.js", "**/*.spec.js"],
+		languageOptions: {
+			globals: {
+				...globals.node,
+				// Playwright test runner globals
+				test: true,
+				expect: true,
+				beforeAll: true,
+				afterAll: true,
+				beforeEach: true,
+				afterEach: true,
 			},
 		},
 	},
