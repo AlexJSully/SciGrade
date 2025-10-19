@@ -971,8 +971,13 @@ function openAccountManagement() {
 		// Class choice:
 		append_str += '<div class="form-group">';
 		append_str += '<label for="InputClassMultiple" style="font-weight: bold;">Create class name: </label>';
-		append_str +=
-			'<select id="InputClassMultiple" class="form-control" style="margin-bottom: 1%" disabled aria-label="Select class or create new class">';
+		append_str += `<select
+				aria-label="Select class or create new class">
+				class="form-control"
+				disabled
+				id="InputClassMultiple"
+				style="margin-bottom: 1%"
+			`;
 		append_str += '<option value="newClass" id="newClassMultiple" tag="assignment" >New Class</option>\n';
 		append_str += "</select>";
 		append_str +=
