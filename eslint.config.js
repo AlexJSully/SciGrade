@@ -39,15 +39,6 @@ export default [
 		languageOptions: {
 			globals: {
 				...globals.jest,
-				beforeEach: "readonly",
-				afterEach: "readonly",
-				beforeAll: "readonly",
-				afterAll: "readonly",
-				describe: "readonly",
-				it: "readonly",
-				test: "readonly",
-				expect: "readonly",
-				jest: "readonly",
 			},
 		},
 	},

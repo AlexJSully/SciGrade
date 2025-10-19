@@ -16,32 +16,27 @@ global.$ = jest.fn(() => ({
 	trim: jest.fn(),
 }));
 
-// Mock DOM methods
-global.document = {
-	getElementById: jest.fn(),
-	querySelector: jest.fn(),
-	querySelectorAll: jest.fn(),
-	createElement: jest.fn(),
-	addEventListener: jest.fn(),
-};
+// Spy/mock only specific DOM methods as needed, preserving jsdom's native objects
+if (typeof document !== "undefined") {
+	jest.spyOn(document, "getElementById").mockImplementation(jest.fn());
+	jest.spyOn(document, "querySelector").mockImplementation(jest.fn());
+	jest.spyOn(document, "querySelectorAll").mockImplementation(jest.fn());
+	jest.spyOn(document, "createElement").mockImplementation(jest.fn());
+}
 
-// Mock window object
-global.window = {
-	alert: jest.fn(),
-	console: {
-		log: jest.fn(),
-		error: jest.fn(),
-		warn: jest.fn(),
-	},
-};
+if (typeof window !== "undefined") {
+	jest.spyOn(window, "alert").mockImplementation(jest.fn());
+	jest.spyOn(window.console, "log").mockImplementation(jest.fn());
+	jest.spyOn(window.console, "error").mockImplementation(jest.fn());
+	jest.spyOn(window.console, "warn").mockImplementation(jest.fn());
+}
 
-// Mock localStorage
-global.localStorage = {
-	getItem: jest.fn(),
-	setItem: jest.fn(),
-	removeItem: jest.fn(),
-	clear: jest.fn(),
-};
+if (typeof localStorage !== "undefined") {
+	localStorage.getItem = jest.fn();
+	localStorage.setItem = jest.fn();
+	localStorage.removeItem = jest.fn();
+	localStorage.clear = jest.fn();
+}
 
 // Helper function to create mock DOM elements
 global.createMockElement = (id, value = "", innerHTML = "") => ({
