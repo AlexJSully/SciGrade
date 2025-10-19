@@ -100,19 +100,18 @@
 			crossorigin="anonymous"
 		></script>
 		<script
-			src="https://browser.sentry-cdn.com/7.112.2/bundle.tracing.replay.min.js"
-			integrity="sha384-+HZy5t257oKTk2yEzTRP7BHVyZzZP3vssSktpR8GbtmuiuSMBW6puOJ4Ca355PSB"
+			src="https://browser.sentry-cdn.com/10.20.0/bundle.tracing.replay.min.js"
+			integrity="sha384-qhDGdb4u3FN/XJ8yWTLkC9EJNFz7j6zyCVkCHhaAqpW1B0IAjjYUVKdDD2OGym43"
 			crossorigin="anonymous"
 		></script>
-
 		<script
-			src="https://browser.sentry-cdn.com/7.112.2/captureconsole.min.js"
-			integrity="sha384-VgUCZ/UThTuCjterVVByiatlC86IEqvsvdaN6Lw8qBTkDewd+tpl/sqaxpBPpNxS"
+			src="https://browser.sentry-cdn.com/10.20.0/captureconsole.min.js"
+			integrity="sha384-YOgWhNUIzLTcBR56ntCzsSQF6ilttt3Eya/I8G6PgvcYAbOw1LyiDHUSyKek2KXe"
 			crossorigin="anonymous"
 		></script>
 		<script>
 			Sentry.init({
-				dsn: "https://4661e72aaeb74d2fbd9e23b79e9506e0@o1185775.ingest.sentry.io/6600341",
+				dsn: "https://4661e72aaeb74d2fbd9e23b79e9506e0@o1185775.ingest.us.sentry.io/6600341",
 				// @AlexJSully when updating the package version number in package.json, update the version number here as well.
 				release: "scigrade@1.2.0",
 
@@ -125,6 +124,9 @@
 
 				// We recommend adjusting this value in production, or using tracesSampler for finer control
 				tracesSampleRate: 1.0,
+
+				// Enable logs to be sent to Sentry
+				enableLogs: true,
 			});
 
 			Sentry.configureScope((scope) => {
@@ -173,15 +175,15 @@
 
 	<body class="focusBody homeBackground">
 		<!-- Google Tag Manager (noscript) -->
-		<noscript
-			><iframe
+		<noscript>
+			<iframe
 				src="https://www.googletagmanager.com/ns.html?id=GTM-K9PRB9W"
 				height="0"
 				width="0"
 				style="display: none; visibility: hidden"
 				title="Google Tag Manager's iFrame"
-			></iframe
-		></noscript>
+			></iframe>
+		</noscript>
 		<!-- End Google Tag Manager (noscript) -->
 		<div id="coverBody" class="fullSizeBody backgroundFrontLayer"></div>
 		<div id="mainBody" role="main">
@@ -196,11 +198,9 @@
 				/>
 			</div>
 			<h1 class="centerBody frontPageFont">An online way to practice gRNA and primer design</h1>
-			<a href="core/systemrun.html"
-				><button type="button" class="btn btn-primary btn-lg centerButton" style="margin-top: 3%">
-					Start
-				</button></a
-			>
+			<a href="core/systemrun.html">
+				<button type="button" class="btn btn-primary btn-lg centerButton" style="margin-top: 3%">Start</button>
+			</a>
 		</div>
 	</body>
 </html>
