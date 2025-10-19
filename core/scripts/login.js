@@ -223,6 +223,7 @@ async function redirectCRISPR() {
 								class='form-select'
 								id='gene_dropdown_selection'
 								onchange='possible_gene=(document.getElementById("gene_dropdown_selection").value);'
+								aria-label='Select gene for CRISPR analysis'
 							>
 							</select>
 						</div>

@@ -18,3 +18,14 @@ coverage.out
 coverage.xml
 cypress/screenshots
 cypress/videos
+
+# Playwright
+node_modules/
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+playwright/.auth/
+playwright-report/
+blob-report/
+test-results/

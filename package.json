@@ -29,7 +29,9 @@
 		"start": "http-server . -p 3000",
 		"test": "jest",
 		"test:jest": "jest --passWithNoTests",
-		"validate": "npm run prettier && npm run eslint && npm run test:jest",
+		"test:playwright:headless": "npx playwright test --reporter=list",
+		"test:playwright:ui": "npx playwright test --ui",
+		"validate": "npm run prettier && npm run eslint && npm run test:jest && npm run test:playwright:headless",
 		"workbox": "workbox generateSW"
 	},
 	"bugs": {
@@ -52,7 +54,10 @@
 	"license": "GPL-3.0",
 	"homepage": "https://scigrade.com/",
 	"devDependencies": {
+		"@playwright/test": "^1.56.1",
 		"@types/jest": "^30.0.0",
+		"@types/node": "^24.8.1",
+		"axe-playwright": "^2.2.2",
 		"eslint": "^9.38.0",
 		"eslint-config-prettier": "^10.1.8",
 		"eslint-plugin-prettier": "^5.5.4",
