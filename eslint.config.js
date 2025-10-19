@@ -11,6 +11,8 @@ export default [
 			sourceType: "module",
 			globals: {
 				...globals.browser,
+				...globals.jest,
+				...globals.node,
 			},
 		},
 		plugins: {
@@ -29,6 +31,15 @@ export default [
 			"no-use-before-define": "off",
 			"eslintPluginPrettier/prettier": "error",
 			semi: ["error", "always"],
+		},
+	},
+	// Jest-specific configuration for test files
+	{
+		files: ["**/*.test.js", "**/*.spec.js", "**/test/**/*.js"],
+		languageOptions: {
+			globals: {
+				...globals.jest,
+			},
 		},
 	},
 ];

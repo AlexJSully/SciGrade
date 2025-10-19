@@ -9,3 +9,12 @@
 
 # System Files
 .DS_Store
+
+# Coverage and testing
+.coverage
+/coverage
+coverage.html
+coverage.out
+coverage.xml
+cypress/screenshots
+cypress/videos
