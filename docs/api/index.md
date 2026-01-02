@@ -1,0 +1,557 @@
+# API Reference
+
+This document provides detailed function signatures and descriptions for the core SciGrade modules.
+
+## Core Modules
+
+- [crispr_scripts.js](#crispr_scriptsjs) - Main gRNA and primer validation logic
+
+## crispr_scripts.js
+
+**Location:** [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js)
+
+Core application logic for gRNA sequence validation, marking, and feedback generation.
+
+### Global Variables
+
+```javascript
+// Application state
+let selection_inMode; // Current mode: "practice" or "assignment"
+let current_gene; // Currently selected gene
+let loadedMode; // Last mode that was loaded
+
+// Reference data
+let gene_backgroundInfo; // Loaded gene metadata
+let benchling_gRNA_outputs; // Loaded gRNA validation data
+
+// Marking state
+let MARgRNAseq; // gRNA sequence validation result
+let MARgRNAseq_degree; // gRNA validation degree (0-3)
+let MARPAMseq; // PAM sequence validation result
+let MARCutPos; // Cut position validation result
+let MARstrand; // Strand selection validation result
+let MAROffTarget; // Off-target score validation result
+let MARF1primers; // F1 primer validation result
+let MARR1primers; // R1 primer validation result
+
+// Gene list
+const listOfGenes = ["eBFP", "ACTN3", "HBB", "CCR5", "ANKK1", "APOE"];
+```
+
+### Gene Selection
+
+#### select_Gene()
+
+```javascript
+function select_Gene()
+```
+
+**Purpose:** Select a gene and load its assignment form.
+
+**Behavior:**
+
+- Validates that `possible_gene` is not empty
+- Sets `current_gene` to `possible_gene`
+- Calls `loadWork()` to render the form
+- Resets marking state
+
+**Error Handling:** Shows alert if gene selection fails (error code sG34-42)
+
+**Example:**
+
+```javascript
+possible_gene = "HBB";
+select_Gene(); // Loads HBB assignment form
+```
+
+### Data Loading
+
+#### loadCRISPRJSON_Files()
+
+```javascript
+async function loadCRISPRJSON_Files()
+```
+
+**Purpose:** Asynchronously load gene reference data from JSON files.
+
+**Fetches:**
+
+- [`./data/Benchling_gRNA_Outputs.json`](../../core/data/Benchling_gRNA_Outputs.json) → `benchling_gRNA_outputs`
+- [`./data/Background_info/gene_background_info.json`](../../core/data/Background_info/gene_background_info.json) → `gene_backgroundInfo`
+
+**Error Handling:** Logs errors to console if fetch fails.
+
+**Returns:** Promise (implicitly handled by async).
+
+**Called By:** Application initialization in [index.html](../../index.html).
+
+**Example:**
+
+```javascript
+await loadCRISPRJSON_Files();
+console.log(benchling_gRNA_outputs.gene_list["HBB"]);
+```
+
+#### fillGeneList()
+
+```javascript
+function fillGeneList()
+```
+
+**Purpose:** Populate the gene selection dropdown from loaded data.
+
+**Behavior:**
+
+- Clears existing dropdown options
+- Extracts gene names from `gene_backgroundInfo.gene_list`
+- Appends options to HTML element with ID `gene_dropdown_selection`
+
+**Prerequisite:** `gene_backgroundInfo` must be loaded first.
+
+**HTML Required:**
+
+```html
+<select id="gene_dropdown_selection"></select>
+```
+
+**Example:**
+
+```javascript
+await loadCRISPRJSON_Files();
+fillGeneList(); // Populates dropdown with eBFP, ACTN3, HBB, etc.
+```
+
+### Form Rendering
+
+#### loadWork()
+
+```javascript
+function loadWork()
+```
+
+**Purpose:** Dynamically render the gRNA/primer submission form for the current gene.
+
+**Behavior:**
+
+- Clears the `#work` HTML element
+- Sets `loadedMode` to `selection_inMode`
+- Generates form HTML including:
+  - Gene background information section
+  - Input fields for gRNA sequence, PAM, strand, position, off-target score
+  - Input fields for F1 and R1 primers
+  - Submit button with `submitAnswers()` handler
+
+**Renders to:** HTML element with ID `work`.
+
+**Error Handling:** Shows alert if data is missing (error code lFS50-66).
+
+**Example:**
+
+```javascript
+current_gene = "HBB";
+loadWork(); // Renders form for HBB gene
+```
+
+### Input Validation
+
+#### isNumberOrDashKey(evt)
+
+```javascript
+function isNumberOrDashKey(evt)
+returns {boolean}
+```
+
+**Purpose:** Validate numeric input during form entry.
+
+**Parameters:**
+
+- `evt` {event} - JavaScript key press event
+
+**Returns:**
+
+- `true` if key is a number (0-9) or dash (-, .)
+- `false` otherwise
+
+**Used For:** Real-time validation of position and score fields.
+
+**Example:**
+
+```html
+<input onkeypress="return isNumberOrDashKey(event)" />
+```
+
+### Answer Checking
+
+#### checkAnswers()
+
+```javascript
+function checkAnswers()
+```
+
+**Purpose:** Validate all student-submitted answers against reference data.
+
+**Process:**
+
+1. Resets all marking variables
+2. Retrieves student input from form fields
+3. Searches for matching gRNA sequences in reference data
+4. For each match:
+    - Validates strand selection
+    - Checks if target nucleotide is in range
+    - Validates PAM sequence
+    - Validates off-target score
+    - Validates F1 and R1 primers
+5. Sets global marking variables
+
+**Sets Variables:**
+
+- `MARgRNAseq`, `MARPAMseq`, `MARstrand`, `MAROffTarget`, `MARF1primers`, `MARR1primers`
+
+**Called By:** `submitAnswers()`
+
+**No Return Value** - Results stored in global variables.
+
+#### checkOffTarget(score)
+
+```javascript
+function checkOffTarget(score)
+```
+
+**Purpose:** Validate off-target score against marking threshold.
+
+**Parameters:**
+
+- `score` {number} - Student's off-target score input
+
+**Behavior:**
+
+- Compares score against optimal threshold
+- Sets `MAROffTarget` and `MAROffTarget_degree` variables
+- Degree values:
+  - `0`: Wrong (score too low)
+  - `1`: Above optimal threshold
+  - `2`: Above 35 (minimum viable)
+  - `3`: Only available option
+
+**Used For:** Part of `checkAnswers()` validation.
+
+#### checkF1Primers(seq)
+
+```javascript
+function checkF1Primers(seq)
+```
+
+**Purpose:** Validate forward primer sequence.
+
+**Parameters:**
+
+- `seq` {string} - Student's F1 primer input
+
+**Behavior:**
+
+- Checks if F1 primer contains required promoter and binding sequences
+- Validates structure against expected format
+
+**Sets:** `MARF1primers` global variable.
+
+**Example:**
+
+```javascript
+checkF1Primers("TAATACGACTCACTATAGCTCGTG...");
+console.log(MARF1primers); // true or false
+```
+
+#### checkR1Primers(seq)
+
+```javascript
+function checkR1Primers(seq)
+```
+
+**Purpose:** Validate reverse primer sequence.
+
+**Parameters:**
+
+- `seq` {string} - Student's R1 primer input
+
+**Behavior:**
+
+- Generates reverse complement of gRNA sequence
+- Checks if R1 primer contains the reverse complement
+
+**Sets:** `MARR1primers` global variable.
+
+**Depends On:** Valid gRNA sequence already validated.
+
+#### createComplementarySeq(seq)
+
+```javascript
+function createComplementarySeq(seq)
+returns {string}
+```
+
+**Purpose:** Create the reverse complement of a DNA sequence.
+
+**Parameters:**
+
+- `seq` {string} - DNA sequence (ACGT)
+
+**Process:**
+
+1. Replace each base with complement: A↔T, G↔C
+2. Reverse the string
+
+**Returns:** Reverse complement sequence.
+
+**Example:**
+
+```javascript
+const complement = createComplementarySeq("ACGT");
+console.log(complement); // "ACGT" (palindromic)
+
+const complement2 = createComplementarySeq("AAAA");
+console.log(complement2); // "TTTT"
+```
+
+### Marking & Feedback
+
+#### markAnswers()
+
+```javascript
+function markAnswers()
+```
+
+**Purpose:** Calculate final score based on validated answers.
+
+**Behavior:**
+
+- Processes results from `checkAnswers()`
+- Assigns points for each correct component:
+  - gRNA sequence
+  - PAM
+  - Strand
+  - Off-target score
+  - F1 primer
+  - R1 primer
+- Calculates weighted final score
+
+**Prerequisite:** `checkAnswers()` must be called first.
+
+**Sets/Updates:** Global marking variables with final scores.
+
+**Called By:** `submitAnswers()` after `checkAnswers()`.
+
+#### showFeedback()
+
+```javascript
+function showFeedback()
+```
+
+**Purpose:** Display marking results and feedback to student.
+
+**Renders:**
+
+- Component-by-component results (✓ or ✗)
+- Correct answers if student answer was wrong
+- Explanation of off-target scoring
+- Primer design guidance
+
+**Rendered To:** Feedback section in HTML.
+
+**Shows:**
+
+- Correct gRNA sequence (if student's was wrong)
+- Correct PAM (if student's was wrong)
+- Optimal off-target threshold
+- Overall score and performance
+
+**Called By:** `submitAnswers()` after `markAnswers()`.
+
+### Form Submission
+
+#### submitAnswers()
+
+```javascript
+function submitAnswers()
+```
+
+**Purpose:** Main workflow for form submission and marking.
+
+**Workflow:**
+
+1. Validate form inputs
+2. Call `checkAnswers()` for validation
+3. Call `markAnswers()` for scoring
+4. Call `showFeedback()` to display results
+5. Store submission in browser (if applicable)
+
+**Form Elements Referenced:**
+
+- `#sequence_input` - gRNA sequence
+- `#pam_input` - PAM
+- `#position_input` - Cut position
+- `#strand_input` - Strand selection
+- `#offtarget_input` - Off-target score
+- `#f1_input` - F1 primer
+- `#r1_input` - R1 primer
+
+**Called By:** Submit button click event in rendered form.
+
+#### IfPressEnter(event, toClickButton)
+
+```javascript
+function IfPressEnter(event, toClickButton)
+```
+
+**Purpose:** Trigger action when Enter key is pressed (accessibility).
+
+**Parameters:**
+
+- `event` {event} - Keyboard event
+- `toClickButton` {string} - Button ID to trigger
+
+**Behavior:** Simulates click on specified button if Enter key pressed.
+
+**Example:**
+
+```html
+<input onkeypress="IfPressEnter(event, 'submitButton')" />
+```
+
+### Account Management (Deprecated)
+
+#### openAccountManagement() ⚠️ DEPRECATED
+
+```javascript
+function openAccountManagement()
+```
+
+**Status:** Deprecated in v1.2.0. This function is no longer used.
+
+**Legacy Purpose:** Displayed account management modal (TA/Admin feature - no longer available).
+
+**Note:** Authentication features were deprecated with the May 2, 2024 v1.2.0 release. See [CHANGELOG.md](../../CHANGELOG.md) for details.
+
+### Display Functions
+
+#### showNewInput(docCheck, checkFor, docDisplay)
+
+```javascript
+function showNewInput(docCheck, checkFor, docDisplay)
+```
+
+**Purpose:** Show/hide HTML elements conditionally.
+
+**Parameters:**
+
+- `docCheck` {string} - Element ID to check
+- `checkFor` {string} - Value to check for
+- `docDisplay` {string} - Element ID to display/hide
+
+**Behavior:** Shows `docDisplay` if `docCheck` contains `checkFor`.
+
+#### ChangeDOMInnerhtml(domID, changeTo)
+
+```javascript
+function ChangeDOMInnerhtml(domID, changeTo)
+```
+
+**Purpose:** Update HTML element content.
+
+**Parameters:**
+
+- `domID` {string} - HTML element ID
+- `changeTo` {string} - New HTML content
+
+#### changeInputClass(docCheck, checkFor, docChange, trueChangeValueTo)
+
+```javascript
+function changeInputClass(docCheck, checkFor, docChange, trueChangeValueTo)
+```
+
+**Purpose:** Toggle CSS classes on elements for visual feedback.
+
+**Parameters:**
+
+- `docCheck` {string} - Element ID to check condition
+- `checkFor` {string} - Value to match
+- `docChange` {string} - Element ID to change class on
+- `trueChangeValueTo` {string} - CSS class to apply
+
+## Deprecated: login.js (v1.2.0+)
+
+**Location:** [core/scripts/login.js](../../core/scripts/login.js)
+
+**Status:** Deprecated in v1.2.0 (May 2, 2024). All authentication and account management features are no longer available.
+
+The following functions are preserved for historical reference only:
+
+- `checkStudentNumber()` - Student credential validation (deprecated)
+- `openAccountManagement()` - Account management interface (deprecated)
+- `UpdateChooseUser()` - User context switching (deprecated)
+- `UpdateStudentList()` - Class roster management (deprecated)
+
+These functions are not used in the current version. Online features including multi-user authentication, class management, and database integration were removed in v1.2.0. See [CHANGELOG.md](../../CHANGELOG.md) for full deprecation details.
+
+## Bootstrap & jQuery
+
+### Bootstrap Classes
+
+The application uses Bootstrap utilities for styling:
+
+```html
+<!-- Form controls -->
+<div class="form-group">
+ <label></label>
+ <input class="form-control" />
+</div>
+
+<!-- Buttons -->
+<button class="btn btn-primary">Submit</button>
+<button class="btn btn-success">Save</button>
+
+<!-- Grid -->
+<div class="container">
+ <div class="row">
+  <div class="col"></div>
+ </div>
+</div>
+```
+
+### jQuery Selectors
+
+```javascript
+// Select by ID
+$("#gene_dropdown_selection").empty();
+
+// Append content
+$("#work").append(append_str);
+
+// Get form value
+const value = $("#sequence_input").val();
+
+// Find element
+const element = document.getElementById("sequence_input");
+```
+
+## Error Codes
+
+| Code     | Context       | Meaning               |
+| -------- | ------------- | --------------------- |
+| sG34-42  | select_Gene() | Gene selection failed |
+| lFS50-66 | loadWork()    | Gene data not loaded  |
+
+## Testing
+
+Unit tests with Jest: [core/scripts/crispr_scripts.test.js](../../core/scripts/crispr_scripts.test.js)
+
+Run tests:
+
+```bash
+npm run test:jest
+```
+
+## Related Documentation
+
+- [Marking Algorithm](marking-algorithm.md) - Detailed validation logic
+- [Data Structures](data-structures.md) - JSON format specifications
+- [Architecture](../architecture/index.md) - System design overview

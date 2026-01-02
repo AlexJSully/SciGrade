@@ -20,9 +20,9 @@ There is an example protocol for students to follow in the PDF file [LabProtocol
 
 ## Marking algorithm
 
-SciGrade marks the gRNA strand, PAM sequence, off-target score and the F1 and R1 primers. Using [markAnswers()](core/scripts/crispr_script.js), the student's input into the form on the practice/assignment form will be used to determine the marking.
+SciGrade marks the gRNA strand, PAM sequence, off-target score and the F1 and R1 primers. Using [markAnswers()](core/scripts/crispr_scripts.js), the student's input into the form will be used to determine the marking.
 
-It is important to note, the off-target scoring is dependent on the class' marking modification value.
+The marking algorithm is fully contained in the client-side code and uses the reference data from [Benchling_gRNA_Outputs.json](core/data/Benchling_gRNA_Outputs.json) to validate answers.
 
 Regarding the algorithm, student marks are dependent on 5 inputs:
 
@@ -40,42 +40,52 @@ The following image describes where student's marks come from in the marking alg
 
 ### Adjusting the marking algorithm
 
-There are two ways to adjust the marking algorithm
+Edit the code within [crispr_scripts.js](core/scripts/crispr_scripts.js). The following functions are related to marking:
 
-1. Use the "Modify marking controls:" card from the account management modal. Within this modal, you can adjust how the off-target "optimal" value is calculated with two options: "Optimal" and "Custom". Optimal is calculated using the following equation: `Min_optimal = Max_range - (Max_range * 0.2)` where `Max_range` is the highest value of possible feasible off-target scores. While Custom is a custom "optimal" value which can be any number between 0.01 and 100.
-2. Edit the code within [crispr_script.js](core/scripts/crispr_script.js). The following functions are related to marking: `checkAnswers()`, `checkOffTarget(score)`, `checkF1Primers(seq)` and `checkR1Primers(seq)` to determine if answers are correct or not and then `markAnswers()` to assign marks.
+- `checkAnswers()` - Validates student input against reference data
+- `checkOffTarget(score)` - Validates off-target scores
+- `checkF1Primers(seq)` - Validates forward primers
+- `checkR1Primers(seq)` - Validates reverse primers
+- `markAnswers()` - Assigns scores based on validation results
+
+For off-target score thresholds, the optimal value is calculated using: `Min_optimal = Max_range - (Max_range * 0.2)` where `Max_range` is the highest possible off-target score for a gene. You can adjust this calculation or implement custom logic in the `checkOffTarget()` function.
 
 ## Adding new genes
 
-Currently, there is no interface that allows you to add a new gene from the front-end. Adding a new gene requires access to the MongoDB server and requires the following things:
+To add a new gene, update the JSON data files:
 
-- Information about the gene which will be added to [Gene's Background Information](core/data/Background_info/gene_background_info.json) on the MongoDB server which includes the following information:
+1. **[Gene's Background Information](core/data/Background_info/gene_background_info.json)**
+
+    Add an entry with:
     - `base_type`: "practice" or "assignment"
     - `name`: The name of the gene
-    - `Background`: Background information of the gene
-    - `Target site`: A description of what you are targeting
-    - `Target position`: The location of what you are targeting
-    - `Sequence`: The sequence of the gene that has the target on it
-    - `NCBI gene link`: A NCBI's Gene link
-- The [gRNA outputs/answers](core/data/Benchling_gRNA_Outputs.json) which is used in the marking algorithm to assign marks which include the following information for each gene within the collection/JSON object:
-    - `Position`: Position of output
-    - `Strand`: -1 for antisense, 1 for sense
-    - `Sequence`: The gRNA sequence output
-    - `PAM`: The gRNA PAM sequence output
-    - `Specificity Score`: Off-target score
-    - `Efficiency Score`: On-target score
+    - `Background`: Educational description
+    - `Target site`: Description of what you are targeting
+    - `Target position`: Numeric location of target
+    - `Sequence`: Full DNA sequence containing the target
+    - `NCBI gene link`: Link to NCBI gene database entry
 
-Add those to the appropriate data files and make sure `loadCRISPRJSON_Files()` within [crispr_scripts.js](core/scripts/crispr_script.js) is accurately calling them and SciGrade will automatically generate the rest of the front-end information (through `fillGeneList()` and `loadWork()`).
+2. **[gRNA Validation Reference](core/data/Benchling_gRNA_Outputs.json)**
+
+    Add array of valid gRNA options with:
+    - `Position`: Start position of gRNA
+    - `Strand`: -1 for antisense, 1 for sense
+    - `Sequence`: The 20bp gRNA sequence (5' to 3')
+    - `PAM`: The 3bp PAM sequence
+    - `Specificity Score`: Off-target score (0-100)
+    - `Efficiency Score`: On-target cleavage efficiency
+
+Once updated, the `loadCRISPRJSON_Files()` function in [crispr_scripts.js](core/scripts/crispr_scripts.js) will load the data, and SciGrade automatically generates the UI through `fillGeneList()` and `loadWork()`.
 
 It is important to note that SciGrade's system is meant for human (Homo sapiens) GRCH38 (HG38) gene annotations using the [crispr.mit.edu from Hsu et al., 2013](http://crispr.mit.edu/) algorithm for off-target scoring.
 
 ## Thank you
 
-Thank you for your interest in using or modifying [SciGrade](http://scigrade.com/). As mentioned in [CONTRIBUTING](CONTRIBUTING.md), we are open to any contributions at any time to SciGrade but please, when contributing, we ask you to please first discuss the change you wish to make via issue, email, or any other method with the owners of this repository before making a change.
+Thank you for your interest in using or modifying [SciGrade](http://scigrade.com/). As mentioned in [CONTRIBUTING](CONTRIBUTING.md), we are open to any contributions at any time to SciGrade but please, when contributing, we ask you to first discuss the change you wish to make via issue, email, or any other method with the owners of this repository before making a change.
 
-Regarding modifications for your own use, all I ask is that you change from using our MongoDB cluster to your own. We are keeping ours encoded into the source files for an example for you to use and understand how SciGrade works.
+For complete documentation on all features, see the [docs/](docs/) directory.
 
-If you have any questions or would like to get in contact with me, please feel free to Tweet me at [@AlexJSully](https://twitter.com/alexjsully).
+If you have any questions or would like to get in contact with the maintainers, please feel free to open an issue on [GitHub](https://github.com/AlexJSully/SciGrade).
 
 Enjoy! :relaxed: :heart:
 
