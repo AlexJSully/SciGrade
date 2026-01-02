@@ -240,7 +240,7 @@
 				data-toggle="modal"
 				href="#accountModal"
 				id="accountIO"
-				onclick="openAccountManagement();"
+				onclick="openAccountManagement()"
 				hidden
 			>
 				Account
@@ -328,7 +328,10 @@
 								type="button"
 								id="seeFeedback"
 								class="btn btn-primary"
-								onclick="showFeedback(); $('#dismissFeedbackModal').click();"
+								onclick="
+									showFeedback();
+									$('#dismissFeedbackModal').click();
+								"
 							>
 								See Feedback
 							</button>
@@ -336,7 +339,10 @@
 								type="button"
 								id="backAssignments"
 								class="btn btn-primary"
-								onclick="backToAssignments(); $('#dismissFeedbackModal').click();"
+								onclick="
+									backToAssignments();
+									$('#dismissFeedbackModal').click();
+								"
 							>
 								Back to Assignments
 							</button>
@@ -378,7 +384,7 @@
 							aria-label="Close"
 							class="close"
 							data-dismiss="modal"
-							onclick="$('#accountModal').modal('hide');"
+							onclick="$('#accountModal').modal('hide')"
 							type="button"
 						>
 							<span aria-hidden="true">&times;</span>
@@ -390,7 +396,7 @@
 							class="btn btn-secondary"
 							data-dismiss="modal"
 							id="dismissAccountModal"
-							onclick="$('#accountModal').modal('hide');"
+							onclick="$('#accountModal').modal('hide')"
 							type="button"
 						>
 							Close
