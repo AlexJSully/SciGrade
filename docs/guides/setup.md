@@ -20,7 +20,7 @@ cd SciGrade
 npm ci
 ```
 
-This installs exact versions from `package-lock.json` as specified in [package.json](../../package.json).
+This installs exact dependency versions from `package-lock.json` (generated from [package.json](../../package.json)).
 
 ### 3. Start Local Server
 
