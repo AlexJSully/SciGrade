@@ -16,9 +16,7 @@ function loadGeneContent() {
 	select_Gene();
 }
 
-/**
- * Builds the selection UI and loads the reference data for the runtime page.
- */
+/** Builds the selection UI and loads the reference data for the runtime page. */
 async function redirectCRISPR() {
 	$("#mainContainer").empty();
 	let append_str;
@@ -69,4 +67,9 @@ async function redirectCRISPR() {
 	await loadCRISPRJSON_Files();
 
 	fillGeneList();
+}
+
+// Export for testing
+if (typeof module !== "undefined" && module.exports) {
+	module.exports = { loadGeneContent, redirectCRISPR };
 }

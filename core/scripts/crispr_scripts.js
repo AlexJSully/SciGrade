@@ -543,6 +543,7 @@ function createComplementarySeq(seq) {
 	for (const element of seq) {
 		comp_seq = complementary_nt_dict[element] + comp_seq;
 	}
+	return comp_seq;
 }
 
 let studentMark = 0;
@@ -891,5 +892,47 @@ $(() => {
 
 // Export for testing
 if (typeof module !== "undefined" && module.exports) {
-	module.exports = { getOffTargetOptimalValue };
+	module.exports = {
+		getOffTargetOptimalValue,
+		isNumberOrDashKey,
+		createComplementarySeq,
+		checkOffTarget,
+		checkF1Primers,
+		checkR1Primers,
+		fillGeneList,
+		// Export getters for testing
+		get MAROffTarget() {
+			return MAROffTarget;
+		},
+		get MAROffTarget_degree() {
+			return MAROffTarget_degree;
+		},
+		get MARF1primers() {
+			return MARF1primers;
+		},
+		get MARR1primers() {
+			return MARR1primers;
+		},
+		// Export setters for test setup
+		__setTestState(state = {}) {
+			if (state.correctNucleotideIncluded !== undefined)
+				correctNucleotideIncluded = state.correctNucleotideIncluded;
+			if (state.MARgRNAseq !== undefined) MARgRNAseq = state.MARgRNAseq;
+			if (state.benchling_gRNA_outputs !== undefined) benchling_gRNA_outputs = state.benchling_gRNA_outputs;
+			if (state.current_gene !== undefined) current_gene = state.current_gene;
+			if (state.gene_backgroundInfo !== undefined) gene_backgroundInfo = state.gene_backgroundInfo;
+		},
+		// Reset state for clean tests
+		__resetState() {
+			MAROffTarget = false;
+			MAROffTarget_degree = 0;
+			MARF1primers = false;
+			MARR1primers = false;
+			MAROffTarget_aboveOpt = false;
+			MAROffTarget_above35 = false;
+			MAROffTarget_onlyOption = false;
+			correctNucleotideIncluded = false;
+			MARgRNAseq = false;
+		},
+	};
 }
