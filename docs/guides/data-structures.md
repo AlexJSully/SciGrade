@@ -4,7 +4,7 @@ This document describes the JSON data formats and data structures used throughou
 
 ## Overview
 
-SciGrade uses JSON as its primary data format for gene information and guide RNA (gRNA) validation reference data. These files are loaded client-side during the runtime UI flow in [core/scripts/login.js](../../core/scripts/login.js) and [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js).
+SciGrade uses JSON as its primary data format for gene information and guide RNA (gRNA) validation reference data. These files are loaded client-side during the runtime UI flow in [core/scripts/runtime.js](../../core/scripts/runtime.js) and [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js).
 
 ## Gene Background Information
 

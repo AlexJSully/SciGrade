@@ -2,7 +2,7 @@
 
 SciGrade is a client-side web application that dynamically renders the guide RNA (gRNA) and primer validation interface. This section covers the system design, data flow, and component relationships.
 
-The landing page is [index.html](../../index.html), and the runtime page is [core/systemrun.html](../../core/systemrun.html). The runtime page loads the client scripts and initializes the UI flow defined in [core/scripts/login.js](../../core/scripts/login.js) and [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js).
+The landing page is [index.html](../../index.html), and the runtime page is [core/systemrun.html](../../core/systemrun.html). The runtime page loads the client scripts and initializes the UI flow defined in [core/scripts/runtime.js](../../core/scripts/runtime.js) and [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js).
 
 ## System Overview
 
@@ -40,18 +40,16 @@ Main application logic for gRNA and primer validation.
 - `gene_backgroundInfo` - Loaded gene reference data
 - `benchling_gRNA_outputs` - Loaded gRNA validation reference
 
-#### [core/scripts/login.js](../../core/scripts/login.js)
+#### [core/scripts/runtime.js](../../core/scripts/runtime.js)
 
-UI bootstrap and account-management helpers used by the runtime page.
+UI bootstrap helpers used by the runtime page.
 
 **Key Functions:**
 
 - `redirectCRISPR()` - Builds the selection UI and triggers data loading
 - `loadGeneContent()` - Reads the selected gene and calls `select_Gene()`
-- `checkStudentNumber()` - Validates class membership against `student_reg_information`
-- `loginVerify()` - Checks a student record for registration status
 
-**Note:** The default runtime flow hides the account UI and initializes the practice flow on page load in [core/systemrun.html](../../core/systemrun.html). The deprecation of online account features is recorded in [CHANGELOG.md](../../CHANGELOG.md).
+**Note:** The runtime flow initializes the practice flow on page load in [core/systemrun.html](../../core/systemrun.html). The deprecation of online account features is recorded in [CHANGELOG.md](../../CHANGELOG.md).
 
 ### Data Files
 
@@ -109,7 +107,7 @@ Application styles covering:
 - Layout and responsive design
 - Form styling and validation states
 - Feedback page appearance
-- Modal dialogs and account management UI
+- Modal dialogs used by feedback flows
 
 Built with Bootstrap utilities integrated via [core/scripts/APIandLibraries/Bootstrap/](../../core/scripts/APIandLibraries/Bootstrap/).
 
@@ -125,7 +123,7 @@ Built with Bootstrap utilities integrated via [core/scripts/APIandLibraries/Boot
 
 ### Initialization Flow
 
-The initialization flow is driven by [index.html](../../index.html), [core/systemrun.html](../../core/systemrun.html), [core/scripts/login.js](../../core/scripts/login.js), and [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js).
+The initialization flow is driven by [index.html](../../index.html), [core/systemrun.html](../../core/systemrun.html), [core/scripts/runtime.js](../../core/scripts/runtime.js), and [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js).
 
 ```mermaid
 sequenceDiagram
@@ -180,7 +178,7 @@ flowchart TD
 
 ## Component Relationships
 
-The landing page and runtime page are defined in [index.html](../../index.html) and [core/systemrun.html](../../core/systemrun.html), with scripts in [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js) and [core/scripts/login.js](../../core/scripts/login.js).
+The landing page and runtime page are defined in [index.html](../../index.html) and [core/systemrun.html](../../core/systemrun.html), with scripts in [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js) and [core/scripts/runtime.js](../../core/scripts/runtime.js).
 
 ```mermaid
 graph LR
@@ -231,7 +229,7 @@ From [package.json](../../package.json):
 
 ## Performance Optimizations
 
-1. **Runtime Data Fetch** - Gene data is fetched when `redirectCRISPR()` runs in [core/scripts/login.js](../../core/scripts/login.js)
+1. **Runtime Data Fetch** - Gene data is fetched when `redirectCRISPR()` runs in [core/scripts/runtime.js](../../core/scripts/runtime.js)
 2. **Minified Assets** - Pre-built minified versions are available in [core/scripts/](../../core/scripts/) and [core/styling/](../../core/styling/)
 3. **Service Worker Caching** - Runtime caching rules are defined in [workbox-config.js](../../workbox-config.js)
 4. **Client-side Rendering** - UI is generated in the browser by [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js)

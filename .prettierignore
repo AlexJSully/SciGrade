@@ -30,7 +30,7 @@ core/scripts/APIandLibraries/**/*
 .vscode
 
 # workbox
-workbox-config.js
+workbox-config.cjs
 core/scripts/serviceWorker
 
 # Visual Studio Code

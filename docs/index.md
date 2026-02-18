@@ -6,7 +6,7 @@ Welcome to the SciGrade documentation. This directory contains comprehensive gui
 
 [SciGrade](https://scigrade.com/) is a client-side web application that allows students and educators to practice and receive feedback on guide RNA (gRNA) design and F1/R1 primer entry for Clustered Regularly Interspaced Short Palindromic Repeats (CRISPR)-based workflows.
 
-The landing page is [index.html](../index.html), which links to the application runtime page [core/systemrun.html](../core/systemrun.html). The runtime page loads the app scripts [core/scripts/login.min.js](../core/scripts/login.min.js) and [core/scripts/crispr_scripts.min.js](../core/scripts/crispr_scripts.min.js) and starts the UI flow on page load.
+The landing page is [index.html](../index.html), which links to the application runtime page [core/systemrun.html](../core/systemrun.html). The runtime page loads the app scripts [core/scripts/runtime.js](../core/scripts/runtime.js) and [core/scripts/crispr_scripts.js](../core/scripts/crispr_scripts.js) and starts the UI flow on page load.
 
 ## Documentation Structure
 
@@ -18,7 +18,7 @@ The landing page is [index.html](../index.html), which links to the application 
 
 ## Application Flow
 
-The flow below reflects the landing page in [index.html](../index.html) and the runtime UI/data flow in [core/scripts/login.js](../core/scripts/login.js) and [core/scripts/crispr_scripts.js](../core/scripts/crispr_scripts.js).
+The flow below reflects the landing page in [index.html](../index.html) and the runtime UI/data flow in [core/scripts/runtime.js](../core/scripts/runtime.js) and [core/scripts/crispr_scripts.js](../core/scripts/crispr_scripts.js).
 
 ```mermaid
 flowchart TD
@@ -37,7 +37,7 @@ flowchart TD
 
 ## User Interaction Sequence
 
-This sequence follows the runtime flow implemented in [core/scripts/login.js](../core/scripts/login.js) and [core/scripts/crispr_scripts.js](../core/scripts/crispr_scripts.js).
+This sequence follows the runtime flow implemented in [core/scripts/runtime.js](../core/scripts/runtime.js) and [core/scripts/crispr_scripts.js](../core/scripts/crispr_scripts.js).
 
 ```mermaid
 sequenceDiagram
@@ -80,10 +80,7 @@ SciGrade uses the gene list defined in [core/data/Background_info/gene_backgroun
 - The runtime page initializes the UI without requiring authentication in [core/systemrun.html](../core/systemrun.html)
 - Feedback is generated after submission by [core/scripts/crispr_scripts.js](../core/scripts/crispr_scripts.js)
 
-#### Account Management UI
-
-- Account management and class tooling are present in the client-side scripts and hidden by default in [core/systemrun.html](../core/systemrun.html)
-- The [CHANGELOG.md](../CHANGELOG.md) records the deprecation of online account features
+The [CHANGELOG.md](../CHANGELOG.md) records the deprecation of online account features.
 
 ## Technology Stack
 

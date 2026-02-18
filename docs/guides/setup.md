@@ -66,7 +66,7 @@ npm run workbox           # Generate service worker with workbox
 - [core/scripts/APIandLibraries/](../../core/scripts/APIandLibraries/) - Third-party libraries (jQuery, Bootstrap)
 - [core/scripts/serviceWorker/](../../core/scripts/serviceWorker/) - Service worker runtime
 - [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js) - Main gRNA/primer validation logic
-- [core/scripts/login.js](../../core/scripts/login.js) - Login and account helpers
+- [core/scripts/runtime.js](../../core/scripts/runtime.js) - Runtime practice flow helpers
 - [core/styling/style.css](../../core/styling/style.css) - Application styles
 - [core/images/](../../core/images/) - SVG and PNG assets
 - [core/icon/](../../core/icon/) - PWA icons and manifest
@@ -177,8 +177,8 @@ This uses the configuration in [workbox-config.js](../../workbox-config.js).
 
 Minified versions are pre-built:
 
-- [core/scripts/crispr_scripts.min.js](../../core/scripts/crispr_scripts.min.js)
-- [core/scripts/login.min.js](../../core/scripts/login.min.js)
+- [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js)
+- [core/scripts/runtime.js](../../core/scripts/runtime.js)
 - [core/styling/style.min.css](../../core/styling/style.min.css)
 
 ## Troubleshooting

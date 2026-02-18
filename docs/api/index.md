@@ -83,7 +83,7 @@ async function loadCRISPRJSON_Files()
 
 **Returns:** Promise (implicitly handled by async).
 
-**Called By:** `redirectCRISPR()` in [core/scripts/login.js](../../core/scripts/login.js), which is triggered on page load from [core/systemrun.html](../../core/systemrun.html).
+**Called By:** `redirectCRISPR()` in [core/scripts/runtime.js](../../core/scripts/runtime.js), which is triggered on page load from [core/systemrun.html](../../core/systemrun.html).
 
 **Example:**
 

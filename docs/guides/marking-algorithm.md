@@ -125,8 +125,7 @@ The off-target score uses the following steps in [core/scripts/crispr_scripts.js
 
 1. Build a list of reference scores within +/- 35 positions of the submitted cut position.
 2. Compute `Max_range` from that list and `Min_optimal = Max_range - (Max_range * 0.2)`.
-3. When the class marking mode is `Optimal`, use 80 as the threshold if `Min_optimal` is greater than 80 or less than 35.
-4. When the class marking mode is `Custom`, use the class-specific value stored in `student_reg_information`.
+3. Use 80 as the threshold if `Min_optimal` is greater than 80 or less than 35.
 
 **Pass Criteria:**
 
@@ -202,17 +201,7 @@ sequenceDiagram
 
 ### Adjusting Off-target Threshold
 
-In account management modal (opened via [openAccountManagement()](../../core/scripts/crispr_scripts.js#L853)):
-
-1. Select "Optimal" mode:
-
-- Calculates `Min_optimal = Max_range - (Max_range * 0.2)` from nearby scores
-- Uses 80 as the threshold when `Min_optimal` is greater than 80 or less than 35
-
-2. Select "Custom" mode:
-    - Enter specific value (0.01 - 100)
-
-- Stored in `student_reg_information[0].classMarkingMod` for the selected class
+The practice flow uses the default threshold derived from nearby scores. To adjust it, update the logic in `getOffTargetOptimalValue()` inside [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js).
 
 ### Adding Custom Marking Rules
 
