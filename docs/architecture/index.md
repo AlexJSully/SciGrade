@@ -1,19 +1,19 @@
 # Architecture
 
-SciGrade is a client-side web application that dynamically renders the gRNA and primer validation interface. This section covers the system design, data flow, and component relationships.
+SciGrade is a client-side web application that dynamically renders the guide RNA (gRNA) and primer validation interface. This section covers the system design, data flow, and component relationships.
+
+The landing page is [index.html](../../index.html), and the runtime page is [core/systemrun.html](../../core/systemrun.html). The runtime page loads the client scripts and initializes the UI flow defined in [core/scripts/login.js](../../core/scripts/login.js) and [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js).
 
 ## System Overview
 
 ```mermaid
 graph TD
     A[Browser/Client] -->|HTTP Requests| B[Static Web Server]
-    A -->|Load Scripts| C[crispr_scripts.js]
-    A -->|Load Scripts| D[login.js]
-    C -->|Fetch JSON| E["Gene Data<br/>(Benchling_gRNA_Outputs.json)"]
-    C -->|Fetch JSON| F["Gene Info<br/>(gene_background_info.json)"]
-    C -->|Call Functions| G[Marking Algorithm]
-    D -->|Manage| H[User Sessions<br/>Legacy Code]
-    G -->|Store Results| I["Browser LocalStorage<br/>Session Data"]
+    B --> C[Landing Page]
+    C --> D[App Runtime Page]
+    D --> E[Client Scripts]
+    E --> F[JSON Data Files]
+    E --> G[Marking and Feedback UI]
 ```
 
 ## Core Components
@@ -28,29 +28,30 @@ Main application logic for gRNA and primer validation.
 
 - `loadCRISPRJSON_Files()` - Load gene data and benchling outputs asynchronously
 - `fillGeneList()` - Populate gene selection dropdown
-- `loadWork()` - Dynamically render the assignment form
+- `loadWork()` - Dynamically render the input form
 - `checkAnswers()` - Validate student input against reference data
 - `markAnswers()` - Calculate scores based on validation results
 - `submitAnswers()` - Handle form submission
 
 **Global State:**
 
-- `selection_inMode` - Current mode ("practice" or "assignment")
+- `selection_inMode` - Current mode string (defaults to "practice")
 - `current_gene` - Currently selected gene
 - `gene_backgroundInfo` - Loaded gene reference data
 - `benchling_gRNA_outputs` - Loaded gRNA validation reference
 
 #### [core/scripts/login.js](../../core/scripts/login.js)
 
-Legacy code for user management (authentication features deprecated in v1.2.0).
+UI bootstrap and account-management helpers used by the runtime page.
 
 **Key Functions:**
 
-- `checkStudentNumber()` - Legacy student credential validation
-- `openAccountManagement()` - Legacy account modal (deprecated)
-- `UpdateChooseUser()` - Legacy user switching (deprecated)
+- `redirectCRISPR()` - Builds the selection UI and triggers data loading
+- `loadGeneContent()` - Reads the selected gene and calls `select_Gene()`
+- `checkStudentNumber()` - Validates class membership against `student_reg_information`
+- `loginVerify()` - Checks a student record for registration status
 
-**Note:** These features are no longer used in the default configuration. See [CHANGELOG.md](../../CHANGELOG.md) for deprecation details.
+**Note:** The default runtime flow hides the account UI and initializes the practice flow on page load in [core/systemrun.html](../../core/systemrun.html). The deprecation of online account features is recorded in [CHANGELOG.md](../../CHANGELOG.md).
 
 ### Data Files
 
@@ -124,89 +125,93 @@ Built with Bootstrap utilities integrated via [core/scripts/APIandLibraries/Boot
 
 ### Initialization Flow
 
+The initialization flow is driven by [index.html](../../index.html), [core/systemrun.html](../../core/systemrun.html), [core/scripts/login.js](../../core/scripts/login.js), and [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js).
+
 ```mermaid
 sequenceDiagram
-    Browser->>index.html: Load page
-    index.html->>crispr_scripts.js: Parse script
-    index.html->>login.js: Parse script
-    crispr_scripts.js->>loadCRISPRJSON_Files: Execute on load
-    loadCRISPRJSON_Files->>Benchling_gRNA_Outputs.json: Fetch
-    loadCRISPRJSON_Files->>gene_background_info.json: Fetch
-    crispr_scripts.js->>fillGeneList: Populate dropdown
-    login.js->>checkStudentNumber: Validate user if needed
+    Browser->>LandingPage: Load landing page
+    Browser->>RuntimePage: Navigate to app page
+    RuntimePage->>UI: Load scripts
+    UI->>UI: Build selection UI
+    UI->>Data: Fetch gene data
+    Data-->>UI: Return data
+    UI->>UI: Populate gene dropdown
 ```
 
-### Assignment Workflow
+### Submission Workflow
+
+Submission flow is implemented in [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js).
 
 ```mermaid
 sequenceDiagram
     Student->>UI: Select gene
-    UI->>loadWork: Render assignment form
+    UI->>loadWork: Render input form
     Student->>UI: Enter gRNA + primers
     Student->>UI: Click Submit
-    UI->>submitAnswers: Validate form
+    UI->>submitAnswers: Trigger submission flow
     submitAnswers->>checkAnswers: Check all fields
-    checkAnswers->>Benchling_gRNA_Outputs.json: Compare gRNA
-    checkAnswers->>gene_background_info.json: Get target position
-    checkAnswers->>Marking Algorithm: Calculate score
-    Marking Algorithm->>Student: Show feedback/results
+    checkAnswers->>Data: Compare gRNA and target position
+    submitAnswers->>markAnswers: Calculate score
+    submitAnswers->>showFeedback: Render feedback UI
+    showFeedback->>Student: Display feedback
 ```
 
 ### Marking Process
 
+Marking is driven by `checkAnswers()`, `checkOffTarget()`, and `markAnswers()` in [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js).
+
 ```mermaid
 flowchart TD
-    A[Student Submission] --> B{gRNA Sequence<br/>in Reference?}
-    B -->|No| C[All Answers Wrong]
-    B -->|Yes| D{Correct<br/>Strand?}
+    A[Student Submission] --> B{gRNA Sequence Match?}
+    B -->|No| C[No gRNA Credit]
+    B -->|Yes| D{Strand and Target Range Valid?}
     D -->|No| C
-    D -->|Yes| E{Off-target<br/>Score Valid?}
-    E -->|No| C
-    E -->|Yes| F{F1/R1<br/>Primers Valid?}
-    F -->|No| G[Partial Credit]
-    F -->|Yes| H[Full Credit]
-    C --> I[Final Score & Feedback]
-    G --> I
-    H --> I
+    D -->|Yes| E{PAM Match?}
+    E -->|No| F[Partial Credit Path]
+    E -->|Yes| G{Off-target Score Valid?}
+    G -->|No| F
+    G -->|Yes| H{F1/R1 Primers Valid?}
+    H -->|Yes| I[Full Credit Path]
+    H -->|No| F
+    C --> J[Final Score]
+    F --> J
+    I --> J
 ```
 
 ## Component Relationships
 
+The landing page and runtime page are defined in [index.html](../../index.html) and [core/systemrun.html](../../core/systemrun.html), with scripts in [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js) and [core/scripts/login.js](../../core/scripts/login.js).
+
 ```mermaid
 graph LR
-    A["index.html<br/>(Entry Point)"]
-    B["crispr_scripts.js<br/>(Validation & UI)"]
-    C["login.js<br/>(Auth & Account)"]
-    D["style.css<br/>(Styling)"]
-    E["Benchling<br/>gRNA Outputs"]
-    F["Gene Background<br/>Info"]
+    A["Landing Page"]
+    B["Runtime Page"]
+    C["Client Scripts"]
+    D["Styling"]
+    E["gRNA Data"]
+    F["Gene Background Data"]
 
-    A -->|loads| B
-    A -->|loads| C
-    A -->|includes| D
-    B -->|fetches| E
-    B -->|fetches| F
-    C -->|depends on| B
+    A -->|navigates| B
+    B -->|loads| C
+    B -->|includes| D
+    C -->|fetches| E
+    C -->|fetches| F
 ```
 
 ## Offline Support
 
-Service worker configuration in [workbox-config.js](../../workbox-config.js) enables:
-
-- Offline browsing of cached pages
-- Cached static assets (CSS, JS, images)
-- Note: Dynamic gene data requires internet connection on first load
+Service workers are registered in [index.html](../../index.html) and [core/systemrun.html](../../core/systemrun.html). The generated worker [core/scripts/serviceWorker/sw.js](../../core/scripts/serviceWorker/sw.js) precaches the core assets listed in [workbox-config.js](../../workbox-config.js) and applies runtime caching for HTML, CSS, JavaScript, and image requests.
 
 ## Dependencies
 
 ### Frontend Libraries
 
-Located in [core/scripts/APIandLibraries/](../../core/scripts/APIandLibraries/):
+Loaded by the runtime page [core/systemrun.html](../../core/systemrun.html):
 
-- **jQuery** - DOM manipulation and AJAX
-- **Bootstrap** - CSS grid and utilities
-- **tabletoCSV** - Export functionality (optional)
-- **Material Icons** - Icon fonts
+- **jQuery** - Local script from [core/scripts/APIandLibraries/jQuery/](../../core/scripts/APIandLibraries/jQuery/)
+- **Bootstrap** - Local script and styles from [core/scripts/APIandLibraries/Bootstrap/](../../core/scripts/APIandLibraries/Bootstrap/)
+- **tabletoCSV** - Local script from [core/scripts/APIandLibraries/tabletoCSV/](../../core/scripts/APIandLibraries/tabletoCSV/)
+- **Material Icons** - Google Fonts stylesheet in [core/systemrun.html](../../core/systemrun.html)
 
 ### Development Tools
 
@@ -220,13 +225,13 @@ From [package.json](../../package.json):
 
 ## Security Considerations
 
-1. **Content Security Policy** - Defined in [index.html](../../index.html) meta tags
-2. **HTTPS Recommended** - Production should use HTTPS (Strict-Transport-Security header included)
-3. **Input Validation** - Form inputs validated client-side and by marking algorithm
+1. **Content Security Policy** - Defined in meta tags in [index.html](../../index.html) and [core/systemrun.html](../../core/systemrun.html)
+2. **Strict-Transport-Security** - Defined in meta tags in [index.html](../../index.html) and [core/systemrun.html](../../core/systemrun.html)
+3. **Input Validation** - Form inputs are checked by the client-side marking functions in [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js)
 
 ## Performance Optimizations
 
-1. **Lazy Loading** - Gene data loaded on demand
-2. **Minified Assets** - Pre-built minified versions available
-3. **Service Worker Caching** - Static assets cached for offline access
-4. **Client-side Rendering** - No server-side page generation overhead
+1. **Runtime Data Fetch** - Gene data is fetched when `redirectCRISPR()` runs in [core/scripts/login.js](../../core/scripts/login.js)
+2. **Minified Assets** - Pre-built minified versions are available in [core/scripts/](../../core/scripts/) and [core/styling/](../../core/styling/)
+3. **Service Worker Caching** - Runtime caching rules are defined in [workbox-config.js](../../workbox-config.js)
+4. **Client-side Rendering** - UI is generated in the browser by [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js)

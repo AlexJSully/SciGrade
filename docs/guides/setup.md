@@ -2,7 +2,7 @@
 
 ## System Requirements
 
-- **Node.js**: 14+ (includes npm)
+- **Node.js**: 20+
 - **Browser**: Chrome, Firefox, Edge, or Safari with ES6+ support
 
 ## Installation
@@ -20,7 +20,7 @@ cd SciGrade
 npm ci
 ```
 
-This installs exact dependency versions from `package-lock.json` (generated from [package.json](../../package.json)).
+This installs exact dependency versions from [package-lock.json](../../package-lock.json) (generated from [package.json](../../package.json)).
 
 ### 3. Start Local Server
 
@@ -44,7 +44,7 @@ npm run prettier:check    # Check code formatting
 npm run prettier          # Format code automatically
 
 # Testing
-npm run test              # Run all tests (jest + playwright)
+npm run test              # Run jest unit tests
 npm run test:jest         # Run jest unit tests only
 npm run test:playwright:headless  # Run playwright tests headless
 npm run test:playwright:ui        # Run playwright tests in UI mode
@@ -58,34 +58,28 @@ npm run workbox           # Generate service worker with workbox
 
 ## Project Structure
 
-```text
-/core
-  /data                    # JSON data files
-    /Background_info       # Gene background information
-    Benchling_gRNA_Outputs.json  # gRNA validation reference data
-  /scripts
-    /APIandLibraries       # Third-party libraries (jQuery, Bootstrap)
-    /serviceWorker         # Service worker for offline support
-    crispr_scripts.js      # Main gRNA/primer validation logic
-    login.js               # Authentication and user management
-  /styling
-    style.css              # Application styles
-  /images                  # SVG and PNG assets
-  /icon                    # PWA icons and manifest
-  index.html               # Main entry point
-
-/docs                      # Documentation (this directory)
-/tests
-  /jest                    # Jest unit test configuration
-  /playwright              # Playwright E2E test configuration
-/test-results              # Test output directory
-
-package.json               # Dependencies and scripts
-jest.config.mjs            # Jest configuration
-playwright.config.js       # Playwright configuration
-eslint.config.js           # ESLint configuration
-.prettierrc                # Prettier configuration
-```
+- [core/](../../core/) - Application assets and scripts
+- [core/data/](../../core/data/) - JSON data files
+- [core/data/Background_info/](../../core/data/Background_info/) - Gene background information
+- [core/data/Benchling_gRNA_Outputs.json](../../core/data/Benchling_gRNA_Outputs.json) - guide RNA (gRNA) validation reference data
+- [core/scripts/](../../core/scripts/) - Client-side scripts
+- [core/scripts/APIandLibraries/](../../core/scripts/APIandLibraries/) - Third-party libraries (jQuery, Bootstrap)
+- [core/scripts/serviceWorker/](../../core/scripts/serviceWorker/) - Service worker runtime
+- [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js) - Main gRNA/primer validation logic
+- [core/scripts/login.js](../../core/scripts/login.js) - Login and account helpers
+- [core/styling/style.css](../../core/styling/style.css) - Application styles
+- [core/images/](../../core/images/) - SVG and PNG assets
+- [core/icon/](../../core/icon/) - PWA icons and manifest
+- [index.html](../../index.html) - Landing page with Start link
+- [core/systemrun.html](../../core/systemrun.html) - Application runtime entry
+- [docs/](../) - Documentation directory
+- [tests/](../../tests/) - Test suites
+- [test-results/](../../test-results/) - Test output directory
+- [package.json](../../package.json) - Dependencies and scripts
+- [jest.config.mjs](../../jest.config.mjs) - Jest configuration
+- [playwright.config.js](../../playwright.config.js) - Playwright configuration
+- [eslint.config.js](../../eslint.config.js) - ESLint configuration
+- [.prettierrc](../../.prettierrc) - Prettier configuration
 
 ## Configuration Files
 
@@ -138,20 +132,6 @@ Structure:
 }
 ```
 
-### Environment Configuration
-
-#### Practice Mode by Default
-
-The application is configured for practice mode where students can use SciGrade without any authentication system.
-
-To enable authentication (for local deployment only), edit [core/scripts/login.js](../../core/scripts/login.js) line ~10:
-
-```javascript
-let continueWithoutLogin = false;
-```
-
-**Note:** The online authentication features were deprecated in v1.2.0. See [CHANGELOG.md](../../CHANGELOG.md) for details.
-
 ## Testing
 
 ### Jest Unit Tests
@@ -201,8 +181,6 @@ Minified versions are pre-built:
 - [core/scripts/login.min.js](../../core/scripts/login.min.js)
 - [core/styling/style.min.css](../../core/styling/style.min.css)
 
-These are generated through your build pipeline (outside the npm scripts).
-
 ## Troubleshooting
 
 ### Port 3000 Already in Use
@@ -224,7 +202,7 @@ npm run regen-package-lock
 - Clear browser cache and service worker registration
 - In DevTools: Application > Service Workers > Unregister
 
-## Next Steps
+## Related Documentation
 
 - Read [../architecture/index.md](../architecture/index.md) for system design
 - Review [../guides/marking-algorithm.md](../guides/marking-algorithm.md) for validation logic

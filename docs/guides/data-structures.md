@@ -4,7 +4,7 @@ This document describes the JSON data formats and data structures used throughou
 
 ## Overview
 
-SciGrade uses JSON as its primary data format for gene information and gRNA validation reference data. These files are loaded client-side at application startup.
+SciGrade uses JSON as its primary data format for gene information and guide RNA (gRNA) validation reference data. These files are loaded client-side during the runtime UI flow in [core/scripts/login.js](../../core/scripts/login.js) and [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js).
 
 ## Gene Background Information
 
@@ -163,17 +163,11 @@ From actual data (HBB gene):
 
 **Specificity Score (Off-target):**
 
-- Range: 0-100 (or higher with some algorithms)
-- Meaning: Probability of cutting only the intended target
-- Higher score = more specific (fewer off-target sites)
-- Used by marking algorithm to validate student choice
+- Used by the marking logic in [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js)
 
 **Efficiency Score (On-target):**
 
-- Range: 0-100
-- Meaning: Likelihood of successfully cutting the target
-- Higher score = more efficient cleavage
-- Informational only (not used in current marking)
+- Stored in the data file and not referenced by the marking logic in [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js)
 
 ## Additional Data Files
 
@@ -183,8 +177,8 @@ From actual data (HBB gene):
 
 **Files:**
 
-- `ACTN3.fasta` - Raw sequence in FASTA format
-- `HBB.fasta` - Raw sequence in FASTA format
+- [core/data/ACTN3/ACTN3.fasta](../../core/data/ACTN3/ACTN3.fasta) - Raw sequence in FASTA format
+- [core/data/HBB/HBB.fasta](../../core/data/HBB/HBB.fasta) - Raw sequence in FASTA format
 - Similar files for other genes
 
 **Purpose:** Backup reference sequences (not actively used in current application).
@@ -195,26 +189,6 @@ From actual data (HBB gene):
 >ACTN3
 ACGTACGTACGTACGTACGTACGTACGTACGT
 ```
-
-## Data Validation
-
-### Consistency Checks
-
-When loading data, verify:
-
-1. **Target Position Exists** in `gene_background_info.json`
-    - Must be a valid integer
-    - Must be within sequence length
-
-2. **gRNA Sequences Match Expected Length**
-    - Sequences should be 20bp (stored in Benchling outputs)
-    - PAM should be 3bp
-
-3. **Strand Values are Valid**
-    - Must be `1` (sense) or `-1` (antisense)
-
-4. **Scores are Numeric**
-    - Specificity and Efficiency scores should be floats
 
 ### Loading Implementation
 
@@ -252,45 +226,17 @@ From [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js) `loa
 
 ### Submission Processing
 
+Submission processing is implemented in [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js).
+
 ```mermaid
 graph TD
     A[Form Submission] --> B["Retrieve Input Values<br/>from HTML Form"]
     B --> C["checkAnswers()"]
-    C --> D["Global Variables Set<br/>MARgRNAseq, MARstrand, etc."]
-    D --> E["markAnswers()"]
-    E --> F["Calculate Final Score"]
-    F --> G["showFeedback()"]
-    G --> H["Display Results to Student"]
-    H --> I["Optional: Save to LocalStorage"]
-```
-
-## Browser Storage
-
-### LocalStorage Usage
-
-Application may store in browser `localStorage`:
-
-- Session state
-- Recent submissions
-- User preferences
-
-**Access in JavaScript:**
-
-```javascript
-localStorage.setItem("key", value);
-const retrieved = localStorage.getItem("key");
-localStorage.removeItem("key");
-```
-
-### Session Variables
-
-Global variables in [crispr_scripts.js](../../core/scripts/crispr_scripts.js):
-
-```javascript
-let selection_inMode = "practice"; // Current mode
-let current_gene = "empty"; // Selected gene
-let loadedMode = "practice"; // Last loaded mode
-let checkAnswers_executed = false; // Submission state
+ C --> D["Global Variables Set"]
+ D --> E["markAnswers()"]
+ E --> F["Calculate Final Score"]
+ F --> G["showFeedback()"]
+ G --> H["Display Results to Student"]
 ```
 
 ## Adding New Genes
@@ -333,5 +279,10 @@ To add a new gene to SciGrade:
 **To Verify:**
 
 - Gene appears in dropdown: [fillGeneList()](../../core/scripts/crispr_scripts.js#L60)
-- Assignment loads correctly: [loadWork()](../../core/scripts/crispr_scripts.js#L82)
+- Form loads correctly: [loadWork()](../../core/scripts/crispr_scripts.js#L82)
 - Tests pass: `npm run test`
+
+## Related Documentation
+
+- [Marking Algorithm](marking-algorithm.md) - Validation flow and scoring
+- [API Reference](../api/index.md) - Function reference for data loading

@@ -1,8 +1,3 @@
-/**
- * Unit tests for login.js
- * Tests isolated utility functions and logic
- */
-
 describe("login.js - Utility Functions", () => {
 	// Test the checkStudentNumber function logic
 	describe("checkStudentNumber()", () => {

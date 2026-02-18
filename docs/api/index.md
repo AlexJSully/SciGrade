@@ -10,7 +10,7 @@ This document provides detailed function signatures and descriptions for the cor
 
 **Location:** [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js)
 
-Core application logic for gRNA sequence validation, marking, and feedback generation.
+Core application logic for guide RNA (gRNA) sequence validation, marking, and feedback generation.
 
 ### Global Variables
 
@@ -27,7 +27,7 @@ let benchling_gRNA_outputs; // Loaded gRNA validation data
 // Marking state
 let MARgRNAseq; // gRNA sequence validation result
 let MARgRNAseq_degree; // gRNA validation degree (0-3)
-let MARPAMseq; // PAM sequence validation result
+let MARPAMseq; // Protospacer Adjacent Motif (PAM) sequence validation result
 let MARCutPos; // Cut position validation result
 let MARstrand; // Strand selection validation result
 let MAROffTarget; // Off-target score validation result
@@ -83,7 +83,7 @@ async function loadCRISPRJSON_Files()
 
 **Returns:** Promise (implicitly handled by async).
 
-**Called By:** Application initialization in [index.html](../../index.html).
+**Called By:** `redirectCRISPR()` in [core/scripts/login.js](../../core/scripts/login.js), which is triggered on page load from [core/systemrun.html](../../core/systemrun.html).
 
 **Example:**
 
@@ -194,7 +194,7 @@ function checkAnswers()
 
 1. Resets all marking variables
 2. Retrieves student input from form fields
-3. Searches for matching gRNA sequences in reference data
+3. Searches for matching gRNA sequences in reference data with an exact, case-sensitive match after trimming
 4. For each match:
     - Validates strand selection
     - Checks if target nucleotide is in range
@@ -225,13 +225,14 @@ function checkOffTarget(score)
 
 **Behavior:**
 
-- Compares score against optimal threshold
-- Sets `MAROffTarget` and `MAROffTarget_degree` variables
+- Compares the student input to the floor/ceiling of the reference specificity score
+- Builds a score list within ±35 positions of the inputted cut position to determine an optimal threshold
+- Sets `MAROffTarget` and `MAROffTarget_degree` based on the input and calculated thresholds
 - Degree values:
-    - `0`: Wrong (score too low)
-    - `1`: Above optimal threshold
-    - `2`: Above 35 (minimum viable)
-    - `3`: Only available option
+    - `0`: Wrong or below threshold
+    - `1`: At or above the optimal threshold
+    - `2`: At or above 35 but below the optimal threshold when the max reference score is at least 80
+    - `3`: Only available option when the local max score is below 35
 
 **Used For:** Part of `checkAnswers()` validation.
 
@@ -249,8 +250,9 @@ function checkF1Primers(seq)
 
 **Behavior:**
 
-- Checks if F1 primer contains required promoter and binding sequences
-- Validates structure against expected format
+- Builds candidate F1 primers using the `TAATACGACTCACTATAG` prefix and the first 16-20 bases of the input gRNA
+- If the gRNA starts with `G`, also builds candidates using bases 2-20
+- Sets `MARF1primers` when the submitted F1 primer matches a candidate
 
 **Sets:** `MARF1primers` global variable.
 
@@ -275,42 +277,13 @@ function checkR1Primers(seq)
 
 **Behavior:**
 
-- Generates reverse complement of gRNA sequence
-- Checks if R1 primer contains the reverse complement
+- Generates a reverse-complement string using the `complementary_nt_dict` mapping
+- Builds candidate R1 primers using the `TTCTAGCTCTAAAAC` prefix and the first 19-20 bases of the reverse complement
+- Sets `MARR1primers` when the submitted R1 primer matches a candidate
 
 **Sets:** `MARR1primers` global variable.
 
 **Depends On:** Valid gRNA sequence already validated.
-
-#### createComplementarySeq(seq)
-
-```javascript
-function createComplementarySeq(seq)
-returns {string}
-```
-
-**Purpose:** Create the reverse complement of a DNA sequence.
-
-**Parameters:**
-
-- `seq` {string} - DNA sequence (ACGT)
-
-**Process:**
-
-1. Replace each base with complement: A↔T, G↔C
-2. Reverse the string
-
-**Returns:** Reverse complement sequence.
-
-**Example:**
-
-```javascript
-const complement = createComplementarySeq("ACGT");
-console.log(complement); // "ACGT" (palindromic)
-
-const complement2 = createComplementarySeq("AAAA");
-console.log(complement2); // "TTTT"
-```
 
 ### Marking & Feedback
 
@@ -351,18 +324,10 @@ function showFeedback()
 **Renders:**
 
 - Component-by-component results (✓ or ✗)
-- Correct answers if student answer was wrong
-- Explanation of off-target scoring
-- Primer design guidance
+- Explanatory text derived from the current marking state
+- Candidate primer lists derived from the submitted gRNA sequence
 
-**Rendered To:** Feedback section in HTML.
-
-**Shows:**
-
-- Correct gRNA sequence (if student's was wrong)
-- Correct PAM (if student's was wrong)
-- Optimal off-target threshold
-- Overall score and performance
+**Rendered To:** `#mainContainer` in the runtime page.
 
 **Called By:** `submitAnswers()` after `markAnswers()`.
 
@@ -378,11 +343,9 @@ function submitAnswers()
 
 **Workflow:**
 
-1. Validate form inputs
-2. Call `checkAnswers()` for validation
-3. Call `markAnswers()` for scoring
-4. Call `showFeedback()` to display results
-5. Store submission in browser (if applicable)
+1. Call `checkAnswers()` for validation
+2. After a delay, call `markAnswers()` for scoring
+3. Call `showFeedback()` to display results
 
 **Form Elements Referenced:**
 
@@ -402,11 +365,11 @@ function submitAnswers()
 function IfPressEnter(event, toClickButton)
 ```
 
-**Purpose:** Trigger action when Enter key is pressed (accessibility).
+**Purpose:** Trigger action when Enter key is pressed.
 
 **Parameters:**
 
-- `event` {event} - Keyboard event
+- `event` {Event} - Keyboard event
 - `toClickButton` {string} - Button ID to trigger
 
 **Behavior:** Simulates click on specified button if Enter key pressed.
@@ -416,20 +379,6 @@ function IfPressEnter(event, toClickButton)
 ```html
 <input onkeypress="IfPressEnter(event, 'submitButton')" />
 ```
-
-### Account Management (Deprecated)
-
-#### openAccountManagement() ⚠️ DEPRECATED
-
-```javascript
-function openAccountManagement()
-```
-
-**Status:** Deprecated in v1.2.0. This function is no longer used.
-
-**Legacy Purpose:** Displayed account management modal (TA/Admin feature - no longer available).
-
-**Note:** Authentication features were deprecated with the May 2, 2024 v1.2.0 release. See [CHANGELOG.md](../../CHANGELOG.md) for details.
 
 ### Display Functions
 
@@ -447,7 +396,7 @@ function showNewInput(docCheck, checkFor, docDisplay)
 - `checkFor` {string} - Value to check for
 - `docDisplay` {string} - Element ID to display/hide
 
-**Behavior:** Shows `docDisplay` if `docCheck` contains `checkFor`.
+**Behavior:** Shows `docDisplay` when `docCheck` matches `checkFor`.
 
 #### ChangeDOMInnerhtml(domID, changeTo)
 
@@ -468,35 +417,20 @@ function ChangeDOMInnerhtml(domID, changeTo)
 function changeInputClass(docCheck, checkFor, docChange, trueChangeValueTo)
 ```
 
-**Purpose:** Toggle CSS classes on elements for visual feedback.
+**Purpose:** Update an input value when another input matches a target value.
 
 **Parameters:**
 
 - `docCheck` {string} - Element ID to check condition
 - `checkFor` {string} - Value to match
-- `docChange` {string} - Element ID to change class on
-- `trueChangeValueTo` {string} - CSS class to apply
-
-## Deprecated: login.js (v1.2.0+)
-
-**Location:** [core/scripts/login.js](../../core/scripts/login.js)
-
-**Status:** Deprecated in v1.2.0 (May 2, 2024). All authentication and account management features are no longer available.
-
-The following functions are preserved for historical reference only:
-
-- `checkStudentNumber()` - Student credential validation (deprecated)
-- `openAccountManagement()` - Account management interface (deprecated)
-- `UpdateChooseUser()` - User context switching (deprecated)
-- `UpdateStudentList()` - Class roster management (deprecated)
-
-These functions are not used in the current version. Online features including multi-user authentication, class management, and database integration were removed in v1.2.0. See [CHANGELOG.md](../../CHANGELOG.md) for full deprecation details.
+- `docChange` {string} - Element ID to update
+- `trueChangeValueTo` {string} - Value to apply when matched
 
 ## Bootstrap & jQuery
 
 ### Bootstrap Classes
 
-The application uses Bootstrap utilities for styling:
+The application uses Bootstrap utilities for styling in [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js) and [core/systemrun.html](../../core/systemrun.html):
 
 ```html
 <!-- Form controls -->
@@ -535,6 +469,8 @@ const element = document.getElementById("sequence_input");
 
 ## Error Codes
 
+Error codes are raised by alerts in [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js).
+
 | Code     | Context       | Meaning               |
 | -------- | ------------- | --------------------- |
 | sG34-42  | select_Gene() | Gene selection failed |
@@ -552,6 +488,6 @@ npm run test:jest
 
 ## Related Documentation
 
-- [Marking Algorithm](marking-algorithm.md) - Detailed validation logic
-- [Data Structures](data-structures.md) - JSON format specifications
+- [Marking Algorithm](../guides/marking-algorithm.md) - Detailed validation logic
+- [Data Structures](../guides/data-structures.md) - JSON format specifications
 - [Architecture](../architecture/index.md) - System design overview
