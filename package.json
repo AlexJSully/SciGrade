@@ -32,7 +32,7 @@
 		"test:jest": "jest --passWithNoTests",
 		"test:playwright:headless": "npx playwright test --reporter=list",
 		"test:playwright:ui": "npx playwright test --ui",
-		"validate": "npm run prettier && npm run eslint && npm run test:jest && npm run test:playwright:headless",
+		"validate": "npm run prettier && npm run eslint && npm run minify && npm run test:jest && npm run test:playwright:headless",
 		"workbox": "workbox generateSW workbox-config.cjs"
 	},
 	"bugs": {
