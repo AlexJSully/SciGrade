@@ -10,7 +10,7 @@ SciGrade is an online web-tool that allows students (or any user with access) to
 
 ## Getting Started
 
-It is recommended that you use the web-version available at <https://scigrade.com/>. For local runs, the landing page [index.html](index.html) links to the runtime page [core/systemrun.html](core/systemrun.html), which initializes the practice flow by default and hides the account UI in the navigation.
+It is recommended that you use the web-version available at <https://scigrade.com/>. For local runs, the landing page [index.html](index.html) links to the runtime page [core/systemrun.html](core/systemrun.html), which initializes the practice flow by default.
 
 ## Browser Compatibilities
 

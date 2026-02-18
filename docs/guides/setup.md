@@ -53,6 +53,7 @@ npm run test:playwright:ui        # Run playwright tests in UI mode
 npm run validate          # Run prettier, eslint, jest, and playwright tests
 
 # Build & Service Worker
+npm run minify            # Minify runtime and marking scripts
 npm run workbox           # Generate service worker with workbox
 ```
 
@@ -95,17 +96,17 @@ Structure:
 
 ```json
 {
-	"gene_list": {
-		"GENENAME": {
-			"base_type": "practice|assignment",
-			"name": "Full Gene Name",
-			"Background": "Description of gene and mutation",
-			"Target site": "Location and nature of target",
-			"Target position": "Numeric position",
-			"Sequence": "ACGT... full DNA sequence",
-			"NCBI gene link": "https://..."
-		}
-	}
+ "gene_list": {
+  "GENENAME": {
+   "base_type": "practice|assignment",
+   "name": "Full Gene Name",
+   "Background": "Description of gene and mutation",
+   "Target site": "Location and nature of target",
+   "Target position": "Numeric position",
+   "Sequence": "ACGT... full DNA sequence",
+   "NCBI gene link": "https://..."
+  }
+ }
 }
 ```
 
@@ -139,7 +140,7 @@ Structure:
 Test files:
 
 - [core/scripts/crispr_scripts.test.js](../../core/scripts/crispr_scripts.test.js)
-- [core/scripts/login.test.js](../../core/scripts/login.test.js)
+- [core/scripts/runtime.test.js](../../core/scripts/runtime.test.js)
 
 Run tests:
 
@@ -171,14 +172,17 @@ Generate a service worker for offline support:
 npm run workbox
 ```
 
-This uses the configuration in [workbox-config.js](../../workbox-config.js).
+This uses the configuration in [workbox-config.cjs](../../workbox-config.cjs).
 
 ### Code Minification
 
-Minified versions are pre-built:
+Generate minified scripts with `npm run minify` from [package.json](../../package.json).
+Implementation: [package.json](../../package.json)
 
-- [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js)
-- [core/scripts/runtime.js](../../core/scripts/runtime.js)
+Minified versions are used by the runtime page:
+
+- [core/scripts/crispr_scripts.min.js](../../core/scripts/crispr_scripts.min.js)
+- [core/scripts/runtime.min.js](../../core/scripts/runtime.min.js)
 - [core/styling/style.min.css](../../core/styling/style.min.css)
 
 ## Troubleshooting

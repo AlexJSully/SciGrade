@@ -211,7 +211,7 @@ let MARPAMseq = false;
 let MARCutPos = false;
 let MARstrand = false;
 let MAROffTarget = false;
-let MAROffTarget_degree = 0; // 0 wrong, 1 above 75, 2 above 35, 3 only option
+let MAROffTarget_degree = 0; // 0 wrong, 1 optimal or >=35 with max < 80, 2 >=35 with max >= 80, 3 only option
 let MAROffTarget_aboveOpt = false;
 let MAROffTarget_above35 = false;
 let MAROffTarget_onlyOption = false;
@@ -401,7 +401,7 @@ let offtarget_Use = [];
 function checkOffTarget(score) {
 	// Reset variables:
 	MAROffTarget = false;
-	MAROffTarget_degree = 0; // 0 wrong, 1 above 75, 2 above 35, 3 only option
+	MAROffTarget_degree = 0; // 0 wrong, 1 optimal or >=35 with max < 80, 2 >=35 with max >= 80, 3 only option
 	MAROffTarget_aboveOpt = false;
 	MAROffTarget_above35 = false;
 	MAROffTarget_onlyOption = false;
@@ -817,9 +817,6 @@ function showNewInput(docCheck, checkFor, docDisplay) {
 }
 
 let completed_assignments = [];
-/**
- * Generates a list of completed_assignments
- */
 let all_answers = [];
 let all_outputs = [];
 let all_marks = [];

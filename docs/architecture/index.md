@@ -61,18 +61,18 @@ Structure:
 
 ```json
 {
-	"gene_list": {
-		"GENENAME": [
-			{
-				"Position": 123,
-				"Strand": 1,
-				"Sequence": "ACGTACGTACGTACGTACGT",
-				"PAM": "NGG",
-				"Specificity Score": 45.2,
-				"Efficiency Score": 78.5
-			}
-		]
-	}
+ "gene_list": {
+  "GENENAME": [
+   {
+    "Position": 123,
+    "Strand": 1,
+    "Sequence": "ACGTACGTACGTACGTACGT",
+    "PAM": "NGG",
+    "Specificity Score": 45.2,
+    "Efficiency Score": 78.5
+   }
+  ]
+ }
 }
 ```
 
@@ -84,17 +84,17 @@ Structure:
 
 ```json
 {
-	"gene_list": {
-		"GENENAME": {
-			"base_type": "practice",
-			"name": "Gene Full Name",
-			"Background": "Educational description...",
-			"Target site": "Nucleotide position X - target description",
-			"Target position": "123",
-			"Sequence": "ACGT...",
-			"NCBI gene link": "https://..."
-		}
-	}
+ "gene_list": {
+  "GENENAME": {
+   "base_type": "practice",
+   "name": "Gene Full Name",
+   "Background": "Educational description...",
+   "Target site": "Nucleotide position X - target description",
+   "Target position": "123",
+   "Sequence": "ACGT...",
+   "NCBI gene link": "https://..."
+  }
+ }
 }
 ```
 
@@ -198,7 +198,8 @@ graph LR
 
 ## Offline Support
 
-Service workers are registered in [index.html](../../index.html) and [core/systemrun.html](../../core/systemrun.html). The generated worker [core/scripts/serviceWorker/sw.js](../../core/scripts/serviceWorker/sw.js) precaches the core assets listed in [workbox-config.js](../../workbox-config.js) and applies runtime caching for HTML, CSS, JavaScript, and image requests.
+Service workers are registered in [index.html](../../index.html) and [core/systemrun.html](../../core/systemrun.html). The generated worker [core/scripts/serviceWorker/sw.js](../../core/scripts/serviceWorker/sw.js) precaches the core assets listed in [workbox-config.cjs](../../workbox-config.cjs) and applies runtime caching for HTML, CSS, JavaScript, and image requests.
+Implementation: [index.html](../../index.html), [core/systemrun.html](../../core/systemrun.html), [core/scripts/serviceWorker/sw.js](../../core/scripts/serviceWorker/sw.js), [workbox-config.cjs](../../workbox-config.cjs)
 
 ## Dependencies
 
@@ -219,7 +220,9 @@ From [package.json](../../package.json):
 - **Playwright** - E2E testing
 - **ESLint** - Code quality
 - **Prettier** - Code formatting
+- **esbuild** - Script minification
 - **Workbox** - Service worker generation
+  Implementation: [package.json](../../package.json)
 
 ## Security Considerations
 
@@ -231,5 +234,6 @@ From [package.json](../../package.json):
 
 1. **Runtime Data Fetch** - Gene data is fetched when `redirectCRISPR()` runs in [core/scripts/runtime.js](../../core/scripts/runtime.js)
 2. **Minified Assets** - Pre-built minified versions are available in [core/scripts/](../../core/scripts/) and [core/styling/](../../core/styling/)
-3. **Service Worker Caching** - Runtime caching rules are defined in [workbox-config.js](../../workbox-config.js)
+3. **Service Worker Caching** - Runtime caching rules are defined in [workbox-config.cjs](../../workbox-config.cjs)
 4. **Client-side Rendering** - UI is generated in the browser by [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js)
+   Implementation: [workbox-config.cjs](../../workbox-config.cjs), [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js)

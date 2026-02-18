@@ -6,7 +6,7 @@ Welcome to the SciGrade documentation. This directory contains comprehensive gui
 
 [SciGrade](https://scigrade.com/) is a client-side web application that allows students and educators to practice and receive feedback on guide RNA (gRNA) design and F1/R1 primer entry for Clustered Regularly Interspaced Short Palindromic Repeats (CRISPR)-based workflows.
 
-The landing page is [index.html](../index.html), which links to the application runtime page [core/systemrun.html](../core/systemrun.html). The runtime page loads the app scripts [core/scripts/runtime.js](../core/scripts/runtime.js) and [core/scripts/crispr_scripts.js](../core/scripts/crispr_scripts.js) and starts the UI flow on page load.
+The landing page is [index.html](../index.html), which links to the application runtime page [core/systemrun.html](../core/systemrun.html). The runtime page loads [core/scripts/runtime.js](../core/scripts/runtime.js) and [core/scripts/crispr_scripts.js](../core/scripts/crispr_scripts.js) and starts the UI flow on page load.
 
 ## Documentation Structure
 
@@ -76,8 +76,7 @@ SciGrade uses the gene list defined in [core/data/Background_info/gene_backgroun
 
 #### Practice Flow
 
-- The runtime page initializes the UI without requiring authentication
-- The runtime page initializes the UI without requiring authentication in [core/systemrun.html](../core/systemrun.html)
+- The runtime page initializes the practice flow on page load
 - Feedback is generated after submission by [core/scripts/crispr_scripts.js](../core/scripts/crispr_scripts.js)
 
 The [CHANGELOG.md](../CHANGELOG.md) records the deprecation of online account features.
@@ -86,8 +85,8 @@ The [CHANGELOG.md](../CHANGELOG.md) records the deprecation of online account fe
 
 - **Frontend**: Vanilla JavaScript with jQuery and Bootstrap loaded from [core/scripts/APIandLibraries/](../core/scripts/APIandLibraries/)
 - **Data**: Client-side JSON data files loaded by [core/scripts/crispr_scripts.js](../core/scripts/crispr_scripts.js)
-- **Build Tools**: Jest, Playwright, ESLint, and Prettier defined in [package.json](../package.json)
-- **Service Worker**: Workbox configuration in [workbox-config.js](../workbox-config.js) and generated runtime in [core/scripts/serviceWorker/sw.js](../core/scripts/serviceWorker/sw.js)
+- **Build Tools**: Jest, Playwright, ESLint, Prettier, and esbuild defined in [package.json](../package.json)
+- **Service Worker**: Workbox configuration in [workbox-config.cjs](../workbox-config.cjs) and generated runtime in [core/scripts/serviceWorker/sw.js](../core/scripts/serviceWorker/sw.js)
 
 ## Development
 

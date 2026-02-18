@@ -4,7 +4,7 @@ This document explains how guide RNA (gRNA) sequences and primers are validated 
 
 ## Overview
 
-The marking system validates student submissions across five key components:
+The marking system validates student submissions across the components below. Scoring uses the gRNA sequence, PAM, off-target score, and primer inputs.
 
 1. **guide RNA (gRNA) Sequence** - Must match a reference sequence
 2. **Protospacer Adjacent Motif (PAM) Sequence** - Must match the PAM of the validated gRNA
@@ -37,9 +37,9 @@ When a student submits their answer, [checkAnswers()](../../core/scripts/crispr_
 ```javascript
 const inputtedSeq = document.getElementById("sequence_input").value.trim();
 for (const answer of benchling_gRNA_outputs.gene_list[current_gene]) {
-	if (answer.Sequence === inputtedSeq) {
-		possible_comparable_answers.push(answer);
-	}
+ if (answer.Sequence === inputtedSeq) {
+  possible_comparable_answers.push(answer);
+ }
 }
 ```
 
@@ -57,27 +57,27 @@ For each possible matching sequence, verify the target nucleotide is within the 
 const correctNucleotidePosition = gene_backgroundInfo.gene_list[current_gene]["Target position"] - 1;
 
 if (possibleAnswer.Strand === 1) {
-	// Sense strand: check if target is within gRNA range
-	const nucleotideIncludedRange_top = possibleAnswer.Position - 1 - 1 + 3;
-	const nucleotideIncludedRange_bot = possibleAnswer.Position - 1 - 17;
+ // Sense strand: check if target is within gRNA range
+ const nucleotideIncludedRange_top = possibleAnswer.Position - 1 - 1 + 3;
+ const nucleotideIncludedRange_bot = possibleAnswer.Position - 1 - 17;
 
-	if (
-		correctNucleotidePosition >= nucleotideIncludedRange_bot &&
-		correctNucleotidePosition <= nucleotideIncludedRange_top
-	) {
-		correctNucleotideIncluded = true;
-	}
+ if (
+  correctNucleotidePosition >= nucleotideIncludedRange_bot &&
+  correctNucleotidePosition <= nucleotideIncludedRange_top
+ ) {
+  correctNucleotideIncluded = true;
+ }
 } else if (possibleAnswer.Strand === -1) {
-	// Antisense strand: check if target is within gRNA range
-	const nucleotideIncludedRange_top = possibleAnswer.Position - 1 + 17;
-	const nucleotideIncludedRange_bot = possibleAnswer.Position - 1 - 3;
+ // Antisense strand: check if target is within gRNA range
+ const nucleotideIncludedRange_top = possibleAnswer.Position - 1 + 17;
+ const nucleotideIncludedRange_bot = possibleAnswer.Position - 1 - 3;
 
-	if (
-		correctNucleotidePosition >= nucleotideIncludedRange_bot &&
-		correctNucleotidePosition <= nucleotideIncludedRange_top
-	) {
-		correctNucleotideIncluded = true;
-	}
+ if (
+  correctNucleotidePosition >= nucleotideIncludedRange_bot &&
+  correctNucleotidePosition <= nucleotideIncludedRange_top
+ ) {
+  correctNucleotideIncluded = true;
+ }
 }
 ```
 
@@ -91,13 +91,13 @@ Check if the student selected the correct strand:
 
 ```javascript
 if (possibleAnswer.Strand === 1) {
-	if (document.getElementById("strand_input").value === "Sense (+)") {
-		MARstrand = true;
-	}
+ if (document.getElementById("strand_input").value === "Sense (+)") {
+  MARstrand = true;
+ }
 } else if (possibleAnswer.Strand === -1) {
-	if (document.getElementById("strand_input").value === "Antisense (-)") {
-		MARstrand = true;
-	}
+ if (document.getElementById("strand_input").value === "Antisense (-)") {
+  MARstrand = true;
+ }
 }
 ```
 
@@ -114,8 +114,7 @@ PAM validation compares the student's input to the `PAM` value on the matched re
 
 ```javascript
 function checkOffTarget(score) {
-	// Check if off-target score meets minimum threshold
-	// Threshold depends on marking mode settings
+ // Check if off-target score meets minimum threshold
 }
 ```
 
@@ -130,7 +129,7 @@ The off-target score uses the following steps in [core/scripts/crispr_scripts.js
 **Pass Criteria:**
 
 - Input at or above the optimal threshold sets `MAROffTarget_degree` to `1`.
-- Input at or above 35 sets `MAROffTarget_degree` to `2` when `Max_range` is at least 80.
+- Input at or above 35 sets `MAROffTarget_degree` to `1` when the local max score is below 80, otherwise it sets `MAROffTarget_degree` to `2`.
 - If the local max score is below 35, the input is treated as the only option and sets `MAROffTarget_degree` to `3`.
 
 ### Step 7: Primer Validation
@@ -193,7 +192,7 @@ sequenceDiagram
 
 **Feedback Includes:**
 
-- Component-by-component results (✓ or ✗)
+- Component-by-component results and marks
 - Explanatory text generated from the current marking state
 - Candidate primer lists derived from the submitted gRNA sequence
 
@@ -218,18 +217,18 @@ Ensure reference data in [Benchling_gRNA_Outputs.json](../../core/data/Benchling
 
 ```json
 {
-	"gene_list": {
-		"GENENAME": [
-			{
-				"Position": 123,
-				"Strand": 1,
-				"Sequence": "ACGTACGTACGTACGTACGT",
-				"PAM": "NGG",
-				"Specificity Score": 45.2,
-				"Efficiency Score": 78.5
-			}
-		]
-	}
+ "gene_list": {
+  "GENENAME": [
+   {
+    "Position": 123,
+    "Strand": 1,
+    "Sequence": "ACGTACGTACGTACGTACGT",
+    "PAM": "NGG",
+    "Specificity Score": 45.2,
+    "Efficiency Score": 78.5
+   }
+  ]
+ }
 }
 ```
 
