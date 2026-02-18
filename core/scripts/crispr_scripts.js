@@ -888,3 +888,8 @@ function backToAssignments() {
 $(() => {
 	$("form").submit(() => false);
 });
+
+// Export for testing
+if (typeof module !== "undefined" && module.exports) {
+	module.exports = { getOffTargetOptimalValue };
+}

@@ -96,17 +96,17 @@ Structure:
 
 ```json
 {
- "gene_list": {
-  "GENENAME": {
-   "base_type": "practice|assignment",
-   "name": "Full Gene Name",
-   "Background": "Description of gene and mutation",
-   "Target site": "Location and nature of target",
-   "Target position": "Numeric position",
-   "Sequence": "ACGT... full DNA sequence",
-   "NCBI gene link": "https://..."
-  }
- }
+	"gene_list": {
+		"GENENAME": {
+			"base_type": "practice|assignment",
+			"name": "Full Gene Name",
+			"Background": "Description of gene and mutation",
+			"Target site": "Location and nature of target",
+			"Target position": "Numeric position",
+			"Sequence": "ACGT... full DNA sequence",
+			"NCBI gene link": "https://..."
+		}
+	}
 }
 ```
 
@@ -177,9 +177,7 @@ This uses the configuration in [workbox-config.cjs](../../workbox-config.cjs).
 ### Code Minification
 
 Generate minified scripts with `npm run minify` from [package.json](../../package.json).
-Implementation: [package.json](../../package.json)
-
-Minified versions are used by the runtime page:
+This command creates the following bundled files used by the runtime page:
 
 - [core/scripts/crispr_scripts.min.js](../../core/scripts/crispr_scripts.min.js)
 - [core/scripts/runtime.min.js](../../core/scripts/runtime.min.js)

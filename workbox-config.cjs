@@ -9,7 +9,8 @@ module.exports = {
 		"workbox-config.cjs",
 		"package.json",
 		"package-lock.json",
-		"node_modules/**/*"
+		"node_modules/**/*",
+		"**/*.test.js"
 	],
 	"runtimeCaching": [
 		{

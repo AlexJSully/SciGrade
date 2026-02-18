@@ -137,10 +137,10 @@ function loadWork()
 - Clears the `#work` HTML element
 - Sets `loadedMode` to `selection_inMode`
 - Generates form HTML including:
-  - Gene background information section
-  - Input fields for gRNA sequence, PAM, strand, position, off-target score
-  - Input fields for F1 and R1 primers
-  - Submit button with `submitAnswers()` handler
+    - Gene background information section
+    - Input fields for gRNA sequence, PAM, strand, position, off-target score
+    - Input fields for F1 and R1 primers
+    - Submit button with `submitAnswers()` handler
 
 **Renders to:** HTML element with ID `work`.
 
@@ -231,10 +231,10 @@ function checkOffTarget(score)
 - Uses `getOffTargetOptimalValue()` to determine the optimal threshold from the local max score
 - Sets `MAROffTarget` and `MAROffTarget_degree` based on the input and calculated thresholds
 - Degree values:
-  - `0`: Wrong or below threshold
-  - `1`: At or above the optimal threshold, or at or above 35 when the local max score is below 80
-  - `2`: At or above 35 but below the optimal threshold when the local max score is at least 80
-  - `3`: Only available option when the local max score is below 35
+    - `0`: Wrong or below threshold
+    - `1`: At or above the optimal threshold, or at or above 35 when the local max score is below 80
+    - `2`: At or above 35 but below the optimal threshold when the local max score is at least 80
+    - `3`: Only available option when the local max score is below 35
 
 **Used For:** Part of `checkAnswers()` validation.
 
@@ -319,11 +319,11 @@ function markAnswers()
 
 - Processes results from `checkAnswers()`
 - Assigns points for each correct component:
-  - gRNA sequence
-  - PAM
-  - Off-target score
-  - F1 primer
-  - R1 primer
+    - gRNA sequence
+    - PAM
+    - Off-target score
+    - F1 primer
+    - R1 primer
 - Calculates weighted final score
 
 **Prerequisite:** `checkAnswers()` must be called first.
@@ -458,8 +458,8 @@ The application uses Bootstrap utilities for styling in [core/scripts/crispr_scr
 ```html
 <!-- Form controls -->
 <div class="form-group">
- <label></label>
- <input class="form-control" />
+	<label></label>
+	<input class="form-control" />
 </div>
 
 <!-- Buttons -->
@@ -468,9 +468,9 @@ The application uses Bootstrap utilities for styling in [core/scripts/crispr_scr
 
 <!-- Grid -->
 <div class="container">
- <div class="row">
-  <div class="col"></div>
- </div>
+	<div class="row">
+		<div class="col"></div>
+	</div>
 </div>
 ```
 

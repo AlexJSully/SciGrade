@@ -37,9 +37,9 @@ When a student submits their answer, [checkAnswers()](../../core/scripts/crispr_
 ```javascript
 const inputtedSeq = document.getElementById("sequence_input").value.trim();
 for (const answer of benchling_gRNA_outputs.gene_list[current_gene]) {
- if (answer.Sequence === inputtedSeq) {
-  possible_comparable_answers.push(answer);
- }
+	if (answer.Sequence === inputtedSeq) {
+		possible_comparable_answers.push(answer);
+	}
 }
 ```
 
@@ -57,27 +57,27 @@ For each possible matching sequence, verify the target nucleotide is within the 
 const correctNucleotidePosition = gene_backgroundInfo.gene_list[current_gene]["Target position"] - 1;
 
 if (possibleAnswer.Strand === 1) {
- // Sense strand: check if target is within gRNA range
- const nucleotideIncludedRange_top = possibleAnswer.Position - 1 - 1 + 3;
- const nucleotideIncludedRange_bot = possibleAnswer.Position - 1 - 17;
+	// Sense strand: check if target is within gRNA range
+	const nucleotideIncludedRange_top = possibleAnswer.Position - 1 - 1 + 3;
+	const nucleotideIncludedRange_bot = possibleAnswer.Position - 1 - 17;
 
- if (
-  correctNucleotidePosition >= nucleotideIncludedRange_bot &&
-  correctNucleotidePosition <= nucleotideIncludedRange_top
- ) {
-  correctNucleotideIncluded = true;
- }
+	if (
+		correctNucleotidePosition >= nucleotideIncludedRange_bot &&
+		correctNucleotidePosition <= nucleotideIncludedRange_top
+	) {
+		correctNucleotideIncluded = true;
+	}
 } else if (possibleAnswer.Strand === -1) {
- // Antisense strand: check if target is within gRNA range
- const nucleotideIncludedRange_top = possibleAnswer.Position - 1 + 17;
- const nucleotideIncludedRange_bot = possibleAnswer.Position - 1 - 3;
+	// Antisense strand: check if target is within gRNA range
+	const nucleotideIncludedRange_top = possibleAnswer.Position - 1 + 17;
+	const nucleotideIncludedRange_bot = possibleAnswer.Position - 1 - 3;
 
- if (
-  correctNucleotidePosition >= nucleotideIncludedRange_bot &&
-  correctNucleotidePosition <= nucleotideIncludedRange_top
- ) {
-  correctNucleotideIncluded = true;
- }
+	if (
+		correctNucleotidePosition >= nucleotideIncludedRange_bot &&
+		correctNucleotidePosition <= nucleotideIncludedRange_top
+	) {
+		correctNucleotideIncluded = true;
+	}
 }
 ```
 
@@ -91,13 +91,13 @@ Check if the student selected the correct strand:
 
 ```javascript
 if (possibleAnswer.Strand === 1) {
- if (document.getElementById("strand_input").value === "Sense (+)") {
-  MARstrand = true;
- }
+	if (document.getElementById("strand_input").value === "Sense (+)") {
+		MARstrand = true;
+	}
 } else if (possibleAnswer.Strand === -1) {
- if (document.getElementById("strand_input").value === "Antisense (-)") {
-  MARstrand = true;
- }
+	if (document.getElementById("strand_input").value === "Antisense (-)") {
+		MARstrand = true;
+	}
 }
 ```
 
@@ -114,7 +114,7 @@ PAM validation compares the student's input to the `PAM` value on the matched re
 
 ```javascript
 function checkOffTarget(score) {
- // Check if off-target score meets minimum threshold
+	// Check if off-target score meets minimum threshold
 }
 ```
 
@@ -217,18 +217,18 @@ Ensure reference data in [Benchling_gRNA_Outputs.json](../../core/data/Benchling
 
 ```json
 {
- "gene_list": {
-  "GENENAME": [
-   {
-    "Position": 123,
-    "Strand": 1,
-    "Sequence": "ACGTACGTACGTACGTACGT",
-    "PAM": "NGG",
-    "Specificity Score": 45.2,
-    "Efficiency Score": 78.5
-   }
-  ]
- }
+	"gene_list": {
+		"GENENAME": [
+			{
+				"Position": 123,
+				"Strand": 1,
+				"Sequence": "ACGTACGTACGTACGTACGT",
+				"PAM": "NGG",
+				"Specificity Score": 45.2,
+				"Efficiency Score": 78.5
+			}
+		]
+	}
 }
 ```
 

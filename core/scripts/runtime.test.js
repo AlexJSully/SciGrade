@@ -1,12 +1,6 @@
-describe("runtime.js - Practice flow defaults", () => {
-	const getOffTargetOptimalValue = (maxRange) => {
-		const minOptimal = maxRange - maxRange * 0.2;
-		if (minOptimal > 80 || minOptimal < 35) {
-			return 80;
-		}
-		return minOptimal;
-	};
+const { getOffTargetOptimalValue } = require("./crispr_scripts");
 
+describe("runtime.js - Practice flow defaults", () => {
 	it("returns 80 when min optimal is out of range", () => {
 		expect(getOffTargetOptimalValue(30)).toBe(80);
 		expect(getOffTargetOptimalValue(500)).toBe(80);
