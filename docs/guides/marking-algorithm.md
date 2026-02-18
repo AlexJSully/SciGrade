@@ -4,7 +4,7 @@ This document explains how guide RNA (gRNA) sequences and primers are validated 
 
 ## Overview
 
-The marking system validates student submissions across five key components:
+The marking system validates student submissions across the components below. Scoring uses the gRNA sequence, PAM, off-target score, and primer inputs.
 
 1. **guide RNA (gRNA) Sequence** - Must match a reference sequence
 2. **Protospacer Adjacent Motif (PAM) Sequence** - Must match the PAM of the validated gRNA
@@ -115,7 +115,6 @@ PAM validation compares the student's input to the `PAM` value on the matched re
 ```javascript
 function checkOffTarget(score) {
 	// Check if off-target score meets minimum threshold
-	// Threshold depends on marking mode settings
 }
 ```
 
@@ -125,13 +124,12 @@ The off-target score uses the following steps in [core/scripts/crispr_scripts.js
 
 1. Build a list of reference scores within +/- 35 positions of the submitted cut position.
 2. Compute `Max_range` from that list and `Min_optimal = Max_range - (Max_range * 0.2)`.
-3. When the class marking mode is `Optimal`, use 80 as the threshold if `Min_optimal` is greater than 80 or less than 35.
-4. When the class marking mode is `Custom`, use the class-specific value stored in `student_reg_information`.
+3. Use 80 as the threshold if `Min_optimal` is greater than 80 or less than 35.
 
 **Pass Criteria:**
 
 - Input at or above the optimal threshold sets `MAROffTarget_degree` to `1`.
-- Input at or above 35 sets `MAROffTarget_degree` to `2` when `Max_range` is at least 80.
+- Input at or above 35 sets `MAROffTarget_degree` to `1` when the local max score is below 80, otherwise it sets `MAROffTarget_degree` to `2`.
 - If the local max score is below 35, the input is treated as the only option and sets `MAROffTarget_degree` to `3`.
 
 ### Step 7: Primer Validation
@@ -194,7 +192,7 @@ sequenceDiagram
 
 **Feedback Includes:**
 
-- Component-by-component results (✓ or ✗)
+- Component-by-component results and marks
 - Explanatory text generated from the current marking state
 - Candidate primer lists derived from the submitted gRNA sequence
 
@@ -202,17 +200,7 @@ sequenceDiagram
 
 ### Adjusting Off-target Threshold
 
-In account management modal (opened via [openAccountManagement()](../../core/scripts/crispr_scripts.js#L853)):
-
-1. Select "Optimal" mode:
-
-- Calculates `Min_optimal = Max_range - (Max_range * 0.2)` from nearby scores
-- Uses 80 as the threshold when `Min_optimal` is greater than 80 or less than 35
-
-2. Select "Custom" mode:
-    - Enter specific value (0.01 - 100)
-
-- Stored in `student_reg_information[0].classMarkingMod` for the selected class
+The practice flow uses the default threshold derived from nearby scores. To adjust it, update the logic in `getOffTargetOptimalValue()` inside [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js).
 
 ### Adding Custom Marking Rules
 

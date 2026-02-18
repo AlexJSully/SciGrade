@@ -1,4 +1,3 @@
-/* eslint-disable indent */
 //= ================================ SciGrade ==================================
 //
 // Purpose: General script for SciGrade
@@ -212,7 +211,7 @@ let MARPAMseq = false;
 let MARCutPos = false;
 let MARstrand = false;
 let MAROffTarget = false;
-let MAROffTarget_degree = 0; // 0 wrong, 1 above 75, 2 above 35, 3 only option
+let MAROffTarget_degree = 0; // 0 wrong, 1 optimal or >=35 with max < 80, 2 >=35 with max >= 80, 3 only option
 let MAROffTarget_aboveOpt = false;
 let MAROffTarget_above35 = false;
 let MAROffTarget_onlyOption = false;
@@ -402,7 +401,7 @@ let offtarget_Use = [];
 function checkOffTarget(score) {
 	// Reset variables:
 	MAROffTarget = false;
-	MAROffTarget_degree = 0; // 0 wrong, 1 above 75, 2 above 35, 3 only option
+	MAROffTarget_degree = 0; // 0 wrong, 1 optimal or >=35 with max < 80, 2 >=35 with max >= 80, 3 only option
 	MAROffTarget_aboveOpt = false;
 	MAROffTarget_above35 = false;
 	MAROffTarget_onlyOption = false;
@@ -446,17 +445,7 @@ function checkOffTarget(score) {
 
 		// Is it within the optimal range?
 		const Max_range = Math.max.apply(null, offtarget_List);
-		const Min_optimal = Max_range - Max_range * 0.2;
-		let optimalValue = Min_optimal;
-		const { studentClass } = student_reg_information[0].student_list[studentParseNum];
-		// Change optimal range based on custom input
-		if (student_reg_information[0].classMarkingMod[studentClass][0] === "Optimal") {
-			if (Min_optimal > 80 || Min_optimal < 35) {
-				optimalValue = 80;
-			}
-		} else {
-			optimalValue = student_reg_information[0].classMarkingMod[studentClass][0];
-		}
+		const optimalValue = getOffTargetOptimalValue(Max_range);
 		// Determine if off-target is optimal or not
 		if (InputOffTargetValue >= optimalValue) {
 			MAROffTarget_aboveOpt = true;
@@ -474,6 +463,18 @@ function checkOffTarget(score) {
 			MAROffTarget_degree = 3;
 		}
 	}
+}
+
+/**
+ * Determine the default optimal off-target threshold for practice mode.
+ * @param {number} maxRange Maximum specificity score in the local window
+ */
+function getOffTargetOptimalValue(maxRange) {
+	const minOptimal = maxRange - maxRange * 0.2;
+	if (minOptimal > 80 || minOptimal < 35) {
+		return 80;
+	}
+	return minOptimal;
 }
 
 let possible_F1_primers = [];
@@ -542,6 +543,7 @@ function createComplementarySeq(seq) {
 	for (const element of seq) {
 		comp_seq = complementary_nt_dict[element] + comp_seq;
 	}
+	return comp_seq;
 }
 
 let studentMark = 0;
@@ -816,531 +818,9 @@ function showNewInput(docCheck, checkFor, docDisplay) {
 }
 
 let completed_assignments = [];
-/**
- * Generates a list of completed_assignments
- */
-function generateCompletedAssignmentList() {
-	completed_assignments = [];
-	// Assignments
-	if (student_reg_information[0].student_list[studentParseNum]["assignment-HBB-Marks"]) {
-		if (!completed_assignments.includes("HBB")) {
-			completed_assignments.push("HBB");
-		}
-	}
-	if (student_reg_information[0].student_list[studentParseNum]["assignment-CCR5-Marks"]) {
-		if (!completed_assignments.includes("CCR5")) {
-			completed_assignments.push("CCR5");
-		}
-	}
-	if (student_reg_information[0].student_list[studentParseNum]["assignment-ANKK1-Marks"]) {
-		if (!completed_assignments.includes("ANKK1")) {
-			completed_assignments.push("ANKK1");
-		}
-	}
-	if (student_reg_information[0].student_list[studentParseNum]["assignment-APOE-Marks"]) {
-		if (!completed_assignments.includes("APOE")) {
-			completed_assignments.push("APOE");
-		}
-	}
-}
-
-/**
- * Account management functions. This function depends on login.js, without that, this will not run!
- */
-function openAccountManagement() {
-	generateCompletedAssignmentList();
-	$("#accountManagementBody").empty();
-	let append_str = `
-		<div id='accordion'>
-			<p>
-				Hello ${student_reg_information[0].student_list[studentParseNum].name.split(" ")[0]}!
-			</p>
-		</div>
-		`;
-	$("#accountManagementBody").append(append_str);
-
-	// Create assignments card
-	append_str = `
-		<div class='card about'>
-			<div class='card-header' id='assignmentCard'>
-				<h5 class='mb-0'>
-					<button class='btn btn-link' data-toggle='collapse' data-target='#completedAssignments' aria-expanded='true' aria-controls='completedAssignments'>
-						Completed assignments:
-					</button>
-				</h5>
-			</div>
-
-			<div id='completedAssignments' class='collapse show' aria-labelledby='headingOne' data-parent='#accordion'>
-				<div class='card-body'>
-					${
-						completed_assignments.length > 0
-							? `
-							<p>You have completed the following assignments: <p>
-							<ul>
-								${completed_assignments.map((assignment) => `<li>${assignment}</li>`).join("")}
-							</ul>
-							`
-							: `
-							<p> You have not completed any assignments yet. </p>
-							`
-					}
-				</div>
-			</div>
-		</div>
-	`;
-
-	$("#accountManagementBody").append(append_str);
-
-	const classList = student_reg_information[0].class_list;
-	// Obtain student marks
-	if (["admin", "TA"].includes(student_reg_information[0].student_list[studentParseNum].type)) {
-		append_str = `
-			<br>
-
-			<p>
-				<b> Oh wait! </b> Hello ${student_reg_information[0].student_list[studentParseNum].type}! Would you like to download student marks?
-			</p>
-
-			<label for="DownloadClass">Choose class: </label>
-
-			<select
-				id="DownloadClass"
-				class="form-control"
-				style="margin-bottom: 1%"
-				aria-label="Download student marks by class"
-			>
-
-			${Object.keys(classList)
-				.filter((key) => key)
-				.map((key) => `<option value="${key}" id="${key}" tag="assignment">${key}</option>\n`)
-				.join("")}
-			</select>
-
-			<p style="text-align: center;">
-				<button
-					type="button"
-					class="btn btn-primary"
-					onclick="generateHiddenStudentDownload(document.getElementById(\'DownloadClass\').value, true);"
-				>
-					Download Marks
-				</button>
-
-				<button
-					type="button"
-					class="btn btn-primary"
-					onclick="generateHiddenStudentDownload(document.getElementById(\'DownloadClass\').value, false);"
-					style="margin-left: 2%;"
-				>
-					Download Raw Marks
-				</button>
-			</p>
-		`;
-
-		$("#accountManagementBody").append(append_str);
-	}
-
-	// TA access to add new students:
-	if (
-		student_reg_information[0].student_list[studentParseNum].type === "TA" ||
-		student_reg_information[0].student_list[studentParseNum].type === "admin"
-	) {
-		append_str = "<p> <b> ADMIN POWER! </b> <p>";
-
-		// Create student card
-		append_str += "<div class='card about'>";
-		append_str += "<div class='card-header' id='studentCard'>";
-		append_str += "<h5 class='mb-0'>";
-		append_str +=
-			"<button class='btn btn-link' data-toggle='collapse' data-target='#addStudents' aria-expanded='false' aria-controls='addStudents' onclick='showNewInput(\"InputClassMultiple\", \"newClass\", \"InputNewClassMultiple\")'>";
-		append_str += "Create new class: ";
-		append_str += "</button>";
-		append_str += "</h5>";
-		append_str += "</div>";
-		append_str += "<div id='addStudents' class='collapse' aria-labelledby='headingOne' data-parent='#accordion'>";
-		append_str += "<div class='card-body'>";
-
-		// Append all students at once:
-		append_str +=
-			"<p style='font-weight: bold;'> If you would like to create a  new class, just fill the form below: ";
-		// Form opening
-		append_str += "<form>";
-
-		// Class choice:
-		append_str += '<div class="form-group">';
-		append_str += '<label for="InputClassMultiple" style="font-weight: bold;">Create class name: </label>';
-		append_str += `<select
-				aria-label="Select class or create new class">
-				class="form-control"
-				disabled
-				id="InputClassMultiple"
-				style="margin-bottom: 1%"
-			`;
-		append_str += '<option value="newClass" id="newClassMultiple" tag="assignment" >New Class</option>\n';
-		append_str += "</select>";
-		append_str +=
-			'<input class="form-control" id="InputNewClassMultiple" placeholder="HMB396 - Winter (NOTE: Spaces will be deleted once you submit so use capital letters to separate words)" hidden>';
-		append_str +=
-			'<small id="InputClassHelp" class="form-text text-muted">Choose class students will be added to or create a new class. Example of a new class: HMB396 - Winter - 2019 (NOTE: Spaces will be deleted once you submit so use capital letters to separate words)</small>';
-		append_str += "</div>";
-
-		// User number
-		append_str += '<div class="form-group">';
-		append_str += '<label for="InputStudentNumber" style="font-weight: bold;">Input student numbers: </label>';
-		append_str +=
-			'<textarea class="form-control" id="StudentNumbers" rows="4" placeholder="1234567890, 1003817535, 1113315545"></textarea>';
-		append_str +=
-			'<small id="InputStudentNumberHelp" class="form-text text-muted">Input student numbers, separated by commas, new lines and/or tab indentation (BEWARE OF TYPOS!)</small>';
-		append_str += "</div>";
-
-		// User uMail
-		append_str += '<div class="form-group">';
-		append_str +=
-			'<label for="InputStudentUmail" style="font-weight: bold;">Input student University email: </label>';
-		append_str +=
-			'<textarea class="form-control" id="StudentUmails" rows="4" placeholder="john.doe@mail.utoronto.ca, sarah.cat@.mail.utoronto.ca, alexander.macadonia@utoronto.ca"></textarea>';
-		append_str +=
-			'<small id="InputStudentUmailUmail" class="form-text text-muted">Input student University associated email in the same order of the student numbers, separated by commas, new lines and/or tab indentation (BEWARE OF TYPOS!)</small>';
-		append_str += "</div>";
-
-		// Close form
-		append_str += "</form>";
-
-		// Close card
-		append_str += "</div>";
-		append_str += "</div>";
-		append_str += "</div>";
-		$("#accountManagementBody").append(append_str);
-
-		// Create single card
-		append_str = "<div class='card about'>";
-		append_str += "<div class='card-header' id='addTACard'>";
-		append_str += "<h5 class='mb-0'>";
-		append_str +=
-			"<button class='btn btn-link' data-toggle='collapse' data-target='#addTA' aria-expanded='true' aria-controls='addTA'>";
-		append_str += "Add single user: ";
-		append_str += "</button>";
-		append_str += "</h5>";
-		append_str += "</div>";
-		append_str += "<div id='addTA' class='collapse' aria-labelledby='headingOne' data-parent='#accordion'>";
-		append_str += "<div class='card-body'>";
-
-		// Append TAs or Admins:
-		append_str +=
-			"<p style='font-weight: bold;'>If you would like to add a single user (students, TAs or admins), please fill in the form below. Please note, this will default the user as a student. Only admins will be able to create new TAs or admins</p>";
-		// Form opening
-		append_str += "<form>";
-
-		// Class choice:
-		append_str += '<div class="form-group">';
-		append_str += '<label for="InputClassSingle" style="font-weight: bold;">Choose class: </label>';
-		append_str +=
-			'<select id="InputClassSingle" class="form-control" style="margin-bottom: 1%;" aria-label="Select class">';
-		for (const key in classList) {
-			if (key) {
-				append_str += `<option value="${key}" id="${key}" tag="assignment">${key}</option>\n`;
-			}
-		}
-		append_str += "</select>";
-		append_str +=
-			'<small id="InputClassSingleHelp" class="form-text text-muted">Choose class TA will be added.</small>';
-		append_str += "</div>";
-
-		// User number
-		append_str += '<div class="form-group">';
-		append_str += '<label for="InputStudentNumber" style="font-weight: bold;">User\'s number</label>';
-		append_str += '<input class="form-control" id="StudentNumber" placeholder="1234567890" maxlength="10">';
-		append_str +=
-			'<small id="InputStudentNumberHelp" class="form-text text-muted">The user\'s access number (like a student or employee number)</small>';
-		append_str += "</div>";
-
-		// User umail
-		append_str += '<div class="form-group">';
-		append_str += '<label for="InputStudentUmail" style="font-weight: bold;">User\'s umail</label>';
-		append_str +=
-			'<input type="email" class="form-control" id="StudentUmail" placeholder="first.last@mail.utoronto.ca">';
-		append_str +=
-			'<small id="InputStudentNumberHelp" class="form-text text-muted">The user\'s University associated email</small>';
-		append_str += "</div>";
-
-		// Form closing
-		append_str += "</form>";
-
-		// Close card
-		append_str += "</div>";
-		append_str += "</div>";
-		append_str += "</div>";
-		$("#accountManagementBody").append(append_str);
-	}
-
-	// Admin controls:
-	if (student_reg_information[0].student_list[studentParseNum].type === "admin") {
-		// Create modifying controls card
-		append_str = "<div class='card about'>";
-		append_str += "<div class='card-header' id='modifyCard'>";
-		append_str += "<h5 class='mb-0'>";
-		append_str +=
-			"<button class='btn btn-link' data-toggle='collapse' data-target='#modifyControls' aria-expanded='true' aria-controls='modifyControls' onclick='ChangeDOMInnerhtml(\"CurrentOffTarget\", \"Current off-target marking is set to: \" + student_reg_information[0][\"classMarkingMod\"][document.getElementById(\"ClassModChange\").value][0])'>";
-		append_str += "Modify marking controls: ";
-		append_str += "</button>";
-		append_str += "</h5>";
-		append_str += "</div>";
-		append_str +=
-			"<div id='modifyControls' class='collapse' aria-labelledby='headingOne' data-parent='#accordion'>";
-		append_str += "<div class='card-body'>";
-
-		// Info:
-		append_str +=
-			"<p style='font-weight: bold;'>If you would like to change a class's off-target optimal goal, you can do that here</p>";
-
-		// Choose class:
-		append_str += '<div class="form-group">';
-		append_str += '<label for="ClassModChange" style="font-weight: bold;">Choose class: </label>';
-		append_str += `<select id="ClassModChange" class="form-control" style="margin-bottom: 1%;" onchange="ChangeDOMInnerhtml('CurrentOffTarget', 'Current off-target marking is set to: ' + student_reg_information[0]['classMarkingMod'][document.getElementById('ClassModChange').value][0])" aria-label="Choose class to modify marking controls">`;
-		for (const key in classList) {
-			if (key) {
-				append_str += `<option value="${key}" id="${key}" tag="assignment">${key}</option>\n`;
-			}
-		}
-		append_str += "</select>";
-		append_str +=
-			'<small id="ClassModChangeHelp" class="form-text text-muted">Choose the class for which you are modifying marking scheme for.</small>';
-		append_str += "</div>";
-
-		// Modify controls:
-		append_str += '<div class="form-group">';
-		append_str += '<p style="font-weight: bold;">Modify controls for: </p>';
-		append_str += '<label for="SelectModifyControls">Off-Target Marking: </label>';
-
-		append_str += '<p id="CurrentOffTarget">Current off-target marking is set to: </p>';
-		append_str +=
-			'<select id="SelectModifyControls" class="form-control" onchange="showNewInput(\'SelectModifyControls\', \'Custom\', \'InputModifyControls\')" style="margin-bottom: 1%" aria-label="Select off-target marking control">';
-		append_str += '<option value="Optimal" id="Optimal" tag="assignment">Optimal</option>\n';
-		append_str += '<option value="Custom" id="CustomOffTarget" tag="assignment">Custom</option>\n';
-		append_str += "</select>";
-		append_str +=
-			'<input class="form-control" id="InputModifyControls" type="number" step="0.01" min="0.01" max="100" placeholder="Insert number between 0.01 and 100" hidden>';
-		append_str +=
-			'<small id="InputModifyControlsHelp" class="form-text text-muted">Choose how you want the off-target score to be marked. Optimal is Min_optimal = Max_range - (Max_range * 0.2) if below 80 (if below, optimal = 80). Custom value can be any number between 0.01 and 100 which will be the new custom "optimal" value for your class.</small>';
-		append_str += "</div>";
-
-		// Close card
-		append_str += "</div>";
-		append_str += "</div>";
-		append_str += "</div>";
-		$("#accountManagementBody").append(append_str);
-
-		// Modify user's type card
-		append_str = "<div class='card about'>";
-		append_str += "<div class='card-header' id='typeCard'>";
-		append_str += "<h5 class='mb-0'>";
-		append_str +=
-			"<button class='btn btn-link' data-toggle='collapse' data-target='#typeControl' aria-expanded='true' aria-controls='typeControl' onclick=\"UpdateStudentList(document.getElementById('ClassChange').value); UpdateChooseUser('ClassUserChange');\">";
-		append_str += "Change a user's account type: ";
-		append_str += "</button>";
-		append_str += "</h5>";
-		append_str += "</div>";
-		append_str += "<div id='typeControl' class='collapse' aria-labelledby='headingOne' data-parent='#accordion'>";
-		append_str += "<div class='card-body'>";
-
-		// Info:
-		append_str +=
-			"<p style='font-weight: bold;'>If you would like to change a user's account type (to TA or admin or back to student), you can do that below</p>";
-
-		// Choose class:
-		append_str += '<div class="form-group">';
-		append_str += '<label for="ClassChange" style="font-weight: bold;">Choose class: </label>';
-		append_str += `<select id="ClassChange" class="form-control" style="margin-bottom: 1%;" onchange="UpdateStudentList(document.getElementById(\'ClassChange\').value); UpdateChooseUser(\'ClassUserChange\');" aria-label="Change class">`;
-		for (const key in classList) {
-			if (key) {
-				append_str += `<option value="${key}" id="${key}" tag="assignment">${key}</option>\n`;
-			}
-		}
-		append_str += "</select>";
-		append_str +=
-			'<small id="ClassChangeHelp" class="form-text text-muted">Choose the class for which the user belongs to.</small>';
-		append_str += "</div>";
-
-		// Choose user:
-		append_str += '<div class="form-group">';
-		append_str += '<label for="ClassUserChange" style="font-weight: bold;">Choose user: </label>';
-		append_str +=
-			'<select id="ClassUserChange" class="form-control" style="margin-bottom: 1%;" onchange="" aira-label="Choose user to change account type">';
-		append_str += "</select>";
-		append_str +=
-			'<small id="ClassUserChangeHelp" class="form-text text-muted">Choose the user for which you change their account type for.</small>';
-		append_str += "</div>";
-
-		// Choose type:
-		append_str += '<div class="form-group">';
-		append_str += '<label for="ClassTypeChange" style="font-weight: bold;">Choose type: </label>';
-		append_str +=
-			'<select id="ClassTypeChange" class="form-control" style="margin-bottom: 1%;" onchange="" aria-label="Choose user type">';
-		append_str += '<option value="Student" id="Student" tag="userType">Student</option>\n';
-		append_str += '<option value="TA" id="TA" tag="userType">TA</option>\n';
-		append_str += '<option value="admin" id="admin" tag="userType">admin</option>\n';
-		append_str += "</select>";
-		append_str +=
-			'<small id="ClassTypeChangeHelp" class="form-text text-muted">Choose the type for which you want the user to become.</small>';
-		append_str += "</div>";
-
-		// Submit button
-		append_str += "<br>";
-
-		// Close card
-		append_str += "</div>";
-		append_str += "</div>";
-		append_str += "</div>";
-		$("#accountManagementBody").append(append_str);
-	}
-
-	// Close account management
-	append_str = "</div>";
-	$("#accountManagementBody").append(append_str);
-
-	// Open the Bootstrap modal
-	$("#accountModal").modal("show");
-}
-
-/**
- * Update the choose user's options in the account management's change user type
- * @param {string} domUser
- */
-function UpdateChooseUser(domUser) {
-	ClearSelectOptions(domUser);
-	for (const key in updatedListOfStudents) {
-		if (updatedListOfStudents[key]) {
-			AddToOptions(domUser, key, updatedListOfStudents[key]);
-		}
-	}
-}
-
-/**
- * Add more options to a select
- * @param {string} domID The DOM ID in the HTML file for the select
- * @param {string} optionsValue The value and ID for the options being added
- * @param {string} optionsInner The InnerHTML for the options being added
- */
-function AddToOptions(domID, optionsValue, optionsInner) {
-	const dom = document.getElementById(domID);
-	const option = document.createElement("option");
-	option.value = optionsValue;
-	option.innerHTML = optionsInner;
-	dom.appendChild(option);
-}
-
-/**
- * Clear an select's options
- * @param {string} domID The DOM ID in the HTML for the select
- */
-function ClearSelectOptions(domID) {
-	const dom = document.getElementById(domID);
-	while (dom.options.length > 0) {
-		dom.options.remove(0);
-	}
-}
-
-let updatedListOfStudents = {};
-/**
- * Update the list of students available for a class
- * @param {string} className The class for which the students belong to
- */
-function UpdateStudentList(className) {
-	updatedListOfStudents = {};
-	const studentList = student_reg_information[0].student_list;
-	for (const student of studentList) {
-		if (student.studentClass === className) {
-			updatedListOfStudents[student.name] = `${student.name} - ${student.type}`;
-		}
-	}
-}
-
-/**
- * Change a DOM's innerHTML
- * @param {string} domID DOM's ID that is being modified
- * @param {string} changeTo The content of the innerHTML
- */
-function ChangeDOMInnerhtml(domID, changeTo) {
-	document.getElementById(domID).innerHTML = changeTo;
-}
-
-const downloadIndexTable_start = "\t\t<tr>\n\t\t\t<th>Student Number</th>\n\t\t\t<th>Name</th>";
-const downloadIndexTable_end = "\n\t\t</tr>\n";
-let downloadIndexTable_fill = "";
-/**
- * Generates the base index table header used for CSV export.
- * @param {string} whichIndexTable Placeholder parameter for compatibility
- * @param {boolean} SimpleComplex Placeholder parameter for compatibility
- */
-function generateRestOfIndexTable(whichIndexTable, SimpleComplex) {
-	whichIndexTable = downloadIndexTable_start;
-	whichIndexTable += downloadIndexTable_end;
-	return whichIndexTable;
-}
-
-/**
- * Generated a download button from JSON to CSV
- * @param {string} whichClass Which class is being downloaded
- * @param {boolean} whichType True is simple, false is complex
- */
-function generateHiddenStudentDownload(whichClass, whichType) {
-	// Check if TA/Admin
-	if (
-		student_reg_information[0].student_list[studentParseNum].type === "TA" ||
-		student_reg_information[0].student_list[studentParseNum].type === "admin"
-	) {
-		downloadIndexTable_fill = generateRestOfIndexTable(downloadIndexTable_fill, whichType);
-		$("#hiddenDownloadModal_table").empty(); // reset
-		const d = new Date();
-		let downloadIndexTable_str = "<table id='downloadIndexTable'>\n\t<tbody>\n";
-		let captionTitleBegin = "SciGrade_studentMark_";
-		if (!whichType) {
-			captionTitleBegin = "SciGrade_studentMarkRaw_";
-		}
-		downloadIndexTable_str += `\t\t<caption>${captionTitleBegin}${student_reg_information[0].student_list[
-			studentParseNum
-		].name.replace(/\s/g, "")}_${d.getFullYear()}-${d.getMonth()}_${d.getDate()}</caption>\n`;
-		downloadIndexTable_str += downloadIndexTable_fill;
-		// Looping through each row of the table
-		const studentRegList = student_reg_information[0].student_list;
-		for (const student of studentRegList) {
-			if (student.type === "Student" && student.studentClass === whichClass) {
-				downloadIndexTable_str += "\t\t<tr>\n";
-				downloadIndexTable_str += `\t\t\t<td>${student.student_number}</td>\n`;
-				downloadIndexTable_str += `\t\t\t<td>${student.name}</td>\n`;
-				downloadIndexTable_str += "\t\t</tr>\n";
-			}
-		}
-		downloadIndexTable_str += "\t</tbody>\n</table>"; // Closing
-		document.getElementById("hiddenDownloadModal_table").innerHTML += downloadIndexTable_str;
-		$("#hiddenDownloadModal_table").tableToCSV();
-	} else {
-		showRegError(7);
-	}
-}
-
-/**
- * Updates one input value when another input matches a target value.
- * @param {string} docCheck The DOM ID to check
- * @param {string} checkFor The value to compare against
- * @param {string} docChange The DOM ID to update
- * @param {string} trueChangeValueTo The value to apply when matched
- */
-function changeInputClass(docCheck, checkFor, docChange, trueChangeValueTo) {
-	if (trueChangeValueTo === "" || trueChangeValueTo === undefined) {
-		trueChangeValueTo = "undefined Class";
-	}
-	trueChangeValueTo = trueChangeValueTo.replace(/\s/g, "");
-	if (document.getElementById(docCheck).value === checkFor) {
-		document.getElementById(docChange).value = trueChangeValueTo;
-	}
-}
-
 let all_answers = [];
 let all_outputs = [];
 let all_marks = [];
-let studentAnswers = `student_list.${studentParseNum}.${loadedMode}-${current_gene}-Answers`;
-let studentOutputs = `student_list.${studentParseNum}.${loadedMode}-${current_gene}-Outputs`;
-let studentMarks = `student_list.${studentParseNum}.${loadedMode}-${current_gene}-Marks`;
 /**
  * Collects the student's answers, calculates marks, and triggers feedback display.
  */
@@ -1351,9 +831,6 @@ function submitAnswers() {
 	checkAnswers();
 	setTimeout(() => {
 		markAnswers();
-		studentAnswers = `student_list.${studentParseNum}.${loadedMode}-${current_gene}-Answers`;
-		studentOutputs = `student_list.${studentParseNum}.${loadedMode}-${current_gene}-Outputs`;
-		studentMarks = `student_list.${studentParseNum}.${loadedMode}-${current_gene}-Marks`;
 		all_answers.push(
 			document?.getElementById("sequence_input")?.value?.trim() || "",
 			document.getElementById("pam_input").value.trim(),
@@ -1412,3 +889,50 @@ function backToAssignments() {
 $(() => {
 	$("form").submit(() => false);
 });
+
+// Export for testing
+if (typeof module !== "undefined" && module.exports) {
+	module.exports = {
+		getOffTargetOptimalValue,
+		isNumberOrDashKey,
+		createComplementarySeq,
+		checkOffTarget,
+		checkF1Primers,
+		checkR1Primers,
+		fillGeneList,
+		// Export getters for testing
+		get MAROffTarget() {
+			return MAROffTarget;
+		},
+		get MAROffTarget_degree() {
+			return MAROffTarget_degree;
+		},
+		get MARF1primers() {
+			return MARF1primers;
+		},
+		get MARR1primers() {
+			return MARR1primers;
+		},
+		// Export setters for test setup
+		__setTestState(state = {}) {
+			if (state.correctNucleotideIncluded !== undefined)
+				correctNucleotideIncluded = state.correctNucleotideIncluded;
+			if (state.MARgRNAseq !== undefined) MARgRNAseq = state.MARgRNAseq;
+			if (state.benchling_gRNA_outputs !== undefined) benchling_gRNA_outputs = state.benchling_gRNA_outputs;
+			if (state.current_gene !== undefined) current_gene = state.current_gene;
+			if (state.gene_backgroundInfo !== undefined) gene_backgroundInfo = state.gene_backgroundInfo;
+		},
+		// Reset state for clean tests
+		__resetState() {
+			MAROffTarget = false;
+			MAROffTarget_degree = 0;
+			MARF1primers = false;
+			MARR1primers = false;
+			MAROffTarget_aboveOpt = false;
+			MAROffTarget_above35 = false;
+			MAROffTarget_onlyOption = false;
+			correctNucleotideIncluded = false;
+			MARgRNAseq = false;
+		},
+	};
+}

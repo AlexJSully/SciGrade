@@ -53,6 +53,7 @@ npm run test:playwright:ui        # Run playwright tests in UI mode
 npm run validate          # Run prettier, eslint, jest, and playwright tests
 
 # Build & Service Worker
+npm run minify            # Minify runtime and marking scripts
 npm run workbox           # Generate service worker with workbox
 ```
 
@@ -66,7 +67,7 @@ npm run workbox           # Generate service worker with workbox
 - [core/scripts/APIandLibraries/](../../core/scripts/APIandLibraries/) - Third-party libraries (jQuery, Bootstrap)
 - [core/scripts/serviceWorker/](../../core/scripts/serviceWorker/) - Service worker runtime
 - [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js) - Main gRNA/primer validation logic
-- [core/scripts/login.js](../../core/scripts/login.js) - Login and account helpers
+- [core/scripts/runtime.js](../../core/scripts/runtime.js) - Runtime practice flow helpers
 - [core/styling/style.css](../../core/styling/style.css) - Application styles
 - [core/images/](../../core/images/) - SVG and PNG assets
 - [core/icon/](../../core/icon/) - PWA icons and manifest
@@ -139,7 +140,7 @@ Structure:
 Test files:
 
 - [core/scripts/crispr_scripts.test.js](../../core/scripts/crispr_scripts.test.js)
-- [core/scripts/login.test.js](../../core/scripts/login.test.js)
+- [core/scripts/runtime.test.js](../../core/scripts/runtime.test.js)
 
 Run tests:
 
@@ -171,14 +172,15 @@ Generate a service worker for offline support:
 npm run workbox
 ```
 
-This uses the configuration in [workbox-config.js](../../workbox-config.js).
+This uses the configuration in [workbox-config.cjs](../../workbox-config.cjs).
 
 ### Code Minification
 
-Minified versions are pre-built:
+Generate minified scripts with `npm run minify` from [package.json](../../package.json).
+This command creates the following bundled files used by the runtime page:
 
 - [core/scripts/crispr_scripts.min.js](../../core/scripts/crispr_scripts.min.js)
-- [core/scripts/login.min.js](../../core/scripts/login.min.js)
+- [core/scripts/runtime.min.js](../../core/scripts/runtime.min.js)
 - [core/styling/style.min.css](../../core/styling/style.min.css)
 
 ## Troubleshooting

@@ -23,6 +23,7 @@
 		"audit:fix": "npm i && npm audit fix",
 		"eslint:check": "eslint ./",
 		"eslint": "eslint --fix ./",
+		"minify": "esbuild core/scripts/runtime.js --minify --outfile=core/scripts/runtime.min.js && esbuild core/scripts/crispr_scripts.js --minify --outfile=core/scripts/crispr_scripts.min.js",
 		"prettier:check": "prettier --check ./",
 		"prettier": "prettier --write ./",
 		"regen-package-lock": "rm -rf node_modules package-lock.json && npm run audit:fix",
@@ -31,8 +32,8 @@
 		"test:jest": "jest --passWithNoTests",
 		"test:playwright:headless": "npx playwright test --reporter=list",
 		"test:playwright:ui": "npx playwright test --ui",
-		"validate": "npm run prettier && npm run eslint && npm run test:jest && npm run test:playwright:headless",
-		"workbox": "workbox generateSW"
+		"validate": "npm run prettier && npm run eslint && npm run minify && npm run test:jest && npm run test:playwright:headless",
+		"workbox": "workbox generateSW workbox-config.cjs"
 	},
 	"bugs": {
 		"url": "https://github.com/AlexJSully/SciGrade/issues"
@@ -58,6 +59,7 @@
 		"@types/jest": "^30.0.0",
 		"@types/node": "^25.2.3",
 		"axe-playwright": "^2.2.2",
+		"esbuild": "^0.27.3",
 		"eslint": "^10.0.0",
 		"eslint-config-prettier": "^10.1.8",
 		"eslint-plugin-prettier": "^5.5.5",

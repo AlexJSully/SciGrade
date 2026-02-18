@@ -69,14 +69,13 @@
 			crossorigin="anonymous"
 		></script>
 		<script
-			src="https://browser.sentry-cdn.com/7.112.2/bundle.tracing.replay.min.js"
-			integrity="sha384-+HZy5t257oKTk2yEzTRP7BHVyZzZP3vssSktpR8GbtmuiuSMBW6puOJ4Ca355PSB"
+			src="https://browser.sentry-cdn.com/10.39.0/bundle.logs.metrics.min.js"
+			integrity="sha384-lDA+D/XFIGc3Z+/DyIt1jC/K2R6cHVIPzxoR4FvIYuB/Q7uco+zkv+uc/zJ2U5jE"
 			crossorigin="anonymous"
 		></script>
-
 		<script
-			src="https://browser.sentry-cdn.com/7.112.2/captureconsole.min.js"
-			integrity="sha384-VgUCZ/UThTuCjterVVByiatlC86IEqvsvdaN6Lw8qBTkDewd+tpl/sqaxpBPpNxS"
+			src="https://browser.sentry-cdn.com/10.39.0/captureconsole.min.js"
+			integrity="sha384-BSoBYjwS7qSMpAeTvkAraghNvk2Ynvyzc4Q8csp63An/a3L8P01F4nob3A3DhBwP"
 			crossorigin="anonymous"
 		></script>
 		<script>
@@ -110,58 +109,7 @@
 		<script rel="preload" as="script" src="scripts/APIandLibraries/tabletoCSV/jquery.tabletoCSV.js"></script>
 
 		<script>
-			let studentParseNum;
-
-			let googleName;
-			let googleEmail;
-			/**
-			 * Retrieves Google user information and stores it
-			 */
-			function onSignIn(googleUser) {
-				let profile = googleUser.getBasicProfile();
-				googleName = profile.getName();
-				googleEmail = profile.getEmail(); // This is null if the 'email' scope is not present.
-				sendLogReg();
-			}
-
-			/**
-			 * Google sign-out
-			 */
-			function signOut() {
-				let auth2 = gapi.auth2.getAuthInstance();
-				auth2.signOut();
-			}
-
-			/**
-			 * Handle changing navigation tabs between login and register
-			 * @param {string} [which='login'] Which tab is being switched to (default login)
-			 * @example <caption>Use this function to handle switching between the login and register content</caption>
-			 * handleLoginTabChange('login')
-			 * // returns null (does not return anything but rather un-hides the login content)
-			 */
-			function handleLoginTabChange(which = "login") {
-				// Add class active to click <a> tab and remove from other and make tab content visible
-				if (which === "login") {
-					// Selecting tab
-					$("#loginTab").addClass("active");
-					$("#registerTab").removeClass("active");
-
-					// Adjusting tab content
-					document.getElementById("login").style.display = "block";
-					document.getElementById("register").style.display = "none";
-				} else {
-					// Selecting tab
-					$("#loginTab").removeClass("active");
-					$("#registerTab").addClass("active");
-
-					// Adjusting tab content
-					document.getElementById("login").style.display = "none";
-					document.getElementById("register").style.display = "block";
-				}
-			}
-
 			window.onload = function () {
-				continueWithoutLogin = true;
 				redirectCRISPR();
 			};
 		</script>
@@ -202,7 +150,7 @@
 			}
 		</script>
 		<!-- Custom scripts -->
-		<script rel="preload" as="script" src="scripts/login.min.js"></script>
+		<script rel="preload" as="script" src="scripts/runtime.min.js"></script>
 		<script rel="preload" as="script" src="scripts/crispr_scripts.min.js"></script>
 		<link rel="stylesheet preload" href="styling/style.min.css" as="style" />
 	</head>
@@ -235,61 +183,8 @@
 				>Application</a
 			>
 			<a href="about.html" aria-hidden="true" hidden>About</a>
-			<a
-				class="logIO"
-				data-toggle="modal"
-				href="#accountModal"
-				id="accountIO"
-				onclick="openAccountManagement()"
-				hidden
-			>
-				Account
-			</a>
-			<a class="logIO" id="logIO" href="systemrun.html" hidden>
-				<em class="material-icons" style="font-size: inherit">&#xE7FD;</em> Login</a
-			>
 		</nav>
 		<div class="container focusContainer" role="tabpanel" id="mainContainer"></div>
-
-		<!-- Error with registration modal -->
-		<button
-			id="errorRegButton"
-			type="button"
-			class="btn btn-primary"
-			data-toggle="modal"
-			data-target="#exampleModal"
-			hidden
-		>
-			Error with registration
-		</button>
-		<div
-			class="modal fade"
-			id="exampleModal"
-			tabindex="-1"
-			role="dialog"
-			aria-labelledby="exampleModalLabel"
-			aria-hidden="true"
-		>
-			<div class="modal-dialog modal-lg" role="document">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title" id="exampleModalLabel">Oops</h5>
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
-					</div>
-					<div class="modal-body" id="errorRegBody">
-						<p id="errorRegContent">
-							An error happened. If no error is being displayed here, you are not supposed to see this
-							error (unexpected error).
-						</p>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-					</div>
-				</div>
-			</div>
-		</div>
 
 		<!-- Feedback button -->
 		<button
@@ -350,128 +245,6 @@
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-secondary" data-dismiss="modal" id="dismissFeedbackModal">
-							Close
-						</button>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<!-- Account management button -->
-		<button
-			id="accountButton"
-			type="button"
-			class="btn btn-primary"
-			data-toggle="modal"
-			data-target="#accountModal"
-			hidden
-		>
-			Open account management modal
-		</button>
-		<div
-			class="modal fade"
-			id="accountModal"
-			tabindex="-1"
-			role="dialog"
-			aria-labelledby="accountModalLabel"
-			aria-hidden="true"
-		>
-			<div class="modal-dialog modal-lg modalResponsive" role="document">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title" id="accountModalLabel">Account Management</h5>
-						<button
-							aria-label="Close"
-							class="close"
-							data-dismiss="modal"
-							onclick="$('#accountModal').modal('hide')"
-							type="button"
-						>
-							<span aria-hidden="true">&times;</span>
-						</button>
-					</div>
-					<div class="modal-body" id="accountManagementBody"></div>
-					<div class="modal-footer">
-						<button
-							class="btn btn-secondary"
-							data-dismiss="modal"
-							id="dismissAccountModal"
-							onclick="$('#accountModal').modal('hide')"
-							type="button"
-						>
-							Close
-						</button>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<!-- Admin send button -->
-		<button
-			id="adminSendButton"
-			type="button"
-			class="btn btn-primary"
-			data-toggle="modal"
-			data-target="#adminSendModal"
-			hidden
-		>
-			Admin send modal
-		</button>
-		<div
-			class="modal fade"
-			id="adminSendModal"
-			tabindex="-1"
-			role="dialog"
-			aria-labelledby="adminSendModalLabel"
-			aria-hidden="true"
-		>
-			<div class="modal-dialog" role="document">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title" id="adminSendModalLabel">SENT!</h5>
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
-					</div>
-					<div class="modal-body" id="adminSendBody" style="background-color: #98fb98">
-						Successfully sent to the server!
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-secondary" data-dismiss="modal" id="dismissAdminSendModal">
-							Close
-						</button>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<!-- Hidden student download modal -->
-		<div
-			id="hiddenDownloadModal"
-			class="modal fade"
-			tabindex="-1"
-			role="dialog"
-			aria-hidden="true"
-			aria-labelledby="myLargeModalLabel"
-		>
-			<div class="modal-dialog modal-lg" style="width: 940px">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" style="margin-top: -5px" data-dismiss="modal">
-							&times;
-						</button>
-					</div>
-					<div class="modal-body">
-						<div class="table-responsive json_modal_table" id="hiddenDownloadJSONCSV">
-							<table
-								id="hiddenDownloadModal_table"
-								class="table"
-								aria-describedby="Download data"
-							></table>
-						</div>
-					</div>
-					<div class="modal-footer modal-footer-colour">
-						<button type="button" class="btn btn-default modal-close" data-dismiss="modal" id="closemodal">
 							Close
 						</button>
 					</div>

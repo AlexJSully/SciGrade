@@ -5,6 +5,7 @@ This document provides detailed function signatures and descriptions for the cor
 ## Core Modules
 
 - [crispr_scripts.js](#crispr_scriptsjs) - Main gRNA and primer validation logic
+- [runtime.js](#runtimejs) - Runtime flow helpers
 
 ## crispr_scripts.js
 
@@ -83,7 +84,7 @@ async function loadCRISPRJSON_Files()
 
 **Returns:** Promise (implicitly handled by async).
 
-**Called By:** `redirectCRISPR()` in [core/scripts/login.js](../../core/scripts/login.js), which is triggered on page load from [core/systemrun.html](../../core/systemrun.html).
+**Called By:** `redirectCRISPR()` in [core/scripts/runtime.js](../../core/scripts/runtime.js), which is triggered on page load from [core/systemrun.html](../../core/systemrun.html).
 
 **Example:**
 
@@ -221,20 +222,39 @@ function checkOffTarget(score)
 
 **Parameters:**
 
-- `score` {number} - Student's off-target score input
+- `score` {number} - Reference specificity score from the matched gRNA entry
 
 **Behavior:**
 
 - Compares the student input to the floor/ceiling of the reference specificity score
 - Builds a score list within ±35 positions of the inputted cut position to determine an optimal threshold
+- Uses `getOffTargetOptimalValue()` to determine the optimal threshold from the local max score
 - Sets `MAROffTarget` and `MAROffTarget_degree` based on the input and calculated thresholds
 - Degree values:
     - `0`: Wrong or below threshold
-    - `1`: At or above the optimal threshold
-    - `2`: At or above 35 but below the optimal threshold when the max reference score is at least 80
+    - `1`: At or above the optimal threshold, or at or above 35 when the local max score is below 80
+    - `2`: At or above 35 but below the optimal threshold when the local max score is at least 80
     - `3`: Only available option when the local max score is below 35
 
 **Used For:** Part of `checkAnswers()` validation.
+
+#### getOffTargetOptimalValue(maxRange)
+
+```javascript
+function getOffTargetOptimalValue(maxRange)
+```
+
+**Purpose:** Calculate the default optimal off-target threshold.
+
+**Parameters:**
+
+- `maxRange` {number} - Maximum specificity score in the local window
+
+**Behavior:**
+
+- Computes `minOptimal = maxRange - maxRange * 0.2`
+- Returns `80` when `minOptimal` is greater than 80 or less than 35
+- Returns `minOptimal` otherwise
 
 #### checkF1Primers(seq)
 
@@ -301,7 +321,6 @@ function markAnswers()
 - Assigns points for each correct component:
     - gRNA sequence
     - PAM
-    - Strand
     - Off-target score
     - F1 primer
     - R1 primer
@@ -323,7 +342,7 @@ function showFeedback()
 
 **Renders:**
 
-- Component-by-component results (✓ or ✗)
+- Component-by-component results and marks
 - Explanatory text derived from the current marking state
 - Candidate primer lists derived from the submitted gRNA sequence
 
@@ -398,33 +417,37 @@ function showNewInput(docCheck, checkFor, docDisplay)
 
 **Behavior:** Shows `docDisplay` when `docCheck` matches `checkFor`.
 
-#### ChangeDOMInnerhtml(domID, changeTo)
+## runtime.js
+
+**Location:** [core/scripts/runtime.js](../../core/scripts/runtime.js)
+
+Runtime flow helpers for the practice experience.
+
+### loadGeneContent()
 
 ```javascript
-function ChangeDOMInnerhtml(domID, changeTo)
+function loadGeneContent()
 ```
 
-**Purpose:** Update HTML element content.
+**Purpose:** Read the selected gene and trigger gene loading.
 
-**Parameters:**
+**Behavior:**
 
-- `domID` {string} - HTML element ID
-- `changeTo` {string} - New HTML content
+- Sets `possible_gene` from `#gene_dropdown_selection`
+- Calls `select_Gene()`
 
-#### changeInputClass(docCheck, checkFor, docChange, trueChangeValueTo)
+### redirectCRISPR()
 
 ```javascript
-function changeInputClass(docCheck, checkFor, docChange, trueChangeValueTo)
+async function redirectCRISPR()
 ```
 
-**Purpose:** Update an input value when another input matches a target value.
+**Purpose:** Build the runtime selection UI and load reference data.
 
-**Parameters:**
+**Behavior:**
 
-- `docCheck` {string} - Element ID to check condition
-- `checkFor` {string} - Value to match
-- `docChange` {string} - Element ID to update
-- `trueChangeValueTo` {string} - Value to apply when matched
+- Builds the selection UI in `#mainContainer`
+- Calls `loadCRISPRJSON_Files()` and `fillGeneList()`
 
 ## Bootstrap & jQuery
 

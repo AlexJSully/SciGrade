@@ -56,13 +56,13 @@ beforeEach(() => {
 	jest.clearAllMocks();
 
 	// Reset fetch mock
-	if (fetch && fetch.mockClear) {
+	if (typeof fetch !== "undefined" && fetch && fetch.mockClear) {
 		fetch.mockClear();
 	}
 
 	// Reset jQuery mock
-	if ($ && $.mockClear) {
-		$.mockClear();
+	if (typeof global !== "undefined" && global.$ && global.$.mockClear) {
+		global.$.mockClear();
 	}
 });
 
