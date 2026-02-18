@@ -11,9 +11,7 @@ const listOfGenes = ["eBFP", "ACTN3", "HBB", "CCR5", "ANKK1", "APOE"];
 let possible_gene = "eBFP";
 let current_gene = "empty";
 
-/**
- * Purpose of this is to assign the current gene and check for errors
- */
+/** Purpose of this is to assign the current gene and check for errors */
 function select_Gene() {
 	if (possible_gene !== "" || possible_gene) {
 		current_gene = possible_gene;
@@ -198,9 +196,9 @@ function loadWork() {
 }
 
 /**
- * @param {event} evt - Character key press
- * @return {bool} - Returns true if number or dash, else false
- * Determine if a number or dash key is pressed
+ * Determine if a number, dash, or period key is pressed.
+ * @param {Event} evt - Character key press event
+ * @returns {boolean} True if the key is a number, dash, or period
  */
 function isNumberOrDashKey(evt) {
 	const charCode = evt.which ? evt.which : evt.keyCode;
@@ -384,7 +382,7 @@ function checkAnswers() {
 					// Check if the F1 primer matches the answer's input
 					checkF1Primers(document?.getElementById("sequence_input")?.value?.trim() || "");
 
-					// Check if the F1 primer matches the answer's input
+					// Check if the R1 primer matches the answer's input
 					checkR1Primers(document?.getElementById("sequence_input")?.value?.trim() || "");
 				}
 			}
@@ -398,9 +396,8 @@ let offtarget_dict = {};
 let offtarget_dictParse = [];
 let offtarget_Use = [];
 /**
- * Checks the off-target score if it is correct
- * @param {int} score - The specificity score from possible_comparable_answers
- * @return {bool} - Returns true if MAROffTarget is correct
+ * Checks whether the submitted off-target score matches the reference scoring rules.
+ * @param {number} score - Reference specificity score from the matched gRNA entry
  */
 function checkOffTarget(score) {
 	// Reset variables:
@@ -481,9 +478,8 @@ function checkOffTarget(score) {
 
 let possible_F1_primers = [];
 /**
- * Checks if the F1 primer is correct or not
- * @param {String} seq - The gRNA sequence
- * @return {bool} - Returns true if MARF1primers is correct
+ * Checks whether the F1 primer matches one of the generated candidates.
+ * @param {string} seq - The gRNA sequence
  */
 function checkF1Primers(seq) {
 	// Reset variables:
@@ -516,9 +512,8 @@ const complementary_nt_dict = {
 	G: "C",
 };
 /**
- * Checks if the R1 primer is correct or not
- * @param {String} seq - The gRNA sequence
- * @return {bool} - Returns true if MARR1primers is correct
+ * Checks whether the R1 primer matches one of the generated candidates.
+ * @param {string} seq - The gRNA sequence
  */
 function checkR1Primers(seq) {
 	// Reset variables:
@@ -539,7 +534,8 @@ function checkR1Primers(seq) {
 }
 
 /**
- * Creates a complementary sequence of the nucleotides
+ * Builds a complementary sequence from the provided nucleotides.
+ * Note: This function does not return the computed sequence.
  */
 function createComplementarySeq(seq) {
 	let comp_seq = "";
@@ -551,8 +547,9 @@ function createComplementarySeq(seq) {
 let studentMark = 0;
 let studentMarkPercentage = 0;
 const markTotal = 10;
+
 /**
- * Based on checkAnswers(), returns a float of a mark
+ * Calculates the student's mark and percentage based on the current marking state.
  */
 function markAnswers() {
 	studentMark = 0;
@@ -806,9 +803,9 @@ function showFeedback() {
 
 /**
  * Determine whether an input form will be displayed or not
- * @param {String} docCheck The DOM being checked against
- * @param {String} checkFor The value of the DOM being used to check for
- * @param {String} docDisplay The DOM what will toggle hidden visibility for
+ * @param {string} docCheck The DOM being checked against
+ * @param {string} checkFor The value of the DOM being used to check for
+ * @param {string} docDisplay The DOM what will toggle hidden visibility for
  */
 function showNewInput(docCheck, checkFor, docDisplay) {
 	if (document.getElementById(String(docCheck)).value === String(checkFor)) {
@@ -1206,7 +1203,7 @@ function openAccountManagement() {
 
 /**
  * Update the choose user's options in the account management's change user type
- * @param {String} domUser
+ * @param {string} domUser
  */
 function UpdateChooseUser(domUser) {
 	ClearSelectOptions(domUser);
@@ -1219,9 +1216,9 @@ function UpdateChooseUser(domUser) {
 
 /**
  * Add more options to a select
- * @param {String} domID The DOM ID in the HTML file for the select
- * @param {String} optionsValue The value and ID for the options being added
- * @param {String} optionsInner The InnerHTML for the options being added
+ * @param {string} domID The DOM ID in the HTML file for the select
+ * @param {string} optionsValue The value and ID for the options being added
+ * @param {string} optionsInner The InnerHTML for the options being added
  */
 function AddToOptions(domID, optionsValue, optionsInner) {
 	const dom = document.getElementById(domID);
@@ -1233,7 +1230,7 @@ function AddToOptions(domID, optionsValue, optionsInner) {
 
 /**
  * Clear an select's options
- * @param {String} domID The DOM ID in the HTML for the select
+ * @param {string} domID The DOM ID in the HTML for the select
  */
 function ClearSelectOptions(domID) {
 	const dom = document.getElementById(domID);
@@ -1245,7 +1242,7 @@ function ClearSelectOptions(domID) {
 let updatedListOfStudents = {};
 /**
  * Update the list of students available for a class
- * @param {String} className The class for which the students belong to
+ * @param {string} className The class for which the students belong to
  */
 function UpdateStudentList(className) {
 	updatedListOfStudents = {};
@@ -1259,8 +1256,8 @@ function UpdateStudentList(className) {
 
 /**
  * Change a DOM's innerHTML
- * @param {String} domID DOM's ID that is being modified
- * @param {String} changeTo The content of the innerHTML
+ * @param {string} domID DOM's ID that is being modified
+ * @param {string} changeTo The content of the innerHTML
  */
 function ChangeDOMInnerhtml(domID, changeTo) {
 	document.getElementById(domID).innerHTML = changeTo;
@@ -1270,9 +1267,9 @@ const downloadIndexTable_start = "\t\t<tr>\n\t\t\t<th>Student Number</th>\n\t\t\
 const downloadIndexTable_end = "\n\t\t</tr>\n";
 let downloadIndexTable_fill = "";
 /**
- * Generated the base IndexTable for downloading JSON as CSV
- * @param {String} whichIndexTable The string of which the index table start as, defaults as downloadIndexTable_start
- * @param {boolean} SimpleComplex True is simple, false is complex
+ * Generates the base index table header used for CSV export.
+ * @param {string} whichIndexTable Placeholder parameter for compatibility
+ * @param {boolean} SimpleComplex Placeholder parameter for compatibility
  */
 function generateRestOfIndexTable(whichIndexTable, SimpleComplex) {
 	whichIndexTable = downloadIndexTable_start;
@@ -1282,7 +1279,7 @@ function generateRestOfIndexTable(whichIndexTable, SimpleComplex) {
 
 /**
  * Generated a download button from JSON to CSV
- * @param {String} whichClass Which class is being downloaded
+ * @param {string} whichClass Which class is being downloaded
  * @param {boolean} whichType True is simple, false is complex
  */
 function generateHiddenStudentDownload(whichClass, whichType) {
@@ -1322,11 +1319,11 @@ function generateHiddenStudentDownload(whichClass, whichType) {
 }
 
 /**
- * Changes the input class value to new input
- * @param {String} docCheck The DOM being checked against
- * @param {String} checkFor The value of the DOM being used to check for
- * @param {String} docChange The DOM what will have its value changed
- * @param {String} trueChangeValueTo What to change value to
+ * Updates one input value when another input matches a target value.
+ * @param {string} docCheck The DOM ID to check
+ * @param {string} checkFor The value to compare against
+ * @param {string} docChange The DOM ID to update
+ * @param {string} trueChangeValueTo The value to apply when matched
  */
 function changeInputClass(docCheck, checkFor, docChange, trueChangeValueTo) {
 	if (trueChangeValueTo === "" || trueChangeValueTo === undefined) {
@@ -1345,7 +1342,7 @@ let studentAnswers = `student_list.${studentParseNum}.${loadedMode}-${current_ge
 let studentOutputs = `student_list.${studentParseNum}.${loadedMode}-${current_gene}-Outputs`;
 let studentMarks = `student_list.${studentParseNum}.${loadedMode}-${current_gene}-Marks`;
 /**
- * Submit and sends the student's answers to the server
+ * Collects the student's answers, calculates marks, and triggers feedback display.
  */
 function submitAnswers() {
 	all_answers = [];
@@ -1395,7 +1392,7 @@ function submitAnswers() {
 /**
  * Determine if a enter was pressed and if so, click a button
  * @param {Event} event The key press
- * @param {String} toClickButton Which button to click
+ * @param {string} toClickButton Which button to click
  */
 function IfPressEnter(event, toClickButton) {
 	if (event.which === 13 || event.keyCode === 13) {

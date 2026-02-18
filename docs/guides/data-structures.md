@@ -4,7 +4,7 @@ This document describes the JSON data formats and data structures used throughou
 
 ## Overview
 
-SciGrade uses JSON as its primary data format for gene information and gRNA validation reference data. These files are loaded client-side at application startup.
+SciGrade uses JSON as its primary data format for gene information and guide RNA (gRNA) validation reference data. These files are loaded client-side during the runtime UI flow in [core/scripts/login.js](../../core/scripts/login.js) and [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js).
 
 ## Gene Background Information
 
@@ -16,12 +16,12 @@ SciGrade uses JSON as its primary data format for gene information and gRNA vali
 
 ```json
 {
-	"_id": "5a67577c01ac2022a0eb6f56",
-	"owner_id": "5a4cb9e58f25b9cd6d49e868",
-	"number": 42,
-	"version": "0.3",
-	"date": "2018-08-20:1925",
-	"gene_list": {}
+ "_id": "5a67577c01ac2022a0eb6f56",
+ "owner_id": "5a4cb9e58f25b9cd6d49e868",
+ "number": 42,
+ "version": "0.3",
+ "date": "2018-08-20:1925",
+ "gene_list": {}
 }
 ```
 
@@ -37,17 +37,17 @@ SciGrade uses JSON as its primary data format for gene information and gRNA vali
 
 ```json
 {
-	"gene_list": {
-		"GENENAME": {
-			"base_type": "practice",
-			"name": "Full Gene Name",
-			"Background": "Educational description...",
-			"Target site": "Nucleotide position X - description of target",
-			"Target position": "123",
-			"Sequence": "ACGTACGT...(full sequence)...ACGT",
-			"NCBI gene link": "https://www.ncbi.nlm.nih.gov/gene/12345"
-		}
-	}
+ "gene_list": {
+  "GENENAME": {
+   "base_type": "practice",
+   "name": "Full Gene Name",
+   "Background": "Educational description...",
+   "Target site": "Nucleotide position X - description of target",
+   "Target position": "123",
+   "Sequence": "ACGTACGT...(full sequence)...ACGT",
+   "NCBI gene link": "https://www.ncbi.nlm.nih.gov/gene/12345"
+  }
+ }
 }
 ```
 
@@ -69,15 +69,15 @@ From actual data (HBB gene):
 
 ```json
 {
-	"HBB": {
-		"base_type": "practice",
-		"name": "Sickle cell anemia",
-		"Background": "Sickle cell anaemia is caused by an SNP in the human haemoglobin beta-chain which results in a GAG codon being replaced with a GTG codon (A → T)...",
-		"Target site": "Nucleotide position 73 - You are trying to change a thymine back to an alanine (WILD-TYPE).",
-		"Target position": "73",
-		"Sequence": "ACATTTGCTTCTGACACAACTGTGTTCACTAGCAACCTCAAACAGACACCATGGTGCATCTGACTCCTGAGGTGAAGTCTGCCGTTACTGCCCTGTGGGGCAAGGTGAACGTGGATGAAGTTGGTGGTGAGGCCCTGGGCAGGCTGCTGGTGGTCTACCCTTGGACCCAGAGGTTCTTTGAGTCCTTTGGGGATCTGTCCACTCCTGATGCTGTTATGGGCAACCCTAAGGTGAAGGCTCATGGCAAGAAAGTGCTCGGTGCCTTTAGTGATGGCCTGGCTCACCTGGACAACCTCAAGGGCACCTTTGCCACACTGAGTGAGCTGCACTGTGACAAGCTGCACGTGGATCCTGAGAACTTCAGGCTCCTGGGCAACGTGCTGGTCTGTGTGCTGGCCCATCACTTTGGCAAAGAATTCACCCCACCAGTGCAGGCTGCCTATCAGAAAGTGGTGGCTGGTGTGGCTAATGCCCTGGCCCACAAGTATCACTAAGCTCGCTTTCTTGCTGTCCAATTTCTATTAAAGGTTCCTTTGTTCCCTAAGTCCAACTACTAAACTGGGGGATATTATGAAGGGCCTTGAGCATCTGGATTCTGCCTAATAAAAAACATTTATTTTCATTGC",
-		"NCBI gene link": "https://www.ncbi.nlm.nih.gov/gene/3043"
-	}
+ "HBB": {
+  "base_type": "practice",
+  "name": "Sickle cell anemia",
+  "Background": "Sickle cell anaemia is caused by an SNP in the human haemoglobin beta-chain which results in a GAG codon being replaced with a GTG codon (A → T)...",
+  "Target site": "Nucleotide position 73 - You are trying to change a thymine back to an alanine (WILD-TYPE).",
+  "Target position": "73",
+  "Sequence": "ACATTTGCTTCTGACACAACTGTGTTCACTAGCAACCTCAAACAGACACCATGGTGCATCTGACTCCTGAGGTGAAGTCTGCCGTTACTGCCCTGTGGGGCAAGGTGAACGTGGATGAAGTTGGTGGTGAGGCCCTGGGCAGGCTGCTGGTGGTCTACCCTTGGACCCAGAGGTTCTTTGAGTCCTTTGGGGATCTGTCCACTCCTGATGCTGTTATGGGCAACCCTAAGGTGAAGGCTCATGGCAAGAAAGTGCTCGGTGCCTTTAGTGATGGCCTGGCTCACCTGGACAACCTCAAGGGCACCTTTGCCACACTGAGTGAGCTGCACTGTGACAAGCTGCACGTGGATCCTGAGAACTTCAGGCTCCTGGGCAACGTGCTGGTCTGTGTGCTGGCCCATCACTTTGGCAAAGAATTCACCCCACCAGTGCAGGCTGCCTATCAGAAAGTGGTGGCTGGTGTGGCTAATGCCCTGGCCCACAAGTATCACTAAGCTCGCTTTCTTGCTGTCCAATTTCTATTAAAGGTTCCTTTGTTCCCTAAGTCCAACTACTAAACTGGGGGATATTATGAAGGGCCTTGAGCATCTGGATTCTGCCTAATAAAAAACATTTATTTTCATTGC",
+  "NCBI gene link": "https://www.ncbi.nlm.nih.gov/gene/3043"
+ }
 }
 ```
 
@@ -91,12 +91,12 @@ From actual data (HBB gene):
 
 ```json
 {
-	"_id": "5a8deb6a547dd8319415ac3d",
-	"owner_id": "5a4cb9e58f25b9cd6d49e868",
-	"number": 42,
-	"version": "0.2",
-	"date": "2018-02-21:1657",
-	"gene_list": {}
+ "_id": "5a8deb6a547dd8319415ac3d",
+ "owner_id": "5a4cb9e58f25b9cd6d49e868",
+ "number": 42,
+ "version": "0.2",
+ "date": "2018-02-21:1657",
+ "gene_list": {}
 }
 ```
 
@@ -106,18 +106,18 @@ From actual data (HBB gene):
 
 ```json
 {
-	"gene_list": {
-		"GENENAME": [
-			{
-				"Position": 123,
-				"Strand": 1,
-				"Sequence": "ACGTACGTACGTACGTACGT",
-				"PAM": "NGG",
-				"Specificity Score": 45.2,
-				"Efficiency Score": 78.5
-			}
-		]
-	}
+ "gene_list": {
+  "GENENAME": [
+   {
+    "Position": 123,
+    "Strand": 1,
+    "Sequence": "ACGTACGTACGTACGTACGT",
+    "PAM": "NGG",
+    "Specificity Score": 45.2,
+    "Efficiency Score": 78.5
+   }
+  ]
+ }
 }
 ```
 
@@ -138,24 +138,24 @@ From actual data (HBB gene):
 
 ```json
 {
-	"HBB": [
-		{
-			"Position": 14,
-			"Strand": -1,
-			"Sequence": "AGTGAACACAGTTGTGTCAG",
-			"PAM": "AAG",
-			"Specificity Score": 39.0941742,
-			"Efficiency Score": 10.10900644
-		},
-		{
-			"Position": 17,
-			"Strand": -1,
-			"Sequence": "GCTAGTGAACACAGTTGTGT",
-			"PAM": "CAG",
-			"Specificity Score": 40.4041049,
-			"Efficiency Score": 22.38758304
-		}
-	]
+ "HBB": [
+  {
+   "Position": 14,
+   "Strand": -1,
+   "Sequence": "AGTGAACACAGTTGTGTCAG",
+   "PAM": "AAG",
+   "Specificity Score": 39.0941742,
+   "Efficiency Score": 10.10900644
+  },
+  {
+   "Position": 17,
+   "Strand": -1,
+   "Sequence": "GCTAGTGAACACAGTTGTGT",
+   "PAM": "CAG",
+   "Specificity Score": 40.4041049,
+   "Efficiency Score": 22.38758304
+  }
+ ]
 }
 ```
 
@@ -163,17 +163,11 @@ From actual data (HBB gene):
 
 **Specificity Score (Off-target):**
 
-- Range: 0-100 (or higher with some algorithms)
-- Meaning: Probability of cutting only the intended target
-- Higher score = more specific (fewer off-target sites)
-- Used by marking algorithm to validate student choice
+- Used by the marking logic in [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js)
 
 **Efficiency Score (On-target):**
 
-- Range: 0-100
-- Meaning: Likelihood of successfully cutting the target
-- Higher score = more efficient cleavage
-- Informational only (not used in current marking)
+- Stored in the data file and not referenced by the marking logic in [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js)
 
 ## Additional Data Files
 
@@ -183,8 +177,8 @@ From actual data (HBB gene):
 
 **Files:**
 
-- `ACTN3.fasta` - Raw sequence in FASTA format
-- `HBB.fasta` - Raw sequence in FASTA format
+- [core/data/ACTN3/ACTN3.fasta](../../core/data/ACTN3/ACTN3.fasta) - Raw sequence in FASTA format
+- [core/data/HBB/HBB.fasta](../../core/data/HBB/HBB.fasta) - Raw sequence in FASTA format
 - Similar files for other genes
 
 **Purpose:** Backup reference sequences (not actively used in current application).
@@ -196,41 +190,21 @@ From actual data (HBB gene):
 ACGTACGTACGTACGTACGTACGTACGTACGT
 ```
 
-## Data Validation
-
-### Consistency Checks
-
-When loading data, verify:
-
-1. **Target Position Exists** in `gene_background_info.json`
-    - Must be a valid integer
-    - Must be within sequence length
-
-2. **gRNA Sequences Match Expected Length**
-    - Sequences should be 20bp (stored in Benchling outputs)
-    - PAM should be 3bp
-
-3. **Strand Values are Valid**
-    - Must be `1` (sense) or `-1` (antisense)
-
-4. **Scores are Numeric**
-    - Specificity and Efficiency scores should be floats
-
 ### Loading Implementation
 
 In [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js):
 
 ```javascript
 async function loadCRISPRJSON_Files() {
-	try {
-		const responseBenchling = await fetch("./data/Benchling_gRNA_Outputs.json");
-		benchling_gRNA_outputs = await responseBenchling.json();
+ try {
+  const responseBenchling = await fetch("./data/Benchling_gRNA_Outputs.json");
+  benchling_gRNA_outputs = await responseBenchling.json();
 
-		const responseGeneBackground = await fetch("data/Background_info/gene_background_info.json");
-		gene_backgroundInfo = await responseGeneBackground.json();
-	} catch (err) {
-		console.error("Error fetching file:", err);
-	}
+  const responseGeneBackground = await fetch("data/Background_info/gene_background_info.json");
+  gene_backgroundInfo = await responseGeneBackground.json();
+ } catch (err) {
+  console.error("Error fetching file:", err);
+ }
 }
 ```
 
@@ -252,45 +226,17 @@ From [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js) `loa
 
 ### Submission Processing
 
+Submission processing is implemented in [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js).
+
 ```mermaid
 graph TD
     A[Form Submission] --> B["Retrieve Input Values<br/>from HTML Form"]
     B --> C["checkAnswers()"]
-    C --> D["Global Variables Set<br/>MARgRNAseq, MARstrand, etc."]
-    D --> E["markAnswers()"]
-    E --> F["Calculate Final Score"]
-    F --> G["showFeedback()"]
-    G --> H["Display Results to Student"]
-    H --> I["Optional: Save to LocalStorage"]
-```
-
-## Browser Storage
-
-### LocalStorage Usage
-
-Application may store in browser `localStorage`:
-
-- Session state
-- Recent submissions
-- User preferences
-
-**Access in JavaScript:**
-
-```javascript
-localStorage.setItem("key", value);
-const retrieved = localStorage.getItem("key");
-localStorage.removeItem("key");
-```
-
-### Session Variables
-
-Global variables in [crispr_scripts.js](../../core/scripts/crispr_scripts.js):
-
-```javascript
-let selection_inMode = "practice"; // Current mode
-let current_gene = "empty"; // Selected gene
-let loadedMode = "practice"; // Last loaded mode
-let checkAnswers_executed = false; // Submission state
+ C --> D["Global Variables Set"]
+ D --> E["markAnswers()"]
+ E --> F["Calculate Final Score"]
+ F --> G["showFeedback()"]
+ G --> H["Display Results to Student"]
 ```
 
 ## Adding New Genes
@@ -301,15 +247,15 @@ To add a new gene to SciGrade:
 
 ```json
 {
-	"NEWGENE": {
-		"base_type": "practice",
-		"name": "Gene Full Name",
-		"Background": "Educational description...",
-		"Target site": "Nucleotide position X - description",
-		"Target position": "123",
-		"Sequence": "ACGT... full sequence ...",
-		"NCBI gene link": "https://www.ncbi.nlm.nih.gov/gene/..."
-	}
+ "NEWGENE": {
+  "base_type": "practice",
+  "name": "Gene Full Name",
+  "Background": "Educational description...",
+  "Target site": "Nucleotide position X - description",
+  "Target position": "123",
+  "Sequence": "ACGT... full sequence ...",
+  "NCBI gene link": "https://www.ncbi.nlm.nih.gov/gene/..."
+ }
 }
 ```
 
@@ -317,21 +263,26 @@ To add a new gene to SciGrade:
 
 ```json
 {
-	"NEWGENE": [
-		{
-			"Position": 123,
-			"Strand": 1,
-			"Sequence": "ACGTACGTACGTACGTACGT",
-			"PAM": "NGG",
-			"Specificity Score": 45.2,
-			"Efficiency Score": 78.5
-		}
-	]
+ "NEWGENE": [
+  {
+   "Position": 123,
+   "Strand": 1,
+   "Sequence": "ACGTACGTACGTACGTACGT",
+   "PAM": "NGG",
+   "Specificity Score": 45.2,
+   "Efficiency Score": 78.5
+  }
+ ]
 }
 ```
 
 **To Verify:**
 
 - Gene appears in dropdown: [fillGeneList()](../../core/scripts/crispr_scripts.js#L60)
-- Assignment loads correctly: [loadWork()](../../core/scripts/crispr_scripts.js#L82)
+- Form loads correctly: [loadWork()](../../core/scripts/crispr_scripts.js#L82)
 - Tests pass: `npm run test`
+
+## Related Documentation
+
+- [Marking Algorithm](marking-algorithm.md) - Validation flow and scoring
+- [API Reference](../api/index.md) - Function reference for data loading

@@ -1,8 +1,3 @@
-/**
- * Unit tests for crispr_scripts.js
- * Tests isolated utility functions and logic
- */
-
 describe("crispr_scripts.js - Utility Functions", () => {
 	// Test the isNumberOrDashKey function without DOM dependencies
 	describe("isNumberOrDashKey()", () => {

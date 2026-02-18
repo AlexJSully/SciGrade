@@ -6,7 +6,7 @@
 
 let student_reg_information;
 
-/** Let users continue with practice application without logging in (true) (default false) */
+/** Let users continue with practice application without logging in (default true) */
 let continueWithoutLogin = true;
 
 let checkStudentNum = false;
@@ -14,13 +14,12 @@ let studentNumber = 0;
 let studentUmail;
 let alreadyRegistered = false;
 let classRegister;
-/**
- * Check to determine if the student is within
- * @param {Num} student_num Student number
- * @param {String} student_umail Student's email/uMail
- * @return {bool} checkStudentNum - Whether the student is a student in the system or not
- */
 
+/**
+ * Checks whether a student number and email match the class roster.
+ * @param {number} student_num Student number
+ * @param {string} student_umail Student email/uMail
+ */
 function checkStudentNumber(student_num, student_umail) {
 	alreadyRegistered = false;
 	checkStudentNum = false;
@@ -67,8 +66,8 @@ function checkStudentNumber(student_num, student_umail) {
 }
 
 /**
- * Check to determine if the student is registered in the system
- * @param {Num} student_num - Student number
+ * Checks whether a student number exists in the registration list.
+ * @param {number} student_NumVerify - Student number
  */
 function loginVerify(student_NumVerify) {
 	alreadyRegistered = false;
@@ -103,8 +102,8 @@ function loginVerify(student_NumVerify) {
 }
 
 /**
- * Which reg error shows
- * @param {Num} whichOne - Number indicator for which error to show
+ * Shows a registration error message by code.
+ * @param {number} whichOne - Error code to display
  */
 function showRegError(whichOne) {
 	if (whichOne === 1) {
@@ -201,8 +200,9 @@ function loadGeneContent() {
 }
 
 const changeLogin = '<i class="material-icons" style="font-size:inherit;">&#xE7FD;</i>';
+
 /**
- * Once users have registered OR logged in, the page dynamically generates the CRISPR assignment page
+ * Builds the selection UI and loads the reference data for the runtime page.
  */
 async function redirectCRISPR() {
 	$("#mainContainer").empty();

@@ -1,27 +1,20 @@
 # Marking Algorithm
 
-This document explains how gRNA sequences and primers are validated and scored in SciGrade.
+This document explains how guide RNA (gRNA) sequences and primers are validated and scored in SciGrade.
 
 ## Overview
 
 The marking system validates student submissions across five key components:
 
-1. **gRNA Sequence** - Must match a reference sequence
-2. **PAM Sequence** - Must match the PAM of the validated gRNA
+1. **guide RNA (gRNA) Sequence** - Must match a reference sequence
+2. **Protospacer Adjacent Motif (PAM) Sequence** - Must match the PAM of the validated gRNA
 3. **Strand** - Must indicate correct strand (sense/antisense)
 4. **Off-target Score** - Must meet an "optimal" threshold
 5. **F1 & R1 Primers** - Must be correctly designed with proper complementarity
 
 ## Core Marking Function
 
-The main marking logic is in [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js):
-
-```javascript
-function markAnswers() {
-	// Marking is based on checkAnswers() results
-	// Returns a combined score from individual component checks
-}
-```
+The main marking logic is implemented in `markAnswers()` in [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js).
 
 ## Step-by-Step Validation
 
@@ -29,13 +22,13 @@ function markAnswers() {
 
 ```mermaid
 sequenceDiagram
-    crispr_scripts.js->>Benchling_gRNA_Outputs.json: loadCRISPRJSON_Files()
-    Benchling_gRNA_Outputs.json-->>crispr_scripts.js: benchling_gRNA_outputs
-    crispr_scripts.js->>gene_background_info.json: loadCRISPRJSON_Files()
-    gene_background_info.json-->>crispr_scripts.js: gene_backgroundInfo
+ UI->>gRNAData: loadCRISPRJSON_Files()
+ gRNAData-->>UI: benchling_gRNA_outputs
+ UI->>GeneInfo: loadCRISPRJSON_Files()
+ GeneInfo-->>UI: gene_backgroundInfo
 ```
 
-Both reference files are fetched asynchronously during initialization.
+Both reference files are fetched asynchronously during initialization from [core/data/Benchling_gRNA_Outputs.json](../../core/data/Benchling_gRNA_Outputs.json) and [core/data/Background_info/gene_background_info.json](../../core/data/Background_info/gene_background_info.json) by [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js).
 
 ### Step 2: gRNA Sequence Validation
 
@@ -44,16 +37,16 @@ When a student submits their answer, [checkAnswers()](../../core/scripts/crispr_
 ```javascript
 const inputtedSeq = document.getElementById("sequence_input").value.trim();
 for (const answer of benchling_gRNA_outputs.gene_list[current_gene]) {
-	if (answer.Sequence === inputtedSeq) {
-		possible_comparable_answers.push(answer);
-	}
+ if (answer.Sequence === inputtedSeq) {
+  possible_comparable_answers.push(answer);
+ }
 }
 ```
 
 **Matching Criteria:**
 
-- Input sequence must **exactly match** one or more reference sequences (case-insensitive after trim)
-- If no match found, all components are marked incorrect
+- Input sequence must **exactly match** one or more reference sequences (case-sensitive after trim)
+- If no match found, the downstream validation steps are skipped
 - If matches found, continue to step 3
 
 ### Step 3: Nucleotide Target Validation
@@ -64,35 +57,33 @@ For each possible matching sequence, verify the target nucleotide is within the 
 const correctNucleotidePosition = gene_backgroundInfo.gene_list[current_gene]["Target position"] - 1;
 
 if (possibleAnswer.Strand === 1) {
-	// Sense strand: check if target is within gRNA range
-	const nucleotideIncludedRange_top = possibleAnswer.Position - 1 - 1 + 3;
-	const nucleotideIncludedRange_bot = possibleAnswer.Position - 1 - 17;
+ // Sense strand: check if target is within gRNA range
+ const nucleotideIncludedRange_top = possibleAnswer.Position - 1 - 1 + 3;
+ const nucleotideIncludedRange_bot = possibleAnswer.Position - 1 - 17;
 
-	if (
-		correctNucleotidePosition >= nucleotideIncludedRange_bot &&
-		correctNucleotidePosition <= nucleotideIncludedRange_top
-	) {
-		correctNucleotideIncluded = true;
-	}
+ if (
+  correctNucleotidePosition >= nucleotideIncludedRange_bot &&
+  correctNucleotidePosition <= nucleotideIncludedRange_top
+ ) {
+  correctNucleotideIncluded = true;
+ }
 } else if (possibleAnswer.Strand === -1) {
-	// Antisense strand: check if target is within gRNA range
-	const nucleotideIncludedRange_top = possibleAnswer.Position - 1 + 17;
-	const nucleotideIncludedRange_bot = possibleAnswer.Position - 1 - 3;
+ // Antisense strand: check if target is within gRNA range
+ const nucleotideIncludedRange_top = possibleAnswer.Position - 1 + 17;
+ const nucleotideIncludedRange_bot = possibleAnswer.Position - 1 - 3;
 
-	if (
-		correctNucleotidePosition >= nucleotideIncludedRange_bot &&
-		correctNucleotidePosition <= nucleotideIncludedRange_top
-	) {
-		correctNucleotideIncluded = true;
-	}
+ if (
+  correctNucleotidePosition >= nucleotideIncludedRange_bot &&
+  correctNucleotidePosition <= nucleotideIncludedRange_top
+ ) {
+  correctNucleotideIncluded = true;
+ }
 }
 ```
 
 **Why This Matters:**
 
-- The gRNA must include the target mutation
-- 20bp gRNA covers ~17-20 nucleotides depending on strand
-- If target is outside this range, the gRNA cannot affect the mutation
+- The target position must fall within the strand-specific range calculated in [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js)
 
 ### Step 4: Strand Validation
 
@@ -100,13 +91,13 @@ Check if the student selected the correct strand:
 
 ```javascript
 if (possibleAnswer.Strand === 1) {
-	if (document.getElementById("strand_input").value === "Sense (+)") {
-		MARstrand = true;
-	}
+ if (document.getElementById("strand_input").value === "Sense (+)") {
+  MARstrand = true;
+ }
 } else if (possibleAnswer.Strand === -1) {
-	if (document.getElementById("strand_input").value === "Antisense (-)") {
-		MARstrand = true;
-	}
+ if (document.getElementById("strand_input").value === "Antisense (-)") {
+  MARstrand = true;
+ }
 }
 ```
 
@@ -116,121 +107,58 @@ if (possibleAnswer.Strand === 1) {
 - Strand `-1` = Antisense (-) strand
 
 ### Step 5: PAM Sequence Validation
-
-PAM location depends on strand orientation:
-
-```javascript
-if (possibleAnswer.Strand === 1) {
-	pamFirst = possibleAnswer.Position - 1 + 2;
-	pamSecond = possibleAnswer.Position - 1 + 4;
-} else if (possibleAnswer.Strand === -1) {
-	pamFirst = possibleAnswer.Position - 1 - 2;
-	pamSecond = possibleAnswer.Position - 1 - 4;
-}
-
-// Extract PAM from sequence
-const pamExtracted = gene_backgroundInfo.gene_list[current_gene].Sequence.slice(pamFirst, pamSecond + 1);
-
-// Check if student input matches
-if (document.getElementById("pam_input").value === possibleAnswer.PAM) {
-	MARPAMseq = true;
-}
-```
+PAM validation compares the student's input to the `PAM` value on the matched reference entry in [core/data/Benchling_gRNA_Outputs.json](../../core/data/Benchling_gRNA_Outputs.json) as implemented in [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js).
 
 ### Step 6: Off-Target Score Validation
 
 ```javascript
 function checkOffTarget(score) {
-	// Check if off-target score meets minimum threshold
-	// Threshold depends on marking mode settings
+ // Check if off-target score meets minimum threshold
+ // Threshold depends on marking mode settings
 }
 ```
 
 **Scoring Modes:**
 
-The off-target score is validated against an "optimal" value:
+The off-target score uses the following steps in [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js):
 
-1. **Optimal Mode** (default):
-
-    ```
-    Min_optimal = Max_range - (Max_range * 0.2)
-    ```
-
-    Where `Max_range` is the highest feasible off-target score for the gene.
-
-2. **Custom Mode**:
-    - TA/Admin sets a custom optimal value between 0.01 and 100
-    - Student score must exceed this custom value
+1. Build a list of reference scores within +/- 35 positions of the submitted cut position.
+2. Compute `Max_range` from that list and `Min_optimal = Max_range - (Max_range * 0.2)`.
+3. When the class marking mode is `Optimal`, use 80 as the threshold if `Min_optimal` is greater than 80 or less than 35.
+4. When the class marking mode is `Custom`, use the class-specific value stored in `student_reg_information`.
 
 **Pass Criteria:**
 
-- Score > optimal value = Full credit (mark as above optimal)
-- Score > 35 but ≤ optimal = Partial credit (above minimum)
-- Score > 0 but ≤ 35 = Minimal credit (technically feasible)
+- Input at or above the optimal threshold sets `MAROffTarget_degree` to `1`.
+- Input at or above 35 sets `MAROffTarget_degree` to `2` when `Max_range` is at least 80.
+- If the local max score is below 35, the input is treated as the only option and sets `MAROffTarget_degree` to `3`.
 
 ### Step 7: Primer Validation
 
 #### F1 Primer Check
-
-```javascript
-function checkF1Primers(seq) {
-	// F1 (forward) primer structure
-	// Typically includes promoter sequence + T7 binding + gRNA start
-	// Student input should contain required segments
-}
-```
+The F1 primer is validated by building candidate primers with the `TAATACGACTCACTATAG` prefix and the first 16-20 bases of the submitted gRNA sequence in [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js).
 
 #### R1 Primer Check
-
-```javascript
-function checkR1Primers(seq) {
-	// R1 (reverse) primer must be reverse complement of gRNA
-	const complement = createComplementarySeq(seq);
-	// Check if sequence contains complement within correct region
-}
-```
-
-**Complementarity Function:**
-
-```javascript
-function createComplementarySeq(seq) {
-	// A ↔ T, G ↔ C, then reverse the string
-	let complement = "";
-	for (const base of seq) {
-		if (base === "A") complement += "T";
-		else if (base === "T") complement += "A";
-		else if (base === "G") complement += "C";
-		else if (base === "C") complement += "G";
-	}
-	return complement.split("").reverse().join("");
-}
-```
+The R1 primer is validated by building a reverse-complement string and then constructing candidate primers with the `TTCTAGCTCTAAAAC` prefix and the first 19-20 bases of the reverse complement in [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js).
 
 ## Scoring Logic
 
 ```mermaid
 flowchart TD
-    A[Student Submission] --> B["Check gRNA Sequence<br/>MARgRNAseq"]
-    B -->|Match Found| C["Validate Strand<br/>MARstrand"]
-    B -->|No Match| D["All Components WRONG"]
-    C -->|Correct| E["Validate Target Position<br/>correctNucleotideIncluded"]
-    C -->|Incorrect| D
-    E -->|In Range| F["Validate PAM<br/>MARPAMseq"]
-    E -->|Out of Range| D
-    F -->|Correct| G["Validate Off-target<br/>MAROffTarget"]
-    F -->|Incorrect| D
-    G -->|Valid| H["Validate Primers<br/>MARF1primers, MARR1primers"]
-    G -->|Invalid| I["Off-target WRONG<br/>Primers Check Anyway"]
-    H -->|All Correct| J[Full Mark]
-    H -->|Some Correct| K[Partial Mark]
-    H -->|None Correct| L[No Mark on Primers]
-    I --> K
-    I --> L
-    D --> M[Score = 0]
-    J --> N[Final Score Calculated]
-    K --> N
-    L --> N
-    M --> N
+ A[Student Submission] --> B["Match gRNA Sequence"]
+ B -->|Match Found| C["Validate Strand and Target Range"]
+ B -->|No Match| D["No gRNA Credit"]
+ C -->|Valid| E["Validate PAM"]
+ C -->|Invalid| D
+ E -->|Valid| F["Validate Off-target"]
+ E -->|Invalid| G["Partial Credit Path"]
+ F -->|Valid| H["Validate Primers"]
+ F -->|Invalid| G
+ H -->|All Correct| I["Full Credit Path"]
+ H -->|Some Wrong| G
+ D --> J["Final Score"]
+ G --> J
+ I --> J
 ```
 
 ## Global State Variables
@@ -244,31 +172,28 @@ let MARPAMseq = false; // PAM sequence match
 let MARCutPos = false; // Cut position correctness
 let MARstrand = false; // Strand selection correctness
 let MAROffTarget = false; // Off-target score validity
-let MAROffTarget_degree = 0; // 0: wrong, 1: >75, 2: >35, 3: only option
+let MAROffTarget_degree = 0; // 0: wrong, 1: optimal/above, 2: >=35 below optimal, 3: only option
 let MARF1primers = false; // F1 primer correctness
 let MARR1primers = false; // R1 primer correctness
 ```
 
 ## Feedback System
 
-After marking, student feedback is displayed via [showFeedback()](../../core/scripts/crispr_scripts.js#L602):
+After marking, student feedback is displayed via [showFeedback()](../../core/scripts/crispr_scripts.js):
 
 ```mermaid
 sequenceDiagram
     markAnswers->>showFeedback: Pass marking results
     showFeedback->>Student: Display component scores
-    showFeedback->>Student: Show correct answers
-    showFeedback->>Student: Explain errors
-    showFeedback->>LocalStorage: Cache results
+ showFeedback->>Student: Show feedback details
+ showFeedback->>Student: Explain scoring
 ```
 
 **Feedback Includes:**
 
 - Component-by-component results (✓ or ✗)
-- Correct gRNA sequence if wrong
-- Correct PAM if wrong
-- Optimal off-target threshold
-- Primer design suggestions
+- Explanatory text generated from the current marking state
+- Candidate primer lists derived from the submitted gRNA sequence
 
 ## Customization
 
@@ -277,12 +202,12 @@ sequenceDiagram
 In account management modal (opened via [openAccountManagement()](../../core/scripts/crispr_scripts.js#L853)):
 
 1. Select "Optimal" mode:
-    - Automatically calculates: `Max - (Max * 0.2)`
-    - Applies to all students in class
+ - Calculates `Min_optimal = Max_range - (Max_range * 0.2)` from nearby scores
+ - Uses 80 as the threshold when `Min_optimal` is greater than 80 or less than 35
 
 2. Select "Custom" mode:
     - Enter specific value (0.01 - 100)
-    - Allows flexible grading standards
+ - Stored in `student_reg_information[0].classMarkingMod` for the selected class
 
 ### Adding Custom Marking Rules
 
@@ -299,18 +224,18 @@ Ensure reference data in [Benchling_gRNA_Outputs.json](../../core/data/Benchling
 
 ```json
 {
-	"gene_list": {
-		"GENENAME": [
-			{
-				"Position": 123,
-				"Strand": 1,
-				"Sequence": "ACGTACGTACGTACGTACGT",
-				"PAM": "NGG",
-				"Specificity Score": 45.2,
-				"Efficiency Score": 78.5
-			}
-		]
-	}
+ "gene_list": {
+  "GENENAME": [
+   {
+    "Position": 123,
+    "Strand": 1,
+    "Sequence": "ACGTACGTACGTACGTACGT",
+    "PAM": "NGG",
+    "Specificity Score": 45.2,
+    "Efficiency Score": 78.5
+   }
+  ]
+ }
 }
 ```
 
@@ -332,3 +257,8 @@ Run tests:
 ```bash
 npm run test:jest
 ```
+
+## Related Documentation
+
+- [Data Structures](data-structures.md) - JSON reference inputs
+- [API Reference](../api/index.md) - Function reference for marking

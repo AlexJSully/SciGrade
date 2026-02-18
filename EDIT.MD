@@ -16,11 +16,11 @@ There is also a feedback page for practice assignments screen which is displayed
 
 ## Example protocol
 
-There is an example protocol for students to follow in the PDF file [LabProtocol](LabProtocol.pdf). It is recommended that you customize it to your teaching class, but the protocol includes all the necessary details for students to follow to understand how to create gRNAs and where they can get the information to input into SciGrade.
+There is an example protocol for students to follow in [LabProtocol.pdf](LabProtocol.pdf). It is recommended that you customize it to your teaching class, but the protocol includes details for students to follow to understand how to create guide RNAs (gRNAs) and where they can get the information to input into SciGrade.
 
 ## Marking algorithm
 
-SciGrade marks the gRNA strand, PAM sequence, off-target score and the F1 and R1 primers. Using [markAnswers()](core/scripts/crispr_scripts.js), the student's input into the form will be used to determine the marking.
+SciGrade validates the gRNA strand, Protospacer Adjacent Motif (PAM) sequence, off-target score, and the F1/R1 primers, and it scores gRNA sequence, PAM, off-target, and primer inputs in [markAnswers()](core/scripts/crispr_scripts.js).
 
 The marking algorithm is fully contained in the client-side code and uses the reference data from [Benchling_gRNA_Outputs.json](core/data/Benchling_gRNA_Outputs.json) to validate answers.
 
@@ -32,7 +32,7 @@ Regarding the algorithm, student marks are dependent on 5 inputs:
 4. F1 primer
 5. R1 primer.
 
-The cut site is used to calculate whether the students have put in a valid gRNA sequence and its corresponding inputs. If the gRNA sequence is not found within a set range the [Benchling gRNA Output results](core/data/Benchling_gRNA_Outputs.json), then it is not a valid gRNA. If the gRNA sequence is not valid, all their answers would be wrong.
+The cut site is used to calculate whether the student-selected gRNA sequence includes the target position and satisfies the range checks in [core/scripts/crispr_scripts.js](core/scripts/crispr_scripts.js). If the gRNA sequence does not match a reference sequence in [core/data/Benchling_gRNA_Outputs.json](core/data/Benchling_gRNA_Outputs.json), the remaining validation steps are skipped.
 
 The following image describes where student's marks come from in the marking algorithm.
 
@@ -48,7 +48,7 @@ Edit the code within [crispr_scripts.js](core/scripts/crispr_scripts.js). The fo
 - `checkR1Primers(seq)` - Validates reverse primers
 - `markAnswers()` - Assigns scores based on validation results
 
-For off-target score thresholds, the optimal value is calculated using: `Min_optimal = Max_range - (Max_range * 0.2)` where `Max_range` is the highest possible off-target score for a gene. You can adjust this calculation or implement custom logic in the `checkOffTarget()` function.
+For off-target score thresholds, the optimal value is calculated using `Min_optimal = Max_range - (Max_range * 0.2)` and the threshold is set to 80 when `Min_optimal` is greater than 80 or less than 35 in [checkOffTarget()](core/scripts/crispr_scripts.js).
 
 ## Adding new genes
 
@@ -90,3 +90,9 @@ If you have any questions or would like to get in contact with the maintainers, 
 Enjoy! :relaxed: :heart:
 
 -[Alex](https://twitter.com/alexjsully)
+
+## Related Documentation
+
+- [docs/index.md](docs/index.md) - Documentation entry point
+- [docs/guides/marking-algorithm.md](docs/guides/marking-algorithm.md) - Marking flow details
+- [docs/guides/data-structures.md](docs/guides/data-structures.md) - JSON reference data
