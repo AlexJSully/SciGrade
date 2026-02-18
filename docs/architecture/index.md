@@ -63,18 +63,18 @@ Structure:
 
 ```json
 {
- "gene_list": {
-  "GENENAME": [
-   {
-    "Position": 123,
-    "Strand": 1,
-    "Sequence": "ACGTACGTACGTACGTACGT",
-    "PAM": "NGG",
-    "Specificity Score": 45.2,
-    "Efficiency Score": 78.5
-   }
-  ]
- }
+	"gene_list": {
+		"GENENAME": [
+			{
+				"Position": 123,
+				"Strand": 1,
+				"Sequence": "ACGTACGTACGTACGTACGT",
+				"PAM": "NGG",
+				"Specificity Score": 45.2,
+				"Efficiency Score": 78.5
+			}
+		]
+	}
 }
 ```
 
@@ -86,17 +86,17 @@ Structure:
 
 ```json
 {
- "gene_list": {
-  "GENENAME": {
-   "base_type": "practice",
-   "name": "Gene Full Name",
-   "Background": "Educational description...",
-   "Target site": "Nucleotide position X - target description",
-   "Target position": "123",
-   "Sequence": "ACGT...",
-   "NCBI gene link": "https://..."
-  }
- }
+	"gene_list": {
+		"GENENAME": {
+			"base_type": "practice",
+			"name": "Gene Full Name",
+			"Background": "Educational description...",
+			"Target site": "Nucleotide position X - target description",
+			"Target position": "123",
+			"Sequence": "ACGT...",
+			"NCBI gene link": "https://..."
+		}
+	}
 }
 ```
 

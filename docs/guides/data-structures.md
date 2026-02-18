@@ -16,12 +16,12 @@ SciGrade uses JSON as its primary data format for gene information and guide RNA
 
 ```json
 {
- "_id": "5a67577c01ac2022a0eb6f56",
- "owner_id": "5a4cb9e58f25b9cd6d49e868",
- "number": 42,
- "version": "0.3",
- "date": "2018-08-20:1925",
- "gene_list": {}
+	"_id": "5a67577c01ac2022a0eb6f56",
+	"owner_id": "5a4cb9e58f25b9cd6d49e868",
+	"number": 42,
+	"version": "0.3",
+	"date": "2018-08-20:1925",
+	"gene_list": {}
 }
 ```
 
@@ -37,17 +37,17 @@ SciGrade uses JSON as its primary data format for gene information and guide RNA
 
 ```json
 {
- "gene_list": {
-  "GENENAME": {
-   "base_type": "practice",
-   "name": "Full Gene Name",
-   "Background": "Educational description...",
-   "Target site": "Nucleotide position X - description of target",
-   "Target position": "123",
-   "Sequence": "ACGTACGT...(full sequence)...ACGT",
-   "NCBI gene link": "https://www.ncbi.nlm.nih.gov/gene/12345"
-  }
- }
+	"gene_list": {
+		"GENENAME": {
+			"base_type": "practice",
+			"name": "Full Gene Name",
+			"Background": "Educational description...",
+			"Target site": "Nucleotide position X - description of target",
+			"Target position": "123",
+			"Sequence": "ACGTACGT...(full sequence)...ACGT",
+			"NCBI gene link": "https://www.ncbi.nlm.nih.gov/gene/12345"
+		}
+	}
 }
 ```
 
@@ -69,15 +69,15 @@ From actual data (HBB gene):
 
 ```json
 {
- "HBB": {
-  "base_type": "practice",
-  "name": "Sickle cell anemia",
-  "Background": "Sickle cell anaemia is caused by an SNP in the human haemoglobin beta-chain which results in a GAG codon being replaced with a GTG codon (A → T)...",
-  "Target site": "Nucleotide position 73 - You are trying to change a thymine back to an alanine (WILD-TYPE).",
-  "Target position": "73",
-  "Sequence": "ACATTTGCTTCTGACACAACTGTGTTCACTAGCAACCTCAAACAGACACCATGGTGCATCTGACTCCTGAGGTGAAGTCTGCCGTTACTGCCCTGTGGGGCAAGGTGAACGTGGATGAAGTTGGTGGTGAGGCCCTGGGCAGGCTGCTGGTGGTCTACCCTTGGACCCAGAGGTTCTTTGAGTCCTTTGGGGATCTGTCCACTCCTGATGCTGTTATGGGCAACCCTAAGGTGAAGGCTCATGGCAAGAAAGTGCTCGGTGCCTTTAGTGATGGCCTGGCTCACCTGGACAACCTCAAGGGCACCTTTGCCACACTGAGTGAGCTGCACTGTGACAAGCTGCACGTGGATCCTGAGAACTTCAGGCTCCTGGGCAACGTGCTGGTCTGTGTGCTGGCCCATCACTTTGGCAAAGAATTCACCCCACCAGTGCAGGCTGCCTATCAGAAAGTGGTGGCTGGTGTGGCTAATGCCCTGGCCCACAAGTATCACTAAGCTCGCTTTCTTGCTGTCCAATTTCTATTAAAGGTTCCTTTGTTCCCTAAGTCCAACTACTAAACTGGGGGATATTATGAAGGGCCTTGAGCATCTGGATTCTGCCTAATAAAAAACATTTATTTTCATTGC",
-  "NCBI gene link": "https://www.ncbi.nlm.nih.gov/gene/3043"
- }
+	"HBB": {
+		"base_type": "practice",
+		"name": "Sickle cell anemia",
+		"Background": "Sickle cell anaemia is caused by an SNP in the human haemoglobin beta-chain which results in a GAG codon being replaced with a GTG codon (A → T)...",
+		"Target site": "Nucleotide position 73 - You are trying to change a thymine back to an alanine (WILD-TYPE).",
+		"Target position": "73",
+		"Sequence": "ACATTTGCTTCTGACACAACTGTGTTCACTAGCAACCTCAAACAGACACCATGGTGCATCTGACTCCTGAGGTGAAGTCTGCCGTTACTGCCCTGTGGGGCAAGGTGAACGTGGATGAAGTTGGTGGTGAGGCCCTGGGCAGGCTGCTGGTGGTCTACCCTTGGACCCAGAGGTTCTTTGAGTCCTTTGGGGATCTGTCCACTCCTGATGCTGTTATGGGCAACCCTAAGGTGAAGGCTCATGGCAAGAAAGTGCTCGGTGCCTTTAGTGATGGCCTGGCTCACCTGGACAACCTCAAGGGCACCTTTGCCACACTGAGTGAGCTGCACTGTGACAAGCTGCACGTGGATCCTGAGAACTTCAGGCTCCTGGGCAACGTGCTGGTCTGTGTGCTGGCCCATCACTTTGGCAAAGAATTCACCCCACCAGTGCAGGCTGCCTATCAGAAAGTGGTGGCTGGTGTGGCTAATGCCCTGGCCCACAAGTATCACTAAGCTCGCTTTCTTGCTGTCCAATTTCTATTAAAGGTTCCTTTGTTCCCTAAGTCCAACTACTAAACTGGGGGATATTATGAAGGGCCTTGAGCATCTGGATTCTGCCTAATAAAAAACATTTATTTTCATTGC",
+		"NCBI gene link": "https://www.ncbi.nlm.nih.gov/gene/3043"
+	}
 }
 ```
 
@@ -91,12 +91,12 @@ From actual data (HBB gene):
 
 ```json
 {
- "_id": "5a8deb6a547dd8319415ac3d",
- "owner_id": "5a4cb9e58f25b9cd6d49e868",
- "number": 42,
- "version": "0.2",
- "date": "2018-02-21:1657",
- "gene_list": {}
+	"_id": "5a8deb6a547dd8319415ac3d",
+	"owner_id": "5a4cb9e58f25b9cd6d49e868",
+	"number": 42,
+	"version": "0.2",
+	"date": "2018-02-21:1657",
+	"gene_list": {}
 }
 ```
 
@@ -106,18 +106,18 @@ From actual data (HBB gene):
 
 ```json
 {
- "gene_list": {
-  "GENENAME": [
-   {
-    "Position": 123,
-    "Strand": 1,
-    "Sequence": "ACGTACGTACGTACGTACGT",
-    "PAM": "NGG",
-    "Specificity Score": 45.2,
-    "Efficiency Score": 78.5
-   }
-  ]
- }
+	"gene_list": {
+		"GENENAME": [
+			{
+				"Position": 123,
+				"Strand": 1,
+				"Sequence": "ACGTACGTACGTACGTACGT",
+				"PAM": "NGG",
+				"Specificity Score": 45.2,
+				"Efficiency Score": 78.5
+			}
+		]
+	}
 }
 ```
 
@@ -138,24 +138,24 @@ From actual data (HBB gene):
 
 ```json
 {
- "HBB": [
-  {
-   "Position": 14,
-   "Strand": -1,
-   "Sequence": "AGTGAACACAGTTGTGTCAG",
-   "PAM": "AAG",
-   "Specificity Score": 39.0941742,
-   "Efficiency Score": 10.10900644
-  },
-  {
-   "Position": 17,
-   "Strand": -1,
-   "Sequence": "GCTAGTGAACACAGTTGTGT",
-   "PAM": "CAG",
-   "Specificity Score": 40.4041049,
-   "Efficiency Score": 22.38758304
-  }
- ]
+	"HBB": [
+		{
+			"Position": 14,
+			"Strand": -1,
+			"Sequence": "AGTGAACACAGTTGTGTCAG",
+			"PAM": "AAG",
+			"Specificity Score": 39.0941742,
+			"Efficiency Score": 10.10900644
+		},
+		{
+			"Position": 17,
+			"Strand": -1,
+			"Sequence": "GCTAGTGAACACAGTTGTGT",
+			"PAM": "CAG",
+			"Specificity Score": 40.4041049,
+			"Efficiency Score": 22.38758304
+		}
+	]
 }
 ```
 
@@ -196,15 +196,15 @@ In [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js):
 
 ```javascript
 async function loadCRISPRJSON_Files() {
- try {
-  const responseBenchling = await fetch("./data/Benchling_gRNA_Outputs.json");
-  benchling_gRNA_outputs = await responseBenchling.json();
+	try {
+		const responseBenchling = await fetch("./data/Benchling_gRNA_Outputs.json");
+		benchling_gRNA_outputs = await responseBenchling.json();
 
-  const responseGeneBackground = await fetch("data/Background_info/gene_background_info.json");
-  gene_backgroundInfo = await responseGeneBackground.json();
- } catch (err) {
-  console.error("Error fetching file:", err);
- }
+		const responseGeneBackground = await fetch("data/Background_info/gene_background_info.json");
+		gene_backgroundInfo = await responseGeneBackground.json();
+	} catch (err) {
+		console.error("Error fetching file:", err);
+	}
 }
 ```
 
@@ -247,15 +247,15 @@ To add a new gene to SciGrade:
 
 ```json
 {
- "NEWGENE": {
-  "base_type": "practice",
-  "name": "Gene Full Name",
-  "Background": "Educational description...",
-  "Target site": "Nucleotide position X - description",
-  "Target position": "123",
-  "Sequence": "ACGT... full sequence ...",
-  "NCBI gene link": "https://www.ncbi.nlm.nih.gov/gene/..."
- }
+	"NEWGENE": {
+		"base_type": "practice",
+		"name": "Gene Full Name",
+		"Background": "Educational description...",
+		"Target site": "Nucleotide position X - description",
+		"Target position": "123",
+		"Sequence": "ACGT... full sequence ...",
+		"NCBI gene link": "https://www.ncbi.nlm.nih.gov/gene/..."
+	}
 }
 ```
 
@@ -263,16 +263,16 @@ To add a new gene to SciGrade:
 
 ```json
 {
- "NEWGENE": [
-  {
-   "Position": 123,
-   "Strand": 1,
-   "Sequence": "ACGTACGTACGTACGTACGT",
-   "PAM": "NGG",
-   "Specificity Score": 45.2,
-   "Efficiency Score": 78.5
-  }
- ]
+	"NEWGENE": [
+		{
+			"Position": 123,
+			"Strand": 1,
+			"Sequence": "ACGTACGTACGTACGTACGT",
+			"PAM": "NGG",
+			"Specificity Score": 45.2,
+			"Efficiency Score": 78.5
+		}
+	]
 }
 ```
 
