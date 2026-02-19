@@ -53,8 +53,11 @@ test.describe("SciGrade Submission Flow", () => {
 		// Wait for the form to be generated (loadWork appends form inputs into #work)
 		await page.waitForSelector("#sequence_input", { state: "visible" });
 
-		// Wait for form to fully render and be interactive
-		await page.waitForTimeout(200);
+		// Wait for form to be fully rendered and interactive: submit button present and enabled
+		await page.waitForFunction(() => {
+			const btn = document.getElementById("assignmentSubmitButton");
+			return !!btn && !btn.disabled;
+		});
 	});
 
 	// Data-driven tests using test case table
@@ -83,4 +86,56 @@ test.describe("SciGrade Submission Flow", () => {
 			await expect(page.locator("body")).toContainText(/gRNA PAM Sequence/);
 		});
 	}
+
+	// Test for double submission in the same session
+	test("should allow submitting twice in the same session", async ({ page }) => {
+		// First submission
+		await page.fill("#sequence_input", "AAGCACTGCACGCCGTGGGT");
+		await page.selectOption("#strand_input", "Antisense (-)");
+		await page.fill("#pam_input", "CAG");
+		await page.fill("#position_input", "381");
+		await page.fill("#offtarget_input", "87");
+		await page.fill("#f1_input", "TAATACGACTCACTATAGAAGCACTGCACGCCGT");
+		await page.fill("#r1_input", "TTCTAGCTCTAAAACACCCACGGCGTGCAGTGCT");
+
+		// Click Submit button
+		await page.click("#assignmentSubmitButton");
+
+		// Wait for feedback to render
+		await expect(page.locator("body")).toContainText(/Mark:/, { timeout: 15000 });
+
+		// Return to assignments (simulates selecting a new assignment)
+		await page.click("button:has-text('Back to Assignments')");
+
+		// Wait for the form to be reset and visible again
+		await page.waitForSelector("#gene_dropdown_selection");
+
+		// Select gene again
+		await page.selectOption("#gene_dropdown_selection", "eBFP");
+		await page.getByRole("button", { name: "Load Gene" }).click();
+
+		// Wait for form to be ready
+		await page.waitForFunction(() => {
+			const btn = document.getElementById("assignmentSubmitButton");
+			return !!btn && !btn.disabled;
+		});
+
+		// Second submission with different values
+		await page.fill("#sequence_input", "AAAAAAAAAAAAAAAAAAAA");
+		await page.selectOption("#strand_input", "Sense (+)");
+		await page.fill("#pam_input", "AAA");
+		await page.fill("#position_input", "999");
+		await page.fill("#offtarget_input", "1");
+		await page.fill("#f1_input", "AAAAAAAAAAAAAAAAAAAA");
+		await page.fill("#r1_input", "TTTTTTTTTTTTTTTTTTTT");
+
+		// Click Submit button again
+		await page.click("#assignmentSubmitButton");
+
+		// Wait for feedback to render again
+		await expect(page.locator("body")).toContainText(/Mark:/, { timeout: 15000 });
+
+		// Verify feedback is displayed correctly
+		await expect(page.locator("body")).toContainText(/gRNA Strand Sequence/);
+	});
 });
