@@ -1,73 +1,73 @@
 name: Code Quality Assurance - JavaScript/TypeScript
 
 on:
-  push:
-    branches: [master]
-    paths:
-      - "**/*.js"
-      - "**/*.ts"
-      - "**/*.mjs"
-      - "**/*.html"
-      - "**/*.css"
-      - "**/*.json"
-      - "**/*.xml"
-      - "**/*.svg"
-      - "**/*.png"
-      - "**/*.webp"
-      - "**/*.ico"
-      - ".prettierrc"
-      - ".github/workflows/code-qa-js.yaml"
-      - "package*.json"
-  pull_request:
-    branches: [master]
-    paths:
-      - "**/*.js"
-      - "**/*.ts"
-      - "**/*.mjs"
-      - "**/*.html"
-      - "**/*.css"
-      - "**/*.json"
-      - "**/*.xml"
-      - "**/*.svg"
-      - "**/*.png"
-      - "**/*.webp"
-      - "**/*.ico"
-      - ".prettierrc"
-      - ".github/workflows/code-qa-js.yaml"
-      - "package*.json"
+    push:
+        branches: [master]
+        paths:
+            - "**/*.js"
+            - "**/*.ts"
+            - "**/*.mjs"
+            - "**/*.html"
+            - "**/*.css"
+            - "**/*.json"
+            - "**/*.xml"
+            - "**/*.svg"
+            - "**/*.png"
+            - "**/*.webp"
+            - "**/*.ico"
+            - ".prettierrc"
+            - ".github/workflows/code-qa-js.yaml"
+            - "package*.json"
+    pull_request:
+        branches: [master]
+        paths:
+            - "**/*.js"
+            - "**/*.ts"
+            - "**/*.mjs"
+            - "**/*.html"
+            - "**/*.css"
+            - "**/*.json"
+            - "**/*.xml"
+            - "**/*.svg"
+            - "**/*.png"
+            - "**/*.webp"
+            - "**/*.ico"
+            - ".prettierrc"
+            - ".github/workflows/code-qa-js.yaml"
+            - "package*.json"
 
 permissions:
-  contents: read
+    contents: read
 jobs:
-  build:
-    runs-on: ubuntu-latest
+    build:
+        runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [22.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+        strategy:
+            matrix:
+                node-version: [22.x]
+                # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v6
-        with:
-          node-version: ${{ matrix.node-version }}
-      - name: Cache Node.js modules
-        uses: actions/cache@v5
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-      - name: Check installs
-        run: npm ci
-      - name: Quality check - prettier
-        run: npm run prettier:check
-      - name: Quality check - eslint
-        run: npm run eslint:check
-      - name: Run tests
-        run: npm run test:jest
-      - name: Run Playwright tests
-        run: npx playwright install --with-deps && npm run test:e2e:headless
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v6
+            - name: Use Node.js ${{ matrix.node-version }}
+              uses: actions/setup-node@v6
+              with:
+                  node-version: ${{ matrix.node-version }}
+            - name: Cache Node.js modules
+              uses: actions/cache@v5
+              with:
+                  path: ~/.npm
+                  key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+                  restore-keys: |
+                      ${{ runner.os }}-node-
+            - name: Check installs
+              run: npm ci
+            - name: Quality check - prettier
+              run: npm run prettier:check
+            - name: Quality check - eslint
+              run: npm run eslint:check
+            - name: Run tests
+              run: npm run test:jest
+            - name: Run Playwright tests
+              run: npx playwright install --with-deps && npm run test:e2e:headless
