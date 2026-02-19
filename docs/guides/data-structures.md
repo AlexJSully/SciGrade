@@ -12,8 +12,6 @@ SciGrade uses JSON as its primary data format for gene information and guide RNA
 
 **Purpose:** Store educational metadata and background information for each gene.
 
-### Root Structure
-
 ```json
 {
 	"_id": "5a67577c01ac2022a0eb6f56",
@@ -86,8 +84,6 @@ From actual data (HBB gene):
 **File:** [core/data/Benchling_gRNA_Outputs.json](../../core/data/Benchling_gRNA_Outputs.json)
 
 **Purpose:** Reference data for validating student-submitted gRNA sequences and calculating off-target scores.
-
-### Root Structure
 
 ```json
 {
@@ -185,7 +181,7 @@ From actual data (HBB gene):
 
 **Format:** Standard FASTA format
 
-```
+```fasta
 >ACTN3
 ACGTACGTACGTACGTACGTACGTACGTACGT
 ```

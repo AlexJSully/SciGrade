@@ -308,28 +308,28 @@ function checkAnswers() {
 					MARgRNAseq = false;
 					MARgRNAseq_degree = 0;
 				} else if (
-					(correctNucleotidePosition >= possible_comparable_answers[i].Position - 1 + 1 &&
-						correctNucleotidePosition <= possible_comparable_answers[i].Position - 1 + 10) ||
-					(correctNucleotidePosition <= possible_comparable_answers[i].Position - 1 - 1 &&
-						correctNucleotidePosition >= possible_comparable_answers[i].Position - 1 - 10)
+					(correctNucleotidePosition >= possibleAnswer.Position - 1 + 1 &&
+						correctNucleotidePosition <= possibleAnswer.Position - 1 + 10) ||
+					(correctNucleotidePosition <= possibleAnswer.Position - 1 - 1 &&
+						correctNucleotidePosition >= possibleAnswer.Position - 1 - 10)
 				) {
 					MARgRNAseq = true;
 					MARgRNAseq_degree = 1;
 					true_counts += 1;
 				} else if (
-					(correctNucleotidePosition >= possible_comparable_answers[i].Position - 1 &&
-						correctNucleotidePosition <= possible_comparable_answers[i].Position - 1 + 20) ||
-					(correctNucleotidePosition <= possible_comparable_answers[i].Position - 1 &&
-						correctNucleotidePosition >= possible_comparable_answers[i].Position - 1 - 20)
+					(correctNucleotidePosition >= possibleAnswer.Position - 1 &&
+						correctNucleotidePosition <= possibleAnswer.Position - 1 + 20) ||
+					(correctNucleotidePosition <= possibleAnswer.Position - 1 &&
+						correctNucleotidePosition >= possibleAnswer.Position - 1 - 20)
 				) {
 					MARgRNAseq = true;
 					MARgRNAseq_degree = 2;
 					true_counts += 1;
 				} else if (
-					(correctNucleotidePosition >= possible_comparable_answers[i].Position - 1 &&
-						correctNucleotidePosition <= possible_comparable_answers[i].Position - 1 + 30) ||
-					(correctNucleotidePosition <= possible_comparable_answers[i].Position - 1 &&
-						correctNucleotidePosition >= possible_comparable_answers[i].Position - 1 - 30)
+					(correctNucleotidePosition >= possibleAnswer.Position - 1 &&
+						correctNucleotidePosition <= possibleAnswer.Position - 1 + 30) ||
+					(correctNucleotidePosition <= possibleAnswer.Position - 1 &&
+						correctNucleotidePosition >= possibleAnswer.Position - 1 - 30)
 				) {
 					MARgRNAseq = true;
 					MARgRNAseq_degree = 3;
@@ -338,7 +338,7 @@ function checkAnswers() {
 
 				// If the sequence if correct, check all other results:
 				if (MARgRNAseq) {
-					const temp_answer = element;
+					const temp_answer = possibleAnswer;
 					// Check if the cut position matches the answer's input
 					if (
 						temp_answer.Position &&

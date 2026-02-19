@@ -3,7 +3,13 @@ import globals from "globals";
 
 export default [
 	{
-		ignores: ["node_modules/**/*", "core/scripts/APIandLibraries/**/*", "**/*.min.js"],
+		ignores: [
+			"node_modules/**/*",
+			"core/scripts/APIandLibraries/**/*",
+			"**/*.min.js",
+			"**/playwright-report/**/*",
+			"**/test-results/**/*",
+		],
 	},
 	{
 		languageOptions: {

@@ -1,17 +1,40 @@
-# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
-
-name: Code Quality Assurance
+name: Code Quality Assurance - JavaScript/TypeScript
 
 on:
     push:
         branches: [master]
-        paths-ignore:
-            - "core/scripts/APIandLibraries/**"
+        paths:
+            - "**/*.js"
+            - "**/*.ts"
+            - "**/*.mjs"
+            - "**/*.html"
+            - "**/*.css"
+            - "**/*.json"
+            - "**/*.xml"
+            - "**/*.svg"
+            - "**/*.png"
+            - "**/*.webp"
+            - "**/*.ico"
+            - ".prettierrc"
+            - ".github/workflows/code-qa-js.yaml"
+            - "package*.json"
     pull_request:
         branches: [master]
-        paths-ignore:
-            - "core/scripts/APIandLibraries/**"
+        paths:
+            - "**/*.js"
+            - "**/*.ts"
+            - "**/*.mjs"
+            - "**/*.html"
+            - "**/*.css"
+            - "**/*.json"
+            - "**/*.xml"
+            - "**/*.svg"
+            - "**/*.png"
+            - "**/*.webp"
+            - "**/*.ico"
+            - ".prettierrc"
+            - ".github/workflows/code-qa-js.yaml"
+            - "package*.json"
 
 permissions:
     contents: read
@@ -26,13 +49,13 @@ jobs:
 
         steps:
             - name: Checkout repository
-              uses: actions/checkout@v5
+              uses: actions/checkout@v6
             - name: Use Node.js ${{ matrix.node-version }}
               uses: actions/setup-node@v6
               with:
                   node-version: ${{ matrix.node-version }}
             - name: Cache Node.js modules
-              uses: actions/cache@v4
+              uses: actions/cache@v5
               with:
                   path: ~/.npm
                   key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
@@ -47,4 +70,4 @@ jobs:
             - name: Run tests
               run: npm run test:jest
             - name: Run Playwright tests
-              run: npx playwright install --with-deps && npm run test:playwright:headless
+              run: npx playwright install --with-deps && npm run test:e2e:headless

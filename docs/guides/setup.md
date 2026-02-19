@@ -46,8 +46,8 @@ npm run prettier          # Format code automatically
 # Testing
 npm run test              # Run jest unit tests
 npm run test:jest         # Run jest unit tests only
-npm run test:playwright:headless  # Run playwright tests headless
-npm run test:playwright:ui        # Run playwright tests in UI mode
+npm run test:e2e:headless  # Run E2E tests headless
+npm run test:e2e:ui        # Run E2E tests in UI mode
 
 # Validation
 npm run validate          # Run prettier, eslint, jest, and playwright tests
@@ -153,13 +153,14 @@ npm run test:jest
 Test files in [tests/playwright/](../../tests/playwright/):
 
 - [homepage.spec.js](../../tests/playwright/homepage.spec.js) - Main UI tests
+- [submission.spec.js](../../tests/playwright/submission.spec.js) - Submission flow tests
 - [accessibility.js](../../tests/playwright/utils/accessibility.js) - Accessibility utilities
 
 Run tests:
 
 ```bash
-npm run test:playwright:headless  # CI mode
-npm run test:playwright:ui         # Interactive mode
+npm run test:e2e:headless  # CI mode
+npm run test:e2e:ui         # Interactive mode
 ```
 
 ## Building for Production

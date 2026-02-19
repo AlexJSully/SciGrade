@@ -182,7 +182,7 @@ Bug fix:
 
 ## [1.0.0] - 2018-09-20
 
-The official release of SciGrade is here! You can visit it and see all of it in action at https://scigrade.com/ or learn how it works by looking through our EDIT.MD code.
+The official release of SciGrade is here! You can visit it and see all of it in action at <https://scigrade.com/> or learn how it works by looking through our EDIT.MD code.
 
 Enjoy learning with CRISPR on SciGrade!
 -Alex

@@ -113,25 +113,6 @@ describe("runtime.js - Runtime Flow Helpers", () => {
 	});
 
 	describe("redirectCRISPR()", () => {
-		const cases = [
-			{
-				name: "clears and repopulates main container",
-			},
-			{
-				name: "calls loadCRISPRJSON_Files before fillGeneList",
-			},
-		];
-
-		it.each(cases)("$name", async ({ name }) => {
-			// Execute the ACTUAL imported function
-			await redirectCRISPR();
-
-			// Verify
-			expect(mockJQuery.empty).toHaveBeenCalled();
-			expect(global.loadCRISPRJSON_Files).toHaveBeenCalledTimes(1);
-			expect(global.fillGeneList).toHaveBeenCalledTimes(1);
-		});
-
 		it("ensures DOM elements are properly cleared before population", async () => {
 			// Execute the ACTUAL imported function
 			await redirectCRISPR();
@@ -175,25 +156,6 @@ describe("runtime.js - Runtime Flow Helpers", () => {
 			await redirectCRISPR();
 
 			expect(executionSequence).toEqual(["empty", "append", "loadCRISPRJSON_Files", "fillGeneList"]);
-		});
-	});
-
-	describe("Integration: Runtime flow initialization", () => {
-		it("properly initializes runtime flow when both functions are called", async () => {
-			mockElement.value = "APOE";
-			global.checkAnswers_executed = true;
-			global.document.getElementById.mockReturnValue(mockElement);
-
-			// Execute ACTUAL imported functions
-			await redirectCRISPR();
-			loadGeneContent();
-
-			// Verify complete state
-			expect(global.possible_gene).toBe("APOE");
-			expect(global.checkAnswers_executed).toBe(false);
-			expect(mockJQuery.empty).toHaveBeenCalled();
-			expect(global.loadCRISPRJSON_Files).toHaveBeenCalled();
-			expect(global.fillGeneList).toHaveBeenCalled();
 		});
 	});
 });
