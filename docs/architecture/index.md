@@ -106,8 +106,8 @@ Application styles covering:
 
 - Layout and responsive design
 - Form styling and validation states
-- Feedback page appearance
-- Modal dialogs used by feedback flows
+    - Feedback page appearance
+    - Feedback UI: rendered inline by `showFeedback()` in the runtime page (no modal dialogs are used; see [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js) and [core/systemrun.html](../../core/systemrun.html)).
 
 Built with Bootstrap utilities integrated via [core/scripts/APIandLibraries/Bootstrap/](../../core/scripts/APIandLibraries/Bootstrap/).
 
