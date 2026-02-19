@@ -782,7 +782,8 @@ function showFeedback() {
 	append_str += "</button>";
 	append_str += "</h5>";
 	append_str += "</div>";
-	append_str += "<div id='R1PrimerOutput' class='collapse' aria-labelledby='R1PrimerCard' data-bs-parent='#accordion'>";
+	append_str +=
+		"<div id='R1PrimerOutput' class='collapse' aria-labelledby='R1PrimerCard' data-bs-parent='#accordion'>";
 	append_str += "<div class='card-body'>";
 	// Content
 	append_str += `<p> For R1 Primer, you put down "${all_answers[6]}" which gave you the mark ${MARR1primers_display}.</p>`;
