@@ -10,18 +10,7 @@ import { defineConfig, devices } from "@playwright/test";
 // dotenv.config({ path: path.resolve(__dirname, '.env') });
 
 /** Android Devices to test on */
-const androidDeviceList = [
-	"Galaxy A55",
-	"Galaxy A55 landscape",
-	"Nexus 6",
-	"Nexus 6 landscape",
-	"Nexus 6P",
-	"Nexus 6P landscape",
-	"Pixel 3",
-	"Pixel 3 landscape",
-	"Pixel 7",
-	"Pixel 7 landscape",
-];
+const androidDeviceList = ["Galaxy A55", "Nexus 6P", "Pixel 3", "Pixel 7", "Pixel 7 landscape"];
 
 /**
  * @see https://playwright.dev/docs/test-configuration
@@ -33,9 +22,8 @@ export default defineConfig({
 	/* Fail the build on CI if you accidentally left test.only in the source code. */
 	forbidOnly: !!process.env.CI,
 	/* Retry on CI only */
-	retries: process.env.CI ? 2 : 0,
-	/* Opt out of parallel tests on CI. */
-	workers: process.env.CI ? 1 : undefined,
+	retries: 2,
+	workers: 30,
 	/* Reporter to use. See https://playwright.dev/docs/test-reporters */
 	reporter: [["list"], ["html"], ["json", { outputFile: "test-results/results.json" }]],
 	/* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */

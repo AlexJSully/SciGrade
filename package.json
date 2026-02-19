@@ -30,9 +30,9 @@
 		"start": "http-server . -p 3000",
 		"test": "jest",
 		"test:jest": "jest --passWithNoTests",
-		"test:playwright:headless": "npx playwright test --reporter=list",
-		"test:playwright:ui": "npx playwright test --ui",
-		"validate": "npm run prettier && npm run eslint && npm run minify && npm run test:jest && npm run test:playwright:headless",
+		"test:e2e:headless": "npx playwright test --reporter=list",
+		"test:e2e:ui": "npx playwright test --ui",
+		"validate": "npm run prettier && npm run eslint && npm run minify && npm run test:jest && npm run test:e2e:headless",
 		"workbox": "workbox generateSW workbox-config.cjs"
 	},
 	"bugs": {
@@ -57,7 +57,7 @@
 	"devDependencies": {
 		"@playwright/test": "^1.58.2",
 		"@types/jest": "^30.0.0",
-		"@types/node": "^25.2.3",
+		"@types/node": "^25.3.0",
 		"axe-playwright": "^2.2.2",
 		"esbuild": "^0.27.3",
 		"eslint": "^10.0.0",

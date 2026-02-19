@@ -85,14 +85,10 @@
 				release: "scigrade@1.2.0",
 
 				integrations: [
-					new Sentry.BrowserTracing(),
-					new Sentry.Integrations.CaptureConsole({
+					Sentry.captureConsoleIntegration({
 						levels: ["error"],
 					}),
 				],
-
-				// We recommend adjusting this value in production, or using tracesSampler for finer control
-				tracesSampleRate: 1.0,
 			});
 
 			Sentry.configureScope((scope) => {

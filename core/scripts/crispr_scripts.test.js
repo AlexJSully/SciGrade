@@ -103,6 +103,11 @@ describe("crispr_scripts.js - Utility Functions", () => {
 		const cases = [
 			{ name: "short sequence ATCG", input: "ATCG", want: "CGAT" },
 			{ name: "longer sequence", input: "GCTCGTGACCACCCTGACCT", want: "AGGTCAGGGTGGTCACGAGC" },
+			{
+				name: "gRNA sequence from eBFP marking tests",
+				input: "AAGCACTGCACGCCGTGGGT",
+				want: "ACCCACGGCGTGCAGTGCTT",
+			},
 			{ name: "empty sequence", input: "", want: "" },
 			{ name: "single nucleotide A", input: "A", want: "T" },
 			{ name: "single nucleotide T", input: "T", want: "A" },
