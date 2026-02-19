@@ -692,12 +692,12 @@ function showFeedback() {
 	append_str += "<div class='card-header' id='gRNACard'>";
 	append_str += "<h5 class='mb-0'>";
 	append_str +=
-		"<button class='btn btn-link' data-toggle='collapse' data-target='#gRNAOutput' aria-expanded='false' aria-controls='gRNAOutput'>";
+		"<button class='btn btn-link' data-bs-toggle='collapse' data-bs-target='#gRNAOutput' aria-expanded='false' aria-controls='gRNAOutput'>";
 	append_str += `gRNA Strand Sequence: ${MARgRNAseq_degree_display}/2`;
 	append_str += "</button>";
 	append_str += "</h5>";
 	append_str += "</div>";
-	append_str += "<div id='gRNAOutput' class='collapse' aria-labelledby='headingOne' data-parent='#accordion'>";
+	append_str += "<div id='gRNAOutput' class='collapse' aria-labelledby='headingOne' data-bs-parent='#accordion'>";
 	append_str += "<div class='card-body'>";
 	// Content
 	append_str += `<p> For gRNA Strand Sequence, you put down "${all_answers[0]}" which gave you the mark ${MARgRNAseq_degree_display}.</p>`;
@@ -713,12 +713,12 @@ function showFeedback() {
 	append_str += "<div class='card-header' id='PAMCard'>";
 	append_str += "<h5 class='mb-0'>";
 	append_str +=
-		"<button class='btn btn-link' data-toggle='collapse' data-target='#PAMOutput' aria-expanded='false' aria-controls='PAMOutput'>";
+		"<button class='btn btn-link' data-bs-toggle='collapse' data-bs-target='#PAMOutput' aria-expanded='false' aria-controls='PAMOutput'>";
 	append_str += `gRNA PAM Sequence: ${MARPAMseq_display}/2`;
 	append_str += "</button>";
 	append_str += "</h5>";
 	append_str += "</div>";
-	append_str += "<div id='PAMOutput' class='collapse' aria-labelledby='headingOne' data-parent='#accordion'>";
+	append_str += "<div id='PAMOutput' class='collapse' aria-labelledby='headingOne' data-bs-parent='#accordion'>";
 	append_str += "<div class='card-body'>";
 	// Content
 	append_str += `<p> For gRNA PAM Sequence, you put down "${all_answers[1]}" which gave you the mark ${MARPAMseq_display}.</p>`;
@@ -734,12 +734,13 @@ function showFeedback() {
 	append_str += "<div class='card-header' id='OffTargetCard'>";
 	append_str += "<h5 class='mb-0'>";
 	append_str +=
-		"<button class='btn btn-link' data-toggle='collapse' data-target='#OffTargetOutput' aria-expanded='false' aria-controls='OffTargetOutput'>";
+		"<button class='btn btn-link' data-bs-toggle='collapse' data-bs-target='#OffTargetOutput' aria-expanded='false' aria-controls='OffTargetOutput'>";
 	append_str += `Off-target Score: ${MAROffTarget_degree_display}/2`;
 	append_str += "</button>";
 	append_str += "</h5>";
 	append_str += "</div>";
-	append_str += "<div id='OffTargetOutput' class='collapse' aria-labelledby='headingOne' data-parent='#accordion'>";
+	append_str +=
+		"<div id='OffTargetOutput' class='collapse' aria-labelledby='headingOne' data-bs-parent='#accordion'>";
 	append_str += "<div class='card-body'>";
 	// Content
 	append_str += `<p> For Off-Target Score, you put down "${all_answers[4]}" which gave you the mark ${MAROffTarget_degree_display}.</p>`;
@@ -755,12 +756,12 @@ function showFeedback() {
 	append_str += "<div class='card-header' id='F1PrimerCard'>";
 	append_str += "<h5 class='mb-0'>";
 	append_str +=
-		"<button class='btn btn-link' data-toggle='collapse' data-target='#F1PrimerOutput' aria-expanded='false' aria-controls='F1PrimerOutput'>";
+		"<button class='btn btn-link' data-bs-toggle='collapse' data-bs-target='#F1PrimerOutput' aria-expanded='false' aria-controls='F1PrimerOutput'>";
 	append_str += `F1 Primer: ${MARF1primers_display}/2`;
 	append_str += "</button>";
 	append_str += "</h5>";
 	append_str += "</div>";
-	append_str += "<div id='F1PrimerOutput' class='collapse' aria-labelledby='headingOne' data-parent='#accordion'>";
+	append_str += "<div id='F1PrimerOutput' class='collapse' aria-labelledby='headingOne' data-bs-parent='#accordion'>";
 	append_str += "<div class='card-body'>";
 	// Content
 	append_str += `<p> For F1 Primer, you put down "${all_answers[5]}" which gave you the mark ${MARF1primers_display}.</p>`;
@@ -776,12 +777,12 @@ function showFeedback() {
 	append_str += "<div class='card-header' id='R1PrimerCard'>";
 	append_str += "<h5 class='mb-0'>";
 	append_str +=
-		"<button class='btn btn-link' data-toggle='collapse' data-target='#R1PrimerOutput' aria-expanded='false' aria-controls='R1PrimerOutput'>";
+		"<button class='btn btn-link' data-bs-toggle='collapse' data-bs-target='#R1PrimerOutput' aria-expanded='false' aria-controls='R1PrimerOutput'>";
 	append_str += `R1 Primer: ${MARR1primers_display}/2`;
 	append_str += "</button>";
 	append_str += "</h5>";
 	append_str += "</div>";
-	append_str += "<div id='R1PrimerOutput' class='collapse' aria-labelledby='headingOne' data-parent='#accordion'>";
+	append_str += "<div id='R1PrimerOutput' class='collapse' aria-labelledby='headingOne' data-bs-parent='#accordion'>";
 	append_str += "<div class='card-body'>";
 	// Content
 	append_str += `<p> For R1 Primer, you put down "${all_answers[6]}" which gave you the mark ${MARR1primers_display}.</p>`;
@@ -856,13 +857,7 @@ function submitAnswers() {
 		);
 		all_marks.push(studentMark, studentMarkPercentage);
 
-		document.getElementById("options_label").innerHTML =
-			"Would you like to see feedback on your answers or start a new assignment?";
-		document.getElementById("seeFeedback").removeAttribute("hidden");
-
 		showFeedback();
-
-		$("#feedbackButton").click();
 	}, 750);
 }
 

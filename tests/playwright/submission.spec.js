@@ -52,6 +52,9 @@ test.describe("SciGrade Submission Flow", () => {
 
 		// Wait for the form to be generated (loadWork appends form inputs into #work)
 		await page.waitForSelector("#sequence_input", { state: "visible" });
+
+		// Wait for form to fully render and be interactive
+		await page.waitForTimeout(200);
 	});
 
 	// Data-driven tests using test case table

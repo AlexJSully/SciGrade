@@ -77,7 +77,7 @@ SciGrade uses the gene list defined in [core/data/Background_info/gene_backgroun
 #### Practice Flow
 
 - The runtime page initializes the practice flow on page load
-- Feedback is generated after submission by [core/scripts/crispr_scripts.js](../core/scripts/crispr_scripts.js)
+- Feedback is generated after submission by [core/scripts/crispr_scripts.js](../core/scripts/crispr_scripts.js) and rendered inline by `showFeedback()`.
 
 The [CHANGELOG.md](../CHANGELOG.md) records the deprecation of online account features.
 
