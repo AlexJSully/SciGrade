@@ -23,6 +23,7 @@
 		"audit:fix": "npm i && npm audit fix",
 		"eslint:check": "eslint ./",
 		"eslint": "eslint --fix ./",
+		"lint:markdown": "markdownlint \"**/*.md\"",
 		"minify": "esbuild core/scripts/runtime.js --minify --outfile=core/scripts/runtime.min.js && esbuild core/scripts/crispr_scripts.js --minify --outfile=core/scripts/crispr_scripts.min.js",
 		"prettier:check": "prettier --check ./",
 		"prettier": "prettier --write ./",
@@ -32,7 +33,7 @@
 		"test:jest": "jest --passWithNoTests",
 		"test:e2e:headless": "npx playwright test --reporter=list",
 		"test:e2e:ui": "npx playwright test --ui",
-		"validate": "npm run prettier && npm run eslint && npm run minify && npm run test:jest && npm run test:e2e:headless",
+		"validate": "npm run prettier && npm run eslint && npm run minify && npm run test:jest && npm run test:e2e:headless && npm run lint:markdown",
 		"workbox": "workbox generateSW workbox-config.cjs"
 	},
 	"bugs": {
@@ -67,6 +68,7 @@
 		"http-server": "^14.1.1",
 		"jest": "^30.2.0",
 		"jest-environment-jsdom": "^30.2.0",
+		"markdownlint-cli": "^0.47.0",
 		"prettier": "^3.8.1",
 		"workbox-cli": "^7.4.0"
 	}

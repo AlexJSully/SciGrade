@@ -96,17 +96,17 @@ Structure:
 
 ```json
 {
- "gene_list": {
-  "GENENAME": {
-   "base_type": "practice|assignment",
-   "name": "Full Gene Name",
-   "Background": "Description of gene and mutation",
-   "Target site": "Location and nature of target",
-   "Target position": "Numeric position",
-   "Sequence": "ACGT... full DNA sequence",
-   "NCBI gene link": "https://..."
-  }
- }
+	"gene_list": {
+		"GENENAME": {
+			"base_type": "practice|assignment",
+			"name": "Full Gene Name",
+			"Background": "Description of gene and mutation",
+			"Target site": "Location and nature of target",
+			"Target position": "Numeric position",
+			"Sequence": "ACGT... full DNA sequence",
+			"NCBI gene link": "https://..."
+		}
+	}
 }
 ```
 
