@@ -32,7 +32,7 @@ Both reference files are fetched asynchronously during initialization from [core
 
 ### Step 2: gRNA Sequence Validation
 
-When a student submits their answer, [checkAnswers()](../../core/scripts/crispr_scripts.js#L232) searches for matching gRNA sequences:
+When a student submits their answer, [checkAnswers()](../../core/scripts/crispr_scripts.js) searches for matching gRNA sequences:
 
 ```javascript
 const inputtedSeq = document.getElementById("sequence_input").value.trim();

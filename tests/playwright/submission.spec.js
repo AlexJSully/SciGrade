@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { selectGeneAndOpenForm } from "./utils/navigation.js";
 
 // Test case table for score-based E2E tests
 const scoreTestCases = [
@@ -35,23 +36,9 @@ test.describe("SciGrade Submission Flow", () => {
 		// Navigate to the application page
 		await page.goto("http://localhost:3000/core/systemrun.html");
 
-		// Wait for the page to fully load (redirectCRISPR builds the UI)
-		await page.waitForSelector("#gene_dropdown_selection");
-
-		// Wait for gene list to be populated (fillGeneList runs after JSON load)
-		await page.waitForFunction(() => {
-			const sel = document.getElementById("gene_dropdown_selection");
-			return sel && sel.options.length > 0;
-		});
-
-		// Select eBFP gene (default test gene)
-		await page.selectOption("#gene_dropdown_selection", "eBFP");
-
-		// Click Load Gene button
-		await page.getByRole("button", { name: "Load Gene" }).click();
-
-		// Wait for the form to be generated (loadWork appends form inputs into #work)
-		await page.waitForSelector("#sequence_input", { state: "visible" });
+		// Wait for the gene list to load, then load eBFP (default test gene) and
+		// render the work form (#sequence_input).
+		await selectGeneAndOpenForm(page, "eBFP");
 
 		// Wait for form to be fully rendered and interactive: submit button present and enabled
 		await page.waitForFunction(() => {

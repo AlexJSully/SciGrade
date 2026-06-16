@@ -6,28 +6,20 @@
 
 let selection_inMode = "practice";
 
-const listOfGenes = ["eBFP", "ACTN3", "HBB", "CCR5", "ANKK1", "APOE"];
 let possible_gene = "eBFP";
 let current_gene = "empty";
 
 /** Purpose of this is to assign the current gene and check for errors */
 function select_Gene() {
-	if (possible_gene !== "" || possible_gene) {
+	// Valid only when a non-empty gene is selected AND it exists in the loaded
+	// background data (the dropdown is populated from gene_backgroundInfo.gene_list,
+	// so that is the authoritative source of valid genes).
+	if (possible_gene && gene_backgroundInfo?.gene_list?.[possible_gene]) {
 		current_gene = possible_gene;
 		loadWork();
 		checkAnswers_executed = false;
 	} else {
-		if (
-			current_gene !== "empty" ||
-			current_gene !== "eBFP" ||
-			current_gene !== "ACTN3" ||
-			current_gene !== "HBB" ||
-			current_gene !== "CCR5" ||
-			current_gene !== "ANKK1" ||
-			current_gene !== "APOE"
-		) {
-			current_gene = "empty";
-		}
+		current_gene = "empty";
 		alert("Error code sG34-42 occurred. Please contact admin or TA!");
 	}
 }
@@ -58,7 +50,7 @@ function fillGeneList() {
 	if (gene_backgroundInfo?.gene_list) {
 		$("#gene_dropdown_selection").empty();
 
-		let append_str;
+		let append_str = "";
 
 		const listOfGenes = Object.keys(gene_backgroundInfo.gene_list);
 
@@ -69,6 +61,12 @@ function fillGeneList() {
 		}
 
 		$("#gene_dropdown_selection").append(append_str);
+
+		// Gene data is loaded and the dropdown is populated, so it is now safe to
+		// load a gene. Enabling the button here (rather than at render time) prevents
+		// a click before the async JSON load finishes, which would otherwise hit the
+		// "Error code sG34-42" dead-end and never build the work form.
+		$("#load_gene_button").prop("disabled", false);
 	}
 }
 
@@ -77,63 +75,67 @@ let loadedMode = "practice";
  * Dynamically creates the work page for SciGrade
  */
 function loadWork() {
-	if (gene_backgroundInfo || gene_backgroundInfo !== "" || backgroundInfo?.[0].gene_list[current_gene]) {
-		$("#work").empty();
-		loadedMode = selection_inMode;
-		checkAnswers_executed = false;
-		let append_str;
+	if (!gene_backgroundInfo?.gene_list?.[current_gene]) {
+		alert("Error code lFS50-66 occurred. Please contact admin or TA!");
+		return;
+	}
 
-		// Begin background information
-		append_str = '<div class="work_background" style="margin-top:2%;">';
+	$("#work").empty();
+	loadedMode = selection_inMode;
+	checkAnswers_executed = false;
+	let append_str;
 
-		// CRISPR header information
-		append_str +=
-			'<div id="crispr_header">\n<p>Please refer to your dry lab protocol for full instructions on how and what to do. Below is a brief reminder of what you are supposed to do with each gene: \n <b>Your objective is to find these mutations, design a gRNA and its corresponding F1/R1 primers</b></p> \n</div>\n';
+	// Begin background information
+	append_str = '<div class="work_background" style="margin-top:2%;">';
 
-		// Gene information
-		append_str += `<div id="gene_info"><p>Here is some background information about your gene: ${gene_backgroundInfo?.gene_list[current_gene].name} (${current_gene})</p>\n`;
-		append_str += `<p> Background information: ${gene_backgroundInfo?.gene_list[current_gene].Background}</p>\n`;
-		append_str += `<p> Target site: ${gene_backgroundInfo?.gene_list[current_gene]["Target site"]}</p>\n`;
-		append_str += `<p style="word-wrap:break-word;"> Modified genetic sequence: ${gene_backgroundInfo?.gene_list[current_gene].Sequence}</p>\n`;
-		append_str += "</div>";
+	// CRISPR header information
+	append_str +=
+		'<div id="crispr_header">\n<p>Please refer to your dry lab protocol for full instructions on how and what to do. Below is a brief reminder of what you are supposed to do with each gene: \n <b>Your objective is to find these mutations, design a gRNA and its corresponding F1/R1 primers</b></p> \n</div>\n';
 
-		// End background information
-		append_str += "</div>";
+	// Gene information
+	append_str += `<div id="gene_info"><p>Here is some background information about your gene: ${gene_backgroundInfo?.gene_list[current_gene].name} (${current_gene})</p>\n`;
+	append_str += `<p> Background information: ${gene_backgroundInfo?.gene_list[current_gene].Background}</p>\n`;
+	append_str += `<p> Target site: ${gene_backgroundInfo?.gene_list[current_gene]["Target site"]}</p>\n`;
+	append_str += `<p style="word-wrap:break-word;"> Modified genetic sequence: ${gene_backgroundInfo?.gene_list[current_gene].Sequence}</p>\n`;
+	append_str += "</div>";
 
-		// Begin gene assignment work
-		append_str += '<div id="work_section">';
+	// End background information
+	append_str += "</div>";
 
-		// Gene assignment form inputs
-		append_str += "<p> Please input the following information for your gRNA for your selected gene.</p>\n";
-		append_str += "<form>";
+	// Begin gene assignment work
+	append_str += '<div id="work_section">';
 
-		// gRNA sequence
-		append_str += '<div class="form-group">';
-		append_str += '<label for="sequence_input">gRNA Sequence:</label>';
-		append_str +=
-			'<input class="form-control" id="sequence_input" placeholder="CTCGTGACCACCCTGACCCA" maxlength="20" required>';
-		append_str +=
-			'<small id="sequence_inputSmall" class="form-text text-muted">This would be your gRNA sequence 5\' to 3\'. NOTE: This is maxed out at 20 characters long</small>';
-		append_str += "</div>";
+	// Gene assignment form inputs
+	append_str += "<p> Please input the following information for your gRNA for your selected gene.</p>\n";
+	append_str += "<form>";
 
-		// PAM sequence
-		append_str += '<div class="form-group">';
-		append_str += '<label for="pam_input">PAM Sequence:</label>';
-		append_str += '<input class="form-control" id="pam_input" placeholder="CGG" maxlength="3" required>';
-		append_str +=
-			'<small id="pam_inputSmall" class="form-text text-muted">This would be your PAM sequence 5\' to 3\'. NOTE: This is maxed out at 3 characters long</small>';
-		append_str += "</div>";
+	// gRNA sequence
+	append_str += '<div class="form-group">';
+	append_str += '<label for="sequence_input">gRNA Sequence:</label>';
+	append_str +=
+		'<input class="form-control" id="sequence_input" placeholder="CTCGTGACCACCCTGACCCA" maxlength="20" required>';
+	append_str +=
+		'<small id="sequence_inputSmall" class="form-text text-muted">This would be your gRNA sequence 5\' to 3\'. NOTE: This is maxed out at 20 characters long</small>';
+	append_str += "</div>";
 
-		// Position
-		append_str += '<div class="form-group">';
-		append_str += '<label for="position_input">Cut position:</label>';
-		append_str += '<input class="form-control" id="position_input" placeholder="380" type="number" required>';
-		append_str +=
-			'<small id="position_inputSmall" class="form-text text-muted">This would be your cut position for your gRNA. NOTE: This input only takes numbers</small>';
-		append_str += "</div>";
+	// PAM sequence
+	append_str += '<div class="form-group">';
+	append_str += '<label for="pam_input">PAM Sequence:</label>';
+	append_str += '<input class="form-control" id="pam_input" placeholder="CGG" maxlength="3" required>';
+	append_str +=
+		'<small id="pam_inputSmall" class="form-text text-muted">This would be your PAM sequence 5\' to 3\'. NOTE: This is maxed out at 3 characters long</small>';
+	append_str += "</div>";
 
-		// Strand
-		append_str += `
+	// Position
+	append_str += '<div class="form-group">';
+	append_str += '<label for="position_input">Cut position:</label>';
+	append_str += '<input class="form-control" id="position_input" placeholder="380" type="number" required>';
+	append_str +=
+		'<small id="position_inputSmall" class="form-text text-muted">This would be your cut position for your gRNA. NOTE: This input only takes numbers</small>';
+	append_str += "</div>";
+
+	// Strand
+	append_str += `
 			<div class="form-group">
 				<label for="strand_input">gRNA Strand:</label>
 
@@ -150,48 +152,45 @@ function loadWork() {
 			</div>
 		`;
 
-		// Off-target score
-		append_str += '<div class="form-group">';
-		append_str += '<label for="offtarget_input">Off-target score:</label>';
-		append_str +=
-			'<input class="form-control" id="offtarget_input" placeholder="60.7" step="0.01" type="number" required>';
-		append_str +=
-			'<small id="position_inputSmall" class="form-text text-muted">This would be your off-target score for your gRNA. NOTE: This input only takes numbers</small>';
-		append_str += "</div>";
+	// Off-target score
+	append_str += '<div class="form-group">';
+	append_str += '<label for="offtarget_input">Off-target score:</label>';
+	append_str +=
+		'<input class="form-control" id="offtarget_input" placeholder="60.7" step="0.01" type="number" required>';
+	append_str +=
+		'<small id="position_inputSmall" class="form-text text-muted">This would be your off-target score for your gRNA. NOTE: This input only takes numbers</small>';
+	append_str += "</div>";
 
-		// F1 Primers
-		append_str += '<div class="form-group">';
-		append_str += '<label for="f1_input">F1 Primers:</label>';
-		append_str +=
-			'<input class="form-control" id="f1_input" placeholder="TAATACGACTCACTATAGCTCGTGACCACCCTGA" required>';
-		append_str +=
-			'<small id="f1_inputSmall" class="form-text text-muted">This would be your forward primer (F1) for your gRNA</small>';
-		append_str += "</div>";
+	// F1 Primers
+	append_str += '<div class="form-group">';
+	append_str += '<label for="f1_input">F1 Primers:</label>';
+	append_str +=
+		'<input class="form-control" id="f1_input" placeholder="TAATACGACTCACTATAGCTCGTGACCACCCTGA" required>';
+	append_str +=
+		'<small id="f1_inputSmall" class="form-text text-muted">This would be your forward primer (F1) for your gRNA</small>';
+	append_str += "</div>";
 
-		// R1 Primers
-		append_str += '<div class="form-group">';
-		append_str += '<label for="r1_input">R1 Primers:</label>';
-		append_str +=
-			'<input class="form-control" id="r1_input" placeholder="TTCTAGCTCTAAAACTGGGTCAGGGTGGTCACGAG" required>';
-		append_str +=
-			'<small id="r1_inputSmall" class="form-text text-muted">This would be your reverse primer (R1) for your gRNA</small>';
-		append_str += "</div>";
+	// R1 Primers
+	append_str += '<div class="form-group">';
+	append_str += '<label for="r1_input">R1 Primers:</label>';
+	append_str +=
+		'<input class="form-control" id="r1_input" placeholder="TTCTAGCTCTAAAACTGGGTCAGGGTGGTCACGAG" required>';
+	append_str +=
+		'<small id="r1_inputSmall" class="form-text text-muted">This would be your reverse primer (R1) for your gRNA</small>';
+	append_str += "</div>";
 
-		// Buttons
-		append_str += '<button type="button" class="btn btn-success" style="margin:1%;" hidden>Save</button>';
-		append_str +=
-			'<button id="assignmentSubmitButton" type="button" class="btn btn-primary" style="margin:1%;" onclick="submitAnswers();">Submit</button>';
+	// Buttons
+	append_str += '<button type="button" class="btn btn-success" style="margin:1%;" hidden>Save</button>';
+	append_str +=
+		'<button id="assignmentSubmitButton" type="button" class="btn btn-primary" style="margin:1%;" onclick="submitAnswers();">Submit</button>';
 
-		// End form
-		append_str += "</form>";
+	// End form
+	append_str += "</form>";
 
-		// End gene assignment work
-		append_str += "</div>";
+	// End gene assignment work
+	append_str += "</div>";
 
-		$("#work").append(append_str);
-	} else if (gene_backgroundInfo === "" || !gene_backgroundInfo || !backgroundInfo?.[0].gene_list[current_gene]) {
-		alert("Error code lFS50-66 occurred. Please contact admin or TA!");
-	}
+	$("#work").append(append_str);
 }
 
 /**
@@ -535,8 +534,11 @@ function checkR1Primers(seq) {
 }
 
 /**
- * Builds a complementary sequence from the provided nucleotides.
- * Note: This function does not return the computed sequence.
+ * Builds the reverse complement of the provided nucleotide sequence.
+ * Each nucleotide is complemented and prepended, so the result reads in the
+ * reverse direction relative to the input.
+ * @param {string} seq - Nucleotide sequence to reverse-complement
+ * @returns {string} The reverse-complement sequence
  */
 function createComplementarySeq(seq) {
 	let comp_seq = "";
@@ -674,7 +676,7 @@ function showFeedback() {
 	let MARR1primers_display = 0;
 	let r1Options = "";
 	for (let i = 0; i < possible_R1_primers.length; i += 1) {
-		r1Options += possible_F1_primers[i];
+		r1Options += possible_R1_primers[i];
 		if (i === possible_R1_primers.length - 1) {
 			r1Options += ".";
 		} else {
@@ -894,6 +896,8 @@ if (typeof module !== "undefined" && module.exports) {
 		checkF1Primers,
 		checkR1Primers,
 		fillGeneList,
+		select_Gene,
+		loadWork,
 		// Export getters for testing
 		get MAROffTarget() {
 			return MAROffTarget;
@@ -907,6 +911,9 @@ if (typeof module !== "undefined" && module.exports) {
 		get MARR1primers() {
 			return MARR1primers;
 		},
+		get current_gene() {
+			return current_gene;
+		},
 		// Export setters for test setup
 		__setTestState(state = {}) {
 			if (state.correctNucleotideIncluded !== undefined)
@@ -915,6 +922,7 @@ if (typeof module !== "undefined" && module.exports) {
 			if (state.benchling_gRNA_outputs !== undefined) benchling_gRNA_outputs = state.benchling_gRNA_outputs;
 			if (state.current_gene !== undefined) current_gene = state.current_gene;
 			if (state.gene_backgroundInfo !== undefined) gene_backgroundInfo = state.gene_backgroundInfo;
+			if (state.possible_gene !== undefined) possible_gene = state.possible_gene;
 		},
 		// Reset state for clean tests
 		__resetState() {

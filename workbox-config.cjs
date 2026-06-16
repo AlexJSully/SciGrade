@@ -1,6 +1,13 @@
 module.exports = {
 	"swDest": "./core/scripts/serviceWorker/sw.js",
 	"globDirectory": ".",
+	// Precache URLs are made root-absolute so they resolve from the origin
+	// root regardless of the service worker's own directory depth (the SW
+	// lives at /core/scripts/serviceWorker/). Without this, the SW resolves
+	// relative precache URLs against its own folder and 404s.
+	"modifyURLPrefix": {
+		"": "/"
+	},
 	"globPatterns": [
 		"core/**/*.{html,json,png,ico,jpg,svg,webmanifest,css,js,pdf,fasta,md,pdf,webp,xlsx,png,jpeg}"
 	],

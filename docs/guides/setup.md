@@ -42,6 +42,7 @@ npm run eslint:check      # Check for linting errors
 npm run eslint            # Fix linting errors automatically
 npm run prettier:check    # Check code formatting
 npm run prettier          # Format code automatically
+npm run lint:markdown     # Lint markdown files
 
 # Testing
 npm run test              # Run jest unit tests
@@ -50,7 +51,7 @@ npm run test:e2e:headless  # Run E2E tests headless
 npm run test:e2e:ui        # Run E2E tests in UI mode
 
 # Validation
-npm run validate          # Run prettier, eslint, jest, and playwright tests
+npm run validate          # Run prettier, eslint, minify, jest, playwright, and markdown lint
 
 # Build & Service Worker
 npm run minify            # Minify runtime and marking scripts

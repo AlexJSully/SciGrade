@@ -1,14 +1,14 @@
-import eslintPluginPrettier from "eslint-plugin-prettier";
 import globals from "globals";
 
 export default [
 	{
 		ignores: [
-			"node_modules/**/*",
-			"core/scripts/APIandLibraries/**/*",
 			"**/*.min.js",
 			"**/playwright-report/**/*",
 			"**/test-results/**/*",
+			"core/scripts/APIandLibraries/**/*",
+			"core/scripts/serviceWorker/**",
+			"node_modules/**/*",
 		],
 	},
 	{
@@ -21,9 +21,6 @@ export default [
 				...globals.node,
 			},
 		},
-		plugins: {
-			eslintPluginPrettier,
-		},
 		rules: {
 			camelcase: "off",
 			indent: ["error", "tab"],
@@ -35,7 +32,6 @@ export default [
 			"no-undef": "off",
 			"no-unused-vars": "off",
 			"no-use-before-define": "off",
-			"eslintPluginPrettier/prettier": "error",
 			semi: ["error", "always"],
 		},
 	},

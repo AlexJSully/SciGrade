@@ -45,9 +45,11 @@ async function redirectCRISPR() {
 					<div id='load_button'>
 						<button
 							type='button'
+							id='load_gene_button'
 							class='btn btn-success'
 							style='margin-top: 2%;'
 							onClick='loadGeneContent()'
+							disabled
 						>
 							Load Gene
 						</button>
