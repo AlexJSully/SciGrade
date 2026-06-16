@@ -34,10 +34,9 @@ let MARstrand; // Strand selection validation result
 let MAROffTarget; // Off-target score validation result
 let MARF1primers; // F1 primer validation result
 let MARR1primers; // R1 primer validation result
-
-// Gene list
-const listOfGenes = ["eBFP", "ACTN3", "HBB", "CCR5", "ANKK1", "APOE"];
 ```
+
+There is no module-level gene constant. The gene list is derived at runtime inside `fillGeneList()` from `Object.keys(gene_backgroundInfo.gene_list)`, so the data file is the source of the gene set. The current genes are eBFP, ACTN3, HBB, CCR5, and APOE (see [core/data/Background_info/gene_background_info.json](../../core/data/Background_info/gene_background_info.json)).
 
 ### Gene Selection
 
@@ -51,7 +50,7 @@ function select_Gene()
 
 **Behavior:**
 
-- Validates that `possible_gene` is not empty
+- Validates that `possible_gene` is non-empty and present in the loaded `gene_backgroundInfo.gene_list`
 - Sets `current_gene` to `possible_gene`
 - Calls `loadWork()` to render the form
 - Resets marking state

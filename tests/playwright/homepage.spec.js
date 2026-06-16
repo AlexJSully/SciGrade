@@ -1,5 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { testAccessibility } from "./utils/accessibility.js";
+import { selectGeneAndOpenForm } from "./utils/navigation.js";
 
 test.describe("SciGrade Homepage", () => {
 	test.afterEach(async ({ page }) => {
@@ -19,8 +20,9 @@ test.describe("SciGrade Homepage", () => {
 		// Navigate through the initial UI steps
 		await page.getByRole("button", { name: "Start" }).click();
 
-		// Click on the 'Load Gene' button
-		await page.getByRole("button", { name: "Load Gene" }).click();
+		// Wait for the gene list to load, then load a gene and render the form.
+		// (Waiting before clicking "Load Gene" is what fixes the historical flake.)
+		await selectGeneAndOpenForm(page);
 
 		// Ensure that the sequence input element is present
 		await expect(page.locator("#sequence_input")).toHaveCount(1);

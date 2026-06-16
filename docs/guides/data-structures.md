@@ -274,8 +274,8 @@ To add a new gene to SciGrade:
 
 **To Verify:**
 
-- Gene appears in dropdown: [fillGeneList()](../../core/scripts/crispr_scripts.js#L60)
-- Form loads correctly: [loadWork()](../../core/scripts/crispr_scripts.js#L82)
+- Gene appears in dropdown: [fillGeneList()](../../core/scripts/crispr_scripts.js)
+- Form loads correctly: [loadWork()](../../core/scripts/crispr_scripts.js)
 - Tests pass: `npm run test`
 
 ## Related Documentation

@@ -7,6 +7,8 @@ const {
 	checkF1Primers,
 	checkR1Primers,
 	fillGeneList,
+	select_Gene,
+	loadWork,
 	__resetState: resetState,
 	__setTestState: setTestState,
 } = crispr;
@@ -365,13 +367,20 @@ describe("crispr_scripts.js - Utility Functions", () => {
 	});
 
 	describe("fillGeneList()", () => {
+		let appendMock;
+		let propMock;
+
 		beforeEach(() => {
 			resetState();
-			// Setup jQuery mock
+			// Setup jQuery mock with shared append/prop spies so the generated HTML
+			// and the button-enable call can be inspected.
+			appendMock = jest.fn(() => global.$returnValue);
+			propMock = jest.fn(() => global.$returnValue);
 			global.$ = jest.fn((selector) => {
 				return {
 					empty: jest.fn(() => global.$returnValue),
-					append: jest.fn(() => global.$returnValue),
+					append: appendMock,
+					prop: propMock,
 				};
 			});
 			global.$returnValue = undefined;
@@ -395,6 +404,40 @@ describe("crispr_scripts.js - Utility Functions", () => {
 			expect(emptyCall).toBeDefined();
 		});
 
+		it("does not prefix the dropdown HTML with 'undefined' (regression: uninitialized builder)", () => {
+			setTestState({
+				gene_backgroundInfo: {
+					gene_list: {
+						eBFP: { "Target position": 100 },
+						ACTN3: { "Target position": 200 },
+					},
+				},
+			});
+
+			fillGeneList();
+
+			expect(appendMock).toHaveBeenCalled();
+			const appendedHtml = appendMock.mock.calls[0][0];
+			expect(appendedHtml).not.toContain("undefined");
+			expect(appendedHtml).toContain('value="eBFP"');
+			expect(appendedHtml).toContain('value="ACTN3"');
+		});
+
+		it("enables the Load Gene button once the dropdown is populated", () => {
+			setTestState({
+				gene_backgroundInfo: {
+					gene_list: {
+						eBFP: { "Target position": 100 },
+					},
+				},
+			});
+
+			fillGeneList();
+
+			expect(global.$).toHaveBeenCalledWith("#load_gene_button");
+			expect(propMock).toHaveBeenCalledWith("disabled", false);
+		});
+
 		it("does nothing when no background info", () => {
 			setTestState({ gene_backgroundInfo: null });
 			fillGeneList();
@@ -405,6 +448,127 @@ describe("crispr_scripts.js - Utility Functions", () => {
 			setTestState({ gene_backgroundInfo: {} });
 			fillGeneList();
 			expect(global.$).not.toHaveBeenCalled();
+		});
+	});
+
+	describe("select_Gene()", () => {
+		const backgroundInfo = {
+			gene_list: {
+				eBFP: {
+					name: "Enhanced blue fluorescence protein",
+					Background: "bg",
+					"Target site": "ts",
+					Sequence: "ACGT",
+				},
+				ACTN3: { name: "ACTN3", Background: "bg", "Target site": "ts", Sequence: "ACGT" },
+			},
+		};
+
+		beforeEach(() => {
+			resetState();
+			global.alert = jest.fn();
+			global.$ = jest.fn(() => ({
+				empty: jest.fn(),
+				append: jest.fn(),
+			}));
+		});
+
+		afterEach(() => {
+			delete global.alert;
+			delete global.$;
+		});
+
+		it("selects a valid gene and renders the work page without alerting", () => {
+			setTestState({ gene_backgroundInfo: backgroundInfo, possible_gene: "eBFP", current_gene: "empty" });
+
+			select_Gene();
+
+			expect(global.alert).not.toHaveBeenCalled();
+			expect(global.$).toHaveBeenCalledWith("#work");
+		});
+
+		it("alerts sG34-42 and resets current_gene when possible_gene is empty", () => {
+			setTestState({ gene_backgroundInfo: backgroundInfo, possible_gene: "", current_gene: "eBFP" });
+
+			select_Gene();
+
+			expect(global.alert).toHaveBeenCalledWith(expect.stringContaining("sG34-42"));
+			expect(crispr.current_gene).toBe("empty");
+		});
+
+		it("alerts sG34-42 for an unknown gene not present in gene_list (e.g. ANKK1)", () => {
+			setTestState({ gene_backgroundInfo: backgroundInfo, possible_gene: "ANKK1", current_gene: "eBFP" });
+
+			select_Gene();
+
+			expect(global.alert).toHaveBeenCalledWith(expect.stringContaining("sG34-42"));
+			expect(global.$).not.toHaveBeenCalledWith("#work");
+		});
+
+		it("alerts sG34-42 and does not throw when background data is not loaded", () => {
+			setTestState({ gene_backgroundInfo: null, possible_gene: "eBFP", current_gene: "empty" });
+
+			expect(() => select_Gene()).not.toThrow();
+			expect(global.alert).toHaveBeenCalledWith(expect.stringContaining("sG34-42"));
+		});
+	});
+
+	describe("loadWork()", () => {
+		const backgroundInfo = {
+			gene_list: {
+				eBFP: {
+					name: "Enhanced blue fluorescence protein",
+					Background: "bg",
+					"Target site": "ts",
+					Sequence: "ACGT",
+				},
+			},
+		};
+
+		beforeEach(() => {
+			resetState();
+			global.alert = jest.fn();
+			global.$ = jest.fn(() => ({
+				empty: jest.fn(),
+				append: jest.fn(),
+			}));
+		});
+
+		afterEach(() => {
+			delete global.alert;
+			delete global.$;
+		});
+
+		it("renders the work page when the current gene's data is present", () => {
+			setTestState({ gene_backgroundInfo: backgroundInfo, current_gene: "eBFP" });
+
+			loadWork();
+
+			expect(global.alert).not.toHaveBeenCalled();
+			expect(global.$).toHaveBeenCalledWith("#work");
+		});
+
+		it("alerts lFS50-66 and does not render when current_gene is missing from gene_list", () => {
+			setTestState({ gene_backgroundInfo: backgroundInfo, current_gene: "empty" });
+
+			loadWork();
+
+			expect(global.alert).toHaveBeenCalledWith(expect.stringContaining("lFS50-66"));
+			expect(global.$).not.toHaveBeenCalledWith("#work");
+		});
+
+		it("alerts lFS50-66 without throwing a ReferenceError when background data is null", () => {
+			setTestState({ gene_backgroundInfo: null, current_gene: "eBFP" });
+
+			expect(() => loadWork()).not.toThrow();
+			expect(global.alert).toHaveBeenCalledWith(expect.stringContaining("lFS50-66"));
+		});
+
+		it("alerts lFS50-66 when gene_backgroundInfo is an empty string", () => {
+			setTestState({ gene_backgroundInfo: "", current_gene: "eBFP" });
+
+			expect(() => loadWork()).not.toThrow();
+			expect(global.alert).toHaveBeenCalledWith(expect.stringContaining("lFS50-66"));
 		});
 	});
 });
