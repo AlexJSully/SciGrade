@@ -91,8 +91,8 @@ test.describe("SciGrade Submission Flow", () => {
 		// Wait for feedback to render
 		await expect(page.locator("body")).toContainText(/Mark:/, { timeout: 15000 });
 
-		// Return to assignments (simulates selecting a new assignment)
-		await page.click("button:has-text('Back to Assignments')");
+		// Return to the gene selection screen to start another attempt
+		await page.click("button:has-text('Back to Gene Selection')");
 
 		// Wait for the form to be reset and visible again
 		await page.waitForSelector("#gene_dropdown_selection");

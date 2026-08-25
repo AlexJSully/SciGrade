@@ -6,7 +6,7 @@ on:
         paths:
             - "**/*.md"
             - ".markdownlint.json"
-            - ".markdownlintignore"
+            - ".markdownlint-cli2.jsonc"
             - ".github/workflows/code-qa-markdown.yaml"
             - "package*.json"
     pull_request:
@@ -14,7 +14,7 @@ on:
         paths:
             - "**/*.md"
             - ".markdownlint.json"
-            - ".markdownlintignore"
+            - ".markdownlint-cli2.jsonc"
             - ".github/workflows/code-qa-markdown.yaml"
             - "package*.json"
 
@@ -24,15 +24,20 @@ jobs:
     lint-markdown:
         runs-on: ubuntu-latest
 
+        strategy:
+            matrix:
+                node-version: [24.x]
+                # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
         steps:
             - name: Checkout repository
-              uses: actions/checkout@v6
+              uses: actions/checkout@v7
             - name: Use Node.js ${{ matrix.node-version }}
-              uses: actions/setup-node@v6
+              uses: actions/setup-node@v7
               with:
                   node-version: ${{ matrix.node-version }}
             - name: Cache Node.js modules
-              uses: actions/cache@v5
+              uses: actions/cache@v6
               with:
                   path: ~/.npm
                   key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}

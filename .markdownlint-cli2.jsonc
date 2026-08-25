@@ -1,0 +1,6 @@
+{
+	// Vendored third-party sources and the GPL licence text are maintained elsewhere.
+	"ignores": ["LICENSE.md", "core/scripts/APIandLibraries/**"],
+	// Dependency and test output listed in .gitignore stays out of the lint set.
+	"gitignore": true,
+}

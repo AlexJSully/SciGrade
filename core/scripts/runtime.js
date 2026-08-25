@@ -25,10 +25,6 @@ async function redirectCRISPR() {
 			<div class='col-sm-1'></div>
 				<div class='col-sm-10' id='content_body'>
 					<div id='selection_process'>
-					<div id='mode_selection' style='margin-top: 2%;'>
-						<p>Please select the dry lab mode you would like to use: </p>
-					</div>
-
 					<div id='gene_selection'>
 						Please select your gene:
 						<div class='btn-group'>

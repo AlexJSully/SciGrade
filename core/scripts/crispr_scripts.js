@@ -20,7 +20,7 @@ function select_Gene() {
 		checkAnswers_executed = false;
 	} else {
 		current_gene = "empty";
-		alert("Error code sG34-42 occurred. Please contact admin or TA!");
+		alert("Error code sG34-42 occurred. Please report this on our GitHub issue tracker.");
 	}
 }
 
@@ -76,7 +76,7 @@ let loadedMode = "practice";
  */
 function loadWork() {
 	if (!gene_backgroundInfo?.gene_list?.[current_gene]) {
-		alert("Error code lFS50-66 occurred. Please contact admin or TA!");
+		alert("Error code lFS50-66 occurred. Please report this on our GitHub issue tracker.");
 		return;
 	}
 
@@ -102,10 +102,10 @@ function loadWork() {
 	// End background information
 	append_str += "</div>";
 
-	// Begin gene assignment work
+	// Begin gene work form
 	append_str += '<div id="work_section">';
 
-	// Gene assignment form inputs
+	// Gene work form inputs
 	append_str += "<p> Please input the following information for your gRNA for your selected gene.</p>\n";
 	append_str += "<form>";
 
@@ -187,7 +187,7 @@ function loadWork() {
 	// End form
 	append_str += "</form>";
 
-	// End gene assignment work
+	// End gene work form
 	append_str += "</div>";
 
 	$("#work").append(append_str);
@@ -348,7 +348,7 @@ function checkAnswers() {
 						true_counts += 1;
 					} else if (temp_answer.Position === null || temp_answer.Position === undefined) {
 						alert(
-							"Error code cA302-307: retrieving server information on 'Position' answers occurred. Please contact admin or TA!",
+							"Error code cA302-307: the reference data has no 'Position' value for this gRNA. Please report this on our GitHub issue tracker.",
 						);
 					}
 
@@ -361,7 +361,7 @@ function checkAnswers() {
 						true_counts += 1;
 					} else if (temp_answer.PAM === null || temp_answer.PAM === undefined) {
 						alert(
-							"Error code cA311-317: retrieving server information on 'PAM' answers occurred. Please contact admin or TA!",
+							"Error code cA311-317: the reference data has no 'PAM' value for this gRNA. Please report this on our GitHub issue tracker.",
 						);
 					}
 
@@ -373,7 +373,7 @@ function checkAnswers() {
 						temp_answer["Specificity Score"] === undefined
 					) {
 						alert(
-							"Error code cA342-348: retrieving server information on 'Specificity Score' answers occurred. Please contact admin or TA!",
+							"Error code cA342-348: the reference data has no 'Specificity Score' value for this gRNA. Please report this on our GitHub issue tracker.",
 						);
 					}
 
@@ -602,12 +602,10 @@ function markAnswers() {
  */
 function showFeedback() {
 	$("#mainContainer").empty();
-	let append_str =
-		"<p style='font-weight:bold;'> You would only receive feedback on your practice attempts and not your final assignments.</p>";
+	let append_str = "<p style='font-weight:bold;'> Here is the feedback for your practice attempt.</p>";
 	append_str +=
-		"<p> The assignment itself is marked out of 10 marks with 2 marks for each input excluding gRNA strand direction, cut position and target region range (these three values are used to calculate if you have the right answer or not which means they are still crucial that they are still correct).</p>";
-	append_str +=
-		"<p> The following is the breakdown of what marks you would have received and why you would have gotten them: </p>";
+		"<p> Your attempt is marked out of 10 marks with 2 marks for each input excluding gRNA strand direction, cut position and target region range (these three values are used to calculate if you have the right answer or not which means they are still crucial that they are still correct).</p>";
+	append_str += "<p> The following is the breakdown of your marks and why you received them: </p>";
 	append_str += `<p style='font-weight:bold;'>Mark: ${all_marks[0]}/10 (${all_marks[1]})</p>`;
 
 	// Calculate all conditions:
@@ -626,7 +624,7 @@ function showFeedback() {
 		} else if (MARgRNAseq_degree === 3) {
 			MARgRNAseq_degree_display = 0.5;
 			MARgRNAseq_degree_explain =
-				"This means your sequence was not wrong (therefore was still correct) but there were better options out there. I recommend you try this practice assignment again. Still worth some marks though (half a mark).";
+				"This means your sequence was not wrong (therefore was still correct) but there were better options out there. I recommend you try this gene again. Still worth some marks though (half a mark).";
 		}
 	}
 	/// PAM:
@@ -796,39 +794,22 @@ function showFeedback() {
 
 	append_str = "<br>";
 	append_str +=
-		"<p> If at any point you wish to dispute marks, please contact your TA or professor once you completed your assignment. If you have found a bug in our SciGrade marking system, please contact your professor or our admin. </p>";
+		"<p> If you have found a bug in our SciGrade marking system, please report it on <a href='https://github.com/AlexJSully/SciGrade/issues' target='_blank' rel='noopener noreferrer'>our GitHub issue tracker</a>. </p>";
 	append_str += "<br>";
 
 	append_str +=
-		'<p> <button type="button" class="btn btn-primary" onclick="backToAssignments();"> Back to Assignments </button> </p>';
+		'<p> <button type="button" class="btn btn-primary" onclick="redirectCRISPR();"> Back to Gene Selection </button> </p>';
 
 	$("#mainContainer").append(append_str);
 }
 
-/**
- * Determine whether an input form will be displayed or not
- * @param {string} docCheck The DOM being checked against
- * @param {string} checkFor The value of the DOM being used to check for
- * @param {string} docDisplay The DOM what will toggle hidden visibility for
- */
-function showNewInput(docCheck, checkFor, docDisplay) {
-	if (document.getElementById(String(docCheck)).value === String(checkFor)) {
-		document.getElementById(String(docDisplay)).removeAttribute("hidden");
-	} else {
-		document.getElementById(String(docDisplay)).setAttribute("hidden", true);
-	}
-}
-
-let completed_assignments = [];
 let all_answers = [];
-let all_outputs = [];
 let all_marks = [];
 /**
  * Collects the student's answers, calculates marks, and triggers feedback display.
  */
 function submitAnswers() {
 	all_answers = [];
-	all_outputs = [];
 	all_marks = [];
 	checkAnswers();
 	setTimeout(() => {
@@ -841,20 +822,6 @@ function submitAnswers() {
 			document.getElementById("offtarget_input").value,
 			document.getElementById("f1_input").value.trim(),
 			document.getElementById("r1_input").value.trim(),
-		);
-		all_outputs.push(
-			MARstrand,
-			MARgRNAseq,
-			MARgRNAseq_degree,
-			MARCutPos,
-			MARPAMseq,
-			MAROffTarget,
-			MAROffTarget_degree,
-			MAROffTarget_aboveOpt,
-			MAROffTarget_above35,
-			MAROffTarget_onlyOption,
-			MARF1primers,
-			MARR1primers,
 		);
 		all_marks.push(studentMark, studentMarkPercentage);
 
@@ -871,14 +838,6 @@ function IfPressEnter(event, toClickButton) {
 	if (event.which === 13 || event.keyCode === 13) {
 		$(`#${toClickButton}`).click();
 	}
-}
-
-/**
- * Resets the assignment section page
- */
-function backToAssignments() {
-	redirectCRISPR();
-	$("#practice").click();
 }
 
 // Block submit calls on keypress
