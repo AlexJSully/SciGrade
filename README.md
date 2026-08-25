@@ -44,7 +44,7 @@ Please read [CONTRIBUTING.md](CONTRIBUTING.md) for more details.
 
 ## Modifying
 
-Please read [EDIT.md](EDIT.MD) if you want to understand how SciGrade works and how you can modify it.
+Please read [EDIT.md](EDIT.md) if you want to understand how SciGrade works and how you can modify it.
 
 ## License
 
@@ -56,14 +56,6 @@ This project is currently in maintenance mode. This means that:
 
 - Only critical bug fixes and security updates will be addressed.
 - New feature requests are unlikely to be implemented.
-
-## Sponsorship
-
-If you want to support my work, you can through the following methods:
-
-- [BTC](3Lp4pwF5nXqwFA62BYx4DSvDswyYpskBog) - 3Lp4pwF5nXqwFA62BYx4DSvDswyYpskBog
-- [ETH](0xc6EB17BD7cbe5976Bfc4f845669cD66Ff340a1A2) - 0xc6EB17BD7cbe5976Bfc4f845669cD66Ff340a1A2
-- [PayPal](https://paypal.me/alexjsully) - paypal.me/alexjsully
 
 ## Authors
 

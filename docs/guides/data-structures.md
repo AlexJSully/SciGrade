@@ -53,7 +53,7 @@ SciGrade uses JSON as its primary data format for gene information and guide RNA
 
 | Field             | Type   | Description                                                       |
 | ----------------- | ------ | ----------------------------------------------------------------- |
-| `base_type`       | string | Either `"practice"` or `"assignment"`                             |
+| `base_type`       | string | Set to `"practice"` on every entry; no runtime script reads it    |
 | `name`            | string | Full descriptive gene name                                        |
 | `Background`      | string | Educational background (disease relevance, biological importance) |
 | `Target site`     | string | Human-readable description of what nucleotide is being targeted   |
@@ -226,6 +226,8 @@ Submission processing is implemented in [core/scripts/crispr_scripts.js](../../c
 
 ```mermaid
 graph TD
+    accTitle: Form data path from submission to displayed results
+    accDescr: An eight-node top-down graph. A form submission retrieves the input values from the HTML form and passes them to checkAnswers, which sets the global variables. markAnswers reads those globals and calculates the final score, which showFeedback uses to display the results to the student.
     A[Form Submission] --> B["Retrieve Input Values<br/>from HTML Form"]
     B --> C["checkAnswers()"]
  C --> D["Global Variables Set"]

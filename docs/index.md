@@ -22,6 +22,8 @@ The flow below reflects the landing page in [index.html](../index.html) and the 
 
 ```mermaid
 flowchart TD
+    accTitle: SciGrade practice session flow
+    accDescr: An eleven-step flowchart. The user loads the landing page, the Start button navigates to the app page, and the app page loads its scripts and fetches the JSON data. That data populates the gene dropdown, the user selects a gene, and the input form renders. A decision point asks whether the user submits answers: if yes, the answers are validated, a score is calculated, and feedback is shown; if no, the flow returns to gene selection.
     A["User Loads Landing Page"] --> B["Start Button Navigates to App Page"]
     B --> C["App Page Loads Scripts"]
     C --> D["Fetch JSON Data"]
@@ -41,6 +43,8 @@ This sequence follows the runtime flow implemented in [core/scripts/runtime.js](
 
 ```mermaid
 sequenceDiagram
+    accTitle: User interaction sequence from landing page to feedback
+    accDescr: A sequence diagram with four participants: User, Browser, UI, and Data. The user loads the landing page and clicks Start. The browser asks the UI to build the selection interface, the UI fetches gene data from Data and receives it back, then populates the gene list in the browser. The user selects a gene and clicks Load Gene, the browser has the UI render the input form, and the user enters a gRNA and primers before clicking Submit. The browser passes the answers to the UI for validation, and the UI returns feedback for display.
     participant User
     participant Browser
     participant UI
@@ -85,15 +89,16 @@ The [CHANGELOG.md](../CHANGELOG.md) records the deprecation of online account fe
 
 - **Frontend**: Vanilla JavaScript with jQuery and Bootstrap loaded from [core/scripts/APIandLibraries/](../core/scripts/APIandLibraries/)
 - **Data**: Client-side JSON data files loaded by [core/scripts/crispr_scripts.js](../core/scripts/crispr_scripts.js)
-- **Build Tools**: Jest, Playwright, ESLint, Prettier, and esbuild defined in [package.json](../package.json)
+- **Build Tools**: Jest, Playwright, ESLint, Prettier, esbuild, markdownlint-cli2, workbox-cli, and http-server defined in [package.json](../package.json)
 - **Service Worker**: Workbox configuration in [workbox-config.cjs](../workbox-config.cjs) and generated runtime in [core/scripts/serviceWorker/sw.js](../core/scripts/serviceWorker/sw.js)
+- **Monitoring**: Sentry error reporting and Google Analytics `gtag.js`, both loaded from content delivery networks by [index.html](../index.html) and [core/systemrun.html](../core/systemrun.html) and allowed through the Content Security Policy meta tag in each
 
 ## Development
 
 For contributions and modifications:
 
 1. Review [CONTRIBUTING.md](../CONTRIBUTING.md)
-2. Read [EDIT.MD](../EDIT.MD) for modification guidance
+2. Read [EDIT.md](../EDIT.md) for modification guidance
 3. Follow [guides/setup.md](guides/setup.md) for local development
 4. Run `npm run validate` from [package.json](../package.json)
 

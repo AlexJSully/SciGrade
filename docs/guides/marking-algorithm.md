@@ -22,6 +22,8 @@ The main marking logic is implemented in `markAnswers()` in [core/scripts/crispr
 
 ```mermaid
 sequenceDiagram
+    accTitle: Reference data loading sequence
+    accDescr: A sequence diagram with three participants. The UI calls loadCRISPRJSON_Files twice: the gRNA data source returns benchling_gRNA_outputs, and the gene information source returns gene_backgroundInfo.
  UI->>gRNAData: loadCRISPRJSON_Files()
  gRNAData-->>UI: benchling_gRNA_outputs
  UI->>GeneInfo: loadCRISPRJSON_Files()
@@ -35,7 +37,7 @@ Both reference files are fetched asynchronously during initialization from [core
 When a student submits their answer, [checkAnswers()](../../core/scripts/crispr_scripts.js) searches for matching gRNA sequences:
 
 ```javascript
-const inputtedSeq = document.getElementById("sequence_input").value.trim();
+const inputtedSeq = document?.getElementById("sequence_input")?.value?.trim() || undefined;
 for (const answer of benchling_gRNA_outputs.gene_list[current_gene]) {
 	if (answer.Sequence === inputtedSeq) {
 		possible_comparable_answers.push(answer);
@@ -93,13 +95,17 @@ Check if the student selected the correct strand:
 if (possibleAnswer.Strand === 1) {
 	if (document.getElementById("strand_input").value === "Sense (+)") {
 		MARstrand = true;
+		true_counts += 1;
 	}
 } else if (possibleAnswer.Strand === -1) {
 	if (document.getElementById("strand_input").value === "Antisense (-)") {
 		MARstrand = true;
+		true_counts += 1;
 	}
 }
 ```
+
+This block runs only when `correctNucleotideIncluded` is already true, so a wrong target position stops the strand from earning credit. When a submission matches more than one reference entry, the loop resets only `true_counts` and `correctNucleotideIncluded` per candidate; the `MAR*` result flags persist across candidates, so a component credited by any one candidate stays credited.
 
 **Reference:**
 
@@ -112,11 +118,7 @@ PAM validation compares the student's input to the `PAM` value on the matched re
 
 ### Step 6: Off-Target Score Validation
 
-```javascript
-function checkOffTarget(score) {
-	// Check if off-target score meets minimum threshold
-}
-```
+`checkOffTarget()` in [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js) first accepts the submitted score when it falls between the floor and ceiling of the reference score, then grades how good that score is.
 
 **Scoring Modes:**
 
@@ -130,7 +132,7 @@ The off-target score uses the following steps in [core/scripts/crispr_scripts.js
 
 - Input at or above the optimal threshold sets `MAROffTarget_degree` to `1`.
 - Input at or above 35 sets `MAROffTarget_degree` to `1` when the local max score is below 80, otherwise it sets `MAROffTarget_degree` to `2`.
-- If the local max score is below 35, the input is treated as the only option and sets `MAROffTarget_degree` to `3`.
+- An input below 35 sets `MAROffTarget_degree` to `3` only when the local max score is also below 35, which marks the submission as the only option available.
 
 ### Step 7: Primer Validation
 
@@ -146,6 +148,8 @@ The R1 primer is validated by building a reverse-complement string and then cons
 
 ```mermaid
 flowchart TD
+    accTitle: Validation stages from submission to final score
+    accDescr: A flowchart of five validation stages. A student submission goes to a gRNA sequence match, and no match gives no gRNA credit. A match leads to strand and target range validation, which on failure also gives no gRNA credit and on success leads to PAM validation. From PAM validation onward each failure routes to the partial credit path: PAM validation passes to off-target validation, which passes to primer validation. Primers all correct reaches the full credit path, and some wrong reaches partial credit. No gRNA credit, partial credit, and full credit all converge on the final score.
  A[Student Submission] --> B["Match gRNA Sequence"]
  B -->|Match Found| C["Validate Strand and Target Range"]
  B -->|No Match| D["No gRNA Credit"]
@@ -173,7 +177,10 @@ let MARPAMseq = false; // PAM sequence match
 let MARCutPos = false; // Cut position correctness
 let MARstrand = false; // Strand selection correctness
 let MAROffTarget = false; // Off-target score validity
-let MAROffTarget_degree = 0; // 0: wrong, 1: optimal/above, 2: >=35 below optimal, 3: only option
+let MAROffTarget_degree = 0; // 0: wrong, 1: optimal or >=35 with max < 80, 2: >=35 with max >= 80, 3: only option
+let MAROffTarget_aboveOpt = false; // Input reached the optimal threshold
+let MAROffTarget_above35 = false; // Input reached 35
+let MAROffTarget_onlyOption = false; // No reference score in the window reached 35
 let MARF1primers = false; // F1 primer correctness
 let MARR1primers = false; // R1 primer correctness
 ```
@@ -184,6 +191,8 @@ After marking, student feedback is displayed via [showFeedback()](../../core/scr
 
 ```mermaid
 sequenceDiagram
+    accTitle: Feedback rendering sequence
+    accDescr: A sequence diagram of the feedback stage. markAnswers passes its marking results to showFeedback, which then makes three deliveries to the student: the component scores, the feedback details, and an explanation of the scoring.
     markAnswers->>showFeedback: Pass marking results
     showFeedback->>Student: Display component scores
  showFeedback->>Student: Show feedback details

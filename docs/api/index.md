@@ -17,9 +17,9 @@ Core application logic for guide RNA (gRNA) sequence validation, marking, and fe
 
 ```javascript
 // Application state
-let selection_inMode; // Current mode: "practice" or "assignment"
+let selection_inMode; // Initialized to "practice" and never reassigned
 let current_gene; // Currently selected gene
-let loadedMode; // Last mode that was loaded
+let loadedMode; // Copy of selection_inMode taken by loadWork()
 
 // Reference data
 let gene_backgroundInfo; // Loaded gene metadata
@@ -46,7 +46,7 @@ There is no module-level gene constant. The gene list is derived at runtime insi
 function select_Gene()
 ```
 
-**Purpose:** Select a gene and load its assignment form.
+**Purpose:** Select a gene and load its work form.
 
 **Behavior:**
 
@@ -61,7 +61,7 @@ function select_Gene()
 
 ```javascript
 possible_gene = "HBB";
-select_Gene(); // Loads HBB assignment form
+select_Gene(); // Loads the HBB work form
 ```
 
 ### Data Loading
@@ -105,6 +105,9 @@ function fillGeneList()
 - Clears existing dropdown options
 - Extracts gene names from `gene_backgroundInfo.gene_list`
 - Appends options to HTML element with ID `gene_dropdown_selection`
+- Enables the `load_gene_button` element, which is rendered disabled by [core/scripts/runtime.js](../../core/scripts/runtime.js)
+
+Enabling the button here rather than at render time is what keeps a click from landing before the asynchronous JSON load finishes, which would otherwise reach the `sG34-42` error path without ever building the work form. [tests/playwright/gene-form-race.spec.js](../../tests/playwright/gene-form-race.spec.js) guards that gate by delaying the fetch and asserting the button is disabled meanwhile.
 
 **Prerequisite:** `gene_backgroundInfo` must be loaded first.
 
@@ -344,6 +347,7 @@ function showFeedback()
 - Component-by-component results and marks
 - Explanatory text derived from the current marking state
 - Candidate primer lists derived from the submitted gRNA sequence
+- A Back to Gene Selection button that calls `redirectCRISPR()` to rebuild the selection screen
 
 **Rendered To:** `#mainContainer` in the runtime page.
 
@@ -397,24 +401,6 @@ function IfPressEnter(event, toClickButton)
 ```html
 <input onkeypress="IfPressEnter(event, 'submitButton')" />
 ```
-
-### Display Functions
-
-#### showNewInput(docCheck, checkFor, docDisplay)
-
-```javascript
-function showNewInput(docCheck, checkFor, docDisplay)
-```
-
-**Purpose:** Show/hide HTML elements conditionally.
-
-**Parameters:**
-
-- `docCheck` {string} - Element ID to check
-- `checkFor` {string} - Value to check for
-- `docDisplay` {string} - Element ID to display/hide
-
-**Behavior:** Shows `docDisplay` when `docCheck` matches `checkFor`.
 
 ## runtime.js
 
@@ -500,7 +486,7 @@ Error codes are raised by alerts in [core/scripts/crispr_scripts.js](../../core/
 
 ## Testing
 
-Unit tests with Jest: [core/scripts/crispr_scripts.test.js](../../core/scripts/crispr_scripts.test.js)
+Unit tests with Jest cover both scripts: [core/scripts/crispr_scripts.test.js](../../core/scripts/crispr_scripts.test.js) and [core/scripts/runtime.test.js](../../core/scripts/runtime.test.js). [tests/jest/setupTest.js](../../tests/jest/setupTest.js) supplies the shared `fetch`, jQuery, and DOM mocks.
 
 Run tests:
 

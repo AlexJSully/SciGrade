@@ -10,7 +10,7 @@ Everything on SciGrade is generated dynamically on the client side to reduce the
 
 ![practice example](core/images/EDITmd/002_SciGradePracticeGene.png "Example of the practice content page")
 
-There is also a feedback page for practice assignments screen which is displayed as an option whenever a user submits a practice assignment.
+There is also a feedback page which is displayed whenever a user submits a practice attempt.
 
 ![feedback example](core/images/EDITmd/004_FeedbackPage.png "Example of the feedback page")
 
@@ -57,7 +57,7 @@ To add a new gene, update the JSON data files:
 1. **[Gene's Background Information](core/data/Background_info/gene_background_info.json)**
 
     Add an entry with:
-    - `base_type`: "practice" or "assignment"
+    - `base_type`: "practice" on every existing entry; no runtime script reads it
     - `name`: The name of the gene
     - `Background`: Educational description
     - `Target site`: Description of what you are targeting

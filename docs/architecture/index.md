@@ -8,6 +8,8 @@ The landing page is [index.html](../../index.html), and the runtime page is [cor
 
 ```mermaid
 graph TD
+    accTitle: SciGrade static hosting and script topology
+    accDescr: A top-down graph. The browser client sends HTTP requests to a static web server, which serves the landing page. The landing page leads to the app runtime page, which loads the client scripts. Those scripts branch to two destinations: the JSON data files, and the marking and feedback interface.
     A[Browser/Client] -->|HTTP Requests| B[Static Web Server]
     B --> C[Landing Page]
     C --> D[App Runtime Page]
@@ -127,6 +129,8 @@ The initialization flow is driven by [index.html](../../index.html), [core/syste
 
 ```mermaid
 sequenceDiagram
+    accTitle: Page initialization and gene dropdown population
+    accDescr: A sequence diagram covering startup. The browser loads the landing page and then navigates to the runtime page, which loads the scripts. The UI builds the selection interface itself, requests gene data from Data, receives the data back, and then populates the gene dropdown.
     Browser->>LandingPage: Load landing page
     Browser->>RuntimePage: Navigate to app page
     RuntimePage->>UI: Load scripts
@@ -142,6 +146,8 @@ Submission flow is implemented in [core/scripts/crispr_scripts.js](../../core/sc
 
 ```mermaid
 sequenceDiagram
+    accTitle: Answer submission and marking call sequence
+    accDescr: A sequence diagram tracing one submission. The student selects a gene and the UI calls loadWork to render the input form. The student enters a gRNA and primers and clicks Submit, and the UI triggers submitAnswers. submitAnswers calls checkAnswers to check every field, and checkAnswers compares the gRNA and target position against Data. submitAnswers then calls markAnswers to calculate the score and showFeedback to render the results, which showFeedback displays to the student.
     Student->>UI: Select gene
     UI->>loadWork: Render input form
     Student->>UI: Enter gRNA + primers
@@ -160,6 +166,8 @@ Marking is driven by `checkAnswers()`, `checkOffTarget()`, and `markAnswers()` i
 
 ```mermaid
 flowchart TD
+    accTitle: Marking decision path from submission to final score
+    accDescr: A decision flowchart with five gates leading to three credit outcomes. A student submission is first tested for a gRNA sequence match, and failing that gives no gRNA credit. A match leads to a strand and target range check, whose failure also gives no gRNA credit. Passing leads to a PAM match check, then an off-target score check, then an F1 and R1 primer check. Failing any of those three routes to the partial credit path, while passing all of them reaches the full credit path. No gRNA credit, partial credit, and full credit all converge on the final score.
     A[Student Submission] --> B{gRNA Sequence Match?}
     B -->|No| C[No gRNA Credit]
     B -->|Yes| D{Strand and Target Range Valid?}
@@ -182,6 +190,8 @@ The landing page and runtime page are defined in [index.html](../../index.html) 
 
 ```mermaid
 graph LR
+    accTitle: Component dependency graph
+    accDescr: A left-to-right graph of six components. The landing page navigates to the runtime page. The runtime page loads the client scripts and includes the styling. The client scripts fetch two data sources: the gRNA data and the gene background data.
     A["Landing Page"]
     B["Runtime Page"]
     C["Client Scripts"]
@@ -222,7 +232,8 @@ From [package.json](../../package.json):
 - **Prettier** - Code formatting
 - **esbuild** - Script minification
 - **Workbox** - Service worker generation
-  Implementation: [package.json](../../package.json)
+- **markdownlint-cli2** - Markdown linting, configured by [.markdownlint.json](../../.markdownlint.json) and [.markdownlint-cli2.jsonc](../../.markdownlint-cli2.jsonc)
+- **http-server** - Static server behind `npm run start`
 
 ## Security Considerations
 

@@ -2,7 +2,7 @@
 
 ## System Requirements
 
-- **Node.js**: 20+
+- **Node.js**: 24 or later, the version continuous integration runs. Node 22.13 through 22.x also works; the 23.x line does not, because ESLint declares `^20.19.0 || ^22.13.0 || >=24`
 - **Browser**: Chrome, Firefox, Edge, or Safari with ES6+ support
 
 ## Installation
@@ -76,12 +76,14 @@ npm run workbox           # Generate service worker with workbox
 - [core/systemrun.html](../../core/systemrun.html) - Application runtime entry
 - [docs/](../) - Documentation directory
 - [tests/](../../tests/) - Test suites
-- [test-results/](../../test-results/) - Test output directory
+- `test-results/` - Playwright output, created on the first test run by the JSON reporter in [playwright.config.js](../../playwright.config.js)
 - [package.json](../../package.json) - Dependencies and scripts
 - [jest.config.mjs](../../jest.config.mjs) - Jest configuration
 - [playwright.config.js](../../playwright.config.js) - Playwright configuration
 - [eslint.config.js](../../eslint.config.js) - ESLint configuration
 - [.prettierrc](../../.prettierrc) - Prettier configuration
+- [.markdownlint.json](../../.markdownlint.json) - Markdown rule set
+- [.markdownlint-cli2.jsonc](../../.markdownlint-cli2.jsonc) - Markdown lint file selection
 
 ## Configuration Files
 
@@ -99,7 +101,7 @@ Structure:
 {
 	"gene_list": {
 		"GENENAME": {
-			"base_type": "practice|assignment",
+			"base_type": "practice",
 			"name": "Full Gene Name",
 			"Background": "Description of gene and mutation",
 			"Target site": "Location and nature of target",
@@ -142,6 +144,7 @@ Test files:
 
 - [core/scripts/crispr_scripts.test.js](../../core/scripts/crispr_scripts.test.js)
 - [core/scripts/runtime.test.js](../../core/scripts/runtime.test.js)
+- [tests/jest/setupTest.js](../../tests/jest/setupTest.js) - Loaded before every suite through `setupFilesAfterEnv` in [jest.config.mjs](../../jest.config.mjs), and supplies the global `fetch`, jQuery, and DOM mocks plus the `createMockElement` and `mockFetchResponse` helpers
 
 Run tests:
 
@@ -155,7 +158,9 @@ Test files in [tests/playwright/](../../tests/playwright/):
 
 - [homepage.spec.js](../../tests/playwright/homepage.spec.js) - Main UI tests
 - [submission.spec.js](../../tests/playwright/submission.spec.js) - Submission flow tests
+- [gene-form-race.spec.js](../../tests/playwright/gene-form-race.spec.js) - Delays the gene-data fetch to confirm the Load Gene button stays disabled until the dropdown fills
 - [accessibility.js](../../tests/playwright/utils/accessibility.js) - Accessibility utilities
+- [navigation.js](../../tests/playwright/utils/navigation.js) - `selectGeneAndOpenForm()`, which waits for the dropdown to populate before selecting a gene and opening the work form
 
 Run tests:
 
@@ -183,7 +188,8 @@ This command creates the following bundled files used by the runtime page:
 
 - [core/scripts/crispr_scripts.min.js](../../core/scripts/crispr_scripts.min.js)
 - [core/scripts/runtime.min.js](../../core/scripts/runtime.min.js)
-- [core/styling/style.min.css](../../core/styling/style.min.css)
+
+No npm script regenerates [core/styling/style.min.css](../../core/styling/style.min.css), which [core/systemrun.html](../../core/systemrun.html) loads alongside those two bundles.
 
 ## Troubleshooting
 
@@ -201,10 +207,20 @@ http-server . -p 3001
 npm run regen-package-lock
 ```
 
+A reinstall can resolve to an older version than the registry's newest. [.npmrc](../../.npmrc) sets `min-release-age=14`, which holds back any package version published within the last 14 days.
+
 ### Service Worker Conflicts
 
 - Clear browser cache and service worker registration
 - In DevTools: Application > Service Workers > Unregister
+
+## Continuous integration
+
+Three workflows run on pushes and pull requests against `master`. None of them invokes `npm run validate`, so that pipeline is a local convenience; `npm run minify` runs in no workflow at all.
+
+- [code-qa-js.yaml](../../.github/workflows/code-qa-js.yaml) - Runs `prettier:check`, `eslint:check`, `test:jest`, and the Playwright suite on Node 24.x, triggered by changes to scripts, markup, styles, or `package*.json`
+- [code-qa-markdown.yaml](../../.github/workflows/code-qa-markdown.yaml) - Runs `lint:markdown` on Node 24.x, triggered by changes to any Markdown file or to the markdown-lint configuration
+- [codeql-analysis.yaml](../../.github/workflows/codeql-analysis.yaml) - Runs CodeQL analysis over the `javascript-typescript` and `actions` languages. Its `paths-ignore` entry stops the workflow from being triggered by changes confined to `core/scripts/APIandLibraries/`, but does not narrow what CodeQL scans once it runs
 
 ## Related Documentation
 
