@@ -60,12 +60,6 @@ export default defineConfig({
 				...devices["Desktop Firefox"],
 			},
 		},
-		{
-			name: "firefox:hiDPI",
-			use: {
-				...devices["Desktop Firefox HiDPI"],
-			},
-		},
 
 		// Desktop Browsers - WebKit (Safari)
 		{
@@ -78,12 +72,6 @@ export default defineConfig({
 			name: "edge",
 			use: {
 				...devices["Desktop Edge"],
-			},
-		},
-		{
-			name: "edge:hiDPI",
-			use: {
-				...devices["Desktop Edge HiDPI"],
 			},
 		},
 
