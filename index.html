@@ -96,39 +96,54 @@
 		<script rel="preload" as="script" src="core/scripts/APIandLibraries/jQuery/jquery.min.js"></script>
 		<!-- Sentry -->
 		<script
-			src="https://js.sentry-cdn.com/4661e72aaeb74d2fbd9e23b79e9506e0.min.js"
-			crossorigin="anonymous"
-		></script>
-		<script
+			data-cfasync="false"
 			src="https://browser.sentry-cdn.com/10.39.0/bundle.logs.metrics.min.js"
 			integrity="sha384-lDA+D/XFIGc3Z+/DyIt1jC/K2R6cHVIPzxoR4FvIYuB/Q7uco+zkv+uc/zJ2U5jE"
 			crossorigin="anonymous"
 		></script>
 		<script
+			data-cfasync="false"
 			src="https://browser.sentry-cdn.com/10.39.0/captureconsole.min.js"
 			integrity="sha384-BSoBYjwS7qSMpAeTvkAraghNvk2Ynvyzc4Q8csp63An/a3L8P01F4nob3A3DhBwP"
 			crossorigin="anonymous"
 		></script>
-		<script>
-			Sentry.init({
-				dsn: "https://4661e72aaeb74d2fbd9e23b79e9506e0@o1185775.ingest.us.sentry.io/6600341",
-				// @AlexJSully when updating the package version number in package.json, update the version number here as well.
-				release: "scigrade@1.2.0",
+		<script data-cfasync="false">
+			(function () {
+				try {
+					if (typeof Sentry === "undefined" || typeof Sentry.init !== "function") {
+						return;
+					}
 
-				integrations: [
-					Sentry.captureConsoleIntegration({
-						levels: ["error"],
-					}),
-				],
+					const integrations = [];
+					if (typeof Sentry.captureConsoleIntegration === "function") {
+						integrations.push(
+							Sentry.captureConsoleIntegration({
+								levels: ["error"],
+							}),
+						);
+					}
 
-				// Enable logs to be sent to Sentry
-				enableLogs: true,
-			});
+					Sentry.init({
+						dsn: "https://4661e72aaeb74d2fbd9e23b79e9506e0@o1185775.ingest.us.sentry.io/6600341",
+						// @AlexJSully when updating the package version number in package.json, update the version number here as well.
+						release: "scigrade@1.2.0",
+						integrations: integrations,
+						// Enable logs to be sent to Sentry
+						enableLogs: true,
+					});
 
-			Sentry.configureScope((scope) => {
-				// @AlexJSully when updating the package version number in package.json, update the version number here as well.
-				scope.setTag("app-version", "1.2.0");
-			});
+					if (typeof Sentry.configureScope === "function") {
+						Sentry.configureScope((scope) => {
+							// @AlexJSully when updating the package version number in package.json, update the version number here as well.
+							scope.setTag("app-version", "1.2.0");
+						});
+					} else if (typeof Sentry.setTag === "function") {
+						Sentry.setTag("app-version", "1.2.0");
+					}
+				} catch (err) {
+					console.warn("Failed to initialize Sentry:", err);
+				}
+			})();
 		</script>
 		<!-- Bootstrap -->
 		<link rel="stylesheet preload" href="core/scripts/APIandLibraries/Bootstrap/css/bootstrap.min.css" as="style" />
