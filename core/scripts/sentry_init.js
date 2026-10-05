@@ -19,6 +19,7 @@
 function initSentry({
 	sentryInstance = typeof window !== "undefined" ? window.Sentry : undefined,
 	dsn = "https://4661e72aaeb74d2fbd9e23b79e9506e0@o1185775.ingest.us.sentry.io/6600341",
+	// Keep these version values aligned with package.json.
 	release = "scigrade@1.2.0",
 	appVersion = "1.2.0",
 	enableLogs = true,
@@ -41,6 +42,7 @@ function initSentry({
 			dsn,
 			release,
 			integrations,
+			// Enable logs to be sent to Sentry.
 			enableLogs,
 		});
 

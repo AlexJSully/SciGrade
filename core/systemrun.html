@@ -76,43 +76,11 @@
 			integrity="sha384-BSoBYjwS7qSMpAeTvkAraghNvk2Ynvyzc4Q8csp63An/a3L8P01F4nob3A3DhBwP"
 			crossorigin="anonymous"
 		></script>
+		<script data-cfasync="false" src="scripts/sentry_init.js"></script>
 		<script data-cfasync="false">
-			(function () {
-				try {
-					if (typeof Sentry === "undefined" || typeof Sentry.init !== "function") {
-						return;
-					}
-
-					const integrations = [];
-					if (typeof Sentry.captureConsoleIntegration === "function") {
-						integrations.push(
-							Sentry.captureConsoleIntegration({
-								levels: ["error"],
-							}),
-						);
-					}
-
-					Sentry.init({
-						dsn: "https://4661e72aaeb74d2fbd9e23b79e9506e0@o1185775.ingest.us.sentry.io/6600341",
-						// @AlexJSully when updating the package version number in package.json, update the version number here as well.
-						release: "scigrade@1.2.0",
-						integrations: integrations,
-						// Enable logs to be sent to Sentry
-						enableLogs: true,
-					});
-
-					if (typeof Sentry.configureScope === "function") {
-						Sentry.configureScope((scope) => {
-							// @AlexJSully when updating the package version number in package.json, update the version number here as well.
-							scope.setTag("app-version", "1.2.0");
-						});
-					} else if (typeof Sentry.setTag === "function") {
-						Sentry.setTag("app-version", "1.2.0");
-					}
-				} catch (err) {
-					console.warn("Failed to initialize Sentry:", err);
-				}
-			})();
+			if (typeof window.initSentry === "function") {
+				window.initSentry();
+			}
 		</script>
 		<!-- Bootstrap -->
 		<link rel="stylesheet preload" href="./scripts/APIandLibraries/Bootstrap/css/bootstrap.min.css" as="style" />
