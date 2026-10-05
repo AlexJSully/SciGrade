@@ -9,7 +9,7 @@
 		<meta http-equiv="Cache-Control" content="max-age=604800" />
 		<meta
 			http-equiv="Content-Security-Policy"
-			content="default-src 'self' 'unsafe-inline' data: *.cloudflareinsights.com *.cloudstinger.com *.googletagmanager.com *.google-analytics.com *.googleapis.com *.google.com *.amazonaws.com  *.doubleclick.net *.gstatic.com *.sentry-cdn.com *.sentry.io; object-src 'self'; base-uri 'self'; form-action 'self';"
+			content="default-src 'self' 'unsafe-inline' data: *.cloudflareinsights.com *.cloudflare.com *.cloudstinger.com *.googletagmanager.com *.google-analytics.com *.googleapis.com *.google.com *.amazonaws.com  *.doubleclick.net *.gstatic.com *.sentry-cdn.com *.sentry.io; object-src 'self'; base-uri 'self'; form-action 'self';"
 		/>
 		<meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains; preload" />
 
@@ -65,36 +65,22 @@
 		<script rel="preload" as="script" src="scripts/APIandLibraries/jQuery/jquery.min.js"></script>
 		<!-- Sentry -->
 		<script
-			src="https://js.sentry-cdn.com/4661e72aaeb74d2fbd9e23b79e9506e0.min.js"
-			crossorigin="anonymous"
-		></script>
-		<script
+			data-cfasync="false"
 			src="https://browser.sentry-cdn.com/10.39.0/bundle.logs.metrics.min.js"
 			integrity="sha384-lDA+D/XFIGc3Z+/DyIt1jC/K2R6cHVIPzxoR4FvIYuB/Q7uco+zkv+uc/zJ2U5jE"
 			crossorigin="anonymous"
 		></script>
 		<script
+			data-cfasync="false"
 			src="https://browser.sentry-cdn.com/10.39.0/captureconsole.min.js"
 			integrity="sha384-BSoBYjwS7qSMpAeTvkAraghNvk2Ynvyzc4Q8csp63An/a3L8P01F4nob3A3DhBwP"
 			crossorigin="anonymous"
 		></script>
-		<script>
-			Sentry.init({
-				dsn: "https://4661e72aaeb74d2fbd9e23b79e9506e0@o1185775.ingest.sentry.io/6600341",
-				// @AlexJSully when updating the package version number in package.json, update the version number here as well.
-				release: "scigrade@1.2.0",
-
-				integrations: [
-					Sentry.captureConsoleIntegration({
-						levels: ["error"],
-					}),
-				],
-			});
-
-			Sentry.configureScope((scope) => {
-				// @AlexJSully when updating the package version number in package.json, update the version number here as well.
-				scope.setTag("app-version", "1.2.0");
-			});
+		<script data-cfasync="false" src="scripts/sentry_init.js"></script>
+		<script data-cfasync="false">
+			if (typeof window.initSentry === "function") {
+				window.initSentry();
+			}
 		</script>
 		<!-- Bootstrap -->
 		<link rel="stylesheet preload" href="./scripts/APIandLibraries/Bootstrap/css/bootstrap.min.css" as="style" />
