@@ -17,7 +17,8 @@ module.exports = {
 		"package.json",
 		"package-lock.json",
 		"node_modules/**/*",
-		"**/*.test.js"
+		"**/*.test.js",
+		"**/*.spec.js"
 	],
 	"runtimeCaching": [
 		{

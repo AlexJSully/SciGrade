@@ -142,9 +142,10 @@
 		</script>
 		<!-- End Google Tag Manager -->
 		<!-- Service worker -->
-		<script>
-			if (typeof navigator !== "undefined" && "serviceWorker" in navigator) {
-				navigator.serviceWorker.register("core/scripts/serviceWorker/sw.js");
+		<script data-cfasync="false" src="core/scripts/service_worker_registration.js"></script>
+		<script data-cfasync="false">
+			if (typeof window.registerServiceWorker === "function") {
+				window.registerServiceWorker("core/scripts/serviceWorker/sw.js");
 			}
 		</script>
 		<!-- Custom scripts -->
