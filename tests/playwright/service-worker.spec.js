@@ -55,21 +55,26 @@ test.describe("Service Worker Registration and Failure Tolerance", () => {
 		const pageErrors = [];
 		page.on("pageerror", (err) => pageErrors.push(err));
 
-		// Intercept and abort the service worker script request (simulating transient network drops or ad-blockers)
-		await context.route("**/sw.js", (route) => route.abort());
+		// Intercept and abort the service worker fetch before navigation
+		await context.route("**/core/scripts/serviceWorker/sw.js", async (route, request) => {
+			await route.abort("failed");
+		});
 
 		await page.goto("http://localhost:3000/");
 		await expect(page).toHaveTitle(/SciGrade/i);
 
-		// Allow async events to settle
-		await page.waitForTimeout(500);
+		// Wait for window load event (triggers SW registration via registerServiceWorker)
+		await page.waitForLoadState("load");
+
+		// Wait for any async service worker registration to settle
+		await page.waitForTimeout(2000);
 
 		// Verify no unhandledrejection or TypeError was thrown to the page
 		const swErrors = pageErrors.filter((err) => err.message.includes("ServiceWorker"));
 		expect(swErrors).toHaveLength(0);
 		expect(pageErrors).toHaveLength(0);
 
-		// Core functionality remains intact
+		// Core functionality remains intact - app should work even without SW
 		await page.getByRole("button", { name: "Start" }).click();
 		await expect(page).toHaveURL(/systemrun\.html/);
 	});
@@ -81,20 +86,23 @@ test.describe("Service Worker Registration and Failure Tolerance", () => {
 		const pageErrors = [];
 		page.on("pageerror", (err) => pageErrors.push(err));
 
-		// Intercept and return HTTP 500 for the service worker script
-		await context.route("**/sw.js", (route) =>
-			route.fulfill({
+		// Intercept and fulfill the service worker fetch with a 500 error before navigation
+		await context.route("**/core/scripts/serviceWorker/sw.js", async (route, request) => {
+			return route.fulfill({
 				status: 500,
 				contentType: "text/plain",
 				body: "Internal Server Error",
-			}),
-		);
+			});
+		});
 
 		await page.goto("http://localhost:3000/core/systemrun.html");
 		await expect(page).toHaveTitle(/SciGrade/i);
 
-		// Allow async events to settle
-		await page.waitForTimeout(500);
+		// Wait for window load event (triggers SW registration via registerServiceWorker)
+		await page.waitForLoadState("load");
+
+		// Wait for any async service worker registration to settle
+		await page.waitForTimeout(2000);
 
 		// Verify no unhandledrejection or TypeError was thrown to the page
 		const swErrors = pageErrors.filter((err) => err.message.includes("ServiceWorker"));
