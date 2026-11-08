@@ -122,13 +122,10 @@
 		</script>
 		<!-- End Google Tag Manager -->
 		<!-- Service worker -->
-		<script>
-			// Add service workers
-			if (typeof navigator !== "undefined" && "serviceWorker" in navigator) {
-				// Use the window load event to keep the page load performant
-				window.addEventListener("load", () => {
-					navigator.serviceWorker.register("./scripts/serviceWorker/sw.js");
-				});
+		<script data-cfasync="false" src="scripts/service_worker_registration.js"></script>
+		<script data-cfasync="false">
+			if (typeof window.registerServiceWorker === "function") {
+				window.registerServiceWorker("./scripts/serviceWorker/sw.js");
 			}
 		</script>
 		<!-- Custom scripts -->
