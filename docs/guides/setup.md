@@ -51,7 +51,7 @@ npm run test:e2e:headless  # Run E2E tests headless
 npm run test:e2e:ui        # Run E2E tests in UI mode
 
 # Validation
-npm run validate          # Run prettier, eslint, minify, jest, playwright, and markdown lint
+npm run validate          # Run prettier, eslint, minify, workbox, jest, playwright, and markdown lint
 
 # Build & Service Worker
 npm run minify            # Minify runtime and marking scripts
@@ -66,7 +66,7 @@ npm run workbox           # Generate service worker with workbox
 - [core/data/Benchling_gRNA_Outputs.json](../../core/data/Benchling_gRNA_Outputs.json) - guide RNA (gRNA) validation reference data
 - [core/scripts/](../../core/scripts/) - Client-side scripts
 - [core/scripts/APIandLibraries/](../../core/scripts/APIandLibraries/) - Third-party libraries (jQuery, Bootstrap)
-- [core/scripts/serviceWorker/](../../core/scripts/serviceWorker/) - Service worker runtime
+- [sw.js](../../sw.js) - Service worker runtime (generated, at the site root)
 - [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js) - Main gRNA/primer validation logic
 - [core/scripts/runtime.js](../../core/scripts/runtime.js) - Runtime practice flow helpers
 - [core/styling/style.css](../../core/styling/style.css) - Application styles
@@ -159,6 +159,8 @@ Test files in [tests/playwright/](../../tests/playwright/):
 - [homepage.spec.js](../../tests/playwright/homepage.spec.js) - Main UI tests
 - [submission.spec.js](../../tests/playwright/submission.spec.js) - Submission flow tests
 - [gene-form-race.spec.js](../../tests/playwright/gene-form-race.spec.js) - Delays the gene-data fetch to confirm the Load Gene button stays disabled until the dropdown fills
+- [script-load-failure.spec.js](../../tests/playwright/script-load-failure.spec.js) - Returns HTTP 500 for `runtime.min.js`, `crispr_scripts.min.js`, or the gene data file and confirms the page shows a reload alert without a page error
+- [service-worker.spec.js](../../tests/playwright/service-worker.spec.js) - Registration at the root scope, removal of the legacy worker, and failure tolerance when [sw.js](../../sw.js) cannot be fetched
 - [accessibility.js](../../tests/playwright/utils/accessibility.js) - Accessibility utilities
 - [navigation.js](../../tests/playwright/utils/navigation.js) - `selectGeneAndOpenForm()`, which waits for the dropdown to populate before selecting a gene and opening the work form
 
@@ -168,6 +170,8 @@ Run tests:
 npm run test:e2e:headless  # CI mode
 npm run test:e2e:ui         # Interactive mode
 ```
+
+The `firefox` project in [playwright.config.js](../../playwright.config.js) sets `serviceWorkers: "block"`. Playwright's Firefox build does not finish navigating a page the service worker controls, so specs that need the worker opt back in with `test.use({ serviceWorkers: "allow" })` and skip the controlled-page tests in Firefox. The tests start their own server on port 3000 and reuse one already listening there outside CI, so stop any other server on that port first.
 
 ## Building for Production
 
@@ -179,7 +183,7 @@ Generate a service worker for offline support:
 npm run workbox
 ```
 
-This uses the configuration in [workbox-config.cjs](../../workbox-config.cjs).
+This uses the configuration in [workbox-config.cjs](../../workbox-config.cjs) and writes [sw.js](../../sw.js) at the site root. Run it after changing any file under `core/`: a Jest test fails when a precache revision no longer matches its file.
 
 ### Code Minification
 

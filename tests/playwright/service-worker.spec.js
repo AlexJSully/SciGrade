@@ -48,6 +48,66 @@ test.describe("Service Worker Registration and Failure Tolerance", () => {
 		expect(pageErrors).toHaveLength(0);
 	});
 
+	test("controls the systemrun page from the site root scope after a reload", async ({ page, browserName }) => {
+		test.skip(
+			browserName === "firefox",
+			"Playwright's Firefox build hangs navigating a service-worker-controlled page; stock Firefox 160 does not.",
+		);
+
+		await page.goto("http://localhost:3000/core/systemrun.html");
+
+		const scope = await page.evaluate(async () => (await navigator.serviceWorker.ready).scope);
+		expect(scope).toBe("http://localhost:3000/");
+
+		await page.reload();
+		const controllerUrl = await page.evaluate(() => navigator.serviceWorker.controller?.scriptURL ?? null);
+		expect(controllerUrl).toBe("http://localhost:3000/sw.js");
+	});
+
+	test("removes the legacy /core/scripts/serviceWorker/ worker and its precache", async ({
+		context,
+		page,
+		browserName,
+	}) => {
+		test.skip(
+			browserName === "firefox",
+			"Playwright's Firefox build does not route service worker scripts, so the legacy stand-in below cannot be served.",
+		);
+
+		const legacyScope = "http://localhost:3000/core/scripts/serviceWorker/";
+		const legacyCache = `workbox-precache-v2-${legacyScope}`;
+
+		// The legacy worker file no longer exists, so serve a stand-in at its old path. It caches
+		// nothing itself, so only the test below creates the legacy precache.
+		await context.route("**/core/scripts/serviceWorker/sw.js", (route) =>
+			route.fulfill({ status: 200, contentType: "application/javascript", body: "// legacy stand-in" }),
+		);
+
+		// Build the returning-visitor state on a same-origin page that does not run the registration
+		// helper: an activated legacy worker and its precache.
+		await page.goto("http://localhost:3000/robots.txt");
+		await page.evaluate(async (cacheName) => {
+			const registration = await navigator.serviceWorker.register("/core/scripts/serviceWorker/sw.js");
+			const worker = registration.installing || registration.waiting || registration.active;
+			if (worker.state !== "activated") {
+				await new Promise((resolve) => {
+					worker.addEventListener("statechange", () => worker.state === "activated" && resolve());
+				});
+			}
+			await (await caches.open(cacheName)).put("/legacy-entry", new Response("legacy"));
+		}, legacyCache);
+
+		// Open the homepage and await one full pass of its registration helper, cleanup included.
+		await page.goto("http://localhost:3000/");
+		const state = await page.evaluate(async (cacheName) => {
+			await window.registerServiceWorker("/sw.js");
+			const regs = await navigator.serviceWorker.getRegistrations();
+			return { scopes: regs.map((reg) => reg.scope).sort(), legacyCacheExists: await caches.has(cacheName) };
+		}, legacyCache);
+
+		expect(state).toEqual({ scopes: ["http://localhost:3000/"], legacyCacheExists: false });
+	});
+
 	test("gracefully handles service worker fetch abortion without unhandled rejections (Issue #91)", async ({
 		context,
 		page,
@@ -56,7 +116,7 @@ test.describe("Service Worker Registration and Failure Tolerance", () => {
 		page.on("pageerror", (err) => pageErrors.push(err));
 
 		// Intercept and abort the service worker fetch before navigation
-		await context.route("**/core/scripts/serviceWorker/sw.js", async (route, request) => {
+		await context.route("**/sw.js", async (route, request) => {
 			await route.abort("failed");
 		});
 
@@ -87,7 +147,7 @@ test.describe("Service Worker Registration and Failure Tolerance", () => {
 		page.on("pageerror", (err) => pageErrors.push(err));
 
 		// Intercept and fulfill the service worker fetch with a 500 error before navigation
-		await context.route("**/core/scripts/serviceWorker/sw.js", async (route, request) => {
+		await context.route("**/sw.js", async (route, request) => {
 			return route.fulfill({
 				status: 500,
 				contentType: "text/plain",

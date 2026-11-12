@@ -35,7 +35,8 @@ core/scripts/APIandLibraries/**/*
 
 # workbox
 workbox-config.cjs
-core/scripts/serviceWorker
+/sw.js
+/sw.js.map
 
 # Visual Studio Code
 .vscode/settings.json

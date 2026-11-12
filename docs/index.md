@@ -90,7 +90,7 @@ The [CHANGELOG.md](../CHANGELOG.md) records the deprecation of online account fe
 - **Frontend**: Vanilla JavaScript with jQuery and Bootstrap loaded from [core/scripts/APIandLibraries/](../core/scripts/APIandLibraries/)
 - **Data**: Client-side JSON data files loaded by [core/scripts/crispr_scripts.js](../core/scripts/crispr_scripts.js)
 - **Build Tools**: Jest, Playwright, ESLint, Prettier, esbuild, markdownlint-cli2, workbox-cli, and http-server defined in [package.json](../package.json)
-- **Service Worker**: Workbox configuration in [workbox-config.cjs](../workbox-config.cjs) and generated runtime in [core/scripts/serviceWorker/sw.js](../core/scripts/serviceWorker/sw.js)
+- **Service Worker**: Workbox configuration in [workbox-config.cjs](../workbox-config.cjs) and generated runtime in [sw.js](../sw.js)
 - **Monitoring**: Sentry error reporting and Google Analytics `gtag.js`, both loaded from content delivery networks by [index.html](../index.html) and [core/systemrun.html](../core/systemrun.html) and allowed through the Content Security Policy meta tag in each
 
 ## Development

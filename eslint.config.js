@@ -7,7 +7,7 @@ export default [
 			"**/playwright-report/**/*",
 			"**/test-results/**/*",
 			"core/scripts/APIandLibraries/**/*",
-			"core/scripts/serviceWorker/**",
+			"sw.js",
 			"node_modules/**/*",
 		],
 	},

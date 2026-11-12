@@ -92,6 +92,18 @@
 
 		<script>
 			window.onload = function () {
+				// redirectCRISPR lives in runtime.min.js; jQuery may be missing too, so use the DOM directly.
+				if (typeof redirectCRISPR !== "function") {
+					console.error("SciGrade could not load runtime.min.js; the application cannot start.");
+					document
+						.getElementById("mainContainer")
+						.insertAdjacentHTML(
+							"beforeend",
+							"<div class='alert alert-danger' role='alert' id='load_error'>SciGrade could not finish loading. Please reload the page.</div>",
+						);
+					return;
+				}
+
 				redirectCRISPR();
 			};
 		</script>
@@ -125,7 +137,7 @@
 		<script data-cfasync="false" src="scripts/service_worker_registration.js"></script>
 		<script data-cfasync="false">
 			if (typeof window.registerServiceWorker === "function") {
-				window.registerServiceWorker("./scripts/serviceWorker/sw.js");
+				window.registerServiceWorker("/sw.js");
 			}
 		</script>
 		<!-- Custom scripts -->

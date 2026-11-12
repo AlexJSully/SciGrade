@@ -1,5 +1,8 @@
 const { loadGeneContent, redirectCRISPR } = require("./runtime");
 
+const LOAD_ERROR_ALERT =
+	"<div class='alert alert-danger' role='alert' id='load_error'>SciGrade could not finish loading. Please reload the page.</div>";
+
 describe("runtime.js - Runtime Flow Helpers", () => {
 	let mockDocument;
 	let mockElement;
@@ -41,6 +44,7 @@ describe("runtime.js - Runtime Flow Helpers", () => {
 		global.select_Gene = jest.fn();
 		global.loadCRISPRJSON_Files = jest.fn(async () => {});
 		global.fillGeneList = jest.fn();
+		global.gene_backgroundInfo = { gene_list: { eBFP: {} } };
 	});
 
 	afterEach(() => {
@@ -52,6 +56,7 @@ describe("runtime.js - Runtime Flow Helpers", () => {
 		delete global.select_Gene;
 		delete global.loadCRISPRJSON_Files;
 		delete global.fillGeneList;
+		delete global.gene_backgroundInfo;
 	});
 
 	describe("loadGeneContent()", () => {
@@ -156,6 +161,44 @@ describe("runtime.js - Runtime Flow Helpers", () => {
 			await redirectCRISPR();
 
 			expect(executionSequence).toEqual(["empty", "append", "loadCRISPRJSON_Files", "fillGeneList"]);
+		});
+
+		it.each(["loadCRISPRJSON_Files", "fillGeneList"])(
+			"shows a reload alert instead of throwing when %s is not defined (Issue #77)",
+			async (missingFunction) => {
+				const loader = global.loadCRISPRJSON_Files;
+				const filler = global.fillGeneList;
+				delete global[missingFunction];
+
+				await expect(redirectCRISPR()).resolves.toBeUndefined();
+
+				expect(console.error).toHaveBeenCalledWith(
+					"SciGrade could not load crispr_scripts.min.js; gene data is unavailable.",
+				);
+				expect(loader).not.toHaveBeenCalled();
+				expect(filler).not.toHaveBeenCalled();
+				expect(global.$).toHaveBeenCalledWith("#selection_process");
+				expect(mockJQuery.append).toHaveBeenLastCalledWith(LOAD_ERROR_ALERT);
+			},
+		);
+
+		it("shows a reload alert when the gene data files fail to load (Issue #77)", async () => {
+			// loadCRISPRJSON_Files catches fetch failures, so the gene list stays unset.
+			global.gene_backgroundInfo = undefined;
+
+			await expect(redirectCRISPR()).resolves.toBeUndefined();
+
+			expect(global.loadCRISPRJSON_Files).toHaveBeenCalledTimes(1);
+			expect(global.fillGeneList).toHaveBeenCalledTimes(1);
+			expect(console.error).toHaveBeenCalledWith("SciGrade could not load the gene data files.");
+			expect(mockJQuery.append).toHaveBeenLastCalledWith(LOAD_ERROR_ALERT);
+		});
+
+		it("shows no alert when the gene data loads", async () => {
+			await redirectCRISPR();
+
+			expect(console.error).not.toHaveBeenCalled();
+			expect(global.$).not.toHaveBeenCalledWith("#selection_process");
 		});
 	});
 });
