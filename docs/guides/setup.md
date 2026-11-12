@@ -66,7 +66,7 @@ npm run workbox           # Generate service worker with workbox
 - [core/data/Benchling_gRNA_Outputs.json](../../core/data/Benchling_gRNA_Outputs.json) - guide RNA (gRNA) validation reference data
 - [core/scripts/](../../core/scripts/) - Client-side scripts
 - [core/scripts/APIandLibraries/](../../core/scripts/APIandLibraries/) - Third-party libraries (jQuery, Bootstrap)
-- [core/scripts/serviceWorker/](../../core/scripts/serviceWorker/) - Service worker runtime
+- [sw.js](../../sw.js) - Service worker runtime (generated, at the site root)
 - [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js) - Main gRNA/primer validation logic
 - [core/scripts/runtime.js](../../core/scripts/runtime.js) - Runtime practice flow helpers
 - [core/styling/style.css](../../core/styling/style.css) - Application styles
@@ -179,7 +179,7 @@ Generate a service worker for offline support:
 npm run workbox
 ```
 
-This uses the configuration in [workbox-config.cjs](../../workbox-config.cjs).
+This uses the configuration in [workbox-config.cjs](../../workbox-config.cjs) and writes [sw.js](../../sw.js) at the site root. Run it after changing any file under `core/`: a Jest test fails when a precache revision no longer matches its file.
 
 ### Code Minification
 

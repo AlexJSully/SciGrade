@@ -58,6 +58,10 @@ export default defineConfig({
 			name: "firefox",
 			use: {
 				...devices["Desktop Firefox"],
+				// Playwright's Firefox build never finishes navigating a page the root service worker
+				// controls; stock Firefox does (verified on Firefox 160). Specs that exercise the worker
+				// opt back in with test.use({ serviceWorkers: "allow" }).
+				serviceWorkers: "block",
 			},
 		},
 

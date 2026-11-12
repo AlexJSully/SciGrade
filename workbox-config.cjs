@@ -1,10 +1,11 @@
 module.exports = {
-	"swDest": "./core/scripts/serviceWorker/sw.js",
+	// The worker lives at the site root so its default scope ("/") covers every
+	// page. A worker can only control pages at or below its own folder.
+	"swDest": "./sw.js",
+	"inlineWorkboxRuntime": true,
 	"globDirectory": ".",
-	// Precache URLs are made root-absolute so they resolve from the origin
-	// root regardless of the service worker's own directory depth (the SW
-	// lives at /core/scripts/serviceWorker/). Without this, the SW resolves
-	// relative precache URLs against its own folder and 404s.
+	// Precache URLs are root-absolute so they resolve from the origin root
+	// regardless of where the worker file is served from.
 	"modifyURLPrefix": {
 		"": "/"
 	},

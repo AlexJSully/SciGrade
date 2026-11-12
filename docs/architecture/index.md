@@ -208,8 +208,10 @@ graph LR
 
 ## Offline Support
 
-Service workers are registered in [index.html](../../index.html) and [core/systemrun.html](../../core/systemrun.html). The generated worker [core/scripts/serviceWorker/sw.js](../../core/scripts/serviceWorker/sw.js) precaches the core assets listed in [workbox-config.cjs](../../workbox-config.cjs) and applies runtime caching for HTML, CSS, JavaScript, and image requests.
-Implementation: [index.html](../../index.html), [core/systemrun.html](../../core/systemrun.html), [core/scripts/serviceWorker/sw.js](../../core/scripts/serviceWorker/sw.js), [workbox-config.cjs](../../workbox-config.cjs)
+Both [index.html](../../index.html) and [core/systemrun.html](../../core/systemrun.html) register the worker through `registerServiceWorker()` in [core/scripts/service_worker_registration.js](../../core/scripts/service_worker_registration.js). The generated worker [sw.js](../../sw.js) sits at the site root so its scope (`/`) covers every page. A worker only controls pages at or below its own folder. It precaches the core assets listed in [workbox-config.cjs](../../workbox-config.cjs) and applies runtime caching for HTML, CSS, JavaScript, and image requests.
+After registering, the helper unregisters the earlier worker scoped to `/core/scripts/serviceWorker/` and deletes its precache.
+
+Implementation: [index.html](../../index.html), [core/systemrun.html](../../core/systemrun.html), [core/scripts/service_worker_registration.js](../../core/scripts/service_worker_registration.js), [sw.js](../../sw.js), [workbox-config.cjs](../../workbox-config.cjs)
 
 ## Dependencies
 

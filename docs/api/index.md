@@ -433,6 +433,7 @@ async function redirectCRISPR()
 
 - Builds the selection UI in `#mainContainer`
 - Calls `loadCRISPRJSON_Files()` and `fillGeneList()`
+- If either function is undefined because `crispr_scripts.min.js` failed to load, logs a `console.error` and shows a "Please reload the page" alert in `#selection_process` instead of throwing
 
 ## Bootstrap & jQuery
 

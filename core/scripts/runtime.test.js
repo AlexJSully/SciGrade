@@ -157,5 +157,27 @@ describe("runtime.js - Runtime Flow Helpers", () => {
 
 			expect(executionSequence).toEqual(["empty", "append", "loadCRISPRJSON_Files", "fillGeneList"]);
 		});
+
+		it.each(["loadCRISPRJSON_Files", "fillGeneList"])(
+			"shows a reload alert instead of throwing when %s is not defined (Issue #77)",
+			async (missingFunction) => {
+				const loader = global.loadCRISPRJSON_Files;
+				const filler = global.fillGeneList;
+				delete global[missingFunction];
+
+				await expect(redirectCRISPR()).resolves.toBeUndefined();
+
+				expect(console.error).toHaveBeenCalledWith(
+					"SciGrade could not load crispr_scripts.min.js; gene data is unavailable.",
+				);
+				expect(loader).not.toHaveBeenCalled();
+				expect(filler).not.toHaveBeenCalled();
+				expect(global.$).toHaveBeenCalledWith("#selection_process");
+				expect(mockJQuery.append).toHaveBeenLastCalledWith(
+					expect.stringContaining("SciGrade could not finish loading. Please reload the page."),
+				);
+				expect(mockJQuery.append).toHaveBeenLastCalledWith(expect.stringContaining("role='alert'"));
+			},
+		);
 	});
 });
