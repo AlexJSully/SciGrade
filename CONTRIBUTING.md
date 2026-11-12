@@ -11,8 +11,8 @@ SciGrade is in maintenance mode, so critical bug fixes and security updates are 
 Node.js 24 or later is what continuous integration runs. Node 22.13 through 22.x also satisfies every dependency, but the 23.x line does not: ESLint in [package.json](package.json) declares `^20.19.0 || ^22.13.0 || >=24`, and `markdownlint-cli2` declares `>=22`.
 
 1. Install dependencies with `npm ci`.
-2. Run `npm run validate`. That chains Prettier, ESLint, minification, the Jest unit tests, the Playwright end-to-end suite, and the Markdown linter.
-3. Commit any change `npm run minify` makes to [core/scripts/crispr_scripts.min.js](core/scripts/crispr_scripts.min.js) or [core/scripts/runtime.min.js](core/scripts/runtime.min.js). [core/systemrun.html](core/systemrun.html) loads only the minified bundles, so an edit to the unminified source does not reach users until it is rebuilt.
+2. Run `npm run validate`. That chains Prettier, ESLint, minification, service worker generation, the Jest unit tests, the Playwright end-to-end suite, and the Markdown linter.
+3. Commit any change `npm run minify` makes to [core/scripts/crispr_scripts.min.js](core/scripts/crispr_scripts.min.js) or [core/scripts/runtime.min.js](core/scripts/runtime.min.js). [core/systemrun.html](core/systemrun.html) loads only the minified bundles, so an edit to the unminified source does not reach users until it is rebuilt. Commit the [sw.js](sw.js) that `npm run workbox` regenerates too: the service worker serves precached files by revision, and a Jest test fails when a revision no longer matches its file.
 4. Update the documentation under [docs/index.md](docs/index.md) whenever your change alters behaviour a document describes.
 
 ## What runs on your pull request

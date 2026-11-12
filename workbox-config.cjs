@@ -10,7 +10,7 @@ module.exports = {
 		"": "/"
 	},
 	"globPatterns": [
-		"core/**/*.{html,json,png,ico,jpg,svg,webmanifest,css,js,pdf,fasta,md,pdf,webp,xlsx,png,jpeg}"
+		"core/**/*.{html,json,png,ico,jpg,svg,webmanifest,css,js,pdf,webp,jpeg}"
 	],
 	"globIgnores": [
 		"index.html",
@@ -19,7 +19,22 @@ module.exports = {
 		"package-lock.json",
 		"node_modules/**/*",
 		"**/*.test.js",
-		"**/*.spec.js"
+		"**/*.spec.js",
+		// Files no page loads. Precaching them only adds to every visitor's first download.
+		"core/scripts/APIandLibraries/Bootstrap/css/bootstrap-*",
+		"core/scripts/APIandLibraries/Bootstrap/css/bootstrap.css",
+		"core/scripts/APIandLibraries/Bootstrap/css/bootstrap.rtl*",
+		"core/scripts/APIandLibraries/Bootstrap/js/bootstrap.bundle*",
+		"core/scripts/APIandLibraries/Bootstrap/js/bootstrap.esm*",
+		"core/scripts/APIandLibraries/Bootstrap/js/bootstrap.js",
+		"core/scripts/APIandLibraries/tabletoCSV/{bower,package}.json",
+		"core/scripts/APIandLibraries/tabletoCSV/{example.html,gulpfile.js}",
+		"core/scripts/APIandLibraries/tabletoCSV/dist/**",
+		"core/scripts/{runtime,crispr_scripts}.js",
+		"core/styling/style.css",
+		"core/images/EDITmd/**",
+		"core/icon/resoc.png",
+		"core/icon/screenshot*"
 	],
 	"runtimeCaching": [
 		{

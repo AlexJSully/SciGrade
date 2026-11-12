@@ -146,8 +146,8 @@ describe("registerServiceWorker legacy cleanup", () => {
 	const rootPrecache = `workbox-precache-v2-${origin}/`;
 
 	// Boundary: platform ServiceWorkerContainer and CacheStorage APIs are absent in jsdom.
-	function createBrowser({ registrations, cacheNames }) {
-		const rootRegistration = { scope: `${origin}/` };
+	function createBrowser({ registrations = [], cacheNames = [] } = {}) {
+		const rootRegistration = { scope: `${origin}/`, unregister: jest.fn() };
 		const cacheStorage = {
 			keys: jest.fn(async () => cacheNames),
 			delete: jest.fn(async () => true),
@@ -158,25 +158,27 @@ describe("registerServiceWorker legacy cleanup", () => {
 				getRegistrations: jest.fn(async () => [rootRegistration, ...registrations]),
 			},
 		};
-		return { rootRegistration, cacheStorage, navigatorInstance };
+		const register = () =>
+			registerServiceWorker("/sw.js", {
+				navigatorInstance,
+				documentInstance: { readyState: "complete" },
+				cacheStorageInstance: cacheStorage,
+			});
+		return { rootRegistration, cacheStorage, navigatorInstance, register };
+	}
+
+	function createLegacyRegistration() {
+		return { scope: `${origin}/core/scripts/serviceWorker/`, unregister: jest.fn(async () => true) };
 	}
 
 	it("unregisters the legacy worker and deletes its precache, leaving root state untouched", async () => {
-		const legacyRegistration = {
-			scope: `${origin}/core/scripts/serviceWorker/`,
-			unregister: jest.fn(async () => true),
-		};
-		const { rootRegistration, cacheStorage, navigatorInstance } = createBrowser({
+		const legacyRegistration = createLegacyRegistration();
+		const { rootRegistration, cacheStorage, navigatorInstance, register } = createBrowser({
 			registrations: [legacyRegistration],
 			cacheNames: [legacyPrecache, rootPrecache, "images", "html", "assets"],
 		});
-		rootRegistration.unregister = jest.fn();
 
-		const result = await registerServiceWorker("/sw.js", {
-			navigatorInstance,
-			documentInstance: { readyState: "complete" },
-			cacheStorageInstance: cacheStorage,
-		});
+		const result = await register();
 
 		expect(result).toBe(rootRegistration);
 		expect(navigatorInstance.serviceWorker.register).toHaveBeenCalledWith("/sw.js");
@@ -187,35 +189,41 @@ describe("registerServiceWorker legacy cleanup", () => {
 	});
 
 	it("deletes nothing when no legacy worker or cache exists", async () => {
-		const { cacheStorage, navigatorInstance } = createBrowser({
-			registrations: [],
-			cacheNames: [rootPrecache, "images"],
-		});
+		const { cacheStorage, register } = createBrowser({ cacheNames: [rootPrecache, "images"] });
 
-		await registerServiceWorker("/sw.js", {
-			navigatorInstance,
-			documentInstance: { readyState: "complete" },
-			cacheStorageInstance: cacheStorage,
-		});
+		await register();
 
 		expect(cacheStorage.delete).not.toHaveBeenCalled();
 	});
 
+	it("still removes the legacy worker when registering /sw.js fails", async () => {
+		const legacyRegistration = createLegacyRegistration();
+		const { cacheStorage, navigatorInstance, register } = createBrowser({
+			registrations: [legacyRegistration],
+			cacheNames: [legacyPrecache],
+		});
+		navigatorInstance.serviceWorker.register.mockRejectedValue(new TypeError("Failed to register a ServiceWorker"));
+		const warnSpy = jest.spyOn(console, "warn").mockImplementation(() => {});
+
+		try {
+			const result = await register();
+
+			expect(result).toBeNull();
+			expect(legacyRegistration.unregister).toHaveBeenCalledTimes(1);
+			expect(cacheStorage.delete).toHaveBeenCalledWith(legacyPrecache);
+		} finally {
+			warnSpy.mockRestore();
+		}
+	});
+
 	it("still returns the new registration and warns when cleanup fails", async () => {
 		const cleanupError = new Error("SecurityError");
-		const { rootRegistration, cacheStorage, navigatorInstance } = createBrowser({
-			registrations: [],
-			cacheNames: [],
-		});
+		const { rootRegistration, cacheStorage, register } = createBrowser();
 		cacheStorage.keys.mockRejectedValue(cleanupError);
 		const warnSpy = jest.spyOn(console, "warn").mockImplementation(() => {});
 
 		try {
-			const result = await registerServiceWorker("/sw.js", {
-				navigatorInstance,
-				documentInstance: { readyState: "complete" },
-				cacheStorageInstance: cacheStorage,
-			});
+			const result = await register();
 
 			expect(result).toBe(rootRegistration);
 			expect(warnSpy).toHaveBeenCalledWith("Legacy service worker cleanup failed:", cleanupError);
@@ -311,6 +319,29 @@ describe("Workbox Configuration and Precache Artifacts", () => {
 			})
 			.map(([, url]) => url);
 		expect(staleUrls).toEqual([]);
+	});
+
+	it("precaches the assets the pages load and none of the files they never load", () => {
+		const swContent = fs.readFileSync(swJsPath, "utf8");
+		const precachedUrls = [...swContent.matchAll(/url:"([^"]+)"/g)].map(([, url]) => url);
+
+		expect(precachedUrls).toEqual(
+			expect.arrayContaining([
+				"/core/systemrun.html",
+				"/core/scripts/runtime.min.js",
+				"/core/scripts/crispr_scripts.min.js",
+				"/core/scripts/APIandLibraries/Bootstrap/css/bootstrap.min.css",
+				"/core/scripts/APIandLibraries/Bootstrap/js/bootstrap.min.js",
+				"/core/data/Benchling_gRNA_Outputs.json",
+				"/core/data/Background_info/gene_background_info.json",
+			]),
+		);
+		const unusedUrls = precachedUrls.filter((url) =>
+			/Bootstrap\/(css\/bootstrap-|css\/bootstrap\.(css|rtl)|js\/bootstrap\.(bundle|esm|js))|\.(xlsx|fasta|md)$|\/EDITmd\/|resoc\.png|screenshot\d|\/core\/scripts\/(runtime|crispr_scripts)\.js$/.test(
+				url,
+			),
+		);
+		expect(unusedUrls).toEqual([]);
 	});
 
 	it("does not precache any test or spec files in sw.js", () => {

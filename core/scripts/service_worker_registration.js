@@ -4,8 +4,8 @@
 //
 // =============================================================================
 
-// Scope of the worker that used to live at /core/scripts/serviceWorker/sw.js. That scope
-// contains no page, so the old worker never updates itself and must be removed from here.
+// Scope of the legacy worker at /core/scripts/serviceWorker/sw.js. That scope contains no
+// page, so the legacy worker never updates itself and must be removed from a page.
 const LEGACY_SERVICE_WORKER_SCOPE_PATH = "/core/scripts/serviceWorker/";
 
 /**
@@ -38,9 +38,9 @@ async function removeLegacyServiceWorker(serviceWorkerContainer, cacheStorage) {
  * Defers registration to the window load event to keep initial page rendering performant,
  * or registers immediately if the document has already finished loading. Any rejection
  * during script fetching or registration is caught and logged as a console warning to
- * prevent unhandled promise rejections. After a successful registration, the legacy worker
- * and its caches are removed; a failure there is logged as a warning and does not affect the
- * returned registration.
+ * prevent unhandled promise rejections. The legacy worker and its caches are then removed
+ * whether or not registration succeeded; a cleanup failure is logged as a warning and does
+ * not affect the returned value.
  *
  * @param {string} [scriptPath="/sw.js"] - Relative or absolute path to the service worker script.
  * @param {object} [options={}] - Configuration options for service worker registration.
@@ -63,25 +63,22 @@ function registerServiceWorker(
 		return Promise.resolve(null);
 	}
 
-	const executeRegistration = () =>
-		navigatorInstance.serviceWorker.register(scriptPath).then(
-			async (registration) => {
-				try {
-					await removeLegacyServiceWorker(navigatorInstance.serviceWorker, cacheStorageInstance);
-				} catch (err) {
-					console.warn("Legacy service worker cleanup failed:", err);
-				}
+	const executeRegistration = async () => {
+		let registration = null;
+		try {
+			registration = await navigatorInstance.serviceWorker.register(scriptPath);
+		} catch (err) {
+			console.warn("Service worker registration failed:", err);
+		}
 
-				return registration;
-			},
-			(err) => {
-				if (typeof console !== "undefined" && typeof console.warn === "function") {
-					console.warn("Service worker registration failed:", err);
-				}
+		try {
+			await removeLegacyServiceWorker(navigatorInstance.serviceWorker, cacheStorageInstance);
+		} catch (err) {
+			console.warn("Legacy service worker cleanup failed:", err);
+		}
 
-				return null;
-			},
-		);
+		return registration;
+	};
 
 	if (documentInstance && documentInstance.readyState === "complete") {
 		return executeRegistration();

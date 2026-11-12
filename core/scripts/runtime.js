@@ -65,16 +65,29 @@ async function redirectCRISPR() {
 	// Both functions live in crispr_scripts.min.js; if that script failed to load,
 	// calling them would reject this async function with an unhandled ReferenceError.
 	if (typeof loadCRISPRJSON_Files !== "function" || typeof fillGeneList !== "function") {
-		console.error("SciGrade could not load crispr_scripts.min.js; gene data is unavailable.");
-		$("#selection_process").append(
-			"<div class='alert alert-danger' role='alert' id='load_error'>SciGrade could not finish loading. Please reload the page.</div>",
-		);
+		showLoadError("SciGrade could not load crispr_scripts.min.js; gene data is unavailable.");
 		return;
 	}
 
 	await loadCRISPRJSON_Files();
 
 	fillGeneList();
+
+	// loadCRISPRJSON_Files logs and swallows fetch failures, leaving the gene list unset.
+	if (!gene_backgroundInfo?.gene_list) {
+		showLoadError("SciGrade could not load the gene data files.");
+	}
+}
+
+/**
+ * Logs why the runtime page could not load and asks the user to reload it.
+ * @param {string} reason - Message logged with console.error.
+ */
+function showLoadError(reason) {
+	console.error(reason);
+	$("#selection_process").append(
+		"<div class='alert alert-danger' role='alert' id='load_error'>SciGrade could not finish loading. Please reload the page.</div>",
+	);
 }
 
 // Export for testing

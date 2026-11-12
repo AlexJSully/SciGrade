@@ -208,8 +208,9 @@ graph LR
 
 ## Offline Support
 
-Both [index.html](../../index.html) and [core/systemrun.html](../../core/systemrun.html) register the worker through `registerServiceWorker()` in [core/scripts/service_worker_registration.js](../../core/scripts/service_worker_registration.js). The generated worker [sw.js](../../sw.js) sits at the site root so its scope (`/`) covers every page. A worker only controls pages at or below its own folder. It precaches the core assets listed in [workbox-config.cjs](../../workbox-config.cjs) and applies runtime caching for HTML, CSS, JavaScript, and image requests.
-After registering, the helper unregisters the earlier worker scoped to `/core/scripts/serviceWorker/` and deletes its precache.
+Both [index.html](../../index.html) and [core/systemrun.html](../../core/systemrun.html) register the worker through `registerServiceWorker()` in [core/scripts/service_worker_registration.js](../../core/scripts/service_worker_registration.js). The generated worker [sw.js](../../sw.js) sits at the site root so its scope (`/`) covers every page. A worker only controls pages at or below its own folder. It precaches the files the pages load, as selected by `globPatterns` and `globIgnores` in [workbox-config.cjs](../../workbox-config.cjs), and applies runtime caching for other HTML, CSS, JavaScript, and image requests. A precached file is served from the cache until a newly generated [sw.js](../../sw.js) activates, which happens once every tab of the site is closed.
+
+On every page load, the helper also unregisters any worker scoped to `/core/scripts/serviceWorker/` and deletes Cache Storage entries whose names contain that path, whether or not registering [sw.js](../../sw.js) succeeded. That scope contains no page, so a worker registered there never updates itself.
 
 Implementation: [index.html](../../index.html), [core/systemrun.html](../../core/systemrun.html), [core/scripts/service_worker_registration.js](../../core/scripts/service_worker_registration.js), [sw.js](../../sw.js), [workbox-config.cjs](../../workbox-config.cjs)
 
