@@ -48,19 +48,12 @@ async function loadCRISPRJSON_Files() {
  */
 function fillGeneList() {
 	if (gene_backgroundInfo?.gene_list) {
-		$("#gene_dropdown_selection").empty();
+		const dropdown = $("#gene_dropdown_selection");
+		dropdown.empty();
 
-		let append_str = "";
-
-		const listOfGenes = Object.keys(gene_backgroundInfo.gene_list);
-
-		for (const gene of listOfGenes) {
-			append_str += `
-				<option value="${gene}" id="${gene}" tag="practice">${gene}</option>
-			`;
+		for (const gene of Object.keys(gene_backgroundInfo.gene_list)) {
+			dropdown.append($("<option></option>").attr({ value: gene, id: gene, tag: "practice" }).text(gene));
 		}
-
-		$("#gene_dropdown_selection").append(append_str);
 
 		// Gene data is loaded and the dropdown is populated, so it is now safe to
 		// load a gene. Enabling the button here (rather than at render time) prevents
@@ -92,12 +85,8 @@ function loadWork() {
 	append_str +=
 		'<div id="crispr_header">\n<p>Please refer to your dry lab protocol for full instructions on how and what to do. Below is a brief reminder of what you are supposed to do with each gene: \n <b>Your objective is to find these mutations, design a gRNA and its corresponding F1/R1 primers</b></p> \n</div>\n';
 
-	// Gene information
-	append_str += `<div id="gene_info"><p>Here is some background information about your gene: ${gene_backgroundInfo?.gene_list[current_gene].name} (${current_gene})</p>\n`;
-	append_str += `<p> Background information: ${gene_backgroundInfo?.gene_list[current_gene].Background}</p>\n`;
-	append_str += `<p> Target site: ${gene_backgroundInfo?.gene_list[current_gene]["Target site"]}</p>\n`;
-	append_str += `<p style="word-wrap:break-word;"> Modified genetic sequence: ${gene_backgroundInfo?.gene_list[current_gene].Sequence}</p>\n`;
-	append_str += "</div>";
+	// Gene information, filled in as text after the markup is appended
+	append_str += '<div id="gene_info"></div>';
 
 	// End background information
 	append_str += "</div>";
@@ -191,16 +180,14 @@ function loadWork() {
 	append_str += "</div>";
 
 	$("#work").append(append_str);
-}
 
-/**
- * Determine if a number, dash, or period key is pressed.
- * @param {Event} evt - Character key press event
- * @returns {boolean} True if the key is a number, dash, or period
- */
-function isNumberOrDashKey(evt) {
-	const charCode = evt.which ? evt.which : evt.keyCode;
-	return !(charCode !== 46 && charCode !== 45 && charCode > 31 && (charCode < 48 || charCode > 57));
+	const gene = gene_backgroundInfo.gene_list[current_gene];
+	$("#gene_info").append(
+		$("<p></p>").text(`Here is some background information about your gene: ${gene.name} (${current_gene})`),
+		$("<p></p>").text(` Background information: ${gene.Background}`),
+		$("<p></p>").text(` Target site: ${gene["Target site"]}`),
+		$('<p style="word-wrap:break-word;"></p>').text(` Modified genetic sequence: ${gene.Sequence}`),
+	);
 }
 
 // Global marking variables:
@@ -396,10 +383,7 @@ function checkCandidateAnswer(possibleAnswer, correctNucleotidePosition) {
 			}
 
 			// Check if the PAM matches the answer's input
-			if (
-				(temp_answer.PAM || temp_answer.PAM) &&
-				temp_answer.PAM === document.getElementById("pam_input").value.trim()
-			) {
+			if (temp_answer.PAM && temp_answer.PAM === document.getElementById("pam_input").value.trim()) {
 				MARPAMseq = true;
 				true_counts += 1;
 			} else if (temp_answer.PAM === null || temp_answer.PAM === undefined) {
@@ -409,7 +393,7 @@ function checkCandidateAnswer(possibleAnswer, correctNucleotidePosition) {
 			}
 
 			// Check if the Off-target matches the answer's input
-			if (temp_answer["Specificity Score"] || temp_answer["Specificity Score"]) {
+			if (temp_answer["Specificity Score"]) {
 				checkOffTarget(temp_answer["Specificity Score"]);
 			} else if (temp_answer["Specificity Score"] === null || temp_answer["Specificity Score"] === undefined) {
 				alert(
@@ -558,10 +542,7 @@ function checkR1Primers(seq) {
 	// Verify primers:
 	possible_R1_primers = [];
 	const begin_R1 = "TTCTAGCTCTAAAAC";
-	let complementary_seq = "";
-	for (const sequence of seq) {
-		complementary_seq = complementary_nt_dict[sequence] + complementary_seq;
-	}
+	const complementary_seq = createComplementarySeq(seq);
 	for (let i = 19; i <= 20; i += 1) {
 		possible_R1_primers.push(begin_R1 + complementary_seq.slice(0, i));
 	}
@@ -834,17 +815,6 @@ function submitAnswers() {
 	}, 750);
 }
 
-/**
- * Determine if a enter was pressed and if so, click a button
- * @param {Event} event The key press
- * @param {string} toClickButton Which button to click
- */
-function IfPressEnter(event, toClickButton) {
-	if (event.which === 13 || event.keyCode === 13) {
-		$(`#${toClickButton}`).click();
-	}
-}
-
 // Block submit calls on keypress
 $(() => {
 	$("form").submit(() => false);
@@ -854,7 +824,6 @@ $(() => {
 if (typeof module !== "undefined" && module.exports) {
 	module.exports = {
 		getOffTargetOptimalValue,
-		isNumberOrDashKey,
 		createComplementarySeq,
 		checkOffTarget,
 		checkF1Primers,

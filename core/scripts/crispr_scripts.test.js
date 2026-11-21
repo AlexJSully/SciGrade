@@ -1,7 +1,6 @@
 const crispr = require("./crispr_scripts");
 const {
 	getOffTargetOptimalValue,
-	isNumberOrDashKey,
 	createComplementarySeq,
 	checkOffTarget,
 	checkF1Primers,
@@ -48,60 +47,11 @@ describe("crispr_scripts.js - Utility Functions", () => {
 		};
 
 		global.document = mockDocument;
-		// Setup global variables used by these functions
-		global.MAROffTarget = false;
-		global.MAROffTarget_degree = 0;
-		global.MAROffTarget_aboveOpt = false;
-		global.MAROffTarget_above35 = false;
-		global.MAROffTarget_onlyOption = false;
-		global.MARF1primers = false;
-		global.MARR1primers = false;
-		global.benchling_gRNA_outputs = {
-			gene_list: {
-				test_gene: [
-					{ Position: 100, "Specificity Score": 85 },
-					{ Position: 120, "Specificity Score": 75 },
-				],
-			},
-		};
-		global.current_gene = "test_gene";
-		global.correctNucleotideIncluded = true;
-		global.MARgRNAseq = true;
 	});
 
 	afterEach(() => {
 		jest.clearAllMocks();
 		delete global.document;
-		delete global.MAROffTarget;
-		delete global.MAROffTarget_degree;
-		delete global.MAROffTarget_aboveOpt;
-		delete global.MAROffTarget_above35;
-		delete global.MAROffTarget_onlyOption;
-		delete global.MARF1primers;
-		delete global.MARR1primers;
-		delete global.benchling_gRNA_outputs;
-		delete global.current_gene;
-		delete global.correctNucleotideIncluded;
-		delete global.MARgRNAseq;
-	});
-
-	describe("isNumberOrDashKey()", () => {
-		const cases = [
-			{ name: "number key 0", input: { which: 48 }, want: true },
-			{ name: "number key 9", input: { which: 57 }, want: true },
-			{ name: "number key 5 (keyCode)", input: { keyCode: 53 }, want: true },
-			{ name: "dash key", input: { which: 45 }, want: true },
-			{ name: "period key", input: { which: 46 }, want: true },
-			{ name: "letter A", input: { which: 65 }, want: false },
-			{ name: "letter Z", input: { which: 90 }, want: false },
-			{ name: "letter a", input: { which: 97 }, want: false },
-			{ name: "special ! character", input: { which: 33 }, want: false },
-			{ name: "special @ character", input: { which: 64 }, want: false },
-		];
-
-		it.each(cases)("$name", ({ input, want }) => {
-			expect(isNumberOrDashKey(input)).toBe(want);
-		});
 	});
 
 	describe("createComplementarySeq()", () => {
@@ -252,13 +202,17 @@ describe("crispr_scripts.js - Utility Functions", () => {
 		});
 
 		it("should not set MAROffTarget when prerequisites not met", () => {
-			global.correctNucleotideIncluded = false;
-			global.MARgRNAseq = false;
+			setTestState({ correctNucleotideIncluded: false, MARgRNAseq: false });
+			global.document.getElementById = jest.fn((id) => {
+				if (id === "offtarget_input") return { value: "75" };
+				if (id === "position_input") return { value: "100" };
+				return { value: "" };
+			});
 
 			checkOffTarget(75);
 
-			expect(global.MAROffTarget).toBe(false);
-			expect(global.MAROffTarget_degree).toBe(0);
+			expect(crispr.MAROffTarget).toBe(false);
+			expect(crispr.MAROffTarget_degree).toBe(0);
 		});
 	});
 
@@ -402,26 +356,15 @@ describe("crispr_scripts.js - Utility Functions", () => {
 	});
 
 	describe("fillGeneList()", () => {
-		let appendMock;
-		let propMock;
+		useRealDom(
+			'<select id="gene_dropdown_selection"><option>stale</option></select><button id="load_gene_button" disabled></button>',
+		);
 
 		beforeEach(() => {
-			resetState();
-			// Setup jQuery mock with shared append/prop spies so the generated HTML
-			// and the button-enable call can be inspected.
-			appendMock = jest.fn(() => global.$returnValue);
-			propMock = jest.fn(() => global.$returnValue);
-			global.$ = jest.fn((selector) => {
-				return {
-					empty: jest.fn(() => global.$returnValue),
-					append: appendMock,
-					prop: propMock,
-				};
-			});
-			global.$returnValue = undefined;
+			delete window.__xss;
 		});
 
-		it("populates gene dropdown with genes from background info", () => {
+		it("replaces the dropdown options with one option per gene", () => {
 			setTestState({
 				gene_backgroundInfo: {
 					gene_list: {
@@ -433,56 +376,43 @@ describe("crispr_scripts.js - Utility Functions", () => {
 
 			fillGeneList();
 
-			expect(global.$).toHaveBeenCalledWith("#gene_dropdown_selection");
-			const calls = global.$.mock.results;
-			const emptyCall = calls.find((c) => c.value.empty);
-			expect(emptyCall).toBeDefined();
+			const options = document.querySelectorAll("#gene_dropdown_selection option");
+			expect([...options].map((option) => option.textContent)).toEqual(["eBFP", "ACTN3"]);
+			expect([...options].map((option) => option.value)).toEqual(["eBFP", "ACTN3"]);
 		});
 
-		it("does not prefix the dropdown HTML with 'undefined' (regression: uninitialized builder)", () => {
-			setTestState({
-				gene_backgroundInfo: {
-					gene_list: {
-						eBFP: { "Target position": 100 },
-						ACTN3: { "Target position": 200 },
-					},
-				},
-			});
+		it("renders markup characters in a gene name as text", () => {
+			const markupGene = `<img src=x onerror="window.__xss=1">&"'`;
+			setTestState({ gene_backgroundInfo: { gene_list: { [markupGene]: { "Target position": 100 } } } });
 
 			fillGeneList();
 
-			expect(appendMock).toHaveBeenCalled();
-			const appendedHtml = appendMock.mock.calls[0][0];
-			expect(appendedHtml).not.toContain("undefined");
-			expect(appendedHtml).toContain('value="eBFP"');
-			expect(appendedHtml).toContain('value="ACTN3"');
+			const dropdown = document.getElementById("gene_dropdown_selection");
+			const option = dropdown.querySelector("option");
+			expect(option.textContent).toBe(markupGene);
+			expect(option.value).toBe(markupGene);
+			expect(dropdown.querySelectorAll("img")).toHaveLength(0);
+			expect(window.__xss).toBeUndefined();
 		});
 
 		it("enables the Load Gene button once the dropdown is populated", () => {
-			setTestState({
-				gene_backgroundInfo: {
-					gene_list: {
-						eBFP: { "Target position": 100 },
-					},
-				},
-			});
+			setTestState({ gene_backgroundInfo: { gene_list: { eBFP: { "Target position": 100 } } } });
 
 			fillGeneList();
 
-			expect(global.$).toHaveBeenCalledWith("#load_gene_button");
-			expect(propMock).toHaveBeenCalledWith("disabled", false);
+			expect(document.getElementById("load_gene_button").disabled).toBe(false);
 		});
 
-		it("does nothing when no background info", () => {
-			setTestState({ gene_backgroundInfo: null });
-			fillGeneList();
-			expect(global.$).not.toHaveBeenCalled();
-		});
+		it.each([
+			["no background info", null],
+			["gene_list is undefined", {}],
+		])("does nothing when %s", (_name, gene_backgroundInfo) => {
+			setTestState({ gene_backgroundInfo });
 
-		it("does nothing when gene_list is undefined", () => {
-			setTestState({ gene_backgroundInfo: {} });
 			fillGeneList();
-			expect(global.$).not.toHaveBeenCalled();
+
+			expect(document.getElementById("gene_dropdown_selection").textContent).toBe("stale");
+			expect(document.getElementById("load_gene_button").disabled).toBe(true);
 		});
 	});
 
@@ -499,18 +429,14 @@ describe("crispr_scripts.js - Utility Functions", () => {
 			},
 		};
 
+		useRealDom('<div id="work"></div>');
+
 		beforeEach(() => {
-			resetState();
 			global.alert = jest.fn();
-			global.$ = jest.fn(() => ({
-				empty: jest.fn(),
-				append: jest.fn(),
-			}));
 		});
 
 		afterEach(() => {
 			delete global.alert;
-			delete global.$;
 		});
 
 		it("selects a valid gene and renders the work page without alerting", () => {
@@ -519,7 +445,7 @@ describe("crispr_scripts.js - Utility Functions", () => {
 			select_Gene();
 
 			expect(global.alert).not.toHaveBeenCalled();
-			expect(global.$).toHaveBeenCalledWith("#work");
+			expect(document.getElementById("sequence_input")).not.toBeNull();
 		});
 
 		it("alerts sG34-42 and resets current_gene when possible_gene is empty", () => {
@@ -537,7 +463,7 @@ describe("crispr_scripts.js - Utility Functions", () => {
 			select_Gene();
 
 			expect(global.alert).toHaveBeenCalledWith(expect.stringContaining("sG34-42"));
-			expect(global.$).not.toHaveBeenCalledWith("#work");
+			expect(document.getElementById("work").childElementCount).toBe(0);
 		});
 
 		it("alerts sG34-42 and does not throw when background data is not loaded", () => {
@@ -560,27 +486,50 @@ describe("crispr_scripts.js - Utility Functions", () => {
 			},
 		};
 
+		useRealDom('<div id="work"></div>');
+
 		beforeEach(() => {
-			resetState();
 			global.alert = jest.fn();
-			global.$ = jest.fn(() => ({
-				empty: jest.fn(),
-				append: jest.fn(),
-			}));
+			delete window.__xss;
 		});
 
 		afterEach(() => {
 			delete global.alert;
-			delete global.$;
 		});
 
-		it("renders the work page when the current gene's data is present", () => {
+		it("renders the work page with the current gene's background information", () => {
 			setTestState({ gene_backgroundInfo: backgroundInfo, current_gene: "eBFP" });
 
 			loadWork();
 
 			expect(global.alert).not.toHaveBeenCalled();
-			expect(global.$).toHaveBeenCalledWith("#work");
+			const paragraphs = [...document.querySelectorAll("#gene_info p")].map((p) => p.textContent);
+			expect(paragraphs).toEqual([
+				"Here is some background information about your gene: Enhanced blue fluorescence protein (eBFP)",
+				" Background information: bg",
+				" Target site: ts",
+				" Modified genetic sequence: ACGT",
+			]);
+			expect(document.getElementById("sequence_input")).not.toBeNull();
+		});
+
+		it("renders markup characters in the gene data as text", () => {
+			const gene = {
+				name: `<b>&"'</b>`,
+				Background: '<img src=x onerror="window.__xss=1">',
+				"Target site": "<i>ts</i>",
+				Sequence: "<script>window.__xss=1</script>",
+			};
+			setTestState({ gene_backgroundInfo: { gene_list: { eBFP: gene } }, current_gene: "eBFP" });
+
+			loadWork();
+
+			const geneInfo = document.getElementById("gene_info");
+			for (const value of Object.values(gene)) {
+				expect(geneInfo.textContent).toContain(value);
+			}
+			expect(geneInfo.querySelectorAll("img, b, i, script")).toHaveLength(0);
+			expect(window.__xss).toBeUndefined();
 		});
 
 		it("alerts lFS50-66 and does not render when current_gene is missing from gene_list", () => {
@@ -589,7 +538,7 @@ describe("crispr_scripts.js - Utility Functions", () => {
 			loadWork();
 
 			expect(global.alert).toHaveBeenCalledWith(expect.stringContaining("lFS50-66"));
-			expect(global.$).not.toHaveBeenCalledWith("#work");
+			expect(document.getElementById("work").childElementCount).toBe(0);
 		});
 
 		it("alerts lFS50-66 without throwing a ReferenceError when background data is null", () => {

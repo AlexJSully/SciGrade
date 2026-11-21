@@ -30,9 +30,6 @@ module.exports = {
 		"core/scripts/APIandLibraries/Bootstrap/js/bootstrap.bundle*",
 		"core/scripts/APIandLibraries/Bootstrap/js/bootstrap.esm*",
 		"core/scripts/APIandLibraries/Bootstrap/js/bootstrap.js",
-		"core/scripts/APIandLibraries/tabletoCSV/{bower,package}.json",
-		"core/scripts/APIandLibraries/tabletoCSV/{example.html,gulpfile.js}",
-		"core/scripts/APIandLibraries/tabletoCSV/dist/**",
 		"core/scripts/{runtime,crispr_scripts}.js",
 		"core/styling/style.css",
 		"core/images/EDITmd/**",
@@ -60,7 +57,7 @@ module.exports = {
 					"maxEntries": 50
 				},
 				"cacheableResponse": {
-					"statuses": [0, 200]
+					"statuses": [200]
 				}
 			}
 		},
@@ -73,7 +70,7 @@ module.exports = {
 					"maxEntries": 50
 				},
 				"cacheableResponse": {
-					"statuses": [0, 200]
+					"statuses": [200]
 				}
 			}
 		}

@@ -104,7 +104,7 @@ function fillGeneList()
 
 - Clears existing dropdown options
 - Extracts gene names from `gene_backgroundInfo.gene_list`
-- Appends options to HTML element with ID `gene_dropdown_selection`
+- Appends one option per gene to HTML element with ID `gene_dropdown_selection`, writing each name as text, so markup characters in a name show literally
 - Enables the `load_gene_button` element, which is rendered disabled by [core/scripts/runtime.js](../../core/scripts/runtime.js)
 
 Enabling the button here rather than at render time is what keeps a click from landing before the asynchronous JSON load finishes, which would otherwise reach the `sG34-42` error path without ever building the work form. [tests/playwright/gene-form-race.spec.js](../../tests/playwright/gene-form-race.spec.js) guards that gate by delaying the fetch and asserting the button is disabled meanwhile.
@@ -139,7 +139,7 @@ function loadWork()
 - Clears the `#work` HTML element
 - Sets `loadedMode` to `selection_inMode`
 - Generates form HTML including:
-    - Gene background information section
+    - Gene background information section, whose name, background, target site and sequence are written as text after the form is appended
     - Input fields for gRNA sequence, PAM, strand, position, off-target score
     - Input fields for F1 and R1 primers
     - Submit button with `submitAnswers()` handler
@@ -153,34 +153,6 @@ function loadWork()
 ```javascript
 current_gene = "HBB";
 loadWork(); // Renders form for HBB gene
-```
-
-### Input Validation
-
-#### isNumberOrDashKey(evt)
-
-```javascript
-function isNumberOrDashKey(evt)
-returns {boolean}
-```
-
-**Purpose:** Validate numeric input during form entry.
-
-**Parameters:**
-
-- `evt` {event} - JavaScript key press event
-
-**Returns:**
-
-- `true` if key is a number (0-9) or dash (-, .)
-- `false` otherwise
-
-**Used For:** Real-time validation of position and score fields.
-
-**Example:**
-
-```html
-<input onkeypress="return isNumberOrDashKey(event)" />
 ```
 
 ### Answer Checking
@@ -299,7 +271,7 @@ function checkR1Primers(seq)
 
 **Behavior:**
 
-- Generates a reverse-complement string using the `complementary_nt_dict` mapping
+- Generates the reverse complement of `seq` with `createComplementarySeq()`, which uses the `complementary_nt_dict` mapping
 - Builds candidate R1 primers using the `TTCTAGCTCTAAAAC` prefix and the first 19-20 bases of the reverse complement
 - Sets `MARR1primers` when the submitted R1 primer matches a candidate
 
@@ -381,27 +353,6 @@ function submitAnswers()
 - `#r1_input` - R1 primer
 
 **Called By:** Submit button click event in rendered form.
-
-#### IfPressEnter(event, toClickButton)
-
-```javascript
-function IfPressEnter(event, toClickButton)
-```
-
-**Purpose:** Trigger action when Enter key is pressed.
-
-**Parameters:**
-
-- `event` {Event} - Keyboard event
-- `toClickButton` {string} - Button ID to trigger
-
-**Behavior:** Simulates click on specified button if Enter key pressed.
-
-**Example:**
-
-```html
-<input onkeypress="IfPressEnter(event, 'submitButton')" />
-```
 
 ## runtime.js
 
