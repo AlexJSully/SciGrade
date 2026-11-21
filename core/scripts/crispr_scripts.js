@@ -268,143 +268,162 @@ function checkAnswers() {
 		}
 	}
 
-	// Check against existing:
-	if (possible_comparable_answers.length > 0) {
-		for (const possibleAnswer of possible_comparable_answers) {
-			true_counts = 0;
-			// Checking if the gene's target position is within correct nucleotide range
-			correctNucleotideIncluded = false;
-			if (possibleAnswer.Strand === 1) {
-				const nucleotideIncludedRange_top = possibleAnswer.Position - 1 - 1 + 3;
-				const nucleotideIncludedRange_bot = possibleAnswer.Position - 1 - 17;
-				if (
-					correctNucleotidePosition >= nucleotideIncludedRange_bot &&
-					correctNucleotidePosition <= nucleotideIncludedRange_top
-				) {
-					correctNucleotideIncluded = true;
-				}
-			} else if (possibleAnswer.Strand === -1) {
-				const nucleotideIncludedRange_top = possibleAnswer.Position - 1 + 17;
-				const nucleotideIncludedRange_bot = possibleAnswer.Position - 1 - 3;
-				if (
-					correctNucleotidePosition >= nucleotideIncludedRange_bot &&
-					correctNucleotidePosition <= nucleotideIncludedRange_top
-				) {
-					correctNucleotideIncluded = true;
-				}
-			}
-			// If in correct nucleotide range, check if nucleotide is included in cut site
-			if (correctNucleotideIncluded) {
-				// Determine where PAM site would be and if PAM site matches inputted value
-				let pamFirst;
-				let pamSecond;
-				// Sense is 1
-				if (possibleAnswer.Strand === 1) {
-					pamFirst = possibleAnswer.Position - 1 + 2;
-					pamSecond = possibleAnswer.Position - 1 + 4;
-					// If the sequence matches to be true, check other answers:
-					if (document.getElementById("strand_input").value === "Sense (+)") {
-						MARstrand = true;
-						true_counts += 1;
-					}
-				}
-				// Antisense is -1
-				else if (possibleAnswer.Strand === -1) {
-					pamFirst = possibleAnswer.Position - 1 - 2;
-					pamSecond = possibleAnswer.Position - 1 - 4;
-					// If the sequence matches to be true, check other answers:
-					if (document.getElementById("strand_input").value === "Antisense (-)") {
-						MARstrand = true;
-						true_counts += 1;
-					}
-				}
+	// Mark each matching entry from a clean state and keep the entry worth the most marks,
+	// so results from two entries never combine into one mark.
+	let bestAnswer;
+	let bestMark = -1;
+	for (const possibleAnswer of possible_comparable_answers) {
+		resetMarkingState();
+		checkCandidateAnswer(possibleAnswer, correctNucleotidePosition);
 
-				// Determining how right the sequence is
-				if (correctNucleotidePosition >= pamFirst && correctNucleotidePosition <= pamSecond) {
-					// within PAM site
-					MARgRNAseq = false;
-					MARgRNAseq_degree = 0;
-				} else if (
-					(correctNucleotidePosition >= possibleAnswer.Position - 1 + 1 &&
-						correctNucleotidePosition <= possibleAnswer.Position - 1 + 10) ||
-					(correctNucleotidePosition <= possibleAnswer.Position - 1 - 1 &&
-						correctNucleotidePosition >= possibleAnswer.Position - 1 - 10)
-				) {
-					MARgRNAseq = true;
-					MARgRNAseq_degree = 1;
-					true_counts += 1;
-				} else if (
-					(correctNucleotidePosition >= possibleAnswer.Position - 1 &&
-						correctNucleotidePosition <= possibleAnswer.Position - 1 + 20) ||
-					(correctNucleotidePosition <= possibleAnswer.Position - 1 &&
-						correctNucleotidePosition >= possibleAnswer.Position - 1 - 20)
-				) {
-					MARgRNAseq = true;
-					MARgRNAseq_degree = 2;
-					true_counts += 1;
-				} else if (
-					(correctNucleotidePosition >= possibleAnswer.Position - 1 &&
-						correctNucleotidePosition <= possibleAnswer.Position - 1 + 30) ||
-					(correctNucleotidePosition <= possibleAnswer.Position - 1 &&
-						correctNucleotidePosition >= possibleAnswer.Position - 1 - 30)
-				) {
-					MARgRNAseq = true;
-					MARgRNAseq_degree = 3;
-					true_counts += 1;
-				}
-
-				// If the sequence if correct, check all other results:
-				if (MARgRNAseq) {
-					const temp_answer = possibleAnswer;
-					// Check if the cut position matches the answer's input
-					if (
-						temp_answer.Position &&
-						parseInt(temp_answer.Position, 10) ===
-							parseInt(document.getElementById("position_input").value, 10)
-					) {
-						MARCutPos = true;
-						true_counts += 1;
-					} else if (temp_answer.Position === null || temp_answer.Position === undefined) {
-						alert(
-							"Error code cA302-307: the reference data has no 'Position' value for this gRNA. Please report this on our GitHub issue tracker.",
-						);
-					}
-
-					// Check if the PAM matches the answer's input
-					if (
-						(temp_answer.PAM || temp_answer.PAM) &&
-						temp_answer.PAM === document.getElementById("pam_input").value.trim()
-					) {
-						MARPAMseq = true;
-						true_counts += 1;
-					} else if (temp_answer.PAM === null || temp_answer.PAM === undefined) {
-						alert(
-							"Error code cA311-317: the reference data has no 'PAM' value for this gRNA. Please report this on our GitHub issue tracker.",
-						);
-					}
-
-					// Check if the Off-target matches the answer's input
-					if (temp_answer["Specificity Score"] || temp_answer["Specificity Score"]) {
-						checkOffTarget(temp_answer["Specificity Score"]);
-					} else if (
-						temp_answer["Specificity Score"] === null ||
-						temp_answer["Specificity Score"] === undefined
-					) {
-						alert(
-							"Error code cA342-348: the reference data has no 'Specificity Score' value for this gRNA. Please report this on our GitHub issue tracker.",
-						);
-					}
-
-					// Check if the F1 primer matches the answer's input
-					checkF1Primers(document?.getElementById("sequence_input")?.value?.trim() || "");
-
-					// Check if the R1 primer matches the answer's input
-					checkR1Primers(document?.getElementById("sequence_input")?.value?.trim() || "");
-				}
-			}
+		const candidateMark = calculateMark();
+		if (candidateMark > bestMark) {
+			bestMark = candidateMark;
+			bestAnswer = possibleAnswer;
 		}
 	}
+
+	// The loop leaves the last entry's results in place, so an earlier best entry is checked again
+	if (bestAnswer && bestAnswer !== possible_comparable_answers[possible_comparable_answers.length - 1]) {
+		resetMarkingState();
+		checkCandidateAnswer(bestAnswer, correctNucleotidePosition);
+	}
+
 	checkAnswers_executed = true;
+}
+
+/**
+ * Checks one reference gRNA entry that matches the submitted sequence against every submitted answer,
+ * setting the marking flags for that entry.
+ * @param {object} possibleAnswer - Benchling gRNA output entry whose Sequence equals the submitted gRNA
+ * @param {number} correctNucleotidePosition - Zero-based position of the gene's target nucleotide
+ */
+function checkCandidateAnswer(possibleAnswer, correctNucleotidePosition) {
+	// Checking if the gene's target position is within correct nucleotide range
+	if (possibleAnswer.Strand === 1) {
+		const nucleotideIncludedRange_top = possibleAnswer.Position - 1 - 1 + 3;
+		const nucleotideIncludedRange_bot = possibleAnswer.Position - 1 - 17;
+		if (
+			correctNucleotidePosition >= nucleotideIncludedRange_bot &&
+			correctNucleotidePosition <= nucleotideIncludedRange_top
+		) {
+			correctNucleotideIncluded = true;
+		}
+	} else if (possibleAnswer.Strand === -1) {
+		const nucleotideIncludedRange_top = possibleAnswer.Position - 1 + 17;
+		const nucleotideIncludedRange_bot = possibleAnswer.Position - 1 - 3;
+		if (
+			correctNucleotidePosition >= nucleotideIncludedRange_bot &&
+			correctNucleotidePosition <= nucleotideIncludedRange_top
+		) {
+			correctNucleotideIncluded = true;
+		}
+	}
+	// If in correct nucleotide range, check if nucleotide is included in cut site
+	if (correctNucleotideIncluded) {
+		// Determine where PAM site would be and if PAM site matches inputted value
+		let pamFirst;
+		let pamSecond;
+		// Sense is 1
+		if (possibleAnswer.Strand === 1) {
+			pamFirst = possibleAnswer.Position - 1 + 2;
+			pamSecond = possibleAnswer.Position - 1 + 4;
+			// If the sequence matches to be true, check other answers:
+			if (document.getElementById("strand_input").value === "Sense (+)") {
+				MARstrand = true;
+				true_counts += 1;
+			}
+		}
+		// Antisense is -1
+		else if (possibleAnswer.Strand === -1) {
+			pamFirst = possibleAnswer.Position - 1 - 2;
+			pamSecond = possibleAnswer.Position - 1 - 4;
+			// If the sequence matches to be true, check other answers:
+			if (document.getElementById("strand_input").value === "Antisense (-)") {
+				MARstrand = true;
+				true_counts += 1;
+			}
+		}
+
+		// Determining how right the sequence is
+		if (correctNucleotidePosition >= pamFirst && correctNucleotidePosition <= pamSecond) {
+			// within PAM site
+			MARgRNAseq = false;
+			MARgRNAseq_degree = 0;
+		} else if (
+			(correctNucleotidePosition >= possibleAnswer.Position - 1 + 1 &&
+				correctNucleotidePosition <= possibleAnswer.Position - 1 + 10) ||
+			(correctNucleotidePosition <= possibleAnswer.Position - 1 - 1 &&
+				correctNucleotidePosition >= possibleAnswer.Position - 1 - 10)
+		) {
+			MARgRNAseq = true;
+			MARgRNAseq_degree = 1;
+			true_counts += 1;
+		} else if (
+			(correctNucleotidePosition >= possibleAnswer.Position - 1 &&
+				correctNucleotidePosition <= possibleAnswer.Position - 1 + 20) ||
+			(correctNucleotidePosition <= possibleAnswer.Position - 1 &&
+				correctNucleotidePosition >= possibleAnswer.Position - 1 - 20)
+		) {
+			MARgRNAseq = true;
+			MARgRNAseq_degree = 2;
+			true_counts += 1;
+		} else if (
+			(correctNucleotidePosition >= possibleAnswer.Position - 1 &&
+				correctNucleotidePosition <= possibleAnswer.Position - 1 + 30) ||
+			(correctNucleotidePosition <= possibleAnswer.Position - 1 &&
+				correctNucleotidePosition >= possibleAnswer.Position - 1 - 30)
+		) {
+			MARgRNAseq = true;
+			MARgRNAseq_degree = 3;
+			true_counts += 1;
+		}
+
+		// If the sequence if correct, check all other results:
+		if (MARgRNAseq) {
+			const temp_answer = possibleAnswer;
+			// Check if the cut position matches the answer's input
+			if (
+				temp_answer.Position &&
+				parseInt(temp_answer.Position, 10) === parseInt(document.getElementById("position_input").value, 10)
+			) {
+				MARCutPos = true;
+				true_counts += 1;
+			} else if (temp_answer.Position === null || temp_answer.Position === undefined) {
+				alert(
+					"Error code cA302-307: the reference data has no 'Position' value for this gRNA. Please report this on our GitHub issue tracker.",
+				);
+			}
+
+			// Check if the PAM matches the answer's input
+			if (
+				(temp_answer.PAM || temp_answer.PAM) &&
+				temp_answer.PAM === document.getElementById("pam_input").value.trim()
+			) {
+				MARPAMseq = true;
+				true_counts += 1;
+			} else if (temp_answer.PAM === null || temp_answer.PAM === undefined) {
+				alert(
+					"Error code cA311-317: the reference data has no 'PAM' value for this gRNA. Please report this on our GitHub issue tracker.",
+				);
+			}
+
+			// Check if the Off-target matches the answer's input
+			if (temp_answer["Specificity Score"] || temp_answer["Specificity Score"]) {
+				checkOffTarget(temp_answer["Specificity Score"]);
+			} else if (temp_answer["Specificity Score"] === null || temp_answer["Specificity Score"] === undefined) {
+				alert(
+					"Error code cA342-348: the reference data has no 'Specificity Score' value for this gRNA. Please report this on our GitHub issue tracker.",
+				);
+			}
+
+			// Check if the F1 primer matches the answer's input
+			checkF1Primers(document?.getElementById("sequence_input")?.value?.trim() || "");
+
+			// Check if the R1 primer matches the answer's input
+			checkR1Primers(document?.getElementById("sequence_input")?.value?.trim() || "");
+		}
+	}
 }
 
 let offtarget_List = [];
@@ -571,6 +590,43 @@ let studentMarkPercentage = 0;
 const markTotal = 10;
 
 /**
+ * Returns the marks out of {@link markTotal} that the current marking flags are worth.
+ * @returns {number} The mark, from 0 to 10 in steps of 0.5
+ */
+function calculateMark() {
+	let mark = 0;
+	if (MARgRNAseq) {
+		if (MARgRNAseq_degree === 1) {
+			mark += 2;
+		} else if (MARgRNAseq_degree === 2) {
+			mark += 1;
+		} else if (MARgRNAseq_degree === 3) {
+			mark += 0.5;
+		}
+	}
+	if (MARPAMseq) {
+		mark += 2;
+	}
+	if (MAROffTarget) {
+		if (MAROffTarget_degree === 1) {
+			mark += 2;
+		} else if (MAROffTarget_degree === 2) {
+			mark += 1;
+		} else if (MAROffTarget_degree === 3) {
+			mark += 0.5;
+		}
+	}
+	if (MARF1primers) {
+		mark += 2;
+	}
+	if (MARR1primers) {
+		mark += 2;
+	}
+
+	return mark;
+}
+
+/**
  * Calculates the student's mark and percentage based on the current marking state.
  */
 function markAnswers() {
@@ -579,33 +635,7 @@ function markAnswers() {
 		checkAnswers();
 	}
 	if (checkAnswers_executed) {
-		if (MARgRNAseq) {
-			if (MARgRNAseq_degree === 1) {
-				studentMark += 2;
-			} else if (MARgRNAseq_degree === 2) {
-				studentMark += 1;
-			} else if (MARgRNAseq_degree === 3) {
-				studentMark += 0.5;
-			}
-		}
-		if (MARPAMseq) {
-			studentMark += 2;
-		}
-		if (MAROffTarget) {
-			if (MAROffTarget_degree === 1) {
-				studentMark += 2;
-			} else if (MAROffTarget_degree === 2) {
-				studentMark += 1;
-			} else if (MAROffTarget_degree === 3) {
-				studentMark += 0.5;
-			}
-		}
-		if (MARF1primers) {
-			studentMark += 2;
-		}
-		if (MARR1primers) {
-			studentMark += 2;
-		}
+		studentMark = calculateMark();
 		studentMarkPercentage = ((studentMark / markTotal) * 100).toFixed(2);
 		if (studentMarkPercentage > 100) {
 			studentMarkPercentage = 100;
@@ -788,20 +818,20 @@ let all_marks = [];
  * Collects the student's answers, calculates marks, and triggers feedback display.
  */
 function submitAnswers() {
-	all_answers = [];
 	all_marks = [];
+	// The answers are read in the same task as checkAnswers(), so the feedback shows the values that were graded
+	all_answers = [
+		document?.getElementById("sequence_input")?.value?.trim() || "",
+		document.getElementById("pam_input").value.trim(),
+		document.getElementById("position_input").value,
+		document.getElementById("strand_input").value,
+		document.getElementById("offtarget_input").value,
+		document.getElementById("f1_input").value.trim(),
+		document.getElementById("r1_input").value.trim(),
+	];
 	checkAnswers();
 	setTimeout(() => {
 		markAnswers();
-		all_answers.push(
-			document?.getElementById("sequence_input")?.value?.trim() || "",
-			document.getElementById("pam_input").value.trim(),
-			document.getElementById("position_input").value,
-			document.getElementById("strand_input").value,
-			document.getElementById("offtarget_input").value,
-			document.getElementById("f1_input").value.trim(),
-			document.getElementById("r1_input").value.trim(),
-		);
 		all_marks.push(studentMark, studentMarkPercentage);
 
 		showFeedback();
@@ -838,6 +868,7 @@ if (typeof module !== "undefined" && module.exports) {
 		loadWork,
 		checkAnswers,
 		showFeedback,
+		submitAnswers,
 		// Export getters for testing
 		get MAROffTarget() {
 			return MAROffTarget;

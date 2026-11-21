@@ -11,6 +11,7 @@ const {
 	loadWork,
 	checkAnswers,
 	showFeedback,
+	submitAnswers,
 	__resetState: resetState,
 	__setTestState: setTestState,
 } = crispr;
@@ -607,7 +608,11 @@ describe("crispr_scripts.js - Utility Functions", () => {
 	});
 });
 
-describe("crispr_scripts.js - showFeedback()", () => {
+/**
+ * Registers hooks that give each test in the enclosing suite the real jsdom document and the real jQuery.
+ * @param {string} bodyHtml - Markup placed in document.body before each test
+ */
+function useRealDom(bodyHtml) {
 	const replacedDocumentMethods = ["getElementById", "querySelector", "querySelectorAll", "createElement"];
 
 	beforeEach(() => {
@@ -619,14 +624,21 @@ describe("crispr_scripts.js - showFeedback()", () => {
 			delete document[methodName];
 		}
 
-		document.body.innerHTML = '<div id="mainContainer"></div>';
+		document.body.innerHTML = bodyHtml;
 		global.$ = require("./APIandLibraries/jQuery/jquery.min.js");
-		delete window.__xss;
 	});
 
 	afterEach(() => {
 		document.body.innerHTML = "";
 		delete global.$;
+	});
+}
+
+describe("crispr_scripts.js - showFeedback()", () => {
+	useRealDom('<div id="mainContainer"></div>');
+
+	beforeEach(() => {
+		delete window.__xss;
 	});
 
 	it("renders markup characters in answers and primer candidates as text", () => {
@@ -690,5 +702,79 @@ describe("crispr_scripts.js - showFeedback()", () => {
 			);
 			expect(cardText).not.toContain("inputted:");
 		}
+	});
+});
+
+describe("crispr_scripts.js - submitAnswers()", () => {
+	const inputIds = [
+		"sequence_input",
+		"pam_input",
+		"position_input",
+		"strand_input",
+		"offtarget_input",
+		"f1_input",
+		"r1_input",
+	];
+	const gRNA = "ACGTACGTACGTACGTACGT";
+
+	useRealDom(`${inputIds.map((id) => `<input id="${id}">`).join("")}<div id="mainContainer"></div>`);
+
+	beforeEach(() => {
+		jest.useFakeTimers();
+	});
+
+	afterEach(() => {
+		jest.useRealTimers();
+	});
+
+	/**
+	 * Loads one gene whose target nucleotide sits at zero-based position 95, with the given reference entries.
+	 * @param {object[]} entries - Benchling gRNA output entries for the gene
+	 */
+	function loadGene(entries) {
+		setTestState({
+			gene_backgroundInfo: { gene_list: { test_gene: { "Target position": 96 } } },
+			benchling_gRNA_outputs: { gene_list: { test_gene: entries } },
+			current_gene: "test_gene",
+		});
+	}
+
+	/**
+	 * Fills the submission form, leaving both primer inputs empty.
+	 * @param {object} answers - Values for the gRNA, PAM, cut position and off-target score inputs
+	 */
+	function fillForm({ sequence, pam, position, offTarget }) {
+		const values = [sequence, pam, position, "Sense (+)", offTarget, "", ""];
+		inputIds.forEach((id, index) => {
+			document.getElementById(id).value = values[index];
+		});
+	}
+
+	it("shows the answers that were graded when an input changes before the feedback renders", () => {
+		loadGene([{ Sequence: gRNA, Strand: 1, Position: 100, PAM: "AGG", "Specificity Score": 90 }]);
+		fillForm({ sequence: gRNA, pam: "AGG", position: "100", offTarget: "90" });
+
+		submitAnswers();
+		document.getElementById("sequence_input").value = "TTTTTTTTTTTTTTTTTTTT";
+		jest.advanceTimersByTime(750);
+
+		const feedbackText = document.getElementById("mainContainer").textContent;
+		expect(feedbackText).toContain(`you put down "${gRNA}"`);
+		expect(feedbackText).not.toContain("TTTTTTTTTTTTTTTTTTTT");
+	});
+
+	it("marks a gRNA matching two reference entries by the better entry alone", () => {
+		// The first entry is worth 5 marks (partial gRNA 1, PAM 2, off-target 2) and the second 4 (gRNA 2,
+		// off-target 2); combining the first entry's PAM with the second entry's gRNA would give 6.
+		loadGene([
+			{ Sequence: gRNA, Strand: 1, Position: 110, PAM: "AGG", "Specificity Score": 90 },
+			{ Sequence: gRNA, Strand: 1, Position: 100, PAM: "TGG", "Specificity Score": 90 },
+		]);
+		fillForm({ sequence: gRNA, pam: "AGG", position: "100", offTarget: "90" });
+
+		submitAnswers();
+		jest.advanceTimersByTime(750);
+
+		expect(document.getElementById("mainContainer").textContent).toContain("Mark: 5/10");
 	});
 });

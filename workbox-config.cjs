@@ -3,6 +3,9 @@ module.exports = {
 	// page. A worker can only control pages at or below its own folder.
 	"swDest": "./sw.js",
 	"inlineWorkboxRuntime": true,
+	// workbox-build 7 bundles from a randomly named temporary file and appends a second
+	// sourceMappingURL comment, so a source map would change on every build.
+	"sourcemap": false,
 	"globDirectory": ".",
 	// Precache URLs are root-absolute so they resolve from the origin root
 	// regardless of where the worker file is served from.

@@ -14,7 +14,7 @@ The marking system validates student submissions across the components below. Sc
 
 ## Core Marking Function
 
-The main marking logic is implemented in `markAnswers()` in [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js).
+The main marking logic is implemented in `markAnswers()` in [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js), which takes the points for each component from `calculateMark()`.
 
 ## Step-by-Step Validation
 
@@ -50,6 +50,7 @@ for (const answer of benchling_gRNA_outputs.gene_list[current_gene]) {
 - Input sequence must **exactly match** one or more reference sequences (case-sensitive after trim)
 - If no match found, the downstream validation steps are skipped
 - If matches found, continue to step 3
+- If several entries match, each is marked from reset marking variables and the entry worth the most marks sets the result
 
 ### Step 3: Nucleotide Target Validation
 
@@ -216,7 +217,7 @@ The practice flow uses the default threshold derived from nearby scores. To adju
 To modify marking logic:
 
 1. Edit `checkAnswers()` to add validation steps
-2. Update `markAnswers()` to adjust scoring weights
+2. Update `calculateMark()` to adjust scoring weights
 3. Update feedback in `showFeedback()` to explain new criteria
 4. Add corresponding tests in [crispr_scripts.test.js](../../core/scripts/crispr_scripts.test.js)
 
