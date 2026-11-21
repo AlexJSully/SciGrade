@@ -349,7 +349,7 @@ function showFeedback()
 - Candidate primer lists derived from the submitted gRNA sequence
 - A Back to Gene Selection button that calls `redirectCRISPR()` to rebuild the selection screen
 
-**Rendered To:** `#mainContainer` in the runtime page.
+**Rendered To:** `#mainContainer` in the runtime page. Submitted answers and primer candidates are inserted as text, so markup characters in them display literally rather than being parsed as HTML.
 
 **Called By:** `submitAnswers()` after `markAnswers()`.
 

@@ -232,6 +232,12 @@ function checkAnswers() {
 	MARPAMseq = false;
 	MARCutPos = false;
 	MARstrand = false;
+	MAROffTarget = false;
+	MAROffTarget_degree = 0;
+	MARF1primers = false;
+	MARR1primers = false;
+	possible_F1_primers = [];
+	possible_R1_primers = [];
 	correctNucleotideIncluded = false;
 	true_counts = 0;
 
@@ -598,6 +604,45 @@ function markAnswers() {
 }
 
 /**
+ * Joins primer candidates into the sentence ending used in the feedback text.
+ * @param {string[]} primers - Candidate primers generated from the submitted gRNA
+ * @returns {string} The candidates separated by commas and ending in a period, or an empty string when there are none
+ */
+function formatPrimerOptions(primers) {
+	return primers.length > 0 ? `${primers.join(", ")}.` : "";
+}
+
+/**
+ * Appends one collapsible feedback card to #mainContainer. Every value is written as text,
+ * so markup characters in a student's answer show literally instead of being parsed as HTML.
+ * @param {object} card - The card's content
+ * @param {string} card.id - Element-id prefix, so "gRNA" gives the ids gRNACard and gRNAOutput
+ * @param {string} card.title - Field name shown in the header and in the answer sentence
+ * @param {number} card.mark - Marks awarded out of 2
+ * @param {string} card.answer - The student's submitted value
+ * @param {string} card.explanation - Why the mark was given
+ */
+function appendFeedbackCard({ id, title, mark, answer, explanation }) {
+	const headerId = `${id}Card`;
+	const outputId = `${id}Output`;
+
+	const toggle = $("<button class='btn btn-link' data-bs-toggle='collapse' aria-expanded='false'></button>")
+		.attr({ "data-bs-target": `#${outputId}`, "aria-controls": outputId })
+		.text(`${title}: ${mark}/2`);
+	const header = $("<div class='card-header'></div>")
+		.attr("id", headerId)
+		.append($("<h5 class='mb-0'></h5>").append(toggle));
+
+	const body = $("<div class='card-body'></div>").append(
+		$("<p></p>").text(` For ${title}, you put down "${answer}" which gave you the mark ${mark}.`),
+		document.createTextNode(explanation),
+	);
+	const output = $("<div class='collapse'></div>").attr({ id: outputId, "aria-labelledby": headerId }).append(body);
+
+	$("#mainContainer").append($("<div class='card about'></div>").append(header, output));
+}
+
+/**
  * Show feedback for students
  */
 function showFeedback() {
@@ -656,141 +701,56 @@ function showFeedback() {
 	}
 	/// F1 Primer:
 	let MARF1primers_display = 0;
-	let f1Options = "";
-	for (let i = 0; i < possible_F1_primers.length; i += 1) {
-		f1Options += possible_F1_primers[i];
-		if (i === possible_F1_primers.length - 1) {
-			f1Options += ".";
-		} else {
-			f1Options += ", ";
-		}
-	}
-	let MARF1primers_explain = `Your F1 primer sequence was incorrectly matched to one of the following sequences generated based on your gRNA sequence inputted: ${f1Options}`;
+	let MARF1primers_explain = `Your F1 primer sequence was incorrectly matched to one of the following sequences generated based on your gRNA sequence inputted: ${formatPrimerOptions(possible_F1_primers)}`;
 	if (MARF1primers) {
 		MARF1primers_display = 2;
 		MARF1primers_explain = "This means your answer was correct and you received full marks.";
 	}
 	/// R1 Primer:
 	let MARR1primers_display = 0;
-	let r1Options = "";
-	for (let i = 0; i < possible_R1_primers.length; i += 1) {
-		r1Options += possible_R1_primers[i];
-		if (i === possible_R1_primers.length - 1) {
-			r1Options += ".";
-		} else {
-			r1Options += ", ";
-		}
-	}
-	let MARR1primers_explain = `Your R1 primer sequence was incorrectly matched to one of the following sequences generated based on your gRNA sequence inputted: ${r1Options}`;
+	let MARR1primers_explain = `Your R1 primer sequence was incorrectly matched to one of the following sequences generated based on your gRNA sequence inputted: ${formatPrimerOptions(possible_R1_primers)}`;
 	if (MARR1primers) {
 		MARR1primers_display = 2;
 		MARR1primers_explain = "This means your answer was correct and you received full marks.";
 	}
 
-	// gRNA:
-	append_str += "<div class='card about'>";
-	append_str += "<div class='card-header' id='gRNACard'>";
-	append_str += "<h5 class='mb-0'>";
-	append_str +=
-		"<button class='btn btn-link' data-bs-toggle='collapse' data-bs-target='#gRNAOutput' aria-expanded='false' aria-controls='gRNAOutput'>";
-	append_str += `gRNA Strand Sequence: ${MARgRNAseq_degree_display}/2`;
-	append_str += "</button>";
-	append_str += "</h5>";
-	append_str += "</div>";
-	append_str += "<div id='gRNAOutput' class='collapse' aria-labelledby='gRNACard'>";
-	append_str += "<div class='card-body'>";
-	// Content
-	append_str += `<p> For gRNA Strand Sequence, you put down "${all_answers[0]}" which gave you the mark ${MARgRNAseq_degree_display}.</p>`;
-	append_str += MARgRNAseq_degree_explain;
-	// Close gRNA card
-	append_str += "</div>";
-	append_str += "</div>";
-	append_str += "</div>";
 	$("#mainContainer").append(append_str);
 
-	// PAM:
-	append_str = "<div class='card about'>";
-	append_str += "<div class='card-header' id='PAMCard'>";
-	append_str += "<h5 class='mb-0'>";
-	append_str +=
-		"<button class='btn btn-link' data-bs-toggle='collapse' data-bs-target='#PAMOutput' aria-expanded='false' aria-controls='PAMOutput'>";
-	append_str += `gRNA PAM Sequence: ${MARPAMseq_display}/2`;
-	append_str += "</button>";
-	append_str += "</h5>";
-	append_str += "</div>";
-	append_str += "<div id='PAMOutput' class='collapse' aria-labelledby='PAMCard'>";
-	append_str += "<div class='card-body'>";
-	// Content
-	append_str += `<p> For gRNA PAM Sequence, you put down "${all_answers[1]}" which gave you the mark ${MARPAMseq_display}.</p>`;
-	append_str += MARPAMseq_explain;
-	// Close PAM card
-	append_str += "</div>";
-	append_str += "</div>";
-	append_str += "</div>";
-	$("#mainContainer").append(append_str);
-
-	// Off-target Score:
-	append_str = "<div class='card about'>";
-	append_str += "<div class='card-header' id='OffTargetCard'>";
-	append_str += "<h5 class='mb-0'>";
-	append_str +=
-		"<button class='btn btn-link' data-bs-toggle='collapse' data-bs-target='#OffTargetOutput' aria-expanded='false' aria-controls='OffTargetOutput'>";
-	append_str += `Off-target Score: ${MAROffTarget_degree_display}/2`;
-	append_str += "</button>";
-	append_str += "</h5>";
-	append_str += "</div>";
-	append_str += "<div id='OffTargetOutput' class='collapse' aria-labelledby='OffTargetCard'>";
-	append_str += "<div class='card-body'>";
-	// Content
-	append_str += `<p> For Off-Target Score, you put down "${all_answers[4]}" which gave you the mark ${MAROffTarget_degree_display}.</p>`;
-	append_str += MAROffTarget_degree_explain;
-	// Close Off-target Score card
-	append_str += "</div>";
-	append_str += "</div>";
-	append_str += "</div>";
-	$("#mainContainer").append(append_str);
-
-	// F1 Primer:
-	append_str = "<div class='card about'>";
-	append_str += "<div class='card-header' id='F1PrimerCard'>";
-	append_str += "<h5 class='mb-0'>";
-	append_str +=
-		"<button class='btn btn-link' data-bs-toggle='collapse' data-bs-target='#F1PrimerOutput' aria-expanded='false' aria-controls='F1PrimerOutput'>";
-	append_str += `F1 Primer: ${MARF1primers_display}/2`;
-	append_str += "</button>";
-	append_str += "</h5>";
-	append_str += "</div>";
-	append_str += "<div id='F1PrimerOutput' class='collapse' aria-labelledby='F1PrimerCard'>";
-	append_str += "<div class='card-body'>";
-	// Content
-	append_str += `<p> For F1 Primer, you put down "${all_answers[5]}" which gave you the mark ${MARF1primers_display}.</p>`;
-	append_str += MARF1primers_explain;
-	// Close F1 Primer card
-	append_str += "</div>";
-	append_str += "</div>";
-	append_str += "</div>";
-	$("#mainContainer").append(append_str);
-
-	// F1 Primer:
-	append_str = "<div class='card about'>";
-	append_str += "<div class='card-header' id='R1PrimerCard'>";
-	append_str += "<h5 class='mb-0'>";
-	append_str +=
-		"<button class='btn btn-link' data-bs-toggle='collapse' data-bs-target='#R1PrimerOutput' aria-expanded='false' aria-controls='R1PrimerOutput'>";
-	append_str += `R1 Primer: ${MARR1primers_display}/2`;
-	append_str += "</button>";
-	append_str += "</h5>";
-	append_str += "</div>";
-	append_str += "<div id='R1PrimerOutput' class='collapse' aria-labelledby='R1PrimerCard'>";
-	append_str += "<div class='card-body'>";
-	// Content
-	append_str += `<p> For R1 Primer, you put down "${all_answers[6]}" which gave you the mark ${MARR1primers_display}.</p>`;
-	append_str += MARR1primers_explain;
-	// Close F1 Primer card
-	append_str += "</div>";
-	append_str += "</div>";
-	append_str += "</div>";
-	$("#mainContainer").append(append_str);
+	appendFeedbackCard({
+		id: "gRNA",
+		title: "gRNA Strand Sequence",
+		mark: MARgRNAseq_degree_display,
+		answer: all_answers[0],
+		explanation: MARgRNAseq_degree_explain,
+	});
+	appendFeedbackCard({
+		id: "PAM",
+		title: "gRNA PAM Sequence",
+		mark: MARPAMseq_display,
+		answer: all_answers[1],
+		explanation: MARPAMseq_explain,
+	});
+	appendFeedbackCard({
+		id: "OffTarget",
+		title: "Off-target Score",
+		mark: MAROffTarget_degree_display,
+		answer: all_answers[4],
+		explanation: MAROffTarget_degree_explain,
+	});
+	appendFeedbackCard({
+		id: "F1Primer",
+		title: "F1 Primer",
+		mark: MARF1primers_display,
+		answer: all_answers[5],
+		explanation: MARF1primers_explain,
+	});
+	appendFeedbackCard({
+		id: "R1Primer",
+		title: "R1 Primer",
+		mark: MARR1primers_display,
+		answer: all_answers[6],
+		explanation: MARR1primers_explain,
+	});
 
 	append_str = "<br>";
 	append_str +=
@@ -857,6 +817,8 @@ if (typeof module !== "undefined" && module.exports) {
 		fillGeneList,
 		select_Gene,
 		loadWork,
+		checkAnswers,
+		showFeedback,
 		// Export getters for testing
 		get MAROffTarget() {
 			return MAROffTarget;
@@ -873,6 +835,12 @@ if (typeof module !== "undefined" && module.exports) {
 		get current_gene() {
 			return current_gene;
 		},
+		get possible_F1_primers() {
+			return possible_F1_primers;
+		},
+		get possible_R1_primers() {
+			return possible_R1_primers;
+		},
 		// Export setters for test setup
 		__setTestState(state = {}) {
 			if (state.correctNucleotideIncluded !== undefined)
@@ -882,6 +850,14 @@ if (typeof module !== "undefined" && module.exports) {
 			if (state.current_gene !== undefined) current_gene = state.current_gene;
 			if (state.gene_backgroundInfo !== undefined) gene_backgroundInfo = state.gene_backgroundInfo;
 			if (state.possible_gene !== undefined) possible_gene = state.possible_gene;
+			if (state.MAROffTarget !== undefined) MAROffTarget = state.MAROffTarget;
+			if (state.MAROffTarget_degree !== undefined) MAROffTarget_degree = state.MAROffTarget_degree;
+			if (state.MARF1primers !== undefined) MARF1primers = state.MARF1primers;
+			if (state.MARR1primers !== undefined) MARR1primers = state.MARR1primers;
+			if (state.possible_F1_primers !== undefined) possible_F1_primers = state.possible_F1_primers;
+			if (state.possible_R1_primers !== undefined) possible_R1_primers = state.possible_R1_primers;
+			if (state.all_answers !== undefined) all_answers = state.all_answers;
+			if (state.all_marks !== undefined) all_marks = state.all_marks;
 		},
 		// Reset state for clean tests
 		__resetState() {

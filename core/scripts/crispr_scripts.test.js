@@ -9,6 +9,8 @@ const {
 	fillGeneList,
 	select_Gene,
 	loadWork,
+	checkAnswers,
+	showFeedback,
 	__resetState: resetState,
 	__setTestState: setTestState,
 } = crispr;
@@ -366,6 +368,38 @@ describe("crispr_scripts.js - Utility Functions", () => {
 		});
 	});
 
+	describe("checkAnswers()", () => {
+		beforeEach(() => {
+			resetState();
+		});
+
+		it("clears the off-target and primer results of an earlier attempt when the gRNA has no match", () => {
+			setTestState({
+				MAROffTarget: true,
+				MAROffTarget_degree: 1,
+				MARF1primers: true,
+				MARR1primers: true,
+				possible_F1_primers: ["TAATACGACTCACTATAGAAGCACTGCACGCCGT"],
+				possible_R1_primers: ["TTCTAGCTCTAAAACACCCACGGCGTGCAGTGCT"],
+				gene_backgroundInfo: { gene_list: { test_gene: { "Target position": 100 } } },
+				benchling_gRNA_outputs: { gene_list: { test_gene: [{ Sequence: "AAGCACTGCACGCCGTGGGT" }] } },
+				current_gene: "test_gene",
+			});
+			global.document.getElementById = jest.fn((id) => ({
+				value: id === "sequence_input" ? "AAAAAAAAAAAAAAAAAAAA" : "",
+			}));
+
+			checkAnswers();
+
+			expect(crispr.MAROffTarget).toBe(false);
+			expect(crispr.MAROffTarget_degree).toBe(0);
+			expect(crispr.MARF1primers).toBe(false);
+			expect(crispr.MARR1primers).toBe(false);
+			expect(crispr.possible_F1_primers).toEqual([]);
+			expect(crispr.possible_R1_primers).toEqual([]);
+		});
+	});
+
 	describe("fillGeneList()", () => {
 		let appendMock;
 		let propMock;
@@ -570,5 +604,77 @@ describe("crispr_scripts.js - Utility Functions", () => {
 			expect(() => loadWork()).not.toThrow();
 			expect(global.alert).toHaveBeenCalledWith(expect.stringContaining("lFS50-66"));
 		});
+	});
+});
+
+describe("crispr_scripts.js - showFeedback()", () => {
+	const replacedDocumentMethods = ["getElementById", "querySelector", "querySelectorAll", "createElement"];
+
+	beforeEach(() => {
+		resetState();
+
+		// tests/jest/setupTest.js and the suite above replace these methods on the real jsdom
+		// document; deleting the own properties exposes the real ones on Document.prototype.
+		for (const methodName of replacedDocumentMethods) {
+			delete document[methodName];
+		}
+
+		document.body.innerHTML = '<div id="mainContainer"></div>';
+		global.$ = require("./APIandLibraries/jQuery/jquery.min.js");
+		delete window.__xss;
+	});
+
+	afterEach(() => {
+		document.body.innerHTML = "";
+		delete global.$;
+	});
+
+	it("renders markup characters in answers and primer candidates as text", () => {
+		const answers = [
+			'<img src=x onerror="window.__xss=1">',
+			`<b>&"'</b>`,
+			"380",
+			"Sense (+)",
+			"<i>60</i>",
+			"<script>window.__xss=1</script>",
+			"&amp;",
+		];
+		const markupPrimer = "TAATACGACTCACTATAG<img src=y>";
+		setTestState({
+			all_answers: answers,
+			all_marks: [0, "0.00"],
+			possible_F1_primers: [markupPrimer],
+			possible_R1_primers: [],
+		});
+
+		showFeedback();
+
+		const container = document.getElementById("mainContainer");
+		for (const answer of [answers[0], answers[1], answers[4], answers[5], answers[6]]) {
+			expect(container.textContent).toContain(`you put down "${answer}"`);
+		}
+		expect(container.textContent).toContain(`${markupPrimer}.`);
+		expect(container.querySelectorAll("img, b, i, script")).toHaveLength(0);
+		expect(window.__xss).toBeUndefined();
+	});
+
+	it("links each card's toggle button to its own collapsible body", () => {
+		setTestState({ all_answers: ["", "", "", "", "", "", ""], all_marks: [0, "0.00"] });
+
+		showFeedback();
+
+		const cards = document.querySelectorAll("#mainContainer .card.about");
+		expect(cards).toHaveLength(5);
+		for (const card of cards) {
+			const header = card.querySelector(".card-header");
+			const toggle = header.querySelector("h5.mb-0 > button.btn.btn-link");
+			const output = card.querySelector(".collapse > .card-body").parentElement;
+
+			expect(toggle.getAttribute("data-bs-toggle")).toBe("collapse");
+			expect(toggle.getAttribute("data-bs-target")).toBe(`#${output.id}`);
+			expect(toggle.getAttribute("aria-controls")).toBe(output.id);
+			expect(output.getAttribute("aria-labelledby")).toBe(header.id);
+		}
+		expect(cards[0].querySelector("button").textContent).toBe("gRNA Strand Sequence: 0/2");
 	});
 });
