@@ -198,13 +198,13 @@ function checkAnswers()
 1. Resets all marking variables
 2. Retrieves student input from form fields
 3. Searches for matching gRNA sequences in reference data with an exact, case-sensitive match after trimming
-4. For each match:
+4. For each match, starting from reset marking variables:
     - Validates strand selection
     - Checks if target nucleotide is in range
     - Validates PAM sequence
     - Validates off-target score
     - Validates F1 and R1 primers
-5. Sets global marking variables
+5. Keeps the marking variables of the match worth the most marks, so results from two matches never combine
 
 **Sets Variables:**
 
@@ -320,7 +320,7 @@ function markAnswers()
 **Behavior:**
 
 - Processes results from `checkAnswers()`
-- Assigns points for each correct component:
+- Assigns points for each correct component through `calculateMark()`:
     - gRNA sequence
     - PAM
     - Off-target score
@@ -349,7 +349,7 @@ function showFeedback()
 - Candidate primer lists derived from the submitted gRNA sequence
 - A Back to Gene Selection button that calls `redirectCRISPR()` to rebuild the selection screen
 
-**Rendered To:** `#mainContainer` in the runtime page.
+**Rendered To:** `#mainContainer` in the runtime page. Submitted answers and primer candidates are inserted as text, so markup characters in them display literally rather than being parsed as HTML.
 
 **Called By:** `submitAnswers()` after `markAnswers()`.
 
@@ -365,9 +365,10 @@ function submitAnswers()
 
 **Workflow:**
 
-1. Call `checkAnswers()` for validation
-2. After a delay, call `markAnswers()` for scoring
-3. Call `showFeedback()` to display results
+1. Read the form values into `all_answers`, which `showFeedback()` displays
+2. Call `checkAnswers()` for validation
+3. After a delay, call `markAnswers()` for scoring
+4. Call `showFeedback()` to display results
 
 **Form Elements Referenced:**
 

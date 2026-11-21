@@ -222,18 +222,36 @@ let correctNucleotideIncluded = false;
 let true_counts = 0; // This exists for the instance that there is more than one match for inputtedSeq
 
 let checkAnswers_executed = false;
+
 /**
- * Checks the answer in the submission form and determines if they are correct or not
+ * Clears the answer-check flags, counters, and primer candidate lists that {@link checkAnswers} fills,
+ * so an attempt starts with no marks.
  */
-function checkAnswers() {
-	// Reset answers:
+function resetMarkingState() {
 	MARgRNAseq = false;
 	MARgRNAseq_degree = 0;
 	MARPAMseq = false;
 	MARCutPos = false;
 	MARstrand = false;
+	MAROffTarget = false;
+	MAROffTarget_degree = 0;
+	MAROffTarget_aboveOpt = false;
+	MAROffTarget_above35 = false;
+	MAROffTarget_onlyOption = false;
+	MARF1primers = false;
+	MARR1primers = false;
+	possible_F1_primers = [];
+	possible_R1_primers = [];
 	correctNucleotideIncluded = false;
 	true_counts = 0;
+}
+
+/**
+ * Checks the answer in the submission form and determines if they are correct or not
+ */
+function checkAnswers() {
+	// Reset answers:
+	resetMarkingState();
 
 	// Verify answers
 	const correctNucleotidePosition = gene_backgroundInfo.gene_list[current_gene]["Target position"] - 1;
@@ -250,143 +268,162 @@ function checkAnswers() {
 		}
 	}
 
-	// Check against existing:
-	if (possible_comparable_answers.length > 0) {
-		for (const possibleAnswer of possible_comparable_answers) {
-			true_counts = 0;
-			// Checking if the gene's target position is within correct nucleotide range
-			correctNucleotideIncluded = false;
-			if (possibleAnswer.Strand === 1) {
-				const nucleotideIncludedRange_top = possibleAnswer.Position - 1 - 1 + 3;
-				const nucleotideIncludedRange_bot = possibleAnswer.Position - 1 - 17;
-				if (
-					correctNucleotidePosition >= nucleotideIncludedRange_bot &&
-					correctNucleotidePosition <= nucleotideIncludedRange_top
-				) {
-					correctNucleotideIncluded = true;
-				}
-			} else if (possibleAnswer.Strand === -1) {
-				const nucleotideIncludedRange_top = possibleAnswer.Position - 1 + 17;
-				const nucleotideIncludedRange_bot = possibleAnswer.Position - 1 - 3;
-				if (
-					correctNucleotidePosition >= nucleotideIncludedRange_bot &&
-					correctNucleotidePosition <= nucleotideIncludedRange_top
-				) {
-					correctNucleotideIncluded = true;
-				}
-			}
-			// If in correct nucleotide range, check if nucleotide is included in cut site
-			if (correctNucleotideIncluded) {
-				// Determine where PAM site would be and if PAM site matches inputted value
-				let pamFirst;
-				let pamSecond;
-				// Sense is 1
-				if (possibleAnswer.Strand === 1) {
-					pamFirst = possibleAnswer.Position - 1 + 2;
-					pamSecond = possibleAnswer.Position - 1 + 4;
-					// If the sequence matches to be true, check other answers:
-					if (document.getElementById("strand_input").value === "Sense (+)") {
-						MARstrand = true;
-						true_counts += 1;
-					}
-				}
-				// Antisense is -1
-				else if (possibleAnswer.Strand === -1) {
-					pamFirst = possibleAnswer.Position - 1 - 2;
-					pamSecond = possibleAnswer.Position - 1 - 4;
-					// If the sequence matches to be true, check other answers:
-					if (document.getElementById("strand_input").value === "Antisense (-)") {
-						MARstrand = true;
-						true_counts += 1;
-					}
-				}
+	// Mark each matching entry from a clean state and keep the entry worth the most marks,
+	// so results from two entries never combine into one mark.
+	let bestAnswer;
+	let bestMark = -1;
+	for (const possibleAnswer of possible_comparable_answers) {
+		resetMarkingState();
+		checkCandidateAnswer(possibleAnswer, correctNucleotidePosition);
 
-				// Determining how right the sequence is
-				if (correctNucleotidePosition >= pamFirst && correctNucleotidePosition <= pamSecond) {
-					// within PAM site
-					MARgRNAseq = false;
-					MARgRNAseq_degree = 0;
-				} else if (
-					(correctNucleotidePosition >= possibleAnswer.Position - 1 + 1 &&
-						correctNucleotidePosition <= possibleAnswer.Position - 1 + 10) ||
-					(correctNucleotidePosition <= possibleAnswer.Position - 1 - 1 &&
-						correctNucleotidePosition >= possibleAnswer.Position - 1 - 10)
-				) {
-					MARgRNAseq = true;
-					MARgRNAseq_degree = 1;
-					true_counts += 1;
-				} else if (
-					(correctNucleotidePosition >= possibleAnswer.Position - 1 &&
-						correctNucleotidePosition <= possibleAnswer.Position - 1 + 20) ||
-					(correctNucleotidePosition <= possibleAnswer.Position - 1 &&
-						correctNucleotidePosition >= possibleAnswer.Position - 1 - 20)
-				) {
-					MARgRNAseq = true;
-					MARgRNAseq_degree = 2;
-					true_counts += 1;
-				} else if (
-					(correctNucleotidePosition >= possibleAnswer.Position - 1 &&
-						correctNucleotidePosition <= possibleAnswer.Position - 1 + 30) ||
-					(correctNucleotidePosition <= possibleAnswer.Position - 1 &&
-						correctNucleotidePosition >= possibleAnswer.Position - 1 - 30)
-				) {
-					MARgRNAseq = true;
-					MARgRNAseq_degree = 3;
-					true_counts += 1;
-				}
-
-				// If the sequence if correct, check all other results:
-				if (MARgRNAseq) {
-					const temp_answer = possibleAnswer;
-					// Check if the cut position matches the answer's input
-					if (
-						temp_answer.Position &&
-						parseInt(temp_answer.Position, 10) ===
-							parseInt(document.getElementById("position_input").value, 10)
-					) {
-						MARCutPos = true;
-						true_counts += 1;
-					} else if (temp_answer.Position === null || temp_answer.Position === undefined) {
-						alert(
-							"Error code cA302-307: the reference data has no 'Position' value for this gRNA. Please report this on our GitHub issue tracker.",
-						);
-					}
-
-					// Check if the PAM matches the answer's input
-					if (
-						(temp_answer.PAM || temp_answer.PAM) &&
-						temp_answer.PAM === document.getElementById("pam_input").value.trim()
-					) {
-						MARPAMseq = true;
-						true_counts += 1;
-					} else if (temp_answer.PAM === null || temp_answer.PAM === undefined) {
-						alert(
-							"Error code cA311-317: the reference data has no 'PAM' value for this gRNA. Please report this on our GitHub issue tracker.",
-						);
-					}
-
-					// Check if the Off-target matches the answer's input
-					if (temp_answer["Specificity Score"] || temp_answer["Specificity Score"]) {
-						checkOffTarget(temp_answer["Specificity Score"]);
-					} else if (
-						temp_answer["Specificity Score"] === null ||
-						temp_answer["Specificity Score"] === undefined
-					) {
-						alert(
-							"Error code cA342-348: the reference data has no 'Specificity Score' value for this gRNA. Please report this on our GitHub issue tracker.",
-						);
-					}
-
-					// Check if the F1 primer matches the answer's input
-					checkF1Primers(document?.getElementById("sequence_input")?.value?.trim() || "");
-
-					// Check if the R1 primer matches the answer's input
-					checkR1Primers(document?.getElementById("sequence_input")?.value?.trim() || "");
-				}
-			}
+		const candidateMark = calculateMark();
+		if (candidateMark > bestMark) {
+			bestMark = candidateMark;
+			bestAnswer = possibleAnswer;
 		}
 	}
+
+	// The loop leaves the last entry's results in place, so an earlier best entry is checked again
+	if (bestAnswer && bestAnswer !== possible_comparable_answers[possible_comparable_answers.length - 1]) {
+		resetMarkingState();
+		checkCandidateAnswer(bestAnswer, correctNucleotidePosition);
+	}
+
 	checkAnswers_executed = true;
+}
+
+/**
+ * Checks one reference gRNA entry that matches the submitted sequence against every submitted answer,
+ * setting the marking flags for that entry.
+ * @param {object} possibleAnswer - Benchling gRNA output entry whose Sequence equals the submitted gRNA
+ * @param {number} correctNucleotidePosition - Zero-based position of the gene's target nucleotide
+ */
+function checkCandidateAnswer(possibleAnswer, correctNucleotidePosition) {
+	// Checking if the gene's target position is within correct nucleotide range
+	if (possibleAnswer.Strand === 1) {
+		const nucleotideIncludedRange_top = possibleAnswer.Position - 1 - 1 + 3;
+		const nucleotideIncludedRange_bot = possibleAnswer.Position - 1 - 17;
+		if (
+			correctNucleotidePosition >= nucleotideIncludedRange_bot &&
+			correctNucleotidePosition <= nucleotideIncludedRange_top
+		) {
+			correctNucleotideIncluded = true;
+		}
+	} else if (possibleAnswer.Strand === -1) {
+		const nucleotideIncludedRange_top = possibleAnswer.Position - 1 + 17;
+		const nucleotideIncludedRange_bot = possibleAnswer.Position - 1 - 3;
+		if (
+			correctNucleotidePosition >= nucleotideIncludedRange_bot &&
+			correctNucleotidePosition <= nucleotideIncludedRange_top
+		) {
+			correctNucleotideIncluded = true;
+		}
+	}
+	// If in correct nucleotide range, check if nucleotide is included in cut site
+	if (correctNucleotideIncluded) {
+		// Determine where PAM site would be and if PAM site matches inputted value
+		let pamFirst;
+		let pamSecond;
+		// Sense is 1
+		if (possibleAnswer.Strand === 1) {
+			pamFirst = possibleAnswer.Position - 1 + 2;
+			pamSecond = possibleAnswer.Position - 1 + 4;
+			// If the sequence matches to be true, check other answers:
+			if (document.getElementById("strand_input").value === "Sense (+)") {
+				MARstrand = true;
+				true_counts += 1;
+			}
+		}
+		// Antisense is -1
+		else if (possibleAnswer.Strand === -1) {
+			pamFirst = possibleAnswer.Position - 1 - 2;
+			pamSecond = possibleAnswer.Position - 1 - 4;
+			// If the sequence matches to be true, check other answers:
+			if (document.getElementById("strand_input").value === "Antisense (-)") {
+				MARstrand = true;
+				true_counts += 1;
+			}
+		}
+
+		// Determining how right the sequence is
+		if (correctNucleotidePosition >= pamFirst && correctNucleotidePosition <= pamSecond) {
+			// within PAM site
+			MARgRNAseq = false;
+			MARgRNAseq_degree = 0;
+		} else if (
+			(correctNucleotidePosition >= possibleAnswer.Position - 1 + 1 &&
+				correctNucleotidePosition <= possibleAnswer.Position - 1 + 10) ||
+			(correctNucleotidePosition <= possibleAnswer.Position - 1 - 1 &&
+				correctNucleotidePosition >= possibleAnswer.Position - 1 - 10)
+		) {
+			MARgRNAseq = true;
+			MARgRNAseq_degree = 1;
+			true_counts += 1;
+		} else if (
+			(correctNucleotidePosition >= possibleAnswer.Position - 1 &&
+				correctNucleotidePosition <= possibleAnswer.Position - 1 + 20) ||
+			(correctNucleotidePosition <= possibleAnswer.Position - 1 &&
+				correctNucleotidePosition >= possibleAnswer.Position - 1 - 20)
+		) {
+			MARgRNAseq = true;
+			MARgRNAseq_degree = 2;
+			true_counts += 1;
+		} else if (
+			(correctNucleotidePosition >= possibleAnswer.Position - 1 &&
+				correctNucleotidePosition <= possibleAnswer.Position - 1 + 30) ||
+			(correctNucleotidePosition <= possibleAnswer.Position - 1 &&
+				correctNucleotidePosition >= possibleAnswer.Position - 1 - 30)
+		) {
+			MARgRNAseq = true;
+			MARgRNAseq_degree = 3;
+			true_counts += 1;
+		}
+
+		// If the sequence if correct, check all other results:
+		if (MARgRNAseq) {
+			const temp_answer = possibleAnswer;
+			// Check if the cut position matches the answer's input
+			if (
+				temp_answer.Position &&
+				parseInt(temp_answer.Position, 10) === parseInt(document.getElementById("position_input").value, 10)
+			) {
+				MARCutPos = true;
+				true_counts += 1;
+			} else if (temp_answer.Position === null || temp_answer.Position === undefined) {
+				alert(
+					"Error code cA302-307: the reference data has no 'Position' value for this gRNA. Please report this on our GitHub issue tracker.",
+				);
+			}
+
+			// Check if the PAM matches the answer's input
+			if (
+				(temp_answer.PAM || temp_answer.PAM) &&
+				temp_answer.PAM === document.getElementById("pam_input").value.trim()
+			) {
+				MARPAMseq = true;
+				true_counts += 1;
+			} else if (temp_answer.PAM === null || temp_answer.PAM === undefined) {
+				alert(
+					"Error code cA311-317: the reference data has no 'PAM' value for this gRNA. Please report this on our GitHub issue tracker.",
+				);
+			}
+
+			// Check if the Off-target matches the answer's input
+			if (temp_answer["Specificity Score"] || temp_answer["Specificity Score"]) {
+				checkOffTarget(temp_answer["Specificity Score"]);
+			} else if (temp_answer["Specificity Score"] === null || temp_answer["Specificity Score"] === undefined) {
+				alert(
+					"Error code cA342-348: the reference data has no 'Specificity Score' value for this gRNA. Please report this on our GitHub issue tracker.",
+				);
+			}
+
+			// Check if the F1 primer matches the answer's input
+			checkF1Primers(document?.getElementById("sequence_input")?.value?.trim() || "");
+
+			// Check if the R1 primer matches the answer's input
+			checkR1Primers(document?.getElementById("sequence_input")?.value?.trim() || "");
+		}
+	}
 }
 
 let offtarget_List = [];
@@ -553,6 +590,43 @@ let studentMarkPercentage = 0;
 const markTotal = 10;
 
 /**
+ * Returns the marks out of {@link markTotal} that the current marking flags are worth.
+ * @returns {number} The mark, from 0 to 10 in steps of 0.5
+ */
+function calculateMark() {
+	let mark = 0;
+	if (MARgRNAseq) {
+		if (MARgRNAseq_degree === 1) {
+			mark += 2;
+		} else if (MARgRNAseq_degree === 2) {
+			mark += 1;
+		} else if (MARgRNAseq_degree === 3) {
+			mark += 0.5;
+		}
+	}
+	if (MARPAMseq) {
+		mark += 2;
+	}
+	if (MAROffTarget) {
+		if (MAROffTarget_degree === 1) {
+			mark += 2;
+		} else if (MAROffTarget_degree === 2) {
+			mark += 1;
+		} else if (MAROffTarget_degree === 3) {
+			mark += 0.5;
+		}
+	}
+	if (MARF1primers) {
+		mark += 2;
+	}
+	if (MARR1primers) {
+		mark += 2;
+	}
+
+	return mark;
+}
+
+/**
  * Calculates the student's mark and percentage based on the current marking state.
  */
 function markAnswers() {
@@ -561,33 +635,7 @@ function markAnswers() {
 		checkAnswers();
 	}
 	if (checkAnswers_executed) {
-		if (MARgRNAseq) {
-			if (MARgRNAseq_degree === 1) {
-				studentMark += 2;
-			} else if (MARgRNAseq_degree === 2) {
-				studentMark += 1;
-			} else if (MARgRNAseq_degree === 3) {
-				studentMark += 0.5;
-			}
-		}
-		if (MARPAMseq) {
-			studentMark += 2;
-		}
-		if (MAROffTarget) {
-			if (MAROffTarget_degree === 1) {
-				studentMark += 2;
-			} else if (MAROffTarget_degree === 2) {
-				studentMark += 1;
-			} else if (MAROffTarget_degree === 3) {
-				studentMark += 0.5;
-			}
-		}
-		if (MARF1primers) {
-			studentMark += 2;
-		}
-		if (MARR1primers) {
-			studentMark += 2;
-		}
+		studentMark = calculateMark();
 		studentMarkPercentage = ((studentMark / markTotal) * 100).toFixed(2);
 		if (studentMarkPercentage > 100) {
 			studentMarkPercentage = 100;
@@ -595,6 +643,52 @@ function markAnswers() {
 			studentMarkPercentage = 0;
 		}
 	}
+}
+
+/**
+ * Explains why a primer answer received no marks, listing the candidates generated from the submitted gRNA.
+ * The list is empty only when {@link checkF1Primers} or {@link checkR1Primers} never ran, because
+ * {@link checkAnswers} checks primers only for an accepted gRNA sequence.
+ * @param {string} label - Primer name shown in the sentence, such as "F1"
+ * @param {string[]} primers - Candidate primers generated from the submitted gRNA
+ * @returns {string} The feedback sentence for an incorrect primer
+ */
+function explainIncorrectPrimer(label, primers) {
+	if (primers.length === 0) {
+		return `No ${label} primer candidates were generated because primers are only checked once your gRNA sequence is accepted.`;
+	}
+
+	return `Your ${label} primer sequence was incorrectly matched to one of the following sequences generated based on your gRNA sequence inputted: ${primers.join(", ")}.`;
+}
+
+/**
+ * Appends one collapsible feedback card to #mainContainer. Every value is written as text,
+ * so markup characters in a student's answer show literally instead of being parsed as HTML.
+ * @param {object} card - The card's content
+ * @param {string} card.id - Element-id prefix, so "gRNA" gives the ids gRNACard and gRNAOutput
+ * @param {string} card.title - Field name shown in the header and in the answer sentence
+ * @param {number} card.mark - Marks awarded out of 2
+ * @param {string} card.answer - The student's submitted value
+ * @param {string} card.explanation - Why the mark was given
+ */
+function appendFeedbackCard({ id, title, mark, answer, explanation }) {
+	const headerId = `${id}Card`;
+	const outputId = `${id}Output`;
+
+	const toggle = $("<button class='btn btn-link' data-bs-toggle='collapse' aria-expanded='false'></button>")
+		.attr({ "data-bs-target": `#${outputId}`, "aria-controls": outputId })
+		.text(`${title}: ${mark}/2`);
+	const header = $("<div class='card-header'></div>")
+		.attr("id", headerId)
+		.append($("<h5 class='mb-0'></h5>").append(toggle));
+
+	const body = $("<div class='card-body'></div>").append(
+		$("<p></p>").text(` For ${title}, you put down "${answer}" which gave you the mark ${mark}.`),
+		document.createTextNode(explanation),
+	);
+	const output = $("<div class='collapse'></div>").attr({ id: outputId, "aria-labelledby": headerId }).append(body);
+
+	$("#mainContainer").append($("<div class='card about'></div>").append(header, output));
 }
 
 /**
@@ -656,147 +750,58 @@ function showFeedback() {
 	}
 	/// F1 Primer:
 	let MARF1primers_display = 0;
-	let f1Options = "";
-	for (let i = 0; i < possible_F1_primers.length; i += 1) {
-		f1Options += possible_F1_primers[i];
-		if (i === possible_F1_primers.length - 1) {
-			f1Options += ".";
-		} else {
-			f1Options += ", ";
-		}
-	}
-	let MARF1primers_explain = `Your F1 primer sequence was incorrectly matched to one of the following sequences generated based on your gRNA sequence inputted: ${f1Options}`;
+	let MARF1primers_explain = explainIncorrectPrimer("F1", possible_F1_primers);
 	if (MARF1primers) {
 		MARF1primers_display = 2;
 		MARF1primers_explain = "This means your answer was correct and you received full marks.";
 	}
 	/// R1 Primer:
 	let MARR1primers_display = 0;
-	let r1Options = "";
-	for (let i = 0; i < possible_R1_primers.length; i += 1) {
-		r1Options += possible_R1_primers[i];
-		if (i === possible_R1_primers.length - 1) {
-			r1Options += ".";
-		} else {
-			r1Options += ", ";
-		}
-	}
-	let MARR1primers_explain = `Your R1 primer sequence was incorrectly matched to one of the following sequences generated based on your gRNA sequence inputted: ${r1Options}`;
+	let MARR1primers_explain = explainIncorrectPrimer("R1", possible_R1_primers);
 	if (MARR1primers) {
 		MARR1primers_display = 2;
 		MARR1primers_explain = "This means your answer was correct and you received full marks.";
 	}
 
-	// gRNA:
-	append_str += "<div class='card about'>";
-	append_str += "<div class='card-header' id='gRNACard'>";
-	append_str += "<h5 class='mb-0'>";
-	append_str +=
-		"<button class='btn btn-link' data-bs-toggle='collapse' data-bs-target='#gRNAOutput' aria-expanded='false' aria-controls='gRNAOutput'>";
-	append_str += `gRNA Strand Sequence: ${MARgRNAseq_degree_display}/2`;
-	append_str += "</button>";
-	append_str += "</h5>";
-	append_str += "</div>";
-	append_str += "<div id='gRNAOutput' class='collapse' aria-labelledby='gRNACard'>";
-	append_str += "<div class='card-body'>";
-	// Content
-	append_str += `<p> For gRNA Strand Sequence, you put down "${all_answers[0]}" which gave you the mark ${MARgRNAseq_degree_display}.</p>`;
-	append_str += MARgRNAseq_degree_explain;
-	// Close gRNA card
-	append_str += "</div>";
-	append_str += "</div>";
-	append_str += "</div>";
 	$("#mainContainer").append(append_str);
 
-	// PAM:
-	append_str = "<div class='card about'>";
-	append_str += "<div class='card-header' id='PAMCard'>";
-	append_str += "<h5 class='mb-0'>";
-	append_str +=
-		"<button class='btn btn-link' data-bs-toggle='collapse' data-bs-target='#PAMOutput' aria-expanded='false' aria-controls='PAMOutput'>";
-	append_str += `gRNA PAM Sequence: ${MARPAMseq_display}/2`;
-	append_str += "</button>";
-	append_str += "</h5>";
-	append_str += "</div>";
-	append_str += "<div id='PAMOutput' class='collapse' aria-labelledby='PAMCard'>";
-	append_str += "<div class='card-body'>";
-	// Content
-	append_str += `<p> For gRNA PAM Sequence, you put down "${all_answers[1]}" which gave you the mark ${MARPAMseq_display}.</p>`;
-	append_str += MARPAMseq_explain;
-	// Close PAM card
-	append_str += "</div>";
-	append_str += "</div>";
-	append_str += "</div>";
-	$("#mainContainer").append(append_str);
-
-	// Off-target Score:
-	append_str = "<div class='card about'>";
-	append_str += "<div class='card-header' id='OffTargetCard'>";
-	append_str += "<h5 class='mb-0'>";
-	append_str +=
-		"<button class='btn btn-link' data-bs-toggle='collapse' data-bs-target='#OffTargetOutput' aria-expanded='false' aria-controls='OffTargetOutput'>";
-	append_str += `Off-target Score: ${MAROffTarget_degree_display}/2`;
-	append_str += "</button>";
-	append_str += "</h5>";
-	append_str += "</div>";
-	append_str += "<div id='OffTargetOutput' class='collapse' aria-labelledby='OffTargetCard'>";
-	append_str += "<div class='card-body'>";
-	// Content
-	append_str += `<p> For Off-Target Score, you put down "${all_answers[4]}" which gave you the mark ${MAROffTarget_degree_display}.</p>`;
-	append_str += MAROffTarget_degree_explain;
-	// Close Off-target Score card
-	append_str += "</div>";
-	append_str += "</div>";
-	append_str += "</div>";
-	$("#mainContainer").append(append_str);
-
-	// F1 Primer:
-	append_str = "<div class='card about'>";
-	append_str += "<div class='card-header' id='F1PrimerCard'>";
-	append_str += "<h5 class='mb-0'>";
-	append_str +=
-		"<button class='btn btn-link' data-bs-toggle='collapse' data-bs-target='#F1PrimerOutput' aria-expanded='false' aria-controls='F1PrimerOutput'>";
-	append_str += `F1 Primer: ${MARF1primers_display}/2`;
-	append_str += "</button>";
-	append_str += "</h5>";
-	append_str += "</div>";
-	append_str += "<div id='F1PrimerOutput' class='collapse' aria-labelledby='F1PrimerCard'>";
-	append_str += "<div class='card-body'>";
-	// Content
-	append_str += `<p> For F1 Primer, you put down "${all_answers[5]}" which gave you the mark ${MARF1primers_display}.</p>`;
-	append_str += MARF1primers_explain;
-	// Close F1 Primer card
-	append_str += "</div>";
-	append_str += "</div>";
-	append_str += "</div>";
-	$("#mainContainer").append(append_str);
-
-	// F1 Primer:
-	append_str = "<div class='card about'>";
-	append_str += "<div class='card-header' id='R1PrimerCard'>";
-	append_str += "<h5 class='mb-0'>";
-	append_str +=
-		"<button class='btn btn-link' data-bs-toggle='collapse' data-bs-target='#R1PrimerOutput' aria-expanded='false' aria-controls='R1PrimerOutput'>";
-	append_str += `R1 Primer: ${MARR1primers_display}/2`;
-	append_str += "</button>";
-	append_str += "</h5>";
-	append_str += "</div>";
-	append_str += "<div id='R1PrimerOutput' class='collapse' aria-labelledby='R1PrimerCard'>";
-	append_str += "<div class='card-body'>";
-	// Content
-	append_str += `<p> For R1 Primer, you put down "${all_answers[6]}" which gave you the mark ${MARR1primers_display}.</p>`;
-	append_str += MARR1primers_explain;
-	// Close F1 Primer card
-	append_str += "</div>";
-	append_str += "</div>";
-	append_str += "</div>";
-	$("#mainContainer").append(append_str);
+	appendFeedbackCard({
+		id: "gRNA",
+		title: "gRNA Strand Sequence",
+		mark: MARgRNAseq_degree_display,
+		answer: all_answers[0],
+		explanation: MARgRNAseq_degree_explain,
+	});
+	appendFeedbackCard({
+		id: "PAM",
+		title: "gRNA PAM Sequence",
+		mark: MARPAMseq_display,
+		answer: all_answers[1],
+		explanation: MARPAMseq_explain,
+	});
+	appendFeedbackCard({
+		id: "OffTarget",
+		title: "Off-target Score",
+		mark: MAROffTarget_degree_display,
+		answer: all_answers[4],
+		explanation: MAROffTarget_degree_explain,
+	});
+	appendFeedbackCard({
+		id: "F1Primer",
+		title: "F1 Primer",
+		mark: MARF1primers_display,
+		answer: all_answers[5],
+		explanation: MARF1primers_explain,
+	});
+	appendFeedbackCard({
+		id: "R1Primer",
+		title: "R1 Primer",
+		mark: MARR1primers_display,
+		answer: all_answers[6],
+		explanation: MARR1primers_explain,
+	});
 
 	append_str = "<br>";
-	append_str +=
-		"<p> If you have found a bug in our SciGrade marking system, please report it on <a href='https://github.com/AlexJSully/SciGrade/issues' target='_blank' rel='noopener noreferrer'>our GitHub issue tracker</a>. </p>";
-	append_str += "<br>";
-
 	append_str +=
 		'<p> <button type="button" class="btn btn-primary" onclick="redirectCRISPR();"> Back to Gene Selection </button> </p>';
 
@@ -809,20 +814,20 @@ let all_marks = [];
  * Collects the student's answers, calculates marks, and triggers feedback display.
  */
 function submitAnswers() {
-	all_answers = [];
 	all_marks = [];
+	// The answers are read in the same task as checkAnswers(), so the feedback shows the values that were graded
+	all_answers = [
+		document?.getElementById("sequence_input")?.value?.trim() || "",
+		document.getElementById("pam_input").value.trim(),
+		document.getElementById("position_input").value,
+		document.getElementById("strand_input").value,
+		document.getElementById("offtarget_input").value,
+		document.getElementById("f1_input").value.trim(),
+		document.getElementById("r1_input").value.trim(),
+	];
 	checkAnswers();
 	setTimeout(() => {
 		markAnswers();
-		all_answers.push(
-			document?.getElementById("sequence_input")?.value?.trim() || "",
-			document.getElementById("pam_input").value.trim(),
-			document.getElementById("position_input").value,
-			document.getElementById("strand_input").value,
-			document.getElementById("offtarget_input").value,
-			document.getElementById("f1_input").value.trim(),
-			document.getElementById("r1_input").value.trim(),
-		);
 		all_marks.push(studentMark, studentMarkPercentage);
 
 		showFeedback();
@@ -857,6 +862,9 @@ if (typeof module !== "undefined" && module.exports) {
 		fillGeneList,
 		select_Gene,
 		loadWork,
+		checkAnswers,
+		showFeedback,
+		submitAnswers,
 		// Export getters for testing
 		get MAROffTarget() {
 			return MAROffTarget;
@@ -873,6 +881,12 @@ if (typeof module !== "undefined" && module.exports) {
 		get current_gene() {
 			return current_gene;
 		},
+		get possible_F1_primers() {
+			return possible_F1_primers;
+		},
+		get possible_R1_primers() {
+			return possible_R1_primers;
+		},
 		// Export setters for test setup
 		__setTestState(state = {}) {
 			if (state.correctNucleotideIncluded !== undefined)
@@ -882,18 +896,20 @@ if (typeof module !== "undefined" && module.exports) {
 			if (state.current_gene !== undefined) current_gene = state.current_gene;
 			if (state.gene_backgroundInfo !== undefined) gene_backgroundInfo = state.gene_backgroundInfo;
 			if (state.possible_gene !== undefined) possible_gene = state.possible_gene;
+			if (state.MAROffTarget !== undefined) MAROffTarget = state.MAROffTarget;
+			if (state.MAROffTarget_degree !== undefined) MAROffTarget_degree = state.MAROffTarget_degree;
+			if (state.MARF1primers !== undefined) MARF1primers = state.MARF1primers;
+			if (state.MARR1primers !== undefined) MARR1primers = state.MARR1primers;
+			if (state.possible_F1_primers !== undefined) possible_F1_primers = state.possible_F1_primers;
+			if (state.possible_R1_primers !== undefined) possible_R1_primers = state.possible_R1_primers;
+			if (state.all_answers !== undefined) all_answers = state.all_answers;
+			if (state.all_marks !== undefined) all_marks = state.all_marks;
 		},
 		// Reset state for clean tests
 		__resetState() {
-			MAROffTarget = false;
-			MAROffTarget_degree = 0;
-			MARF1primers = false;
-			MARR1primers = false;
-			MAROffTarget_aboveOpt = false;
-			MAROffTarget_above35 = false;
-			MAROffTarget_onlyOption = false;
-			correctNucleotideIncluded = false;
-			MARgRNAseq = false;
+			resetMarkingState();
+			all_answers = [];
+			all_marks = [];
 		},
 	};
 }

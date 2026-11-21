@@ -9,6 +9,9 @@ const {
 	fillGeneList,
 	select_Gene,
 	loadWork,
+	checkAnswers,
+	showFeedback,
+	submitAnswers,
 	__resetState: resetState,
 	__setTestState: setTestState,
 } = crispr;
@@ -366,6 +369,38 @@ describe("crispr_scripts.js - Utility Functions", () => {
 		});
 	});
 
+	describe("checkAnswers()", () => {
+		beforeEach(() => {
+			resetState();
+		});
+
+		it("clears the off-target and primer results of an earlier attempt when the gRNA has no match", () => {
+			setTestState({
+				MAROffTarget: true,
+				MAROffTarget_degree: 1,
+				MARF1primers: true,
+				MARR1primers: true,
+				possible_F1_primers: ["TAATACGACTCACTATAGAAGCACTGCACGCCGT"],
+				possible_R1_primers: ["TTCTAGCTCTAAAACACCCACGGCGTGCAGTGCT"],
+				gene_backgroundInfo: { gene_list: { test_gene: { "Target position": 100 } } },
+				benchling_gRNA_outputs: { gene_list: { test_gene: [{ Sequence: "AAGCACTGCACGCCGTGGGT" }] } },
+				current_gene: "test_gene",
+			});
+			global.document.getElementById = jest.fn((id) => ({
+				value: id === "sequence_input" ? "AAAAAAAAAAAAAAAAAAAA" : "",
+			}));
+
+			checkAnswers();
+
+			expect(crispr.MAROffTarget).toBe(false);
+			expect(crispr.MAROffTarget_degree).toBe(0);
+			expect(crispr.MARF1primers).toBe(false);
+			expect(crispr.MARR1primers).toBe(false);
+			expect(crispr.possible_F1_primers).toEqual([]);
+			expect(crispr.possible_R1_primers).toEqual([]);
+		});
+	});
+
 	describe("fillGeneList()", () => {
 		let appendMock;
 		let propMock;
@@ -570,5 +605,176 @@ describe("crispr_scripts.js - Utility Functions", () => {
 			expect(() => loadWork()).not.toThrow();
 			expect(global.alert).toHaveBeenCalledWith(expect.stringContaining("lFS50-66"));
 		});
+	});
+});
+
+/**
+ * Registers hooks that give each test in the enclosing suite the real jsdom document and the real jQuery.
+ * @param {string} bodyHtml - Markup placed in document.body before each test
+ */
+function useRealDom(bodyHtml) {
+	const replacedDocumentMethods = ["getElementById", "querySelector", "querySelectorAll", "createElement"];
+
+	beforeEach(() => {
+		resetState();
+
+		// tests/jest/setupTest.js and the suite above replace these methods on the real jsdom
+		// document; deleting the own properties exposes the real ones on Document.prototype.
+		for (const methodName of replacedDocumentMethods) {
+			delete document[methodName];
+		}
+
+		document.body.innerHTML = bodyHtml;
+		global.$ = require("./APIandLibraries/jQuery/jquery.min.js");
+	});
+
+	afterEach(() => {
+		document.body.innerHTML = "";
+		delete global.$;
+	});
+}
+
+describe("crispr_scripts.js - showFeedback()", () => {
+	useRealDom('<div id="mainContainer"></div>');
+
+	beforeEach(() => {
+		delete window.__xss;
+	});
+
+	it("renders markup characters in answers and primer candidates as text", () => {
+		const answers = [
+			'<img src=x onerror="window.__xss=1">',
+			`<b>&"'</b>`,
+			"380",
+			"Sense (+)",
+			"<i>60</i>",
+			"<script>window.__xss=1</script>",
+			"&amp;",
+		];
+		const markupPrimer = "TAATACGACTCACTATAG<img src=y>";
+		setTestState({
+			all_answers: answers,
+			all_marks: [0, "0.00"],
+			possible_F1_primers: [markupPrimer],
+		});
+
+		showFeedback();
+
+		const container = document.getElementById("mainContainer");
+		for (const answer of [answers[0], answers[1], answers[4], answers[5], answers[6]]) {
+			expect(container.textContent).toContain(`you put down "${answer}"`);
+		}
+		expect(container.textContent).toContain(`${markupPrimer}.`);
+		expect(container.querySelectorAll("img, b, i, script")).toHaveLength(0);
+		expect(window.__xss).toBeUndefined();
+	});
+
+	it("links each card's toggle button to its own collapsible body", () => {
+		setTestState({ all_answers: ["", "", "", "", "", "", ""], all_marks: [0, "0.00"] });
+
+		showFeedback();
+
+		const cards = document.querySelectorAll("#mainContainer .card.about");
+		expect(cards).toHaveLength(5);
+		for (const card of cards) {
+			const header = card.querySelector(".card-header");
+			const toggle = header.querySelector("h5.mb-0 > button.btn.btn-link");
+			const output = card.querySelector(".collapse > .card-body").parentElement;
+
+			expect(toggle.getAttribute("data-bs-toggle")).toBe("collapse");
+			expect(toggle.getAttribute("data-bs-target")).toBe(`#${output.id}`);
+			expect(toggle.getAttribute("aria-controls")).toBe(output.id);
+			expect(output.getAttribute("aria-labelledby")).toBe(header.id);
+		}
+		expect(cards[0].querySelector("button").textContent).toBe("gRNA Strand Sequence: 0/2");
+	});
+
+	it("says no primer candidates were generated when the gRNA was not accepted", () => {
+		setTestState({ all_answers: ["", "", "", "", "", "", ""], all_marks: [0, "0.00"] });
+
+		showFeedback();
+
+		for (const label of ["F1", "R1"]) {
+			const cardText = document.getElementById(`${label}PrimerOutput`).textContent;
+
+			expect(cardText).toContain(
+				`No ${label} primer candidates were generated because primers are only checked once your gRNA sequence is accepted.`,
+			);
+			expect(cardText).not.toContain("inputted:");
+		}
+	});
+});
+
+describe("crispr_scripts.js - submitAnswers()", () => {
+	const inputIds = [
+		"sequence_input",
+		"pam_input",
+		"position_input",
+		"strand_input",
+		"offtarget_input",
+		"f1_input",
+		"r1_input",
+	];
+	const gRNA = "ACGTACGTACGTACGTACGT";
+
+	useRealDom(`${inputIds.map((id) => `<input id="${id}">`).join("")}<div id="mainContainer"></div>`);
+
+	beforeEach(() => {
+		jest.useFakeTimers();
+	});
+
+	afterEach(() => {
+		jest.useRealTimers();
+	});
+
+	/**
+	 * Loads one gene whose target nucleotide sits at zero-based position 95, with the given reference entries.
+	 * @param {object[]} entries - Benchling gRNA output entries for the gene
+	 */
+	function loadGene(entries) {
+		setTestState({
+			gene_backgroundInfo: { gene_list: { test_gene: { "Target position": 96 } } },
+			benchling_gRNA_outputs: { gene_list: { test_gene: entries } },
+			current_gene: "test_gene",
+		});
+	}
+
+	/**
+	 * Fills the submission form, leaving both primer inputs empty.
+	 * @param {object} answers - Values for the gRNA, PAM, cut position and off-target score inputs
+	 */
+	function fillForm({ sequence, pam, position, offTarget }) {
+		const values = [sequence, pam, position, "Sense (+)", offTarget, "", ""];
+		inputIds.forEach((id, index) => {
+			document.getElementById(id).value = values[index];
+		});
+	}
+
+	it("shows the answers that were graded when an input changes before the feedback renders", () => {
+		loadGene([{ Sequence: gRNA, Strand: 1, Position: 100, PAM: "AGG", "Specificity Score": 90 }]);
+		fillForm({ sequence: gRNA, pam: "AGG", position: "100", offTarget: "90" });
+
+		submitAnswers();
+		document.getElementById("sequence_input").value = "TTTTTTTTTTTTTTTTTTTT";
+		jest.advanceTimersByTime(750);
+
+		const feedbackText = document.getElementById("mainContainer").textContent;
+		expect(feedbackText).toContain(`you put down "${gRNA}"`);
+		expect(feedbackText).not.toContain("TTTTTTTTTTTTTTTTTTTT");
+	});
+
+	it("marks a gRNA matching two reference entries by the better entry alone", () => {
+		// The first entry is worth 5 marks (partial gRNA 1, PAM 2, off-target 2) and the second 4 (gRNA 2,
+		// off-target 2); combining the first entry's PAM with the second entry's gRNA would give 6.
+		loadGene([
+			{ Sequence: gRNA, Strand: 1, Position: 110, PAM: "AGG", "Specificity Score": 90 },
+			{ Sequence: gRNA, Strand: 1, Position: 100, PAM: "TGG", "Specificity Score": 90 },
+		]);
+		fillForm({ sequence: gRNA, pam: "AGG", position: "100", offTarget: "90" });
+
+		submitAnswers();
+		jest.advanceTimersByTime(750);
+
+		expect(document.getElementById("mainContainer").textContent).toContain("Mark: 5/10");
 	});
 });

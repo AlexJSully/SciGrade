@@ -124,5 +124,31 @@ test.describe("SciGrade Submission Flow", () => {
 
 		// Verify feedback is displayed correctly
 		await expect(page.locator("body")).toContainText(/gRNA Strand Sequence/);
+
+		// The second attempt is all wrong, so no marks may carry over from the first
+		await expect(page.locator("body")).toContainText("Mark: 0/10");
+	});
+
+	test("should show markup characters in submitted answers as text", async ({ page }) => {
+		const sequence = `<b>&"'</b>`;
+		const pam = "<&>";
+		const f1Primer = '<img src=x onerror="window.__xss=1">';
+
+		await page.fill("#sequence_input", sequence);
+		await page.fill("#pam_input", pam);
+		await page.fill("#position_input", "381");
+		await page.fill("#offtarget_input", "87");
+		await page.fill("#f1_input", f1Primer);
+		await page.fill("#r1_input", "TTCTAGCTCTAAAACACCCACGGCGTGCAGTGCT");
+
+		await page.click("#assignmentSubmitButton");
+		await expect(page.locator("body")).toContainText(/Mark:/, { timeout: 15000 });
+
+		const feedback = page.locator("#mainContainer");
+		await expect(feedback).toContainText(`you put down "${sequence}"`);
+		await expect(feedback).toContainText(`you put down "${pam}"`);
+		await expect(feedback).toContainText(`you put down "${f1Primer}"`);
+		await expect(feedback.locator("img, b")).toHaveCount(0);
+		expect(await page.evaluate(() => window.__xss)).toBeUndefined();
 	});
 });
