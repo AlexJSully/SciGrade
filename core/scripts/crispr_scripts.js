@@ -52,7 +52,7 @@ function fillGeneList() {
 		dropdown.empty();
 
 		for (const gene of Object.keys(gene_backgroundInfo.gene_list)) {
-			dropdown.append($("<option></option>").attr({ value: gene, tag: "practice" }).text(gene));
+			dropdown.append($("<option></option>").attr("value", gene).text(gene));
 		}
 
 		// Gene data is loaded and the dropdown is populated, so it is now safe to
@@ -148,7 +148,7 @@ function loadWork() {
 	append_str +=
 		'<input class="form-control" id="offtarget_input" placeholder="60.7" step="0.01" type="number" required>';
 	append_str +=
-		'<small id="position_inputSmall" class="form-text text-muted">This would be your off-target score for your gRNA. NOTE: This input only takes numbers</small>';
+		'<small id="offtarget_inputSmall" class="form-text text-muted">This would be your off-target score for your gRNA. NOTE: This input only takes numbers</small>';
 	append_str += "</div>";
 
 	// F1 Primers
@@ -183,11 +183,11 @@ function loadWork() {
 	work.append(append_str);
 
 	const gene = gene_backgroundInfo.gene_list[current_gene];
-	work.find('[id="gene_info"]').append(
+	work.find("#gene_info").append(
 		$("<p></p>").text(`Here is some background information about your gene: ${gene.name} (${current_gene})`),
-		$("<p></p>").text(` Background information: ${gene.Background}`),
-		$("<p></p>").text(` Target site: ${gene["Target site"]}`),
-		$('<p style="word-wrap:break-word;"></p>').text(` Modified genetic sequence: ${gene.Sequence}`),
+		$("<p></p>").text(`Background information: ${gene.Background}`),
+		$("<p></p>").text(`Target site: ${gene["Target site"]}`),
+		$('<p style="word-wrap:break-word;"></p>').text(`Modified genetic sequence: ${gene.Sequence}`),
 	);
 }
 

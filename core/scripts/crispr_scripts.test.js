@@ -163,12 +163,20 @@ describe("crispr_scripts.js - Utility Functions", () => {
 			});
 		});
 
-		it("sets MAROffTarget true when score matches input within bounds", () => {
+		/**
+		 * Points the off-target and cut-position inputs at the given off-target value and position 100.
+		 * @param {string} offtarget - Value of the off-target input
+		 */
+		function mockInputs(offtarget) {
 			global.document.getElementById = jest.fn((id) => {
-				if (id === "offtarget_input") return { value: "75" };
+				if (id === "offtarget_input") return { value: offtarget };
 				if (id === "position_input") return { value: "100" };
 				return { value: "" };
 			});
+		}
+
+		it("sets MAROffTarget true when score matches input within bounds", () => {
+			mockInputs("75");
 
 			checkOffTarget(75);
 
@@ -176,11 +184,7 @@ describe("crispr_scripts.js - Utility Functions", () => {
 		});
 
 		it("sets MAROffTarget degree 1 for score >= 75", () => {
-			global.document.getElementById = jest.fn((id) => {
-				if (id === "offtarget_input") return { value: "85" };
-				if (id === "position_input") return { value: "100" };
-				return { value: "" };
-			});
+			mockInputs("85");
 
 			checkOffTarget(85);
 
@@ -189,11 +193,7 @@ describe("crispr_scripts.js - Utility Functions", () => {
 		});
 
 		it("sets MAROffTarget degree 2 for score 35-75", () => {
-			global.document.getElementById = jest.fn((id) => {
-				if (id === "offtarget_input") return { value: "50" };
-				if (id === "position_input") return { value: "100" };
-				return { value: "" };
-			});
+			mockInputs("50");
 
 			checkOffTarget(50);
 
@@ -201,19 +201,21 @@ describe("crispr_scripts.js - Utility Functions", () => {
 			expect(crispr.MAROffTarget_degree).toBe(2);
 		});
 
-		it("should not set MAROffTarget when prerequisites not met", () => {
-			setTestState({ correctNucleotideIncluded: false, MARgRNAseq: false });
-			global.document.getElementById = jest.fn((id) => {
-				if (id === "offtarget_input") return { value: "75" };
-				if (id === "position_input") return { value: "100" };
-				return { value: "" };
-			});
+		it.each([
+			{ correctNucleotideIncluded: false, MARgRNAseq: true },
+			{ correctNucleotideIncluded: true, MARgRNAseq: false },
+		])(
+			"does not set MAROffTarget when correctNucleotideIncluded is $correctNucleotideIncluded and MARgRNAseq is $MARgRNAseq",
+			(prerequisites) => {
+				setTestState(prerequisites);
+				mockInputs("75");
 
-			checkOffTarget(75);
+				checkOffTarget(75);
 
-			expect(crispr.MAROffTarget).toBe(false);
-			expect(crispr.MAROffTarget_degree).toBe(0);
-		});
+				expect(crispr.MAROffTarget).toBe(false);
+				expect(crispr.MAROffTarget_degree).toBe(0);
+			},
+		);
 	});
 
 	describe("checkF1Primers()", () => {
@@ -391,6 +393,7 @@ describe("crispr_scripts.js - Utility Functions", () => {
 			const option = dropdown.querySelector("option");
 			expect(option.textContent).toBe(markupGene);
 			expect(option.value).toBe(markupGene);
+			expect(option.hasAttribute("tag")).toBe(false);
 			expect(dropdown.querySelectorAll("img")).toHaveLength(0);
 			expect(window.__xss).toBeUndefined();
 		});
@@ -506,9 +509,9 @@ describe("crispr_scripts.js - Utility Functions", () => {
 			const paragraphs = [...document.querySelectorAll("#gene_info p")].map((p) => p.textContent);
 			expect(paragraphs).toEqual([
 				"Here is some background information about your gene: Enhanced blue fluorescence protein (eBFP)",
-				" Background information: bg",
-				" Target site: ts",
-				" Modified genetic sequence: ACGT",
+				"Background information: bg",
+				"Target site: ts",
+				"Modified genetic sequence: ACGT",
 			]);
 			expect(document.getElementById("sequence_input")).not.toBeNull();
 		});
@@ -558,7 +561,8 @@ describe("crispr_scripts.js - Utility Functions", () => {
 });
 
 describe("crispr_scripts.js - fillGeneList() then loadWork()", () => {
-	// The dropdown sits before #work, as in runtime.js, so a lookup by id would find a matching option first
+	// Gene keys that match ids in the work form. The dropdown sits before #work, as in runtime.js, so an option
+	// carrying its gene key as an id would be found by an id lookup first.
 	useRealDom(
 		'<select id="gene_dropdown_selection"></select><button id="load_gene_button" disabled></button><div id="work"></div>',
 	);
