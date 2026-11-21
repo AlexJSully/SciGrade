@@ -222,8 +222,6 @@ Loaded by the runtime page [core/systemrun.html](../../core/systemrun.html):
 
 - **jQuery** - Local script from [core/scripts/APIandLibraries/jQuery/](../../core/scripts/APIandLibraries/jQuery/)
 - **Bootstrap** - Local script and styles from [core/scripts/APIandLibraries/Bootstrap/](../../core/scripts/APIandLibraries/Bootstrap/)
-- **tabletoCSV** - Local script from [core/scripts/APIandLibraries/tabletoCSV/](../../core/scripts/APIandLibraries/tabletoCSV/)
-- **Material Icons** - Google Fonts stylesheet in [core/systemrun.html](../../core/systemrun.html)
 
 ### Development Tools
 
