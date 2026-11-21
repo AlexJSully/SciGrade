@@ -557,6 +557,40 @@ describe("crispr_scripts.js - Utility Functions", () => {
 	});
 });
 
+describe("crispr_scripts.js - fillGeneList() then loadWork()", () => {
+	// The dropdown sits before #work, as in runtime.js, so a lookup by id would find a matching option first
+	useRealDom(
+		'<select id="gene_dropdown_selection"></select><button id="load_gene_button" disabled></button><div id="work"></div>',
+	);
+
+	beforeEach(() => {
+		global.alert = jest.fn();
+	});
+
+	afterEach(() => {
+		delete global.alert;
+	});
+
+	it.each(["gene_info", "work"])("renders the background into the work form for a gene named %s", (geneKey) => {
+		setTestState({
+			gene_backgroundInfo: {
+				gene_list: { [geneKey]: { name: "Name", Background: "bg", "Target site": "ts", Sequence: "ACGT" } },
+			},
+			current_gene: geneKey,
+		});
+
+		fillGeneList();
+		loadWork();
+
+		const option = document.querySelector("#gene_dropdown_selection option");
+		expect(option.value).toBe(geneKey);
+		expect(option.childElementCount).toBe(0);
+		expect(option.hasAttribute("id")).toBe(false);
+		const work = document.querySelector("div#work");
+		expect(work.querySelectorAll('[id="gene_info"] p')).toHaveLength(4);
+		expect(work.querySelector("#sequence_input")).not.toBeNull();
+	});
+});
 /**
  * Registers hooks that give each test in the enclosing suite the real jsdom document and the real jQuery.
  * @param {string} bodyHtml - Markup placed in document.body before each test
