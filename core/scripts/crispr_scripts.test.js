@@ -644,7 +644,6 @@ describe("crispr_scripts.js - showFeedback()", () => {
 			all_answers: answers,
 			all_marks: [0, "0.00"],
 			possible_F1_primers: [markupPrimer],
-			possible_R1_primers: [],
 		});
 
 		showFeedback();
@@ -676,5 +675,20 @@ describe("crispr_scripts.js - showFeedback()", () => {
 			expect(output.getAttribute("aria-labelledby")).toBe(header.id);
 		}
 		expect(cards[0].querySelector("button").textContent).toBe("gRNA Strand Sequence: 0/2");
+	});
+
+	it("says no primer candidates were generated when the gRNA was not accepted", () => {
+		setTestState({ all_answers: ["", "", "", "", "", "", ""], all_marks: [0, "0.00"] });
+
+		showFeedback();
+
+		for (const label of ["F1", "R1"]) {
+			const cardText = document.getElementById(`${label}PrimerOutput`).textContent;
+
+			expect(cardText).toContain(
+				`No ${label} primer candidates were generated because primers are only checked once your gRNA sequence is accepted.`,
+			);
+			expect(cardText).not.toContain("inputted:");
+		}
 	});
 });

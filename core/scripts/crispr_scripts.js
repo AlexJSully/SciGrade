@@ -222,11 +222,12 @@ let correctNucleotideIncluded = false;
 let true_counts = 0; // This exists for the instance that there is more than one match for inputtedSeq
 
 let checkAnswers_executed = false;
+
 /**
- * Checks the answer in the submission form and determines if they are correct or not
+ * Clears the answer-check flags, counters, and primer candidate lists that {@link checkAnswers} fills,
+ * so an attempt starts with no marks.
  */
-function checkAnswers() {
-	// Reset answers:
+function resetMarkingState() {
 	MARgRNAseq = false;
 	MARgRNAseq_degree = 0;
 	MARPAMseq = false;
@@ -234,12 +235,23 @@ function checkAnswers() {
 	MARstrand = false;
 	MAROffTarget = false;
 	MAROffTarget_degree = 0;
+	MAROffTarget_aboveOpt = false;
+	MAROffTarget_above35 = false;
+	MAROffTarget_onlyOption = false;
 	MARF1primers = false;
 	MARR1primers = false;
 	possible_F1_primers = [];
 	possible_R1_primers = [];
 	correctNucleotideIncluded = false;
 	true_counts = 0;
+}
+
+/**
+ * Checks the answer in the submission form and determines if they are correct or not
+ */
+function checkAnswers() {
+	// Reset answers:
+	resetMarkingState();
 
 	// Verify answers
 	const correctNucleotidePosition = gene_backgroundInfo.gene_list[current_gene]["Target position"] - 1;
@@ -604,12 +616,19 @@ function markAnswers() {
 }
 
 /**
- * Joins primer candidates into the sentence ending used in the feedback text.
+ * Explains why a primer answer received no marks, listing the candidates generated from the submitted gRNA.
+ * The list is empty only when {@link checkF1Primers} or {@link checkR1Primers} never ran, because
+ * {@link checkAnswers} checks primers only for an accepted gRNA sequence.
+ * @param {string} label - Primer name shown in the sentence, such as "F1"
  * @param {string[]} primers - Candidate primers generated from the submitted gRNA
- * @returns {string} The candidates separated by commas and ending in a period, or an empty string when there are none
+ * @returns {string} The feedback sentence for an incorrect primer
  */
-function formatPrimerOptions(primers) {
-	return primers.length > 0 ? `${primers.join(", ")}.` : "";
+function explainIncorrectPrimer(label, primers) {
+	if (primers.length === 0) {
+		return `No ${label} primer candidates were generated because primers are only checked once your gRNA sequence is accepted.`;
+	}
+
+	return `Your ${label} primer sequence was incorrectly matched to one of the following sequences generated based on your gRNA sequence inputted: ${primers.join(", ")}.`;
 }
 
 /**
@@ -701,14 +720,14 @@ function showFeedback() {
 	}
 	/// F1 Primer:
 	let MARF1primers_display = 0;
-	let MARF1primers_explain = `Your F1 primer sequence was incorrectly matched to one of the following sequences generated based on your gRNA sequence inputted: ${formatPrimerOptions(possible_F1_primers)}`;
+	let MARF1primers_explain = explainIncorrectPrimer("F1", possible_F1_primers);
 	if (MARF1primers) {
 		MARF1primers_display = 2;
 		MARF1primers_explain = "This means your answer was correct and you received full marks.";
 	}
 	/// R1 Primer:
 	let MARR1primers_display = 0;
-	let MARR1primers_explain = `Your R1 primer sequence was incorrectly matched to one of the following sequences generated based on your gRNA sequence inputted: ${formatPrimerOptions(possible_R1_primers)}`;
+	let MARR1primers_explain = explainIncorrectPrimer("R1", possible_R1_primers);
 	if (MARR1primers) {
 		MARR1primers_display = 2;
 		MARR1primers_explain = "This means your answer was correct and you received full marks.";
@@ -861,15 +880,9 @@ if (typeof module !== "undefined" && module.exports) {
 		},
 		// Reset state for clean tests
 		__resetState() {
-			MAROffTarget = false;
-			MAROffTarget_degree = 0;
-			MARF1primers = false;
-			MARR1primers = false;
-			MAROffTarget_aboveOpt = false;
-			MAROffTarget_above35 = false;
-			MAROffTarget_onlyOption = false;
-			correctNucleotideIncluded = false;
-			MARgRNAseq = false;
+			resetMarkingState();
+			all_answers = [];
+			all_marks = [];
 		},
 	};
 }
