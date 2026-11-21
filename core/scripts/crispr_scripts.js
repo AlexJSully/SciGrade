@@ -803,10 +803,6 @@ function showFeedback() {
 
 	append_str = "<br>";
 	append_str +=
-		"<p> If you have found a bug in our SciGrade marking system, please report it on <a href='https://github.com/AlexJSully/SciGrade/issues' target='_blank' rel='noopener noreferrer'>our GitHub issue tracker</a>. </p>";
-	append_str += "<br>";
-
-	append_str +=
 		'<p> <button type="button" class="btn btn-primary" onclick="redirectCRISPR();"> Back to Gene Selection </button> </p>';
 
 	$("#mainContainer").append(append_str);
