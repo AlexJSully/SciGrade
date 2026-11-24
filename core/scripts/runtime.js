@@ -19,14 +19,27 @@ function loadGeneContent() {
 /**
  * Disposes the Bootstrap collapse instances inside #mainContainer. Bootstrap keeps each instance in a map
  * keyed by its element, so removing the element alone leaves it and its detached DOM subtree in memory.
+ * A card that is mid-animation carries "collapsing" in place of "collapse", and its transition callback still
+ * reads the instance, so that instance is disposed by the shown or hidden event that ends the callback.
  */
 function disposeCollapses() {
 	if (typeof bootstrap === "undefined") {
 		return;
 	}
 
-	for (const element of document.querySelectorAll("#mainContainer .collapse")) {
-		bootstrap.Collapse.getInstance(element)?.dispose();
+	for (const element of document.querySelectorAll("#mainContainer .collapse, #mainContainer .collapsing")) {
+		const instance = bootstrap.Collapse.getInstance(element);
+		if (!instance) {
+			continue;
+		}
+
+		if (element.classList.contains("collapsing")) {
+			const disposeAfterTransition = () => instance.dispose();
+			element.addEventListener("shown.bs.collapse", disposeAfterTransition, { once: true });
+			element.addEventListener("hidden.bs.collapse", disposeAfterTransition, { once: true });
+		} else {
+			instance.dispose();
+		}
 	}
 }
 

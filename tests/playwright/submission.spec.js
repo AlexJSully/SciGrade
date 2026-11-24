@@ -129,6 +129,47 @@ test.describe("SciGrade Submission Flow", () => {
 		await expect(page.locator("body")).toContainText("Mark: 0/10");
 	});
 
+	test("should release every feedback card, including one mid-animation, when returning to gene selection", async ({
+		page,
+	}) => {
+		const pageErrors = [];
+		page.on("pageerror", (error) => pageErrors.push(error.message));
+
+		await page.fill("#sequence_input", "AAGCACTGCACGCCGTGGGT");
+		await page.fill("#pam_input", "CAG");
+		await page.fill("#position_input", "381");
+		await page.fill("#offtarget_input", "87");
+		await page.fill("#f1_input", "TAATACGACTCACTATAGAAGCACTGCACGCCGT");
+		await page.fill("#r1_input", "TTCTAGCTCTAAAACACCCACGGCGTGCAGTGCT");
+		await page.click("#assignmentSubmitButton");
+		await expect(page.locator("#mainContainer .card-header button")).toHaveCount(5);
+
+		// Open the first card and let it finish, then open the second and leave in the same task, so the second
+		// is still animating (Bootstrap swaps its "collapse" class for "collapsing") when the screen is rebuilt.
+		await page.evaluate(() => {
+			window.feedbackCards = [...document.querySelectorAll("#mainContainer .collapse")];
+			document.querySelector("#mainContainer .card-header button").click();
+		});
+		await expect(page.locator("#gRNAOutput")).toHaveClass(/\bshow\b/);
+		await page.evaluate(() => {
+			document.querySelectorAll("#mainContainer .card-header button")[1].click();
+			const animating = document.querySelectorAll("#mainContainer .collapsing").length;
+			[...document.querySelectorAll("button")]
+				.find((b) => b.textContent.includes("Back to Gene Selection"))
+				.click();
+			window.animatingWhenLeft = animating;
+		});
+
+		// Let the pending transition end and run its callback against the removed card
+		await page.waitForTimeout(800);
+
+		expect(await page.evaluate(() => window.animatingWhenLeft)).toBe(1);
+		expect(
+			await page.evaluate(() => window.feedbackCards.map((card) => bootstrap.Collapse.getInstance(card))),
+		).toEqual([null, null, null, null, null]);
+		expect(pageErrors).toEqual([]);
+	});
+
 	test("should show markup characters in submitted answers as text", async ({ page }) => {
 		const sequence = `<b>&"'</b>`;
 		const pam = "<&>";

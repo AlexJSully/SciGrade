@@ -195,23 +195,41 @@ describe("runtime.js - Runtime Flow Helpers", () => {
 		});
 
 		describe("Bootstrap collapse instances in the feedback cards", () => {
-			const collapseElements = [{ id: "gRNAOutput" }, { id: "PAMOutput" }, { id: "OffTargetOutput" }];
+			let cards;
 			let instances;
 			let sequence;
 
+			/**
+			 * Builds a real element, as Bootstrap sees it, and gives it a Collapse instance stub unless told not to.
+			 * @param {string} id - Element id, which also names the instance in the recorded sequence
+			 * @param {string} className - "collapse" for a settled card or "collapsing" for one mid-animation
+			 * @param {boolean} [withInstance=true] - False for a card the student never toggled
+			 * @returns {HTMLElement} The card element
+			 */
+			function addCard(id, className, withInstance = true) {
+				const card = document.implementation.createHTMLDocument().createElement("div");
+				card.id = id;
+				card.className = className;
+				cards.push(card);
+				if (withInstance) {
+					instances.set(card, {
+						dispose: jest.fn(() => {
+							sequence.push(`dispose ${id}`);
+						}),
+					});
+				}
+				return card;
+			}
+
 			beforeEach(() => {
+				cards = [];
+				instances = new Map();
 				sequence = [];
-				instances = new Map(
-					collapseElements.slice(0, 2).map((element) => [
-						element,
-						{
-							dispose: jest.fn(() => {
-								sequence.push(`dispose ${element.id}`);
-							}),
-						},
-					]),
-				);
-				document.querySelectorAll.mockReturnValue(collapseElements);
+				addCard("gRNAOutput", "collapse show");
+				addCard("PAMOutput", "collapse");
+				addCard("OffTargetOutput", "collapse", false);
+				addCard("F1PrimerOutput", "collapsing");
+				document.querySelectorAll.mockReturnValue(cards);
 				mockJQuery.empty = jest.fn(function () {
 					sequence.push("empty");
 					return this;
@@ -223,15 +241,34 @@ describe("runtime.js - Runtime Flow Helpers", () => {
 				delete global.bootstrap;
 			});
 
-			it("disposes each existing instance once, before the container is emptied", async () => {
+			it("disposes each settled instance once, before the container is emptied", async () => {
 				await redirectCRISPR();
 
-				expect(document.querySelectorAll).toHaveBeenCalledWith("#mainContainer .collapse");
-				for (const instance of instances.values()) {
-					expect(instance.dispose).toHaveBeenCalledTimes(1);
-				}
+				expect(document.querySelectorAll).toHaveBeenCalledWith(
+					"#mainContainer .collapse, #mainContainer .collapsing",
+				);
 				expect(sequence).toEqual(["dispose gRNAOutput", "dispose PAMOutput", "empty"]);
 			});
+
+			it.each(["shown.bs.collapse", "hidden.bs.collapse"])(
+				"disposes a card that is mid-animation only once its %s event fires",
+				async (eventName) => {
+					await redirectCRISPR();
+					const animating = cards[3];
+					expect(instances.get(animating).dispose).not.toHaveBeenCalled();
+
+					animating.dispatchEvent(new Event(eventName));
+					animating.dispatchEvent(new Event(eventName));
+
+					expect(instances.get(animating).dispose).toHaveBeenCalledTimes(1);
+					expect(sequence).toEqual([
+						"dispose gRNAOutput",
+						"dispose PAMOutput",
+						"empty",
+						"dispose F1PrimerOutput",
+					]);
+				},
+			);
 
 			it("still empties the container when Bootstrap did not load", async () => {
 				delete global.bootstrap;
