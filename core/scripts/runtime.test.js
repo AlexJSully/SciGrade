@@ -194,6 +194,54 @@ describe("runtime.js - Runtime Flow Helpers", () => {
 			expect(mockJQuery.append).toHaveBeenLastCalledWith(LOAD_ERROR_ALERT);
 		});
 
+		describe("Bootstrap collapse instances in the feedback cards", () => {
+			const collapseElements = [{ id: "gRNAOutput" }, { id: "PAMOutput" }, { id: "OffTargetOutput" }];
+			let instances;
+			let sequence;
+
+			beforeEach(() => {
+				sequence = [];
+				instances = new Map(
+					collapseElements.slice(0, 2).map((element) => [
+						element,
+						{
+							dispose: jest.fn(() => {
+								sequence.push(`dispose ${element.id}`);
+							}),
+						},
+					]),
+				);
+				document.querySelectorAll.mockReturnValue(collapseElements);
+				mockJQuery.empty = jest.fn(function () {
+					sequence.push("empty");
+					return this;
+				});
+				global.bootstrap = { Collapse: { getInstance: jest.fn((element) => instances.get(element) ?? null) } };
+			});
+
+			afterEach(() => {
+				delete global.bootstrap;
+			});
+
+			it("disposes each existing instance once, before the container is emptied", async () => {
+				await redirectCRISPR();
+
+				expect(document.querySelectorAll).toHaveBeenCalledWith("#mainContainer .collapse");
+				for (const instance of instances.values()) {
+					expect(instance.dispose).toHaveBeenCalledTimes(1);
+				}
+				expect(sequence).toEqual(["dispose gRNAOutput", "dispose PAMOutput", "empty"]);
+			});
+
+			it("still empties the container when Bootstrap did not load", async () => {
+				delete global.bootstrap;
+
+				await expect(redirectCRISPR()).resolves.toBeUndefined();
+
+				expect(sequence).toEqual(["empty"]);
+			});
+		});
+
 		it("shows no alert when the gene data loads", async () => {
 			await redirectCRISPR();
 

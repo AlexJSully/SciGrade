@@ -192,17 +192,25 @@ In [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js):
 
 ```javascript
 async function loadCRISPRJSON_Files() {
-	try {
-		const responseBenchling = await fetch("./data/Benchling_gRNA_Outputs.json");
-		benchling_gRNA_outputs = await responseBenchling.json();
+	if (benchling_gRNA_outputs && gene_backgroundInfo) {
+		return;
+	}
 
-		const responseGeneBackground = await fetch("data/Background_info/gene_background_info.json");
-		gene_backgroundInfo = await responseGeneBackground.json();
+	try {
+		const [benchling, geneBackground] = await Promise.all(
+			["./data/Benchling_gRNA_Outputs.json", "data/Background_info/gene_background_info.json"].map(async (url) =>
+				(await fetch(url)).json(),
+			),
+		);
+		benchling_gRNA_outputs = benchling;
+		gene_backgroundInfo = geneBackground;
 	} catch (err) {
 		console.error("Error fetching file:", err);
 	}
 }
 ```
+
+Both files are fetched in parallel. A later call does nothing once both are loaded, so returning to the gene selection does not download them again.
 
 ## Student Submission Data
 

@@ -16,8 +16,23 @@ function loadGeneContent() {
 	select_Gene();
 }
 
+/**
+ * Disposes the Bootstrap collapse instances inside #mainContainer. Bootstrap keeps each instance in a map
+ * keyed by its element, so removing the element alone leaves it and its detached DOM subtree in memory.
+ */
+function disposeCollapses() {
+	if (typeof bootstrap === "undefined") {
+		return;
+	}
+
+	for (const element of document.querySelectorAll("#mainContainer .collapse")) {
+		bootstrap.Collapse.getInstance(element)?.dispose();
+	}
+}
+
 /** Builds the selection UI and loads the reference data for the runtime page. */
 async function redirectCRISPR() {
+	disposeCollapses();
 	$("#mainContainer").empty();
 	let append_str;
 	append_str = `

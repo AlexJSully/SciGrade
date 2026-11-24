@@ -216,6 +216,89 @@ describe("crispr_scripts.js - Utility Functions", () => {
 				expect(crispr.MAROffTarget_degree).toBe(0);
 			},
 		);
+
+		describe("window of reference entries within 35 of the cut position (100)", () => {
+			/**
+			 * Replaces the reference entries for the gene under test.
+			 * @param {object[]} entries - Benchling gRNA output entries for the gene
+			 */
+			function loadEntries(entries) {
+				setTestState({ benchling_gRNA_outputs: { gene_list: { test_gene: entries } } });
+			}
+
+			it("marks degree 3 when no score in the window reaches 35", () => {
+				loadEntries([
+					{ Position: 100, "Specificity Score": 20 },
+					{ Position: 110, "Specificity Score": 30 },
+					{ Position: 500, "Specificity Score": 90 },
+				]);
+				mockInputs("20");
+
+				checkOffTarget(20);
+
+				expect(crispr.MAROffTarget).toBe(true);
+				expect(crispr.MAROffTarget_degree).toBe(3);
+			});
+
+			it("marks degree 2 for a score of at least 35 when the window holds a score of at least 80", () => {
+				loadEntries([
+					{ Position: 100, "Specificity Score": 50 },
+					{ Position: 110, "Specificity Score": 100 },
+				]);
+				mockInputs("50");
+
+				checkOffTarget(50);
+
+				expect(crispr.MAROffTarget).toBe(true);
+				expect(crispr.MAROffTarget_degree).toBe(2);
+			});
+
+			it("marks degree 1 for the window's top score", () => {
+				loadEntries([
+					{ Position: 100, "Specificity Score": 50 },
+					{ Position: 110, "Specificity Score": 100 },
+				]);
+				mockInputs("100");
+
+				checkOffTarget(100);
+
+				expect(crispr.MAROffTarget).toBe(true);
+				expect(crispr.MAROffTarget_degree).toBe(1);
+			});
+
+			it("ignores entries outside the window and entries without a score", () => {
+				loadEntries([
+					{ Position: 100, "Specificity Score": 50 },
+					{ Position: 101, "Specificity Score": 0 },
+					{ Position: 500, "Specificity Score": 100 },
+				]);
+				mockInputs("50");
+
+				checkOffTarget(50);
+
+				expect(crispr.MAROffTarget_degree).toBe(1);
+			});
+
+			it("grades a matching score against an empty window as degree 1 when it is at least 35", () => {
+				loadEntries([{ Position: 500, "Specificity Score": 90 }]);
+				mockInputs("75");
+
+				checkOffTarget(75);
+
+				expect(crispr.MAROffTarget).toBe(true);
+				expect(crispr.MAROffTarget_degree).toBe(1);
+			});
+
+			it("grades a matching score below 35 against an empty window as degree 3", () => {
+				loadEntries([{ Position: 500, "Specificity Score": 90 }]);
+				mockInputs("20");
+
+				checkOffTarget(20);
+
+				expect(crispr.MAROffTarget).toBe(true);
+				expect(crispr.MAROffTarget_degree).toBe(3);
+			});
+		});
 	});
 
 	describe("checkF1Primers()", () => {
@@ -763,5 +846,85 @@ describe("crispr_scripts.js - submitAnswers()", () => {
 		jest.advanceTimersByTime(750);
 
 		expect(document.getElementById("mainContainer").textContent).toContain("Mark: 5/10");
+	});
+});
+
+describe("crispr_scripts.js - loadCRISPRJSON_Files()", () => {
+	const { loadCRISPRJSON_Files } = crispr;
+	const benchling = { gene_list: { eBFP: [] } };
+	const background = { gene_list: { eBFP: { name: "eBFP" } } };
+
+	/**
+	 * Builds a fetch response whose body resolves on demand.
+	 * @returns {{response: object, resolve: Function, reject: Function}} The response and its controls
+	 */
+	function deferredResponse() {
+		let resolve;
+		let reject;
+		const body = new Promise((res, rej) => {
+			resolve = res;
+			reject = rej;
+		});
+		return { response: { json: () => body }, resolve, reject };
+	}
+
+	beforeEach(() => {
+		setTestState({ benchling_gRNA_outputs: null, gene_backgroundInfo: null });
+		fetch.mockReset();
+	});
+
+	afterEach(() => {
+		fetch.mockReset();
+	});
+
+	it("starts both fetches before either response is read", async () => {
+		const first = deferredResponse();
+		const second = deferredResponse();
+		fetch.mockResolvedValueOnce(first.response).mockResolvedValueOnce(second.response);
+
+		const loading = loadCRISPRJSON_Files();
+		await Promise.resolve();
+
+		expect(fetch.mock.calls.map(([url]) => url)).toEqual([
+			"./data/Benchling_gRNA_Outputs.json",
+			"data/Background_info/gene_background_info.json",
+		]);
+		first.resolve(benchling);
+		second.resolve(background);
+		await loading;
+		expect(crispr.benchling_gRNA_outputs).toBe(benchling);
+		expect(crispr.gene_backgroundInfo).toBe(background);
+	});
+
+	it("does not fetch again once both files are loaded", async () => {
+		fetch
+			.mockResolvedValueOnce(createMockJsonResponse(benchling))
+			.mockResolvedValueOnce(createMockJsonResponse(background));
+
+		await loadCRISPRJSON_Files();
+		await loadCRISPRJSON_Files();
+
+		expect(fetch).toHaveBeenCalledTimes(2);
+		expect(crispr.gene_backgroundInfo).toBe(background);
+	});
+
+	it("keeps neither file when one fails, logs the error, and retries on the next call", async () => {
+		const failure = new Error("offline");
+		fetch.mockResolvedValueOnce(createMockJsonResponse(benchling)).mockRejectedValueOnce(failure);
+
+		await loadCRISPRJSON_Files();
+
+		expect(console.error).toHaveBeenCalledWith("Error fetching file:", failure);
+		expect(crispr.benchling_gRNA_outputs).toBeFalsy();
+		expect(crispr.gene_backgroundInfo).toBeFalsy();
+
+		fetch
+			.mockResolvedValueOnce(createMockJsonResponse(benchling))
+			.mockResolvedValueOnce(createMockJsonResponse(background));
+		await loadCRISPRJSON_Files();
+
+		expect(fetch).toHaveBeenCalledTimes(4);
+		expect(crispr.benchling_gRNA_outputs).toBe(benchling);
+		expect(crispr.gene_backgroundInfo).toBe(background);
 	});
 });

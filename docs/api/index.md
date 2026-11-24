@@ -72,14 +72,14 @@ select_Gene(); // Loads the HBB work form
 async function loadCRISPRJSON_Files()
 ```
 
-**Purpose:** Asynchronously load gene reference data from JSON files.
+**Purpose:** Load gene reference data from JSON files, fetching both in parallel. Does nothing once both are loaded, so returning to the gene selection does not download them again.
 
 **Fetches:**
 
 - [`./data/Benchling_gRNA_Outputs.json`](../../core/data/Benchling_gRNA_Outputs.json) → `benchling_gRNA_outputs`
 - [`./data/Background_info/gene_background_info.json`](../../core/data/Background_info/gene_background_info.json) → `gene_backgroundInfo`
 
-**Error Handling:** Logs errors to console if fetch fails.
+**Error Handling:** Logs errors to console if either fetch fails. Both variables stay unset, and the next call tries again.
 
 **Returns:** Promise (implicitly handled by async).
 

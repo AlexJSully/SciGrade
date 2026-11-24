@@ -23,14 +23,14 @@ The main marking logic is implemented in `markAnswers()` in [core/scripts/crispr
 ```mermaid
 sequenceDiagram
     accTitle: Reference data loading sequence
-    accDescr: A sequence diagram with three participants. The UI calls loadCRISPRJSON_Files twice: the gRNA data source returns benchling_gRNA_outputs, and the gene information source returns gene_backgroundInfo.
- UI->>gRNAData: loadCRISPRJSON_Files()
+    accDescr: A sequence diagram with three participants. One call to loadCRISPRJSON_Files requests both files at the same time: the gRNA data source returns benchling_gRNA_outputs, and the gene information source returns gene_backgroundInfo.
+ UI->>gRNAData: loadCRISPRJSON_Files() fetch
+ UI->>GeneInfo: loadCRISPRJSON_Files() fetch
  gRNAData-->>UI: benchling_gRNA_outputs
- UI->>GeneInfo: loadCRISPRJSON_Files()
  GeneInfo-->>UI: gene_backgroundInfo
 ```
 
-Both reference files are fetched asynchronously during initialization from [core/data/Benchling_gRNA_Outputs.json](../../core/data/Benchling_gRNA_Outputs.json) and [core/data/Background_info/gene_background_info.json](../../core/data/Background_info/gene_background_info.json) by [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js).
+Both reference files are fetched in parallel during initialization, and only on the first call, from [core/data/Benchling_gRNA_Outputs.json](../../core/data/Benchling_gRNA_Outputs.json) and [core/data/Background_info/gene_background_info.json](../../core/data/Background_info/gene_background_info.json) by [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js).
 
 ### Step 2: gRNA Sequence Validation
 
