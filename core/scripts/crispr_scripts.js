@@ -27,20 +27,26 @@ function select_Gene() {
 let gene_backgroundInfo;
 let benchling_gRNA_outputs;
 /**
- * Load JSON files
+ * Loads both JSON data files in parallel. Does nothing once both are loaded, so returning to the gene
+ * selection does not download and parse them again. Both are kept or neither is, so a failed load leaves
+ * both unset and the next call retries.
+ * @throws {Error} When either request fails, responds with a non-OK status, or returns a body that is not JSON
  */
 async function loadCRISPRJSON_Files() {
-	try {
-		// Fetch Benchling_gRNA_Outputs.json
-		const responseBenchling = await fetch("./data/Benchling_gRNA_Outputs.json");
-		benchling_gRNA_outputs = await responseBenchling.json();
-
-		// Fetch gene_background_info.json
-		const responseGeneBackground = await fetch("data/Background_info/gene_background_info.json");
-		gene_backgroundInfo = await responseGeneBackground.json();
-	} catch (err) {
-		console.error("Error fetching file:", err);
+	if (benchling_gRNA_outputs && gene_backgroundInfo) {
+		return;
 	}
+
+	[benchling_gRNA_outputs, gene_backgroundInfo] = await Promise.all(
+		["./data/Benchling_gRNA_Outputs.json", "data/Background_info/gene_background_info.json"].map(async (url) => {
+			const response = await fetch(url);
+			if (!response.ok) {
+				throw new Error(`${url} returned HTTP ${response.status}`);
+			}
+
+			return response.json();
+		}),
+	);
 }
 
 /**
@@ -411,10 +417,6 @@ function checkCandidateAnswer(possibleAnswer, correctNucleotidePosition) {
 	}
 }
 
-let offtarget_List = [];
-let offtarget_dict = {};
-let offtarget_dictParse = [];
-let offtarget_Use = [];
 /**
  * Checks whether the submitted off-target score matches the reference scoring rules.
  * @param {number} score - Reference specificity score from the matched gRNA entry
@@ -440,32 +442,13 @@ function checkOffTarget(score) {
 	// Determine how write it is based on its range
 	if (MAROffTarget) {
 		// Check for last-resort regions:
-		const rangeStarter_upper = parseInt(document.getElementById("position_input").value, 10) + 35;
-		const rangeStarter_lower = parseInt(document.getElementById("position_input").value, 10) - 35;
-		// Check if gRNA sequence is in against listed
-		offtarget_List = [];
-		offtarget_dict = {};
-		offtarget_dictParse = [];
-		offtarget_Use = [];
-		for (let i = 0; i < benchling_gRNA_outputs.gene_list[current_gene].length; i += 1) {
-			if (
-				benchling_gRNA_outputs.gene_list[current_gene][i].Position >= rangeStarter_lower &&
-				benchling_gRNA_outputs.gene_list[current_gene][i].Position <= rangeStarter_upper
-			) {
-				if (benchling_gRNA_outputs.gene_list[current_gene][i]["Specificity Score"]) {
-					offtarget_List.push(benchling_gRNA_outputs.gene_list[current_gene][i]["Specificity Score"]);
-					offtarget_dict[i] = benchling_gRNA_outputs.gene_list[current_gene][i]["Specificity Score"];
-					offtarget_dictParse.push(i);
-				}
-			}
-		}
-		let last_resort_okay = true;
-		if (Math.max.apply(null, offtarget_List) < 35) {
-			last_resort_okay = false;
-		}
+		const cutPosition = parseInt(document.getElementById("position_input").value, 10);
+		const offtarget_List = benchling_gRNA_outputs.gene_list[current_gene]
+			.filter((entry) => Math.abs(entry.Position - cutPosition) <= 35 && entry["Specificity Score"])
+			.map((entry) => entry["Specificity Score"]);
+		const Max_range = Math.max(...offtarget_List);
 
 		// Is it within the optimal range?
-		const Max_range = Math.max.apply(null, offtarget_List);
 		const optimalValue = getOffTargetOptimalValue(Max_range);
 		// Determine if off-target is optimal or not
 		if (InputOffTargetValue >= optimalValue) {
@@ -474,12 +457,9 @@ function checkOffTarget(score) {
 			MAROffTarget_degree = 1;
 		} else if (InputOffTargetValue >= 35) {
 			MAROffTarget_above35 = true;
-			if (Math.max.apply(null, offtarget_List) < 80) {
-				MAROffTarget_degree = 1;
-			} else {
-				MAROffTarget_degree = 2;
-			}
-		} else if (!last_resort_okay) {
+			MAROffTarget_degree = Max_range < 80 ? 1 : 2;
+		} else if (Max_range < 35) {
+			// An empty window gives a Max_range of -Infinity, so it lands here
 			MAROffTarget_onlyOption = true;
 			MAROffTarget_degree = 3;
 		}
@@ -829,6 +809,7 @@ if (typeof module !== "undefined" && module.exports) {
 		checkOffTarget,
 		checkF1Primers,
 		checkR1Primers,
+		loadCRISPRJSON_Files,
 		fillGeneList,
 		select_Gene,
 		loadWork,
@@ -850,6 +831,12 @@ if (typeof module !== "undefined" && module.exports) {
 		},
 		get current_gene() {
 			return current_gene;
+		},
+		get benchling_gRNA_outputs() {
+			return benchling_gRNA_outputs;
+		},
+		get gene_backgroundInfo() {
+			return gene_backgroundInfo;
 		},
 		get possible_F1_primers() {
 			return possible_F1_primers;

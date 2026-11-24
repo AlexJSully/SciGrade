@@ -216,6 +216,86 @@ describe("crispr_scripts.js - Utility Functions", () => {
 				expect(crispr.MAROffTarget_degree).toBe(0);
 			},
 		);
+
+		it.each([
+			{
+				name: "marks degree 3 when no score in the window reaches 35",
+				entries: [
+					{ Position: 100, "Specificity Score": 20 },
+					{ Position: 110, "Specificity Score": 30 },
+					{ Position: 500, "Specificity Score": 90 },
+				],
+				score: 20,
+				degree: 3,
+			},
+			{
+				name: "marks degree 2 for a score of at least 35 when the window holds a score of at least 80",
+				entries: [
+					{ Position: 100, "Specificity Score": 50 },
+					{ Position: 110, "Specificity Score": 100 },
+				],
+				score: 50,
+				degree: 2,
+			},
+			{
+				name: "includes an entry 35 above the cut position",
+				entries: [
+					{ Position: 100, "Specificity Score": 50 },
+					{ Position: 135, "Specificity Score": 100 },
+				],
+				score: 50,
+				degree: 2,
+			},
+			{
+				name: "includes an entry 35 below the cut position",
+				entries: [
+					{ Position: 100, "Specificity Score": 50 },
+					{ Position: 65, "Specificity Score": 100 },
+				],
+				score: 50,
+				degree: 2,
+			},
+			{
+				name: "ignores entries 36 away from the cut position",
+				entries: [
+					{ Position: 100, "Specificity Score": 50 },
+					{ Position: 136, "Specificity Score": 100 },
+					{ Position: 64, "Specificity Score": 100 },
+				],
+				score: 50,
+				degree: 1,
+			},
+			{
+				name: "ignores entries outside the window and entries without a score",
+				entries: [
+					{ Position: 100, "Specificity Score": 50 },
+					{ Position: 101 },
+					{ Position: 500, "Specificity Score": 100 },
+				],
+				score: 50,
+				degree: 1,
+			},
+			{
+				name: "grades a matching score against an empty window as degree 1 when it is at least 35",
+				entries: [{ Position: 500, "Specificity Score": 90 }],
+				score: 50,
+				degree: 1,
+			},
+			{
+				name: "grades a matching score below 35 against an empty window as degree 3",
+				entries: [{ Position: 500, "Specificity Score": 90 }],
+				score: 20,
+				degree: 3,
+			},
+		])("$name (window of 35 around cut position 100)", ({ entries, score, degree }) => {
+			setTestState({ benchling_gRNA_outputs: { gene_list: { test_gene: entries } } });
+			mockInputs(String(score));
+
+			checkOffTarget(score);
+
+			expect(crispr.MAROffTarget).toBe(true);
+			expect(crispr.MAROffTarget_degree).toBe(degree);
+		});
 	});
 
 	describe("checkF1Primers()", () => {
@@ -763,5 +843,81 @@ describe("crispr_scripts.js - submitAnswers()", () => {
 		jest.advanceTimersByTime(750);
 
 		expect(document.getElementById("mainContainer").textContent).toContain("Mark: 5/10");
+	});
+});
+
+describe("crispr_scripts.js - loadCRISPRJSON_Files()", () => {
+	const { loadCRISPRJSON_Files } = crispr;
+	const benchling = { gene_list: { eBFP: [] } };
+	const background = { gene_list: { eBFP: { name: "eBFP" } } };
+
+	beforeEach(() => {
+		setTestState({ benchling_gRNA_outputs: null, gene_backgroundInfo: null });
+		fetch.mockReset();
+	});
+
+	it("starts both fetches before either response is read", async () => {
+		const first = Promise.withResolvers();
+		const second = Promise.withResolvers();
+		fetch
+			.mockResolvedValueOnce({ ok: true, json: () => first.promise })
+			.mockResolvedValueOnce({ ok: true, json: () => second.promise });
+
+		const loading = loadCRISPRJSON_Files();
+		await Promise.resolve();
+
+		expect(fetch.mock.calls.map(([url]) => url)).toEqual([
+			"./data/Benchling_gRNA_Outputs.json",
+			"data/Background_info/gene_background_info.json",
+		]);
+		first.resolve(benchling);
+		second.resolve(background);
+		await loading;
+		expect(crispr.benchling_gRNA_outputs).toBe(benchling);
+		expect(crispr.gene_backgroundInfo).toBe(background);
+	});
+
+	it("does not fetch again once both files are loaded", async () => {
+		fetch
+			.mockResolvedValueOnce(createMockJsonResponse(benchling))
+			.mockResolvedValueOnce(createMockJsonResponse(background));
+
+		await loadCRISPRJSON_Files();
+		await loadCRISPRJSON_Files();
+
+		expect(fetch).toHaveBeenCalledTimes(2);
+		expect(crispr.gene_backgroundInfo).toBe(background);
+	});
+
+	it("rejects with the fetch error, keeps neither file, and retries on the next call", async () => {
+		const failure = new Error("offline");
+		fetch.mockResolvedValueOnce(createMockJsonResponse(benchling)).mockRejectedValueOnce(failure);
+
+		await expect(loadCRISPRJSON_Files()).rejects.toBe(failure);
+
+		expect(crispr.benchling_gRNA_outputs).toBeFalsy();
+		expect(crispr.gene_backgroundInfo).toBeFalsy();
+
+		fetch
+			.mockResolvedValueOnce(createMockJsonResponse(benchling))
+			.mockResolvedValueOnce(createMockJsonResponse(background));
+		await loadCRISPRJSON_Files();
+
+		expect(fetch).toHaveBeenCalledTimes(4);
+		expect(crispr.benchling_gRNA_outputs).toBe(benchling);
+		expect(crispr.gene_backgroundInfo).toBe(background);
+	});
+
+	it("rejects without reading the body when a file responds with a non-OK status", async () => {
+		const notFound = { ok: false, status: 404, json: jest.fn() };
+		fetch.mockResolvedValueOnce(createMockJsonResponse(benchling)).mockResolvedValueOnce(notFound);
+
+		await expect(loadCRISPRJSON_Files()).rejects.toThrow(
+			"data/Background_info/gene_background_info.json returned HTTP 404",
+		);
+
+		expect(notFound.json).not.toHaveBeenCalled();
+		expect(crispr.benchling_gRNA_outputs).toBeFalsy();
+		expect(crispr.gene_backgroundInfo).toBeFalsy();
 	});
 });

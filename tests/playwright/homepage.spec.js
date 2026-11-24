@@ -14,6 +14,16 @@ test.describe("SciGrade Homepage", () => {
 		await expect(page.locator("body")).toContainText(/SciGrade|gRNA|Primer|bioinformatics/i);
 	});
 
+	test("should not load jQuery or Bootstrap JavaScript, which only the application page uses", async ({ page }) => {
+		const requested = [];
+		page.on("request", (request) => requested.push(new URL(request.url()).pathname));
+
+		await page.goto("http://localhost:3000/", { waitUntil: "load" });
+
+		expect(requested.filter((path) => /\/(jquery|bootstrap)[^/]*\.js$/i.test(path))).toEqual([]);
+		await expect(page.getByRole("button", { name: "Start" })).toBeVisible();
+	});
+
 	test("should display the gRNA sequence input page", async ({ page }) => {
 		await page.goto("http://localhost:3000/");
 

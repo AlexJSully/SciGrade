@@ -16,8 +16,37 @@ function loadGeneContent() {
 	select_Gene();
 }
 
+/**
+ * Disposes the Bootstrap collapse instances inside #mainContainer. Bootstrap keeps each instance in a map
+ * keyed by its element, so removing the element alone leaves it and its detached DOM subtree in memory.
+ * A card that is mid-animation carries "collapsing" in place of "collapse", and its transition callback still
+ * reads the instance, so that instance is disposed by the shown or hidden event that ends the callback.
+ */
+function disposeCollapses() {
+	if (typeof bootstrap === "undefined") {
+		return;
+	}
+
+	for (const element of document.querySelectorAll("#mainContainer .collapse, #mainContainer .collapsing")) {
+		const instance = bootstrap.Collapse.getInstance(element);
+		if (!instance) {
+			continue;
+		}
+
+		if (!element.classList.contains("collapsing")) {
+			instance.dispose();
+			continue;
+		}
+
+		for (const eventName of ["shown.bs.collapse", "hidden.bs.collapse"]) {
+			element.addEventListener(eventName, () => instance.dispose(), { once: true });
+		}
+	}
+}
+
 /** Builds the selection UI and loads the reference data for the runtime page. */
 async function redirectCRISPR() {
+	disposeCollapses();
 	$("#mainContainer").empty();
 	let append_str;
 	append_str = `
@@ -69,11 +98,16 @@ async function redirectCRISPR() {
 		return;
 	}
 
-	await loadCRISPRJSON_Files();
+	try {
+		await loadCRISPRJSON_Files();
+	} catch (err) {
+		showLoadError("SciGrade could not load the gene data files.", err);
+		return;
+	}
 
 	fillGeneList();
 
-	// loadCRISPRJSON_Files logs and swallows fetch failures, leaving the gene list unset.
+	// A data file that loads without a gene_list leaves the dropdown empty.
 	if (!gene_backgroundInfo?.gene_list) {
 		showLoadError("SciGrade could not load the gene data files.");
 	}
@@ -81,10 +115,10 @@ async function redirectCRISPR() {
 
 /**
  * Logs why the runtime page could not load and asks the user to reload it.
- * @param {string} reason - Message logged with console.error.
+ * @param {...*} details - Values logged with console.error: a message, then the error that caused it, if any.
  */
-function showLoadError(reason) {
-	console.error(reason);
+function showLoadError(...details) {
+	console.error(...details);
 	$("#selection_process").append(
 		"<div class='alert alert-danger' role='alert' id='load_error'>SciGrade could not finish loading. Please reload the page.</div>",
 	);
