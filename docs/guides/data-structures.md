@@ -188,29 +188,7 @@ ACGTACGTACGTACGTACGTACGTACGTACGT
 
 ### Loading Implementation
 
-In [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js):
-
-```javascript
-async function loadCRISPRJSON_Files() {
-	if (benchling_gRNA_outputs && gene_backgroundInfo) {
-		return;
-	}
-
-	try {
-		const [benchling, geneBackground] = await Promise.all(
-			["./data/Benchling_gRNA_Outputs.json", "data/Background_info/gene_background_info.json"].map(async (url) =>
-				(await fetch(url)).json(),
-			),
-		);
-		benchling_gRNA_outputs = benchling;
-		gene_backgroundInfo = geneBackground;
-	} catch (err) {
-		console.error("Error fetching file:", err);
-	}
-}
-```
-
-Both files are fetched in parallel. A later call does nothing once both are loaded, so returning to the gene selection does not download them again.
+[`loadCRISPRJSON_Files()`](../../core/scripts/crispr_scripts.js) fetches both files in parallel and stores them only when both succeed. A later call does nothing once both are loaded, so returning to the gene selection does not download them again. A failed request, or one that responds with a non-OK status, rejects the call and leaves both unset, so the next call fetches again.
 
 ## Student Submission Data
 

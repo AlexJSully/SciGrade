@@ -79,7 +79,7 @@ async function loadCRISPRJSON_Files()
 - [`./data/Benchling_gRNA_Outputs.json`](../../core/data/Benchling_gRNA_Outputs.json) → `benchling_gRNA_outputs`
 - [`./data/Background_info/gene_background_info.json`](../../core/data/Background_info/gene_background_info.json) → `gene_backgroundInfo`
 
-**Error Handling:** Logs errors to console if either fetch fails. Both variables stay unset, and the next call tries again.
+**Error Handling:** Rejects when either fetch fails or responds with a non-OK status, with an `Error` naming the URL and status for the latter. Both variables stay unset, and the next call tries again. `redirectCRISPR()` catches the rejection.
 
 **Returns:** Promise (implicitly handled by async).
 
@@ -383,10 +383,12 @@ async function redirectCRISPR()
 
 **Behavior:**
 
+- Disposes the Bootstrap collapse instances of the feedback cards in `#mainContainer` before emptying it, since Bootstrap keeps each instance, and the removed card it points at, in memory until disposed. A card still animating is disposed when its `shown.bs.collapse` or `hidden.bs.collapse` event fires.
 - Builds the selection UI in `#mainContainer`
 - Calls `loadCRISPRJSON_Files()` and `fillGeneList()`
 - If either function is undefined because `crispr_scripts.min.js` failed to load, logs a `console.error` and shows a "Please reload the page" alert in `#selection_process` instead of throwing
-- If the gene data files fail to load, so `gene_backgroundInfo.gene_list` is unset after `fillGeneList()`, logs a `console.error` and shows the same alert
+- If `loadCRISPRJSON_Files()` rejects, logs a `console.error` with the error and shows the same alert without calling `fillGeneList()`
+- If the gene data loads without a `gene_list`, logs a `console.error` and shows the same alert
 - [core/systemrun.html](../../core/systemrun.html) shows the same alert in `#mainContainer` when `redirectCRISPR` itself is undefined because `runtime.min.js` failed to load
 
 ## Bootstrap & jQuery

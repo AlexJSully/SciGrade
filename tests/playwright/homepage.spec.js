@@ -20,7 +20,7 @@ test.describe("SciGrade Homepage", () => {
 
 		await page.goto("http://localhost:3000/", { waitUntil: "load" });
 
-		expect(requested.filter((path) => /\/(jquery|bootstrap)[^/]*\.js$/.test(path))).toEqual([]);
+		expect(requested.filter((path) => /\/(jquery|bootstrap)[^/]*\.js$/i.test(path))).toEqual([]);
 		await expect(page.getByRole("button", { name: "Start" })).toBeVisible();
 	});
 

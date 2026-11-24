@@ -33,12 +33,13 @@ function disposeCollapses() {
 			continue;
 		}
 
-		if (element.classList.contains("collapsing")) {
-			const disposeAfterTransition = () => instance.dispose();
-			element.addEventListener("shown.bs.collapse", disposeAfterTransition, { once: true });
-			element.addEventListener("hidden.bs.collapse", disposeAfterTransition, { once: true });
-		} else {
+		if (!element.classList.contains("collapsing")) {
 			instance.dispose();
+			continue;
+		}
+
+		for (const eventName of ["shown.bs.collapse", "hidden.bs.collapse"]) {
+			element.addEventListener(eventName, () => instance.dispose(), { once: true });
 		}
 	}
 }
@@ -97,11 +98,16 @@ async function redirectCRISPR() {
 		return;
 	}
 
-	await loadCRISPRJSON_Files();
+	try {
+		await loadCRISPRJSON_Files();
+	} catch (err) {
+		showLoadError("SciGrade could not load the gene data files.", err);
+		return;
+	}
 
 	fillGeneList();
 
-	// loadCRISPRJSON_Files logs and swallows fetch failures, leaving the gene list unset.
+	// A data file that loads without a gene_list leaves the dropdown empty.
 	if (!gene_backgroundInfo?.gene_list) {
 		showLoadError("SciGrade could not load the gene data files.");
 	}
@@ -109,10 +115,10 @@ async function redirectCRISPR() {
 
 /**
  * Logs why the runtime page could not load and asks the user to reload it.
- * @param {string} reason - Message logged with console.error.
+ * @param {...*} details - Values logged with console.error: a message, then the error that caused it, if any.
  */
-function showLoadError(reason) {
-	console.error(reason);
+function showLoadError(...details) {
+	console.error(...details);
 	$("#selection_process").append(
 		"<div class='alert alert-danger' role='alert' id='load_error'>SciGrade could not finish loading. Please reload the page.</div>",
 	);

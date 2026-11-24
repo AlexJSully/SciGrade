@@ -23,14 +23,17 @@ The main marking logic is implemented in `markAnswers()` in [core/scripts/crispr
 ```mermaid
 sequenceDiagram
     accTitle: Reference data loading sequence
-    accDescr: A sequence diagram with three participants. One call to loadCRISPRJSON_Files requests both files at the same time: the gRNA data source returns benchling_gRNA_outputs, and the gene information source returns gene_backgroundInfo.
- UI->>gRNAData: loadCRISPRJSON_Files() fetch
- UI->>GeneInfo: loadCRISPRJSON_Files() fetch
- gRNAData-->>UI: benchling_gRNA_outputs
- GeneInfo-->>UI: gene_backgroundInfo
+    accDescr: A sequence diagram with three participants. The UI calls loadCRISPRJSON_Files, which requests both files in parallel: Benchling_gRNA_Outputs.json from the gRNA data source, stored as benchling_gRNA_outputs, and gene_background_info.json from the gene information source, stored as gene_backgroundInfo.
+    par loadCRISPRJSON_Files()
+        UI->>gRNAData: fetch Benchling_gRNA_Outputs.json
+        gRNAData-->>UI: benchling_gRNA_outputs
+    and
+        UI->>GeneInfo: fetch gene_background_info.json
+        GeneInfo-->>UI: gene_backgroundInfo
+    end
 ```
 
-Both reference files are fetched in parallel during initialization, and only on the first call, from [core/data/Benchling_gRNA_Outputs.json](../../core/data/Benchling_gRNA_Outputs.json) and [core/data/Background_info/gene_background_info.json](../../core/data/Background_info/gene_background_info.json) by [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js).
+Both reference files are fetched in parallel during initialization, and not again once both have loaded, from [core/data/Benchling_gRNA_Outputs.json](../../core/data/Benchling_gRNA_Outputs.json) and [core/data/Background_info/gene_background_info.json](../../core/data/Background_info/gene_background_info.json) by [core/scripts/crispr_scripts.js](../../core/scripts/crispr_scripts.js).
 
 ### Step 2: gRNA Sequence Validation
 

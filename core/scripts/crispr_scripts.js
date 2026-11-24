@@ -29,24 +29,24 @@ let benchling_gRNA_outputs;
 /**
  * Loads both JSON data files in parallel. Does nothing once both are loaded, so returning to the gene
  * selection does not download and parse them again. Both are kept or neither is, so a failed load leaves
- * the gene list unset and the next call retries.
+ * both unset and the next call retries.
+ * @throws {Error} When either request fails, responds with a non-OK status, or returns a body that is not JSON
  */
 async function loadCRISPRJSON_Files() {
 	if (benchling_gRNA_outputs && gene_backgroundInfo) {
 		return;
 	}
 
-	try {
-		const [benchling, geneBackground] = await Promise.all(
-			["./data/Benchling_gRNA_Outputs.json", "data/Background_info/gene_background_info.json"].map(async (url) =>
-				(await fetch(url)).json(),
-			),
-		);
-		benchling_gRNA_outputs = benchling;
-		gene_backgroundInfo = geneBackground;
-	} catch (err) {
-		console.error("Error fetching file:", err);
-	}
+	[benchling_gRNA_outputs, gene_backgroundInfo] = await Promise.all(
+		["./data/Benchling_gRNA_Outputs.json", "data/Background_info/gene_background_info.json"].map(async (url) => {
+			const response = await fetch(url);
+			if (!response.ok) {
+				throw new Error(`${url} returned HTTP ${response.status}`);
+			}
+
+			return response.json();
+		}),
+	);
 }
 
 /**
@@ -442,20 +442,11 @@ function checkOffTarget(score) {
 	// Determine how write it is based on its range
 	if (MAROffTarget) {
 		// Check for last-resort regions:
-		const rangeStarter_upper = parseInt(document.getElementById("position_input").value, 10) + 35;
-		const rangeStarter_lower = parseInt(document.getElementById("position_input").value, 10) - 35;
-		// Collect the scores of the reference entries inside the window
-		const offtarget_List = [];
-		for (const entry of benchling_gRNA_outputs.gene_list[current_gene]) {
-			if (entry.Position >= rangeStarter_lower && entry.Position <= rangeStarter_upper) {
-				if (entry["Specificity Score"]) {
-					offtarget_List.push(entry["Specificity Score"]);
-				}
-			}
-		}
-		// An empty window gives -Infinity, which leaves last_resort_okay false
+		const cutPosition = parseInt(document.getElementById("position_input").value, 10);
+		const offtarget_List = benchling_gRNA_outputs.gene_list[current_gene]
+			.filter((entry) => Math.abs(entry.Position - cutPosition) <= 35 && entry["Specificity Score"])
+			.map((entry) => entry["Specificity Score"]);
 		const Max_range = Math.max(...offtarget_List);
-		const last_resort_okay = Max_range >= 35;
 
 		// Is it within the optimal range?
 		const optimalValue = getOffTargetOptimalValue(Max_range);
@@ -466,12 +457,9 @@ function checkOffTarget(score) {
 			MAROffTarget_degree = 1;
 		} else if (InputOffTargetValue >= 35) {
 			MAROffTarget_above35 = true;
-			if (Max_range < 80) {
-				MAROffTarget_degree = 1;
-			} else {
-				MAROffTarget_degree = 2;
-			}
-		} else if (!last_resort_okay) {
+			MAROffTarget_degree = Max_range < 80 ? 1 : 2;
+		} else if (Max_range < 35) {
+			// An empty window gives a Max_range of -Infinity, so it lands here
 			MAROffTarget_onlyOption = true;
 			MAROffTarget_degree = 3;
 		}

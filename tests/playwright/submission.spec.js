@@ -31,6 +31,21 @@ const scoreTestCases = [
 	},
 ];
 
+/**
+ * Fills every answer input of the work form.
+ * @param {import('@playwright/test').Page} page - Page showing the work form
+ * @param {object} inputs - Values keyed by input id, as in scoreTestCases
+ */
+async function fillAnswers(page, inputs) {
+	await page.fill("#sequence_input", inputs.sequence_input);
+	await page.selectOption("#strand_input", inputs.strand_input);
+	await page.fill("#pam_input", inputs.pam_input);
+	await page.fill("#position_input", inputs.position_input);
+	await page.fill("#offtarget_input", inputs.offtarget_input);
+	await page.fill("#f1_input", inputs.f1_input);
+	await page.fill("#r1_input", inputs.r1_input);
+}
+
 test.describe("SciGrade Submission Flow", () => {
 	test.beforeEach(async ({ page }) => {
 		// Navigate to the application page
@@ -50,14 +65,7 @@ test.describe("SciGrade Submission Flow", () => {
 	// Data-driven tests using test case table
 	for (const testCase of scoreTestCases) {
 		test(`should submit ${testCase.name}`, async ({ page }) => {
-			// Fill in all form inputs from test case
-			await page.fill("#sequence_input", testCase.inputs.sequence_input);
-			await page.selectOption("#strand_input", testCase.inputs.strand_input);
-			await page.fill("#pam_input", testCase.inputs.pam_input);
-			await page.fill("#position_input", testCase.inputs.position_input);
-			await page.fill("#offtarget_input", testCase.inputs.offtarget_input);
-			await page.fill("#f1_input", testCase.inputs.f1_input);
-			await page.fill("#r1_input", testCase.inputs.r1_input);
+			await fillAnswers(page, testCase.inputs);
 
 			// Click Submit button
 			await page.click("#assignmentSubmitButton");
@@ -135,12 +143,7 @@ test.describe("SciGrade Submission Flow", () => {
 		const pageErrors = [];
 		page.on("pageerror", (error) => pageErrors.push(error.message));
 
-		await page.fill("#sequence_input", "AAGCACTGCACGCCGTGGGT");
-		await page.fill("#pam_input", "CAG");
-		await page.fill("#position_input", "381");
-		await page.fill("#offtarget_input", "87");
-		await page.fill("#f1_input", "TAATACGACTCACTATAGAAGCACTGCACGCCGT");
-		await page.fill("#r1_input", "TTCTAGCTCTAAAACACCCACGGCGTGCAGTGCT");
+		await fillAnswers(page, scoreTestCases[0].inputs);
 		await page.click("#assignmentSubmitButton");
 		await expect(page.locator("#mainContainer .card-header button")).toHaveCount(5);
 
@@ -151,19 +154,21 @@ test.describe("SciGrade Submission Flow", () => {
 			document.querySelector("#mainContainer .card-header button").click();
 		});
 		await expect(page.locator("#gRNAOutput")).toHaveClass(/\bshow\b/);
-		await page.evaluate(() => {
+		const animatingWhenLeft = await page.evaluate(() => {
 			document.querySelectorAll("#mainContainer .card-header button")[1].click();
 			const animating = document.querySelectorAll("#mainContainer .collapsing").length;
 			[...document.querySelectorAll("button")]
 				.find((b) => b.textContent.includes("Back to Gene Selection"))
 				.click();
-			window.animatingWhenLeft = animating;
+			return animating;
 		});
+		expect(animatingWhenLeft).toBe(1);
 
-		// Let the pending transition end and run its callback against the removed card
-		await page.waitForTimeout(800);
+		// The second card keeps "collapsing" until Bootstrap's transition callback has run against the removed card
+		await expect
+			.poll(() => page.evaluate(() => window.feedbackCards[1].classList.contains("collapsing")))
+			.toBe(false);
 
-		expect(await page.evaluate(() => window.animatingWhenLeft)).toBe(1);
 		expect(
 			await page.evaluate(() => window.feedbackCards.map((card) => bootstrap.Collapse.getInstance(card))),
 		).toEqual([null, null, null, null, null]);

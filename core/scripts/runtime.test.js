@@ -182,9 +182,21 @@ describe("runtime.js - Runtime Flow Helpers", () => {
 			},
 		);
 
-		it("shows a reload alert when the gene data files fail to load (Issue #77)", async () => {
-			// loadCRISPRJSON_Files catches fetch failures, so the gene list stays unset.
-			global.gene_backgroundInfo = undefined;
+		it("logs the cause and shows a reload alert when the gene data files fail to load (Issue #77)", async () => {
+			const failure = new Error("data/Background_info/gene_background_info.json returned HTTP 500");
+			global.loadCRISPRJSON_Files = jest.fn(async () => {
+				throw failure;
+			});
+
+			await expect(redirectCRISPR()).resolves.toBeUndefined();
+
+			expect(global.fillGeneList).not.toHaveBeenCalled();
+			expect(console.error).toHaveBeenCalledWith("SciGrade could not load the gene data files.", failure);
+			expect(mockJQuery.append).toHaveBeenLastCalledWith(LOAD_ERROR_ALERT);
+		});
+
+		it("shows a reload alert when the loaded gene data has no gene list (Issue #77)", async () => {
+			global.gene_backgroundInfo = {};
 
 			await expect(redirectCRISPR()).resolves.toBeUndefined();
 
@@ -195,87 +207,83 @@ describe("runtime.js - Runtime Flow Helpers", () => {
 		});
 
 		describe("Bootstrap collapse instances in the feedback cards", () => {
-			let cards;
-			let instances;
-			let sequence;
-
-			/**
-			 * Builds a real element, as Bootstrap sees it, and gives it a Collapse instance stub unless told not to.
-			 * @param {string} id - Element id, which also names the instance in the recorded sequence
-			 * @param {string} className - "collapse" for a settled card or "collapsing" for one mid-animation
-			 * @param {boolean} [withInstance=true] - False for a card the student never toggled
-			 * @returns {HTMLElement} The card element
-			 */
-			function addCard(id, className, withInstance = true) {
-				const card = document.implementation.createHTMLDocument().createElement("div");
-				card.id = id;
-				card.className = className;
-				cards.push(card);
-				if (withInstance) {
-					instances.set(card, {
-						dispose: jest.fn(() => {
-							sequence.push(`dispose ${id}`);
-						}),
-					});
-				}
-				return card;
-			}
+			const replacedDocumentMethods = ["getElementById", "querySelector", "querySelectorAll", "createElement"];
 
 			beforeEach(() => {
-				cards = [];
-				instances = new Map();
-				sequence = [];
-				addCard("gRNAOutput", "collapse show");
-				addCard("PAMOutput", "collapse");
-				addCard("OffTargetOutput", "collapse", false);
-				addCard("F1PrimerOutput", "collapsing");
-				document.querySelectorAll.mockReturnValue(cards);
-				mockJQuery.empty = jest.fn(function () {
-					sequence.push("empty");
-					return this;
-				});
-				global.bootstrap = { Collapse: { getInstance: jest.fn((element) => instances.get(element) ?? null) } };
+				// tests/jest/setupTest.js spies on these methods of the real jsdom document; deleting the own
+				// properties exposes the real ones on Document.prototype.
+				for (const methodName of replacedDocumentMethods) {
+					delete document[methodName];
+				}
+
+				document.body.innerHTML = `
+					<div id="mainContainer">
+						<div id="settled" class="collapse"></div>
+						<div id="opening" class="collapse"></div>
+						<div id="closing" class="collapse show"></div>
+						<div id="untoggled" class="collapse"></div>
+					</div>
+					<div id="outside" class="collapse"></div>
+				`;
+				global.$ = require("./APIandLibraries/jQuery/jquery.min.js");
+				global.bootstrap = require("./APIandLibraries/Bootstrap/js/bootstrap.bundle.min.js");
 			});
 
 			afterEach(() => {
+				jest.useRealTimers();
+				document.body.innerHTML = "";
 				delete global.bootstrap;
+				for (const methodName of replacedDocumentMethods) {
+					jest.spyOn(document, methodName).mockImplementation(jest.fn());
+				}
 			});
 
-			it("disposes each settled instance once, before the container is emptied", async () => {
+			/**
+			 * Creates a Collapse instance on each element with the given id.
+			 * @param {string[]} ids - Ids of the elements to give an instance
+			 * @returns {HTMLElement[]} The elements, in the order of the ids
+			 */
+			function createCollapses(ids) {
+				return ids.map((id) => {
+					const element = document.getElementById(id);
+					new bootstrap.Collapse(element, { toggle: false });
+					return element;
+				});
+			}
+
+			it("disposes settled instances inside #mainContainer before it is emptied, and only those", async () => {
+				const [settled, outside] = createCollapses(["settled", "outside"]);
+
 				await redirectCRISPR();
 
-				expect(document.querySelectorAll).toHaveBeenCalledWith(
-					"#mainContainer .collapse, #mainContainer .collapsing",
-				);
-				expect(sequence).toEqual(["dispose gRNAOutput", "dispose PAMOutput", "empty"]);
+				expect(bootstrap.Collapse.getInstance(settled)).toBeNull();
+				expect(bootstrap.Collapse.getInstance(outside)).not.toBeNull();
+				expect(document.getElementById("gene_dropdown_selection")).not.toBeNull();
 			});
 
-			it.each(["shown.bs.collapse", "hidden.bs.collapse"])(
-				"disposes a card that is mid-animation only once its %s event fires",
-				async (eventName) => {
-					await redirectCRISPR();
-					const animating = cards[3];
-					expect(instances.get(animating).dispose).not.toHaveBeenCalled();
+			it("disposes cards that are mid-animation once their transition ends, without an error", async () => {
+				jest.useFakeTimers();
+				const [opening, closing] = createCollapses(["opening", "closing"]);
+				bootstrap.Collapse.getInstance(opening).show();
+				bootstrap.Collapse.getInstance(closing).hide();
+				expect([opening.className, closing.className]).toEqual(["collapsing", "collapsing"]);
 
-					animating.dispatchEvent(new Event(eventName));
-					animating.dispatchEvent(new Event(eventName));
+				await redirectCRISPR();
 
-					expect(instances.get(animating).dispose).toHaveBeenCalledTimes(1);
-					expect(sequence).toEqual([
-						"dispose gRNAOutput",
-						"dispose PAMOutput",
-						"empty",
-						"dispose F1PrimerOutput",
-					]);
-				},
-			);
+				expect(bootstrap.Collapse.getInstance(opening)).not.toBeNull();
+				expect(bootstrap.Collapse.getInstance(closing)).not.toBeNull();
+				expect(() => jest.runOnlyPendingTimers()).not.toThrow();
+				expect(bootstrap.Collapse.getInstance(opening)).toBeNull();
+				expect(bootstrap.Collapse.getInstance(closing)).toBeNull();
+			});
 
-			it("still empties the container when Bootstrap did not load", async () => {
+			it("still rebuilds the container when Bootstrap did not load", async () => {
 				delete global.bootstrap;
 
 				await expect(redirectCRISPR()).resolves.toBeUndefined();
 
-				expect(sequence).toEqual(["empty"]);
+				expect(document.getElementById("settled")).toBeNull();
+				expect(document.getElementById("gene_dropdown_selection")).not.toBeNull();
 			});
 		});
 
