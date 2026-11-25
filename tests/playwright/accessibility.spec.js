@@ -99,7 +99,7 @@ test.describe("Visual guards: home heading", () => {
 	});
 });
 
-test.describe("Visual guards: form card on narrow screens", () => {
+test.describe("Visual guards: form card", () => {
 	for (const width of [320, 375, 540]) {
 		test(`keeps at least 8px from both screen edges at ${width}px wide`, async ({ page }) => {
 			await page.setViewportSize({ width, height: 800 });
@@ -114,6 +114,25 @@ test.describe("Visual guards: form card on narrow screens", () => {
 			expect(gaps.right).toBeGreaterThanOrEqual(8);
 		});
 	}
+
+	test("resizes smoothly across Bootstrap's breakpoints instead of jumping", async ({ page }) => {
+		await openSelectionView(page);
+		const widths = async (width) => {
+			await page.setViewportSize({ width, height: 800 });
+			return page.evaluate(() => ({
+				card: document.getElementById("mainContainer").getBoundingClientRect().width,
+				content: document.getElementById("content_body").getBoundingClientRect().width,
+			}));
+		};
+
+		for (const breakpoint of [576, 768, 992, 1200, 1400]) {
+			const below = await widths(breakpoint - 1);
+			const at = await widths(breakpoint);
+
+			expect(Math.abs(at.card - below.card), `card at ${breakpoint}px`).toBeLessThanOrEqual(2);
+			expect(Math.abs(at.content - below.content), `content at ${breakpoint}px`).toBeLessThanOrEqual(2);
+		}
+	});
 });
 
 test.describe("Accessibility: WCAG 2.2 AA", () => {

@@ -10,8 +10,24 @@
 	border-radius: 12px;
 	margin-bottom: 1%;
 	margin-top: 4%;
+	/*
+	 * Bootstrap's .container steps to a fixed max-width at each breakpoint, so the card jumped in size (540px to 720px
+	 * at 768px). The card instead follows the window, keeping 0.5rem to 2rem from each screen edge, up to the widest
+	 * container Bootstrap allowed.
+	 */
+	max-width: 1320px;
 	padding-bottom: 5%;
 	padding-top: 2%;
+	width: calc(100% - 2 * clamp(0.5rem, 3vw, 2rem));
+}
+
+/*
+ * Insets the card's content smoothly as the card widens, where Bootstrap's column spacers jumped in at 576px. The
+ * percentages are of the card's width, and the inset tops out at the one-twelfth a spacer column took.
+ */
+#content_body {
+	margin-left: clamp(0px, (100% - 500px) * 0.25, 8.333%);
+	margin-right: clamp(0px, (100% - 500px) * 0.25, 8.333%);
 }
 
 .focusBody {
@@ -127,15 +143,6 @@
 /* Bootstrap's link blue is under 4.5:1 on the card header tint */
 .card-header .btn-link {
 	color: #0a58ca;
-}
-
-@media screen and (max-width: 575.98px) {
-	/* Keeps the form card's border off the screen edges once Bootstrap's container fills the width */
-	.focusContainer {
-		margin-left: 0.5rem;
-		margin-right: 0.5rem;
-		width: auto;
-	}
 }
 
 .modalResponsive {

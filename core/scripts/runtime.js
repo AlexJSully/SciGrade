@@ -50,41 +50,36 @@ async function redirectCRISPR() {
 	$("#mainContainer").empty();
 	let append_str;
 	append_str = `
-		<div class='row'>
-			<div class='col-sm-1'></div>
-				<div class='col-sm-10' id='content_body'>
-					<div id='selection_process'>
-					<div id='gene_selection'>
-						<label for='gene_dropdown_selection'>Please select your gene:</label>
-						<div class='btn-group'>
-							<select
-								class='form-select'
-								id='gene_dropdown_selection'
-								onchange='possible_gene=(document.getElementById("gene_dropdown_selection").value);'
-							>
-							</select>
-						</div>
-					</div>
-
-					<div id='load_button'>
-						<button
-							type='button'
-							id='load_gene_button'
-							class='btn btn-success'
-							style='margin-top: 2%;'
-							onClick='loadGeneContent()'
-							disabled
+		<div id='content_body'>
+			<div id='selection_process'>
+				<div id='gene_selection'>
+					<label for='gene_dropdown_selection'>Please select your gene:</label>
+					<div class='btn-group'>
+						<select
+							class='form-select'
+							id='gene_dropdown_selection'
+							onchange='possible_gene=(document.getElementById("gene_dropdown_selection").value);'
 						>
-							Load Gene
-						</button>
+						</select>
 					</div>
 				</div>
 
-				<div id='work'>
+				<div id='load_button'>
+					<button
+						type='button'
+						id='load_gene_button'
+						class='btn btn-success'
+						style='margin-top: 2%;'
+						onClick='loadGeneContent()'
+						disabled
+					>
+						Load Gene
+					</button>
 				</div>
 			</div>
 
-			<div class='col-sm-1'></div>
+			<div id='work'>
+			</div>
 		</div>
 	`;
 
