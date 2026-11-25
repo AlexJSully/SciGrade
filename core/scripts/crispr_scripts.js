@@ -109,7 +109,7 @@ function loadWork() {
 	append_str += '<div class="form-group">';
 	append_str += '<label for="sequence_input">gRNA Sequence:</label>';
 	append_str +=
-		'<input class="form-control" id="sequence_input" placeholder="CTCGTGACCACCCTGACCCA" maxlength="20" required>';
+		'<input class="form-control" id="sequence_input" aria-describedby="sequence_inputSmall" placeholder="CTCGTGACCACCCTGACCCA" maxlength="20" required>';
 	append_str +=
 		'<small id="sequence_inputSmall" class="form-text text-muted">This would be your gRNA sequence 5\' to 3\'. NOTE: This is maxed out at 20 characters long</small>';
 	append_str += "</div>";
@@ -117,7 +117,8 @@ function loadWork() {
 	// PAM sequence
 	append_str += '<div class="form-group">';
 	append_str += '<label for="pam_input">PAM Sequence:</label>';
-	append_str += '<input class="form-control" id="pam_input" placeholder="CGG" maxlength="3" required>';
+	append_str +=
+		'<input class="form-control" id="pam_input" aria-describedby="pam_inputSmall" placeholder="CGG" maxlength="3" required>';
 	append_str +=
 		'<small id="pam_inputSmall" class="form-text text-muted">This would be your PAM sequence 5\' to 3\'. NOTE: This is maxed out at 3 characters long</small>';
 	append_str += "</div>";
@@ -125,7 +126,8 @@ function loadWork() {
 	// Position
 	append_str += '<div class="form-group">';
 	append_str += '<label for="position_input">Cut position:</label>';
-	append_str += '<input class="form-control" id="position_input" placeholder="380" type="number" required>';
+	append_str +=
+		'<input class="form-control" id="position_input" aria-describedby="position_inputSmall" placeholder="380" type="number" required>';
 	append_str +=
 		'<small id="position_inputSmall" class="form-text text-muted">This would be your cut position for your gRNA. NOTE: This input only takes numbers</small>';
 	append_str += "</div>";
@@ -136,7 +138,6 @@ function loadWork() {
 				<label for="strand_input">gRNA Strand:</label>
 
 				<select
-					aria-label="Select gRNA strand"
 					class="form-control"
 					id="strand_input"
 					required
@@ -152,7 +153,7 @@ function loadWork() {
 	append_str += '<div class="form-group">';
 	append_str += '<label for="offtarget_input">Off-target score:</label>';
 	append_str +=
-		'<input class="form-control" id="offtarget_input" placeholder="60.7" step="0.01" type="number" required>';
+		'<input class="form-control" id="offtarget_input" aria-describedby="offtarget_inputSmall" placeholder="60.7" step="0.01" type="number" required>';
 	append_str +=
 		'<small id="offtarget_inputSmall" class="form-text text-muted">This would be your off-target score for your gRNA. NOTE: This input only takes numbers</small>';
 	append_str += "</div>";
@@ -161,7 +162,7 @@ function loadWork() {
 	append_str += '<div class="form-group">';
 	append_str += '<label for="f1_input">F1 Primers:</label>';
 	append_str +=
-		'<input class="form-control" id="f1_input" placeholder="TAATACGACTCACTATAGCTCGTGACCACCCTGA" required>';
+		'<input class="form-control" id="f1_input" aria-describedby="f1_inputSmall" placeholder="TAATACGACTCACTATAGCTCGTGACCACCCTGA" required>';
 	append_str +=
 		'<small id="f1_inputSmall" class="form-text text-muted">This would be your forward primer (F1) for your gRNA</small>';
 	append_str += "</div>";
@@ -170,7 +171,7 @@ function loadWork() {
 	append_str += '<div class="form-group">';
 	append_str += '<label for="r1_input">R1 Primers:</label>';
 	append_str +=
-		'<input class="form-control" id="r1_input" placeholder="TTCTAGCTCTAAAACTGGGTCAGGGTGGTCACGAG" required>';
+		'<input class="form-control" id="r1_input" aria-describedby="r1_inputSmall" placeholder="TTCTAGCTCTAAAACTGGGTCAGGGTGGTCACGAG" required>';
 	append_str +=
 		'<small id="r1_inputSmall" class="form-text text-muted">This would be your reverse primer (R1) for your gRNA</small>';
 	append_str += "</div>";
@@ -642,7 +643,7 @@ function appendFeedbackCard({ id, title, mark, answer, explanation }) {
 		.text(`${title}: ${mark}/2`);
 	const header = $("<div class='card-header'></div>")
 		.attr("id", headerId)
-		.append($("<h5 class='mb-0'></h5>").append(toggle));
+		.append($("<h3 class='h5 mb-0'></h3>").append(toggle));
 
 	const body = $("<div class='card-body'></div>").append(
 		$("<p></p>").text(` For ${title}, you put down "${answer}" which gave you the mark ${mark}.`),
@@ -658,7 +659,8 @@ function appendFeedbackCard({ id, title, mark, answer, explanation }) {
  */
 function showFeedback() {
 	$("#mainContainer").empty();
-	let append_str = "<p style='font-weight:bold;'> Here is the feedback for your practice attempt.</p>";
+	let append_str =
+		"<h2 id='feedback_heading' class='fs-6 fw-bold mb-3' tabindex='-1'>Here is the feedback for your practice attempt.</h2>";
 	append_str +=
 		"<p> Your attempt is marked out of 10 marks with 2 marks for each input excluding gRNA strand direction, cut position and target region range (these three values are used to calculate if you have the right answer or not which means they are still crucial that they are still correct).</p>";
 	append_str += "<p> The following is the breakdown of your marks and why you received them: </p>";
@@ -765,9 +767,12 @@ function showFeedback() {
 
 	append_str = "<br>";
 	append_str +=
-		'<p> <button type="button" class="btn btn-primary" onclick="redirectCRISPR();"> Back to Gene Selection </button> </p>';
+		'<p> <button type="button" class="btn btn-primary" onclick="returnToGeneSelection();"> Back to Gene Selection </button> </p>';
 
 	$("#mainContainer").append(append_str);
+
+	// The Submit button that had focus was removed with the form
+	document.getElementById("feedback_heading").focus();
 }
 
 let all_answers = [];

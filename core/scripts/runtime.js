@@ -55,13 +55,12 @@ async function redirectCRISPR() {
 				<div class='col-sm-10' id='content_body'>
 					<div id='selection_process'>
 					<div id='gene_selection'>
-						Please select your gene:
+						<label for='gene_dropdown_selection'>Please select your gene:</label>
 						<div class='btn-group'>
 							<select
 								class='form-select'
 								id='gene_dropdown_selection'
 								onchange='possible_gene=(document.getElementById("gene_dropdown_selection").value);'
-								aria-label='Select gene for CRISPR analysis'
 							>
 							</select>
 						</div>
@@ -114,6 +113,17 @@ async function redirectCRISPR() {
 }
 
 /**
+ * Rebuilds the gene selection from the feedback view and moves focus to the gene dropdown, because the button
+ * that called it is removed with the feedback. The dropdown exists once redirectCRISPR's synchronous part returns.
+ * @returns {Promise<void>} Settles when redirectCRISPR has loaded the gene data
+ */
+async function returnToGeneSelection() {
+	const loaded = redirectCRISPR();
+	document.getElementById("gene_dropdown_selection").focus();
+	await loaded;
+}
+
+/**
  * Logs why the runtime page could not load and asks the user to reload it.
  * @param {...*} details - Values logged with console.error: a message, then the error that caused it, if any.
  */
@@ -126,5 +136,5 @@ function showLoadError(...details) {
 
 // Export for testing
 if (typeof module !== "undefined" && module.exports) {
-	module.exports = { loadGeneContent, redirectCRISPR };
+	module.exports = { loadGeneContent, redirectCRISPR, returnToGeneSelection };
 }

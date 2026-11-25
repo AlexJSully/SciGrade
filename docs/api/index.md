@@ -319,9 +319,11 @@ function showFeedback()
 - Component-by-component results and marks
 - Explanatory text derived from the current marking state
 - Candidate primer lists derived from the submitted gRNA sequence
-- A Back to Gene Selection button that calls `redirectCRISPR()` to rebuild the selection screen
+- A Back to Gene Selection button that calls `returnToGeneSelection()` to rebuild the selection screen
 
 **Rendered To:** `#mainContainer` in the runtime page. Submitted answers and primer candidates are inserted as text, so markup characters in them display literally rather than being parsed as HTML.
+
+**Headings and focus:** The feedback starts with the `h2` `#feedback_heading`, and each card title is an `h3`, under the page's `h1`. The Submit button that had focus is removed with the form, so focus moves to `#feedback_heading`.
 
 **Called By:** `submitAnswers()` after `markAnswers()`.
 
@@ -390,6 +392,20 @@ async function redirectCRISPR()
 - If `loadCRISPRJSON_Files()` rejects, logs a `console.error` with the error and shows the same alert without calling `fillGeneList()`
 - If the gene data loads without a `gene_list`, logs a `console.error` and shows the same alert
 - [core/systemrun.html](../../core/systemrun.html) shows the same alert in `#mainContainer` when `redirectCRISPR` itself is undefined because `runtime.min.js` failed to load
+
+Page load calls `redirectCRISPR()` directly and leaves focus where it is.
+
+### returnToGeneSelection()
+
+```javascript
+async function returnToGeneSelection()
+```
+
+**Purpose:** Rebuild the selection UI from the feedback view and move focus to `#gene_dropdown_selection`, since the button that called it is removed with the feedback.
+
+**Behavior:** Calls `redirectCRISPR()`, focuses the dropdown once its synchronous build returns, then waits for the gene data to load.
+
+**Called By:** The Back to Gene Selection button rendered by `showFeedback()`.
 
 ## Bootstrap & jQuery
 

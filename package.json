@@ -24,7 +24,7 @@
 		"eslint:check": "eslint ./",
 		"eslint": "eslint --fix ./",
 		"lint:markdown": "markdownlint-cli2 \"**/*.md\"",
-		"minify": "esbuild core/scripts/runtime.js --minify --outfile=core/scripts/runtime.min.js && esbuild core/scripts/crispr_scripts.js --minify --outfile=core/scripts/crispr_scripts.min.js",
+		"minify": "esbuild core/scripts/runtime.js --minify --outfile=core/scripts/runtime.min.js && esbuild core/scripts/crispr_scripts.js --minify --outfile=core/scripts/crispr_scripts.min.js && esbuild core/styling/style.css --minify --outfile=core/styling/style.min.css",
 		"prettier:check": "prettier --check ./",
 		"prettier": "prettier --write ./",
 		"regen-package-lock": "rm -rf node_modules package-lock.json && npm run audit:fix",

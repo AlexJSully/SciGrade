@@ -46,22 +46,19 @@
 	float: right;
 }
 
+/* The navigation bar clips overflow, so its links draw the focus ring inside their own box */
+.navigationBar a:focus-visible {
+	box-shadow: none;
+	outline: 3px solid #fff;
+	outline-offset: -3px;
+}
+
 .homeBackground {
-	/* Browser background */
 	background: url("../images/BackgroundImage/homeBackground.webp") no-repeat center center fixed;
 	background-size: cover;
-
-	/* IE */
-	-ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/BackgroundImage/homeBackground.webp', sizingMethod='scale')";
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/BackgroundImage/homeBackground.webp', sizingMethod='scale');
 }
 
 .backgroundFrontLayer {
-	/* IE */
-	-ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src=../images/BackgroundImage/grey.webp', sizingMethod='scale')";
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/BackgroundImage/grey.webp', sizingMethod='scale');
-
-	/* Browser foreground */
 	background: url("../images/BackgroundImage/grey.webp") no-repeat center center fixed;
 	background-size: cover;
 	opacity: 0.5;
@@ -98,6 +95,7 @@
 	display: block;
 	margin-left: auto;
 	margin-right: auto;
+	width: fit-content;
 }
 
 .frontPageFont {
@@ -106,7 +104,38 @@
 	font-size: 2em;
 	font-weight: bold;
 	text-align: center;
-	text-shadow: 2px 1px 5px rgba(150, 150, 150, 1);
+	/* A white halo keeps the heading at 3:1 or more over every part of the photo (large text, WCAG 1.4.3) */
+	text-shadow:
+		0 0 2px #fff,
+		0 0 4px #fff,
+		0 0 8px #fff,
+		0 0 12px #fff;
+}
+
+/*
+ * Bootstrap's focus ring is a 25% opacity shadow, under 3:1 against white (WCAG 1.4.11), and forced-colors mode drops
+ * shadows. The navy outline survives forced colors, and the white ring around it keeps it visible on dark backgrounds.
+ */
+:focus-visible,
+.btn:focus-visible,
+.form-control:focus-visible,
+.form-select:focus-visible {
+	box-shadow: 0 0 0 6px #fff;
+	outline: 3px solid #30338d;
+}
+
+/* Bootstrap's link blue is under 4.5:1 on the card header tint */
+.card-header .btn-link {
+	color: #0a58ca;
+}
+
+@media screen and (max-width: 575.98px) {
+	/* Keeps the form card's border off the screen edges once Bootstrap's container fills the width */
+	.focusContainer {
+		margin-left: 0.5rem;
+		margin-right: 0.5rem;
+		width: auto;
+	}
 }
 
 .modalResponsive {

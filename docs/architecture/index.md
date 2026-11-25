@@ -50,6 +50,7 @@ UI bootstrap helpers used by the runtime page.
 
 - `redirectCRISPR()` - Builds the selection UI and triggers data loading
 - `loadGeneContent()` - Reads the selected gene and calls `select_Gene()`
+- `returnToGeneSelection()` - Rebuilds the selection UI from the feedback view and focuses the gene dropdown
 
 **Note:** The runtime flow initializes the practice flow on page load in [core/systemrun.html](../../core/systemrun.html). The deprecation of online account features is recorded in [CHANGELOG.md](../../CHANGELOG.md).
 

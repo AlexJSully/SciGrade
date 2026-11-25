@@ -135,7 +135,7 @@ test.describe("Service Worker Registration and Failure Tolerance", () => {
 		expect(pageErrors).toHaveLength(0);
 
 		// Core functionality remains intact - app should work even without SW
-		await page.getByRole("button", { name: "Start" }).click();
+		await page.getByRole("link", { name: "Start" }).click();
 		await expect(page).toHaveURL(/systemrun\.html/);
 	});
 

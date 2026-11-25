@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 	<head>
-		<title>SciGrade</title>
+		<title>Practice | SciGrade</title>
 
 		<!-- META DATA -->
 		<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
@@ -142,7 +142,7 @@
 		<link rel="stylesheet preload" href="styling/style.min.css" as="style" />
 	</head>
 
-	<main class="focusBody">
+	<body class="focusBody">
 		<!-- Google Tag Manager (noscript) -->
 		<noscript
 			><iframe
@@ -154,23 +154,21 @@
 			></iframe
 		></noscript>
 		<!-- End Google Tag Manager (noscript) -->
-		<nav class="navigationBar" role="navigation">
-			<a href="../" role="button">
+		<nav class="navigationBar">
+			<a href="../">
 				<img
-					alt="logo"
-					aria-label="Back to home page"
+					alt="SciGrade home page"
 					fetchpriority="high"
 					loading="auto"
 					src="images/logo_transparent.svg"
 					style="width: 5em; margin: -50%; margin-bottom: -40%; margin-right: -40%"
-					title="Back to home page"
 				/>
 			</a>
-			<a class="active" href="systemrun.html" aria-label="Navigate to application if not already on it"
-				>Application</a
-			>
-			<a href="about.html" aria-hidden="true" hidden>About</a>
+			<a class="active" href="systemrun.html" aria-current="page">Application</a>
 		</nav>
-		<div class="container focusContainer" role="tabpanel" id="mainContainer"></div>
-	</main>
+		<main>
+			<h1 class="visually-hidden">Practice gRNA and primer design</h1>
+			<div class="container focusContainer" id="mainContainer"></div>
+		</main>
+	</body>
 </html>

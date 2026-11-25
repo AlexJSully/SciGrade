@@ -20,12 +20,6 @@ export async function testAccessibility(page, url) {
 				html: true,
 			},
 			verbose: false,
-			axeOptions: {
-				rules: {
-					"page-has-heading-one": { enabled: false },
-					region: { enabled: false },
-				},
-			},
 		});
 	} catch (e) {
 		const violations = await getViolations(page);
