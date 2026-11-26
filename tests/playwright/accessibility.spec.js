@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { testAccessibility } from "./utils/accessibility.js";
-import { measureGlyphEdgeContrast } from "./utils/contrast.js";
+import { contrastRatio, measureGlyphEdgeContrast } from "./utils/contrast.js";
 import { selectGeneAndOpenForm } from "./utils/navigation.js";
 
 const HOME_URL = "http://localhost:3000/";
@@ -241,6 +241,40 @@ test.describe("Accessibility: WCAG 2.2 AA", () => {
 			}
 		});
 	}
+
+	test("navigation links keep a 3:1 focus ring when resting, hovered, and active (WCAG 1.4.11)", async ({ page }) => {
+		await openSelectionView(page);
+		const ringAgainstBackground = async (locator, hovered) => {
+			await keyboardFocusOutline(page, locator);
+			if (hovered) {
+				await locator.hover();
+			} else {
+				await page.mouse.move(0, page.viewportSize().height - 1);
+			}
+			return locator.evaluate((el) => {
+				const style = getComputedStyle(el);
+				return {
+					focusVisible: el.matches(":focus-visible"),
+					hovered: el.matches(":hover"),
+					outline: style.outlineColor,
+					background: style.backgroundColor,
+				};
+			});
+		};
+
+		for (const [label, locator] of [
+			["home link", page.getByRole("link", { name: "SciGrade home page" })],
+			["active Application link", page.getByRole("link", { name: "Application" })],
+		]) {
+			for (const hovered of [false, true]) {
+				const state = await ringAgainstBackground(locator, hovered);
+				const name = `${label}${hovered ? " while hovered" : ""}`;
+
+				expect(state, name).toEqual(expect.objectContaining({ focusVisible: true, hovered }));
+				expect(contrastRatio(state.outline, state.background), name).toBeGreaterThanOrEqual(3);
+			}
+		}
+	});
 
 	test("feedback cards open without animation when the user prefers reduced motion", async ({ page }) => {
 		await page.emulateMedia({ reducedMotion: "reduce" });

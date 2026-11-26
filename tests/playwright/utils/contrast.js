@@ -1,4 +1,25 @@
 /**
+ * WCAG contrast ratio between two opaque CSS colours as getComputedStyle reports them.
+ * @param {string} first - Colour such as "rgb(48, 51, 141)"
+ * @param {string} second - Colour such as "rgb(221, 221, 221)"
+ * @returns {number} Ratio from 1 to 21
+ */
+export function contrastRatio(first, second) {
+	const luminance = (color) => {
+		const [r, g, b] = color
+			.match(/\d+(\.\d+)?/g)
+			.slice(0, 3)
+			.map((value) => {
+				const v = Number(value) / 255;
+				return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+			});
+		return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+	};
+	const [light, dark] = [luminance(first), luminance(second)].sort((a, b) => b - a);
+	return (light + 0.05) / (dark + 0.05);
+}
+
+/**
  * Measures the contrast between a text element's colour and the pixels drawn right around its glyphs, so text over
  * a photo can be checked against WCAG 1.4.3 without a stored screenshot. Three captures of the element's box are
  * compared in the page: the page as shown with the text made transparent (the background plus any text-shadow
@@ -11,6 +32,8 @@
  */
 export async function measureGlyphEdgeContrast(page, locator) {
 	const textColor = await locator.evaluate((el) => getComputedStyle(el).color);
+	// A screenshot clip stops at the viewport, so an element below the fold would be measured only in part
+	await locator.scrollIntoViewIfNeeded();
 	const box = await locator.boundingBox();
 	const pad = 12;
 	const clip = {
@@ -37,6 +60,12 @@ export async function measureGlyphEdgeContrast(page, locator) {
 			}
 		}
 	});
+	const maskBox = await locator.boundingBox();
+	if (maskBox.x !== box.x || maskBox.y !== box.y) {
+		throw new Error(
+			`The element moved while the glyph mask was prepared (${box.x},${box.y} to ${maskBox.x},${maskBox.y}), so the mask would not line up with the background`,
+		);
+	}
 	const mask = await page.screenshot({ clip, animations: "disabled" });
 
 	return page.evaluate(

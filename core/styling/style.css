@@ -69,6 +69,11 @@
 	outline-offset: -3px;
 }
 
+/* A hovered link turns light grey, where the white ring would fall below 3:1 (WCAG 1.4.11) */
+.navigationBar a:not(.active):hover:focus-visible {
+	outline-color: #30338d;
+}
+
 .homeBackground {
 	background: url("../images/BackgroundImage/homeBackground.webp") no-repeat center center fixed;
 	background-size: cover;
@@ -115,12 +120,13 @@
 }
 
 .frontPageFont {
-	color: #353b6e;
+	color: #262a5c;
 	font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif, "Times New Roman";
 	font-size: 2em;
 	font-weight: bold;
 	text-align: center;
-	/* A white halo keeps the heading at 3:1 or more over every part of the photo (large text, WCAG 1.4.3) */
+	/* The dark navy and the white halo together keep the heading at 3:1 or more over every part of the photo
+	   (large text, WCAG 1.4.3), including with the fallback fonts of systems that lack Segoe UI and Tahoma */
 	text-shadow:
 		0 0 2px #fff,
 		0 0 4px #fff,
