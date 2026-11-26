@@ -23,8 +23,8 @@ The flow below reflects the landing page in [index.html](../index.html) and the 
 ```mermaid
 flowchart TD
     accTitle: SciGrade practice session flow
-    accDescr: An eleven-step flowchart. The user loads the landing page, the Start button navigates to the app page, and the app page loads its scripts and fetches the JSON data. That data populates the gene dropdown, the user selects a gene, and the input form renders. A decision point asks whether the user submits answers: if yes, the answers are validated, a score is calculated, and feedback is shown; if no, the flow returns to gene selection.
-    A["User Loads Landing Page"] --> B["Start Button Navigates to App Page"]
+    accDescr: An eleven-step flowchart. The user loads the landing page, the Start link navigates to the app page, and the app page loads its scripts and fetches the JSON data. That data populates the gene dropdown, the user selects a gene, and the input form renders. A decision point asks whether the user submits answers: if yes, the answers are validated, a score is calculated, and feedback is shown; if no, the flow returns to gene selection.
+    A["User Loads Landing Page"] --> B["Start Link Navigates to App Page"]
     B --> C["App Page Loads Scripts"]
     C --> D["Fetch JSON Data"]
     D --> E["Populate Gene Dropdown"]

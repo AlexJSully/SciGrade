@@ -3,6 +3,14 @@
  */
 
 /**
+ * Waits until fillGeneList() has filled the gene dropdown, which it does after the async JSON load completes.
+ * @param {import('@playwright/test').Page} page - Page showing core/systemrun.html
+ */
+export async function waitForGeneList(page) {
+	await page.waitForFunction(() => document.getElementById("gene_dropdown_selection")?.options.length > 0);
+}
+
+/**
  * From the runtime page (core/systemrun.html, however it was reached), wait for the
  * gene dropdown to be populated, select a gene, load it, and wait for the work form
  * to render.
@@ -16,14 +24,7 @@
  * @param {string} [gene="eBFP"] - value of the gene to select from the dropdown
  */
 export async function selectGeneAndOpenForm(page, gene = "eBFP") {
-	// redirectCRISPR() builds the selection UI synchronously
-	await page.waitForSelector("#gene_dropdown_selection");
-
-	// fillGeneList() populates options after the async JSON load completes
-	await page.waitForFunction(() => {
-		const sel = document.getElementById("gene_dropdown_selection");
-		return sel && sel.options.length > 0;
-	});
+	await waitForGeneList(page);
 
 	await page.selectOption("#gene_dropdown_selection", gene);
 

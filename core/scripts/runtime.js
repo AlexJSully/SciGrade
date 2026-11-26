@@ -50,42 +50,36 @@ async function redirectCRISPR() {
 	$("#mainContainer").empty();
 	let append_str;
 	append_str = `
-		<div class='row'>
-			<div class='col-sm-1'></div>
-				<div class='col-sm-10' id='content_body'>
-					<div id='selection_process'>
-					<div id='gene_selection'>
-						Please select your gene:
-						<div class='btn-group'>
-							<select
-								class='form-select'
-								id='gene_dropdown_selection'
-								onchange='possible_gene=(document.getElementById("gene_dropdown_selection").value);'
-								aria-label='Select gene for CRISPR analysis'
-							>
-							</select>
-						</div>
-					</div>
-
-					<div id='load_button'>
-						<button
-							type='button'
-							id='load_gene_button'
-							class='btn btn-success'
-							style='margin-top: 2%;'
-							onClick='loadGeneContent()'
-							disabled
+		<div id='content_body'>
+			<div id='selection_process'>
+				<div id='gene_selection'>
+					<label for='gene_dropdown_selection'>Please select your gene:</label>
+					<div class='btn-group'>
+						<select
+							class='form-select'
+							id='gene_dropdown_selection'
+							onchange='possible_gene=(document.getElementById("gene_dropdown_selection").value);'
 						>
-							Load Gene
-						</button>
+						</select>
 					</div>
 				</div>
 
-				<div id='work'>
+				<div id='load_button'>
+					<button
+						type='button'
+						id='load_gene_button'
+						class='btn btn-success'
+						style='margin-top: 2%;'
+						onClick='loadGeneContent()'
+						disabled
+					>
+						Load Gene
+					</button>
 				</div>
 			</div>
 
-			<div class='col-sm-1'></div>
+			<div id='work'>
+			</div>
 		</div>
 	`;
 
@@ -114,6 +108,18 @@ async function redirectCRISPR() {
 }
 
 /**
+ * Rebuilds the gene selection from the feedback view and moves focus to the gene dropdown, because the button
+ * that called it is removed with the feedback. The dropdown exists once redirectCRISPR's synchronous part returns.
+ * @returns {Promise<void>} Settles when redirectCRISPR has loaded the gene data, and rejects with its error
+ */
+async function returnToGeneSelection() {
+	const loaded = redirectCRISPR();
+	// The dropdown is missing only when redirectCRISPR failed before building it; awaiting it reports that error
+	document.getElementById("gene_dropdown_selection")?.focus();
+	await loaded;
+}
+
+/**
  * Logs why the runtime page could not load and asks the user to reload it.
  * @param {...*} details - Values logged with console.error: a message, then the error that caused it, if any.
  */
@@ -126,5 +132,5 @@ function showLoadError(...details) {
 
 // Export for testing
 if (typeof module !== "undefined" && module.exports) {
-	module.exports = { loadGeneContent, redirectCRISPR };
+	module.exports = { loadGeneContent, redirectCRISPR, returnToGeneSelection };
 }

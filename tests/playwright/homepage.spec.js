@@ -21,14 +21,14 @@ test.describe("SciGrade Homepage", () => {
 		await page.goto("http://localhost:3000/", { waitUntil: "load" });
 
 		expect(requested.filter((path) => /\/(jquery|bootstrap)[^/]*\.js$/i.test(path))).toEqual([]);
-		await expect(page.getByRole("button", { name: "Start" })).toBeVisible();
+		await expect(page.getByRole("link", { name: "Start" })).toBeVisible();
 	});
 
 	test("should display the gRNA sequence input page", async ({ page }) => {
 		await page.goto("http://localhost:3000/");
 
 		// Navigate through the initial UI steps
-		await page.getByRole("button", { name: "Start" }).click();
+		await page.getByRole("link", { name: "Start" }).click();
 
 		// Wait for the gene list to load, then load a gene and render the form.
 		// (Waiting before clicking "Load Gene" is what fixes the historical flake.)

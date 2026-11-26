@@ -1,7 +1,33 @@
-const { loadGeneContent, redirectCRISPR } = require("./runtime");
+const { loadGeneContent, redirectCRISPR, returnToGeneSelection } = require("./runtime");
 
 const LOAD_ERROR_ALERT =
 	"<div class='alert alert-danger' role='alert' id='load_error'>SciGrade could not finish loading. Please reload the page.</div>";
+
+/**
+ * Registers hooks that give each test in the enclosing suite the real jsdom document and the real jQuery.
+ * @param {string} bodyHtml - Markup placed in document.body before each test
+ */
+function useRealDom(bodyHtml) {
+	const replacedDocumentMethods = ["getElementById", "querySelector", "querySelectorAll", "createElement"];
+
+	beforeEach(() => {
+		// tests/jest/setupTest.js spies on these methods of the real jsdom document; deleting the own
+		// properties exposes the real ones on Document.prototype.
+		for (const methodName of replacedDocumentMethods) {
+			delete document[methodName];
+		}
+
+		document.body.innerHTML = bodyHtml;
+		global.$ = require("./APIandLibraries/jQuery/jquery.min.js");
+	});
+
+	afterEach(() => {
+		document.body.innerHTML = "";
+		for (const methodName of replacedDocumentMethods) {
+			jest.spyOn(document, methodName).mockImplementation(jest.fn());
+		}
+	});
+}
 
 describe("runtime.js - Runtime Flow Helpers", () => {
 	let mockDocument;
@@ -207,35 +233,23 @@ describe("runtime.js - Runtime Flow Helpers", () => {
 		});
 
 		describe("Bootstrap collapse instances in the feedback cards", () => {
-			const replacedDocumentMethods = ["getElementById", "querySelector", "querySelectorAll", "createElement"];
+			useRealDom(`
+				<div id="mainContainer">
+					<div id="settled" class="collapse"></div>
+					<div id="opening" class="collapse"></div>
+					<div id="closing" class="collapse show"></div>
+					<div id="untoggled" class="collapse"></div>
+				</div>
+				<div id="outside" class="collapse"></div>
+			`);
 
 			beforeEach(() => {
-				// tests/jest/setupTest.js spies on these methods of the real jsdom document; deleting the own
-				// properties exposes the real ones on Document.prototype.
-				for (const methodName of replacedDocumentMethods) {
-					delete document[methodName];
-				}
-
-				document.body.innerHTML = `
-					<div id="mainContainer">
-						<div id="settled" class="collapse"></div>
-						<div id="opening" class="collapse"></div>
-						<div id="closing" class="collapse show"></div>
-						<div id="untoggled" class="collapse"></div>
-					</div>
-					<div id="outside" class="collapse"></div>
-				`;
-				global.$ = require("./APIandLibraries/jQuery/jquery.min.js");
 				global.bootstrap = require("./APIandLibraries/Bootstrap/js/bootstrap.bundle.min.js");
 			});
 
 			afterEach(() => {
 				jest.useRealTimers();
-				document.body.innerHTML = "";
 				delete global.bootstrap;
-				for (const methodName of replacedDocumentMethods) {
-					jest.spyOn(document, methodName).mockImplementation(jest.fn());
-				}
 			});
 
 			/**
@@ -292,6 +306,53 @@ describe("runtime.js - Runtime Flow Helpers", () => {
 
 			expect(console.error).not.toHaveBeenCalled();
 			expect(global.$).not.toHaveBeenCalledWith("#selection_process");
+		});
+	});
+
+	describe("with the real DOM", () => {
+		useRealDom('<button id="back">Back</button><div id="mainContainer"><div class="collapse"></div></div>');
+
+		it("names the gene dropdown by its visible label", async () => {
+			await redirectCRISPR();
+
+			const dropdown = document.getElementById("gene_dropdown_selection");
+			expect(dropdown.hasAttribute("aria-label")).toBe(false);
+			expect(dropdown.labels).toHaveLength(1);
+			expect(dropdown.labels[0].textContent).toBe("Please select your gene:");
+		});
+
+		it("does not move focus when the page loads the selection", async () => {
+			document.getElementById("back").focus();
+
+			await redirectCRISPR();
+
+			expect(document.activeElement).toBe(document.getElementById("back"));
+		});
+
+		it("returnToGeneSelection() rebuilds the selection and focuses the gene dropdown", async () => {
+			document.getElementById("back").focus();
+
+			await returnToGeneSelection();
+
+			expect(document.activeElement).toBe(document.getElementById("gene_dropdown_selection"));
+			expect(global.loadCRISPRJSON_Files).toHaveBeenCalledTimes(1);
+			expect(global.fillGeneList).toHaveBeenCalledTimes(1);
+		});
+
+		it("returnToGeneSelection() rejects with the error that stopped redirectCRISPR() building the selection", async () => {
+			global.bootstrap = {
+				Collapse: {
+					getInstance: () => {
+						throw new Error("boom");
+					},
+				},
+			};
+
+			try {
+				await expect(returnToGeneSelection()).rejects.toThrow("boom");
+			} finally {
+				delete global.bootstrap;
+			}
 		});
 	});
 });

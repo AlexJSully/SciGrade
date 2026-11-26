@@ -53,7 +53,7 @@ test.describe("Sentry SDK Initialization and Failure Tolerance", () => {
 		await expect(page).toHaveTitle(/SciGrade/i);
 
 		// Core application navigation should still work even if Sentry is blocked
-		await page.getByRole("button", { name: "Start" }).click();
+		await page.getByRole("link", { name: "Start" }).click();
 		await expect(page).toHaveURL(/systemrun\.html/);
 
 		expect(pageErrors).toHaveLength(0);

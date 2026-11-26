@@ -615,6 +615,24 @@ describe("crispr_scripts.js - Utility Functions", () => {
 			expect(window.__xss).toBeUndefined();
 		});
 
+		it("names every field by its label and describes each input with its hint", () => {
+			setTestState({ gene_backgroundInfo: backgroundInfo, current_gene: "eBFP" });
+
+			loadWork();
+
+			for (const control of document.querySelectorAll("#work input, #work select")) {
+				expect(control.hasAttribute("aria-label")).toBe(false);
+				expect(document.querySelector(`label[for="${control.id}"]`)).not.toBeNull();
+			}
+			const inputs = document.querySelectorAll("#work input");
+			expect(inputs).toHaveLength(6);
+			for (const input of inputs) {
+				const hint = document.getElementById(input.getAttribute("aria-describedby"));
+				expect(hint.tagName).toBe("SMALL");
+				expect(hint.id).toBe(`${input.id}Small`);
+			}
+		});
+
 		it("alerts lFS50-66 and does not render when current_gene is missing from gene_list", () => {
 			setTestState({ gene_backgroundInfo: backgroundInfo, current_gene: "empty" });
 
@@ -745,7 +763,7 @@ describe("crispr_scripts.js - showFeedback()", () => {
 		expect(cards).toHaveLength(5);
 		for (const card of cards) {
 			const header = card.querySelector(".card-header");
-			const toggle = header.querySelector("h5.mb-0 > button.btn.btn-link");
+			const toggle = header.querySelector("h3.h5.mb-0 > button.btn.btn-link");
 			const output = card.querySelector(".collapse > .card-body").parentElement;
 
 			expect(toggle.getAttribute("data-bs-toggle")).toBe("collapse");
@@ -754,6 +772,20 @@ describe("crispr_scripts.js - showFeedback()", () => {
 			expect(output.getAttribute("aria-labelledby")).toBe(header.id);
 		}
 		expect(cards[0].querySelector("button").textContent).toBe("gRNA Strand Sequence: 0/2");
+	});
+
+	it("titles the feedback with an h2 over h3 cards and moves focus to that h2", () => {
+		setTestState({ all_answers: ["", "", "", "", "", "", ""], all_marks: [0, "0.00"] });
+
+		showFeedback();
+
+		const headings = [...document.querySelectorAll("#mainContainer :is(h1, h2, h3, h4, h5, h6)")];
+		expect(headings.map((h) => h.tagName)).toEqual(["H2", "H3", "H3", "H3", "H3", "H3"]);
+		expect(document.activeElement).toBe(document.getElementById("feedback_heading"));
+		expect(document.activeElement.textContent).toBe("Here is the feedback for your practice attempt.");
+		expect(document.querySelector("#mainContainer button[onclick]").getAttribute("onclick")).toBe(
+			"returnToGeneSelection();",
+		);
 	});
 
 	it("says no primer candidates were generated when the gRNA was not accepted", () => {

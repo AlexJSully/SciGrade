@@ -23,7 +23,9 @@ export default defineConfig({
 	forbidOnly: !!process.env.CI,
 	/* Retry on CI only */
 	retries: 2,
-	workers: 15,
+	/* One worker per CPU on CI. The 4-CPU GitHub runner starved WebKit at 15 workers: frames took seconds, so clicks
+	   waiting for a stable element and requestAnimationFrame polling ran past the test timeout. */
+	workers: process.env.CI ? "100%" : 15,
 	/* Reporter to use. See https://playwright.dev/docs/test-reporters */
 	reporter: [["list"], ["html"], ["json", { outputFile: "test-results/results.json" }]],
 	/* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */

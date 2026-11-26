@@ -54,7 +54,7 @@ npm run test:e2e:ui        # Run E2E tests in UI mode
 npm run validate          # Run prettier, eslint, minify, workbox, jest, playwright, and markdown lint
 
 # Build & Service Worker
-npm run minify            # Minify runtime and marking scripts
+npm run minify            # Minify runtime and marking scripts and the stylesheet
 npm run workbox           # Generate service worker with workbox
 ```
 
@@ -161,7 +161,9 @@ Test files in [tests/playwright/](../../tests/playwright/):
 - [gene-form-race.spec.js](../../tests/playwright/gene-form-race.spec.js) - Delays the gene-data fetch to confirm the Load Gene button stays disabled until the dropdown fills
 - [script-load-failure.spec.js](../../tests/playwright/script-load-failure.spec.js) - Returns HTTP 500 for `runtime.min.js`, `crispr_scripts.min.js`, or the gene data file and confirms the page shows a reload alert without a page error
 - [service-worker.spec.js](../../tests/playwright/service-worker.spec.js) - Registration at the root scope, removal of the legacy worker, and failure tolerance when [sw.js](../../sw.js) cannot be fetched
+- [accessibility.spec.js](../../tests/playwright/accessibility.spec.js) - axe scans of the home, selection, form, and feedback views, plus heading, landmark, focus, focus ring, form card layout, and reduced-motion checks
 - [accessibility.js](../../tests/playwright/utils/accessibility.js) - Accessibility utilities
+- [contrast.js](../../tests/playwright/utils/contrast.js) - `contrastRatio()` and `measureGlyphEdgeContrast()`, which measures the home heading's contrast against the photo from rendered pixels
 - [navigation.js](../../tests/playwright/utils/navigation.js) - `selectGeneAndOpenForm()`, which waits for the dropdown to populate before selecting a gene and opening the work form
 
 Run tests:
@@ -187,13 +189,12 @@ This uses the configuration in [workbox-config.cjs](../../workbox-config.cjs) an
 
 ### Code Minification
 
-Generate minified scripts with `npm run minify` from [package.json](../../package.json).
-This command creates the following bundled files used by the runtime page:
+Generate minified scripts and styles with `npm run minify` from [package.json](../../package.json).
+This command creates the following files used by the pages:
 
 - [core/scripts/crispr_scripts.min.js](../../core/scripts/crispr_scripts.min.js)
 - [core/scripts/runtime.min.js](../../core/scripts/runtime.min.js)
-
-No npm script regenerates [core/styling/style.min.css](../../core/styling/style.min.css), which [core/systemrun.html](../../core/systemrun.html) loads alongside those two bundles.
+- [core/styling/style.min.css](../../core/styling/style.min.css), loaded by [index.html](../../index.html) and [core/systemrun.html](../../core/systemrun.html)
 
 ## Troubleshooting
 

@@ -10,8 +10,22 @@
 	border-radius: 12px;
 	margin-bottom: 1%;
 	margin-top: 4%;
+	/*
+	 * Overrides .container's stepped max-widths so the card follows the window, 0.5rem to 2rem from each screen edge,
+	 * up to Bootstrap's widest container.
+	 */
+	max-width: 1320px;
 	padding-bottom: 5%;
 	padding-top: 2%;
+	width: calc(100% - 2 * clamp(0.5rem, 3vw, 2rem));
+}
+
+/*
+ * Insets the card's content on each side by a quarter of the card's width beyond 500px, from 0 up to one-twelfth of
+ * the card's width, so the inset grows smoothly with the window.
+ */
+#content_body {
+	margin-inline: clamp(0px, (100% - 500px) * 0.25, 8.333%);
 }
 
 .focusBody {
@@ -46,22 +60,22 @@
 	float: right;
 }
 
+/*
+ * The navigation bar clips overflow, so its links draw the focus ring inside their own box. The ring takes the text
+ * colour, which each link state already sets to contrast with its background (WCAG 1.4.11).
+ */
+.navigationBar a:focus-visible {
+	box-shadow: none;
+	outline: 3px solid currentColor;
+	outline-offset: -3px;
+}
+
 .homeBackground {
-	/* Browser background */
 	background: url("../images/BackgroundImage/homeBackground.webp") no-repeat center center fixed;
 	background-size: cover;
-
-	/* IE */
-	-ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/BackgroundImage/homeBackground.webp', sizingMethod='scale')";
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/BackgroundImage/homeBackground.webp', sizingMethod='scale');
 }
 
 .backgroundFrontLayer {
-	/* IE */
-	-ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src=../images/BackgroundImage/grey.webp', sizingMethod='scale')";
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/BackgroundImage/grey.webp', sizingMethod='scale');
-
-	/* Browser foreground */
 	background: url("../images/BackgroundImage/grey.webp") no-repeat center center fixed;
 	background-size: cover;
 	opacity: 0.5;
@@ -98,15 +112,39 @@
 	display: block;
 	margin-left: auto;
 	margin-right: auto;
+	width: fit-content;
 }
 
 .frontPageFont {
-	color: #353b6e;
+	color: #262a5c;
 	font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif, "Times New Roman";
 	font-size: 2em;
 	font-weight: bold;
 	text-align: center;
-	text-shadow: 2px 1px 5px rgba(150, 150, 150, 1);
+	/* The dark navy and the white halo together keep the heading at 3:1 or more over every part of the photo
+	   (large text, WCAG 1.4.3), including with the fallback fonts of systems that lack Segoe UI and Tahoma */
+	text-shadow:
+		0 0 2px #fff,
+		0 0 4px #fff,
+		0 0 8px #fff,
+		0 0 12px #fff;
+}
+
+/*
+ * Bootstrap's focus ring is a 25% opacity shadow, under 3:1 against white (WCAG 1.4.11), and forced-colors mode drops
+ * shadows. The navy outline survives forced colors, and the white ring around it keeps it visible on dark backgrounds.
+ */
+:focus-visible,
+.btn:focus-visible,
+.form-control:focus-visible,
+.form-select:focus-visible {
+	box-shadow: 0 0 0 6px #fff;
+	outline: 3px solid #30338d;
+}
+
+/* Bootstrap's link blue is under 4.5:1 on the card header tint */
+.card-header .btn-link {
+	--bs-btn-color: #0a58ca;
 }
 
 .modalResponsive {
