@@ -11,9 +11,8 @@
 	margin-bottom: 1%;
 	margin-top: 4%;
 	/*
-	 * Bootstrap's .container steps to a fixed max-width at each breakpoint, so the card jumped in size (540px to 720px
-	 * at 768px). The card instead follows the window, keeping 0.5rem to 2rem from each screen edge, up to the widest
-	 * container Bootstrap allowed.
+	 * Overrides .container's stepped max-widths so the card follows the window, 0.5rem to 2rem from each screen edge,
+	 * up to Bootstrap's widest container.
 	 */
 	max-width: 1320px;
 	padding-bottom: 5%;
@@ -22,12 +21,11 @@
 }
 
 /*
- * Insets the card's content smoothly as the card widens, where Bootstrap's column spacers jumped in at 576px. The
- * percentages are of the card's width, and the inset tops out at the one-twelfth a spacer column took.
+ * Insets the card's content on each side by a quarter of the card's width beyond 500px, from 0 up to one-twelfth of
+ * the card's width, so the inset grows smoothly with the window.
  */
 #content_body {
-	margin-left: clamp(0px, (100% - 500px) * 0.25, 8.333%);
-	margin-right: clamp(0px, (100% - 500px) * 0.25, 8.333%);
+	margin-inline: clamp(0px, (100% - 500px) * 0.25, 8.333%);
 }
 
 .focusBody {
@@ -62,16 +60,14 @@
 	float: right;
 }
 
-/* The navigation bar clips overflow, so its links draw the focus ring inside their own box */
+/*
+ * The navigation bar clips overflow, so its links draw the focus ring inside their own box. The ring takes the text
+ * colour, which each link state already sets to contrast with its background (WCAG 1.4.11).
+ */
 .navigationBar a:focus-visible {
 	box-shadow: none;
-	outline: 3px solid #fff;
+	outline: 3px solid currentColor;
 	outline-offset: -3px;
-}
-
-/* A hovered link turns light grey, where the white ring would fall below 3:1 (WCAG 1.4.11) */
-.navigationBar a:not(.active):hover:focus-visible {
-	outline-color: #30338d;
 }
 
 .homeBackground {
@@ -148,7 +144,7 @@
 
 /* Bootstrap's link blue is under 4.5:1 on the card header tint */
 .card-header .btn-link {
-	color: #0a58ca;
+	--bs-btn-color: #0a58ca;
 }
 
 .modalResponsive {

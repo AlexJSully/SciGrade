@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { testAccessibility } from "./utils/accessibility.js";
 import { contrastRatio, measureGlyphEdgeContrast } from "./utils/contrast.js";
-import { selectGeneAndOpenForm } from "./utils/navigation.js";
+import { selectGeneAndOpenForm, waitForGeneList } from "./utils/navigation.js";
 
 const HOME_URL = "http://localhost:3000/";
 const APP_URL = "http://localhost:3000/core/systemrun.html";
@@ -12,7 +12,7 @@ const APP_URL = "http://localhost:3000/core/systemrun.html";
  */
 async function openSelectionView(page) {
 	await page.goto(APP_URL);
-	await page.waitForFunction(() => document.getElementById("gene_dropdown_selection")?.options.length > 0);
+	await waitForGeneList(page);
 }
 
 /**
@@ -62,6 +62,19 @@ async function keyboardFocusOutline(page, locator) {
 			width: parseFloat(style.outlineWidth),
 		};
 	});
+}
+
+/**
+ * Asserts that keyboard focus on a control draws a solid outline at least 2px wide.
+ * @param {import('@playwright/test').Page} page - Page holding the control
+ * @param {string} label - Name of the control in assertion messages
+ * @param {import('@playwright/test').Locator} locator - Control to focus
+ */
+async function expectFocusRing(page, label, locator) {
+	const outline = await keyboardFocusOutline(page, locator);
+
+	expect(outline, label).toEqual(expect.objectContaining({ focusVisible: true, style: "solid" }));
+	expect(outline.width, label).toBeGreaterThanOrEqual(2);
 }
 
 test.describe("Visual guards: home heading", () => {
@@ -219,13 +232,7 @@ test.describe("Accessibility: WCAG 2.2 AA", () => {
 		}) => {
 			await page.emulateMedia({ forcedColors });
 			await page.goto(HOME_URL);
-			const targets = [["Start link", page.getByRole("link", { name: "Start" })]];
-
-			for (const [label, locator] of targets) {
-				const outline = await keyboardFocusOutline(page, locator);
-				expect(outline, label).toEqual(expect.objectContaining({ focusVisible: true, style: "solid" }));
-				expect(outline.width, label).toBeGreaterThanOrEqual(2);
-			}
+			await expectFocusRing(page, "Start link", page.getByRole("link", { name: "Start" }));
 
 			await openSelectionView(page);
 			await selectGeneAndOpenForm(page, "eBFP");
@@ -235,9 +242,7 @@ test.describe("Accessibility: WCAG 2.2 AA", () => {
 				["button", page.locator("#load_gene_button")],
 				["input", page.locator("#sequence_input")],
 			]) {
-				const outline = await keyboardFocusOutline(page, locator);
-				expect(outline, label).toEqual(expect.objectContaining({ focusVisible: true, style: "solid" }));
-				expect(outline.width, label).toBeGreaterThanOrEqual(2);
+				await expectFocusRing(page, label, locator);
 			}
 		});
 	}

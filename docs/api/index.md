@@ -424,12 +424,8 @@ The application uses Bootstrap utilities for styling in [core/scripts/crispr_scr
 <button class="btn btn-primary">Submit</button>
 <button class="btn btn-success">Save</button>
 
-<!-- Grid -->
-<div class="container">
-	<div class="row">
-		<div class="col"></div>
-	</div>
-</div>
+<!-- Card that holds each view -->
+<div class="container focusContainer" id="mainContainer"></div>
 ```
 
 ### jQuery Selectors

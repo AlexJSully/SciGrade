@@ -110,11 +110,12 @@ async function redirectCRISPR() {
 /**
  * Rebuilds the gene selection from the feedback view and moves focus to the gene dropdown, because the button
  * that called it is removed with the feedback. The dropdown exists once redirectCRISPR's synchronous part returns.
- * @returns {Promise<void>} Settles when redirectCRISPR has loaded the gene data
+ * @returns {Promise<void>} Settles when redirectCRISPR has loaded the gene data, and rejects with its error
  */
 async function returnToGeneSelection() {
 	const loaded = redirectCRISPR();
-	document.getElementById("gene_dropdown_selection").focus();
+	// The dropdown is missing only when redirectCRISPR failed before building it; awaiting it reports that error
+	document.getElementById("gene_dropdown_selection")?.focus();
 	await loaded;
 }
 

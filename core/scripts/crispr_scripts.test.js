@@ -779,7 +779,7 @@ describe("crispr_scripts.js - showFeedback()", () => {
 
 		showFeedback();
 
-		const headings = [...document.querySelectorAll("#mainContainer h1, h2, h3, h4, h5, h6")];
+		const headings = [...document.querySelectorAll("#mainContainer :is(h1, h2, h3, h4, h5, h6)")];
 		expect(headings.map((h) => h.tagName)).toEqual(["H2", "H3", "H3", "H3", "H3", "H3"]);
 		expect(document.activeElement).toBe(document.getElementById("feedback_heading"));
 		expect(document.activeElement.textContent).toBe("Here is the feedback for your practice attempt.");
